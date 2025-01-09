@@ -1,0 +1,164 @@
+{
+      "paddle.Tensor.take_along_axis": {
+            "torch_api": "torch.Tensor.gather",
+            "paddle_torch_args_map": {
+                  "axis": "dim",
+                  "indices": "index",
+                  "broadcast": ""
+            },
+            "min_input_args": 2
+      },
+      "paddle.Tensor.put_along_axis": {
+            "torch_api": "torch.Tensor.scatter_add",
+            "paddle_torch_args_map": {
+                  "axis": "dim",
+                  "indices": "index",
+                  "values": "src",
+                  "reduce": ""
+            },
+            "min_input_args": 3
+      },
+      "paddle.Tensor.put_along_axis_": {
+            "torch_api": "torch.Tensor.scatter_add_",
+            "paddle_torch_args_map": {
+                  "axis": "dim",
+                  "indices": "index",
+                  "values": "src",
+                  "reduce": ""
+            },
+            "min_input_args": 3
+      },
+      "paddle.incubate.autograd.Hessian": {
+            "torch_api": "torch.autograd.functional.hessian",
+            "paddle_torch_args_map": {
+                  "func": "func",
+                  "xs": "inputs",
+                  "is_batched": ""
+            },
+            "min_input_args": 2
+      },
+      "paddle.incubate.autograd.Jacobian": {
+            "torch_api": "torch.autograd.functional.jacobian",
+            "paddle_torch_args_map": {
+                  "func": "func",
+                  "xs": "inputs",
+                  "is_batched": ""
+            },
+            "min_input_args": 2
+      },
+      "paddle.linalg.corrcoef": {
+            "torch_api": "torch.corrcoef",
+            "paddle_torch_args_map": {
+                  "x": "input",
+                  "rowvar": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.flip": {
+            "torch_api": "torch.flipud",
+            "paddle_torch_args_map": {
+                  "x": "input",
+                  "axis": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.take_along_axis": {
+            "torch_api": "torch.gather",
+            "paddle_torch_args_map": {
+                  "arr": "input",
+                  "axis": "dim",
+                  "indices": "index",
+                  "*": "*",
+                  "out": "out",
+                  "broadcast": ""
+            },
+            "min_input_args": 3
+      },
+      "paddle.vander": {
+            "torch_api": "torch.linalg.vander",
+            "paddle_torch_args_map": {
+                  "x": "x",
+                  "*": "*",
+                  "n": "N",
+                  "increasing": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.sort": {
+            "torch_api": "torch.msort",
+            "paddle_torch_args_map": {
+                  "x": "input",
+                  "*": "*",
+                  "out": "out",
+                  "axis": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.nn.Pad3D": {
+            "torch_api": "torch.nn.ReplicationPad3d",
+            "paddle_torch_args_map": {
+                  "padding": "padding",
+                  "mode": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.nn.Layer.named_sublayers": {
+            "torch_api": "torch.nn.Module.named_modules",
+            "paddle_torch_args_map": {
+                  "layers_set": "memo",
+                  "prefix": "prefix",
+                  "remove_duplicate": "remove_duplicate",
+                  "include_self": ""
+            },
+            "min_input_args": 0
+      },
+      "paddle.nn.Pad1D": {
+            "torch_api": "torch.nn.ReplicationPad1d",
+            "paddle_torch_args_map": {
+                  "padding": "padding",
+                  "mode": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.nn.Pad2D": {
+            "torch_api": "torch.nn.ReplicationPad2d",
+            "paddle_torch_args_map": {
+                  "padding": "padding",
+                  "mode": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.nn.functional.pad": {
+            "torch_api": "torch.nn.functional.pad",
+            "paddle_torch_args_map": {
+                  "x": "input",
+                  "pad": "pad",
+                  "mode": "mode",
+                  "value": "value",
+                  "pad_from_left_axis": ""
+            },
+            "min_input_args": 2
+      },
+      "paddle.nn.functional.upsample": {
+            "torch_api": "torch.nn.functional.upsample_bilinear",
+            "paddle_torch_args_map": {
+                  "x": "input",
+                  "size": "size",
+                  "scale_factor": "scale_factor",
+                  "align_corners": "",
+                  "mode": ""
+            },
+            "min_input_args": 1
+      },
+      "paddle.put_along_axis": {
+            "torch_api": "torch.scatter_add",
+            "paddle_torch_args_map": {
+                  "arr": "input",
+                  "axis": "dim",
+                  "indices": "index",
+                  "values": "src",
+                  "reduce": ""
+            },
+            "min_input_args": 4
+      }
+}
