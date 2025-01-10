@@ -93,6 +93,7 @@ with open("paddle2torch_paddle_args_grate_than_torch_dict.json", "w") as f:
 with open("paddle2torch_default_value_diff_dict.json", "w") as f:
     json.dump(default_value_diff_dict, f, indent=6)
 
-with open("regular_api.txt", "w") as f:
+with open("regular_api.yaml", "w") as f:
+    f.write('apis:\n')
     for api in regular_dict:
-        f.write(api+'\n')
+        f.write("  -  "+api+'\n')
