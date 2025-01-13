@@ -68,7 +68,6 @@
                   "arr": "input",
                   "axis": "dim",
                   "indices": "index",
-                  "*": "*",
                   "out": "out",
                   "broadcast": ""
             },
@@ -78,7 +77,6 @@
             "torch_api": "torch.linalg.vander",
             "paddle_torch_args_map": {
                   "x": "x",
-                  "*": "*",
                   "n": "N",
                   "increasing": ""
             },
@@ -88,7 +86,6 @@
             "torch_api": "torch.msort",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "*": "*",
                   "out": "out",
                   "axis": ""
             },

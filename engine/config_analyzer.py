@@ -3,6 +3,8 @@ import collections
 import paddle
 import numpy
 import math
+import json
+import torch
 
 class TensorConfig:
     def __init__(self, shape, dtype):
@@ -184,7 +186,56 @@ class APIConfig:
     def test(self):
         pass
 
-    
+class APITestBase:
+    def __init__(self, api_config):
+        self.api_config = api_config
+    def rand_tensor(self, tensor_config):
+        if tensor_config.dtype in ["float32", "float64"]:
+            return paddle.rand(tensor_config.shape, tensor_config.dtype)
+        elif tensor_config.dtype in ["float16", "int32", "int64", "int8", "int16", "bool"]:
+            return paddle.rand(tensor_config.shape, "float64").cast(tensor_config.dtype)
+        else:
+            raise ValueError("not support")
+        
+
+    def test(self):
+        pass
+with open("../paddle_to_torch/paddle2torch_regular_dict.json", "r") as f:
+    paddle_to_torch = json.load(f, object_pairs_hook=collections.OrderedDict)
+
+class APITestAccuracy(APITestBase):
+    def __init__(self, api_config):
+        self.api_config = api_config
+    def test(self):
+        api = eval(self.api_config.api_name)
+        paddle_to_torch_args_map = paddle_to_torch[self.api_config.api_name]["paddle_torch_args_map"]
+        paddle_args_list = list(paddle_to_torch_args_map)
+        torch_api = eval(paddle_to_torch[self.api_config.api_name]["torch_api"])
+        args = []
+        kwargs = {}
+        merged_kwargs = {}
+        index = 0
+        for arg_config in self.api_config.args:
+            if isinstance(arg_config, TensorConfig):
+                value = self.rand_tensor(arg_config)
+            else:
+                value = arg_config
+            args.append(value)
+            merged_kwargs[paddle_args_list[index]] = value
+            index = index + 1
+        
+        for key, arg_config in self.api_config.kwargs.items():
+            if isinstance(arg_config, TensorConfig):
+                value = paddle.rand(arg_config.shape, arg_config.dtype)
+            else:
+                value = arg_config
+            kwargs[key] = value
+            merged_kwargs[key] = value
+        
+        api(*tuple(args), **kwargs)
+           
+  
+
 def analyse_configs(config_path):
     with open(config_path, "r") as f:
         configs = f.readlines()
@@ -192,14 +243,17 @@ def analyse_configs(config_path):
 
     api_configs = []
     for config in configs:
-        print(config)
         api_config = APIConfig(config)
-        print(api_config)
         api_configs.append(api_config)
-        
+        print(api_config, "begin", flush=True)
+        case = APITestAccuracy(api_config)
+        case.test()
+        print(api_config, "finish", flush=True)
     return api_configs
 
 if __name__ == '__main__':
     api_configs = analyse_configs("../api_config/api_config.txt")
-    for config in api_configs:
-        config.test()
+    for api_config in api_configs:
+        case = APITestAccuracy(api_config)
+        case.test()
+        print(api_config, "finish")

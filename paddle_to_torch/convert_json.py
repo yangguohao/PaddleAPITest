@@ -38,6 +38,8 @@ for api in api_mapping:
     for arg in args_list:
         if arg in unsupport_args:
             continue
+        if arg == "*":
+            continue
         if arg in kwargs_change:
             if isinstance(kwargs_change[arg], list):
                 for sub_arg in kwargs_change[arg]:

@@ -54,7 +54,6 @@
             "torch_api": "torch.Tensor.add",
             "paddle_torch_args_map": {
                   "y": "other",
-                  "*": "*",
                   "alpha": "alpha"
             },
             "min_input_args": 1,
@@ -64,7 +63,6 @@
             "torch_api": "torch.Tensor.add_",
             "paddle_torch_args_map": {
                   "y": "other",
-                  "*": "*",
                   "alpha": "alpha"
             },
             "min_input_args": 1,
@@ -76,7 +74,6 @@
                   "input": "input",
                   "mat": "mat",
                   "vec": "vec",
-                  "*": "*",
                   "beta": "beta",
                   "alpha": "alpha",
                   "out": "out"
@@ -90,7 +87,6 @@
                   "input": "input",
                   "vec1": "vec1",
                   "vec2": "vec2",
-                  "*": "*",
                   "beta": "beta",
                   "alpha": "alpha",
                   "out": "out"
@@ -133,7 +129,6 @@
                   "input": "input",
                   "batch1": "batch1",
                   "batch2": "batch2",
-                  "*": "*",
                   "beta": "beta",
                   "alpha": "alpha",
                   "out": "out"
@@ -144,8 +139,7 @@
       "paddle.bernoulli": {
             "torch_api": "torch.Tensor.bernoulli",
             "paddle_torch_args_map": {
-                  "p": "p",
-                  "*": "*"
+                  "p": "p"
             },
             "min_input_args": 0,
             "matcher": "TensorFunc2PaddleFunc"
@@ -326,7 +320,6 @@
             "torch_api": "torch.Tensor.histogram",
             "paddle_torch_args_map": {
                   "bins": "bins",
-                  "*": "*",
                   "min": "range",
                   "max": "range",
                   "weight": "weight",
@@ -341,7 +334,6 @@
                   "axis": "dim",
                   "index": "index",
                   "value": "source",
-                  "*": "*",
                   "alpha": "alpha"
             },
             "min_input_args": 3,
@@ -353,7 +345,6 @@
                   "axis": "dim",
                   "index": "index",
                   "value": "source",
-                  "*": "*",
                   "alpha": "alpha"
             },
             "min_input_args": 3,
@@ -466,7 +457,6 @@
             "torch_api": "torch.empty",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "*": "*",
                   "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
@@ -483,7 +473,6 @@
             "paddle_torch_args_map": {
                   "shape": "size",
                   "fill_value": "fill_value",
-                  "*": "*",
                   "dtype": "dtype",
                   "device": "device",
                   "requires_grad": "requires_grad",
@@ -497,7 +486,6 @@
             "torch_api": "torch.ones",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "*": "*",
                   "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
@@ -512,7 +500,6 @@
             "torch_api": "torch.tensor",
             "paddle_torch_args_map": {
                   "data": "data",
-                  "*": "*",
                   "dtype": "dtype",
                   "place": "device",
                   "requires_grad": "requires_grad",
@@ -525,7 +512,6 @@
             "torch_api": "torch.zeros",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "*": "*",
                   "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
@@ -610,7 +596,6 @@
       "paddle.Tensor.round": {
             "torch_api": "torch.Tensor.round",
             "paddle_torch_args_map": {
-                  "*": "*",
                   "decimals": "decimals"
             },
             "min_input_args": 0,
@@ -619,7 +604,6 @@
       "paddle.Tensor.round_": {
             "torch_api": "torch.Tensor.round_",
             "paddle_torch_args_map": {
-                  "*": "*",
                   "decimals": "decimals"
             },
             "min_input_args": 0,
@@ -632,7 +616,6 @@
                   "indices": "index",
                   "values": "src",
                   "reduce": "reduce",
-                  "*": "*",
                   "include_self": "include_self",
                   "broadcast": ""
             },
@@ -664,7 +647,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "axis": "dim",
-                  "*": "*",
                   "dtype": "dtype",
                   "out": "out"
             },
@@ -676,7 +658,6 @@
             "paddle_torch_args_map": {
                   "axis": "dim",
                   "descending": "descending",
-                  "*": "*",
                   "stable": "stable"
             },
             "min_input_args": 0,
@@ -720,7 +701,6 @@
             "torch_api": "torch.Tensor.subtract",
             "paddle_torch_args_map": {
                   "y": "other",
-                  "*": "*",
                   "alpha": "alpha"
             },
             "min_input_args": 1,
@@ -730,7 +710,6 @@
             "torch_api": "torch.Tensor.subtract_",
             "paddle_torch_args_map": {
                   "y": "other",
-                  "*": "*",
                   "alpha": "alpha"
             },
             "min_input_args": 1,
@@ -741,7 +720,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "some": "some",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 0,
@@ -763,7 +741,6 @@
                   "x": "input",
                   "eigenvectors": "eigenvectors",
                   "UPLO": "upper",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 1,
@@ -807,7 +784,6 @@
                   "upper": "upper",
                   "transpose": "transpose",
                   "unitriangular": "unitriangular",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -827,7 +803,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "alpha": "alpha",
                   "out": "out"
             },
@@ -839,7 +814,6 @@
             "paddle_torch_args_map": {
                   "x": "actual",
                   "y": "expected",
-                  "*": "*",
                   "rtol": "rtol",
                   "atol": "atol",
                   "equal_nan": "equal_nan",
@@ -854,7 +828,6 @@
                   "start": "start",
                   "end": "end",
                   "step": "step",
-                  "*": "*",
                   "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
@@ -924,7 +897,6 @@
             "torch_api": "torch.linalg.inv_ex",
             "paddle_torch_args_map": {
                   "x": "A",
-                  "*": "*",
                   "check_errors": "check_errors",
                   "out": "out"
             },
@@ -985,7 +957,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "axis": "dim",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -996,7 +967,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "axis": "dim",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1108,7 +1078,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1145,7 +1114,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1156,7 +1124,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1166,7 +1133,6 @@
             "torch_api": "torch.frexp",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 0,
@@ -1177,7 +1143,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1188,7 +1153,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1199,7 +1163,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "bins": "bins",
-                  "*": "*",
                   "min": "range",
                   "max": "range",
                   "weight": "weight",
@@ -1224,7 +1187,6 @@
                   "axis": "dim",
                   "index": "index",
                   "source": "source",
-                  "*": "*",
                   "alpha": "alpha",
                   "out": "out"
             },
@@ -1246,7 +1208,6 @@
                   "k": "k",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1257,7 +1218,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1268,7 +1228,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1278,7 +1237,6 @@
             "torch_api": "torch.linalg.cholesky_ex",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "*": "*",
                   "upper": "upper",
                   "check_errors": "check_errors",
                   "out": "out"
@@ -1290,7 +1248,6 @@
             "torch_api": "torch.linalg.eig",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 1,
@@ -1312,7 +1269,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "some": "some",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 1,
@@ -1322,7 +1278,6 @@
             "torch_api": "torch.slogdet",
             "paddle_torch_args_map": {
                   "input": "input",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 1,
@@ -1332,7 +1287,6 @@
             "torch_api": "torch.load",
             "paddle_torch_args_map": {
                   "path": "f",
-                  "*": "*",
                   "**pickle_load_args": "**pickle_load_args"
             },
             "min_input_args": 1,
@@ -1345,7 +1299,6 @@
                   "y": "LU_pivots",
                   "unpack_ludata": "unpack_data",
                   "unpack_pivots": "unpack_pivots",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1357,7 +1310,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 0,
@@ -1369,7 +1321,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "*": "*",
                   "out": "out",
                   "mode": ""
             },
@@ -1391,7 +1342,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 0,
@@ -1403,7 +1353,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 1,
@@ -1414,7 +1363,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -1426,7 +1374,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "*": "*",
                   "out": "out",
                   "mode": ""
             },
@@ -1438,7 +1385,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -2076,7 +2022,6 @@
             "torch_api": "torch.nn.functional.gelu",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "*": "*",
                   "approximate": "approximate"
             },
             "min_input_args": 1,
@@ -2426,7 +2371,6 @@
             "torch_api": "torch.nonzero",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "*": "*",
                   "out": "out",
                   "as_tuple": "as_tuple"
             },
@@ -2461,8 +2405,7 @@
                   "learning_rate": "lr",
                   "betas": "betas",
                   "epsilon": "eps",
-                  "weight_decay": "weight_decay",
-                  "*": "*"
+                  "weight_decay": "weight_decay"
             },
             "min_input_args": 1,
             "matcher": "OptimAdamMatcher"
@@ -2474,8 +2417,7 @@
                   "learning_rate": "lr",
                   "betas": "betas",
                   "epsilon": "eps",
-                  "weight_decay": "weight_decay",
-                  "*": "*"
+                  "weight_decay": "weight_decay"
             },
             "min_input_args": 1,
             "matcher": "OptimAdamMatcher"
@@ -2487,8 +2429,7 @@
                   "learning_rate": "lr",
                   "betas": "betas",
                   "epsilon": "eps",
-                  "weight_decay": "weight_decay",
-                  "*": "*"
+                  "weight_decay": "weight_decay"
             },
             "min_input_args": 1,
             "matcher": "OptimAdamMatcher"
@@ -2501,8 +2442,7 @@
                   "betas": "betas",
                   "epsilon": "eps",
                   "weight_decay": "weight_decay",
-                  "momentum_decay": "momentum_decay",
-                  "*": "*"
+                  "momentum_decay": "momentum_decay"
             },
             "min_input_args": 1,
             "matcher": "OptimAdamMatcher"
@@ -2523,8 +2463,7 @@
                   "learning_rate": "lr",
                   "betas": "betas",
                   "epsilon": "eps",
-                  "weight_decay": "weight_decay",
-                  "*": "*"
+                  "weight_decay": "weight_decay"
             },
             "min_input_args": 1,
             "matcher": "OptimAdamMatcher"
@@ -2694,7 +2633,6 @@
             "torch_api": "torch.rand_like",
             "paddle_torch_args_map": {
                   "input": "input",
-                  "*": "*",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -2710,7 +2648,6 @@
                   "low": "low",
                   "high": "high",
                   "shape": "size",
-                  "*": "*",
                   "generator": "generator",
                   "out": "out",
                   "dtype": "dtype",
@@ -2726,7 +2663,6 @@
             "torch_api": "torch.randn_like",
             "paddle_torch_args_map": {
                   "input": "input",
-                  "*": "*",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -2741,7 +2677,6 @@
             "paddle_torch_args_map": {
                   "input": "input",
                   "other": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -2751,7 +2686,6 @@
             "torch_api": "torch.special.round",
             "paddle_torch_args_map": {
                   "input": "input",
-                  "*": "*",
                   "decimals": "decimals",
                   "out": "out"
             },
@@ -2766,7 +2700,6 @@
                   "indices": "index",
                   "values": "src",
                   "reduce": "reduce",
-                  "*": "*",
                   "include_self": "include_self",
                   "broadcast": ""
             },
@@ -2778,7 +2711,6 @@
             "paddle_torch_args_map": {
                   "sorted_sequence": "sorted_sequence",
                   "values": "input",
-                  "*": "*",
                   "out_int32": "out_int32",
                   "right": "right",
                   "side": "side",
@@ -2813,7 +2745,6 @@
             "torch_api": "torch.signal.windows.hann",
             "paddle_torch_args_map": {
                   "win_length": "M",
-                  "*": "*",
                   "fftbins": "sym",
                   "dtype": "dtype",
                   "layout": "layout",
@@ -2843,7 +2774,6 @@
                   "x": "input",
                   "axis": "dim",
                   "descending": "descending",
-                  "*": "*",
                   "stable": "stable",
                   "out": "out"
             },
@@ -2855,7 +2785,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "axis": "dim",
-                  "*": "*",
                   "dtype": "dtype"
             },
             "min_input_args": 2,
@@ -2885,7 +2814,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "alpha": "alpha",
                   "out": "out"
             },
@@ -2900,7 +2828,6 @@
                   "axis": "dim",
                   "largest": "largest",
                   "sorted": "sorted",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 2,
@@ -2932,7 +2859,6 @@
                   "condition": "condition",
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "out": "out"
             },
             "min_input_args": 3,
@@ -3284,7 +3210,6 @@
       "paddlenlp.generation.GenerationConfig": {
             "torch_api": "transformers.GenerationConfig",
             "paddle_torch_args_map": {
-                  "*": "*",
                   "max_length": "max_length",
                   "min_length": "min_length",
                   "early_stopping": "early_stopping",
@@ -3310,7 +3235,6 @@
       "paddlenlp.transformers.PretrainedTokenizer": {
             "torch_api": "transformers.PreTrainedTokenizer",
             "paddle_torch_args_map": {
-                  "*": "*",
                   "model_max_length": "model_max_length",
                   "padding_side": "padding_side",
                   "truncation_side": "truncation_side",

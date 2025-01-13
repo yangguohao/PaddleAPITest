@@ -30,7 +30,6 @@
             "paddle_torch_args_map": {
                   "win_length": "window_length",
                   "fftbins": "periodic",
-                  "*": "*",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -87,7 +86,6 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "*": "*",
                   "axis": "dim",
                   "out": "out"
             },
@@ -100,7 +98,6 @@
             "torch_api": "torch.linalg.diagonal",
             "paddle_torch_args_map": {
                   "x": "A",
-                  "*": "*",
                   "offset": "offset",
                   "axis1": "dim1",
                   "axis2": "dim2"
@@ -189,8 +186,7 @@
                   "learning_rate": "lr",
                   "rho": "rho",
                   "epsilon": "eps",
-                  "weight_decay": "weight_decay",
-                  "*": "*"
+                  "weight_decay": "weight_decay"
             },
             "min_input_args": 1,
             "paddle_default_kwargs": {
@@ -206,8 +202,7 @@
                   "learning_rate": "lr",
                   "weight_decay": "weight_decay",
                   "initial_accumulator_value": "initial_accumulator_value",
-                  "epsilon": "eps",
-                  "*": "*"
+                  "epsilon": "eps"
             },
             "min_input_args": 1,
             "paddle_default_kwargs": {
@@ -240,8 +235,7 @@
             "paddle_torch_args_map": {
                   "parameters": "params",
                   "learning_rate": "lr",
-                  "weight_decay": "weight_decay",
-                  "*": "*"
+                  "weight_decay": "weight_decay"
             },
             "min_input_args": 1,
             "paddle_default_kwargs": {
@@ -252,7 +246,6 @@
             "torch_api": "torch.scalar_tensor",
             "paddle_torch_args_map": {
                   "data": "s",
-                  "*": "*",
                   "dtype": "dtype",
                   "layout": "layout",
                   "place": "device",
