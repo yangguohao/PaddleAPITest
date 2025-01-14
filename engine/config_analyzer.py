@@ -50,7 +50,9 @@ def get_list(config, offset):
             break
     
     list_str = config[offset: last_index+1]
-    
+    if "TensorConfig" not in list_str:
+        list_str = list_str.replace(",", " ")
+
     offset = 1
     while(True):
         tocken, offset = get_tocken(list_str, offset)
@@ -80,7 +82,9 @@ def get_tuple(config, offset):
             break
     
     tuple_str = config[offset: last_index+1]
-    
+    if "TensorConfig" not in tuple_str:
+        tuple_str = tuple_str.replace(",", " ")
+
     offset = 1
     while(True):
         tocken, offset = get_tocken(tuple_str, offset)
@@ -104,6 +108,8 @@ def get_slice(config, offset):
 def get_complex(config, offset):
     config = config[offset:]
     complex_str = config[config.index("("):config.index(")")+1]
+    if "nan" in complex_str and complex_str[complex_str.index('nan')-1] != ".":
+        complex_str = complex_str.replace("nan", "float('nan')")
     return eval("complex"+complex_str), offset+len(complex_str)
 
 def get_numpy_type(config, offset):
@@ -128,6 +134,8 @@ def get_one_arg(tocken, config, offset):
         value, offset = get_complex(config, offset)
     elif tocken == "type":
         value, offset = get_numpy_type(config, offset)
+    elif tocken == "nan":
+        value = float('nan')
     elif config[offset] == '\"':
         value = tocken
     elif tocken is None:
@@ -138,6 +146,7 @@ def get_one_arg(tocken, config, offset):
 
 class APIConfig:
     def __init__(self, config):
+        config = config.replace("\n", "")
         self.config = config
         self.args = []
         self.kwargs = collections.OrderedDict()
@@ -192,7 +201,9 @@ class APITestBase:
     def rand_tensor(self, tensor_config):
         if tensor_config.dtype in ["float32", "float64"]:
             return paddle.rand(tensor_config.shape, tensor_config.dtype)
-        elif tensor_config.dtype in ["float16", "int32", "int64", "int8", "int16", "bool"]:
+        if tensor_config.dtype in ["complex64", "complex128"]:
+            return paddle.randn(tensor_config.shape, tensor_config.dtype)
+        elif tensor_config.dtype in ["float16", "bfloat16", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64", "bool"]:
             return paddle.rand(tensor_config.shape, "float64").cast(tensor_config.dtype)
         else:
             raise ValueError("not support")
@@ -220,13 +231,23 @@ class APITestAccuracy(APITestBase):
                 value = self.rand_tensor(arg_config)
             else:
                 value = arg_config
+                if isinstance(value, list):
+                    for i in range(len(value)):
+                        if isinstance(value[i], TensorConfig):
+                            value[i] = self.rand_tensor(value[i])
+                if isinstance(value, tuple):
+                    tmp = list(value)
+                    for i in range(len(tmp)):
+                        if isinstance(tmp[i], TensorConfig):
+                            tmp[i] = self.rand_tensor(tmp[i])
+                    value = tuple(tmp)
             args.append(value)
             merged_kwargs[paddle_args_list[index]] = value
             index = index + 1
         
         for key, arg_config in self.api_config.kwargs.items():
             if isinstance(arg_config, TensorConfig):
-                value = paddle.rand(arg_config.shape, arg_config.dtype)
+                value = self.rand_tensor(arg_config)
             else:
                 value = arg_config
             kwargs[key] = value
@@ -243,17 +264,19 @@ def analyse_configs(config_path):
 
     api_configs = []
     for config in configs:
+        print(config.replace("\n", ""), "begin", flush=True)
         api_config = APIConfig(config)
         api_configs.append(api_config)
-        print(api_config, "begin", flush=True)
+        print(api_config.config, " -> ", api_config, flush=True)
         case = APITestAccuracy(api_config)
         case.test()
-        print(api_config, "finish", flush=True)
+        print("finish", flush=True)
     return api_configs
 
 if __name__ == '__main__':
     api_configs = analyse_configs("../api_config/api_config.txt")
     for api_config in api_configs:
+        print(api_config.config, " -> ", api_config, flush=True)
         case = APITestAccuracy(api_config)
         case.test()
-        print(api_config, "finish")
+        print("finish", flush=True)
