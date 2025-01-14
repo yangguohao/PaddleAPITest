@@ -1,5 +1,4 @@
 apis:
-  -  paddle.__version__.split
   -  paddle.Tensor.addmm
   -  paddle.Tensor.addmm_
   -  paddle.Tensor.amax
@@ -59,7 +58,6 @@ apis:
   -  paddle.Tensor.gcd
   -  paddle.Tensor.gcd_
   -  paddle.Tensor.geometric_
-  -  paddle.Tensor.outer
   -  paddle.Tensor.heaviside
   -  paddle.Tensor.hsplit
   -  paddle.Tensor.hypot
@@ -116,13 +114,13 @@ apis:
   -  paddle.Tensor.normal_
   -  paddle.Tensor.numpy
   -  paddle.Tensor.householder_product
+  -  paddle.Tensor.outer
   -  paddle.Tensor.polygamma
   -  paddle.Tensor.polygamma_
   -  paddle.Tensor.pow
   -  paddle.Tensor.pow_
   -  paddle.Tensor.prod
   -  paddle.Tensor.quantile
-  -  paddle.Tensor.uniform_
   -  paddle.Tensor.register_hook
   -  paddle.Tensor.remainder
   -  paddle.Tensor.remainder_
@@ -148,6 +146,7 @@ apis:
   -  paddle.Tensor.unbind
   -  paddle.Tensor.unflatten
   -  paddle.Tensor.unfold
+  -  paddle.Tensor.uniform_
   -  paddle.Tensor.unique
   -  paddle.Tensor.unique_consecutive
   -  paddle.Tensor.unsqueeze
@@ -155,11 +154,11 @@ apis:
   -  paddle.Tensor.var
   -  paddle.Tensor.view_as
   -  paddle.Tensor.where
+  -  paddle.__version__.split
   -  paddle.abs
   -  paddle.abs_
   -  paddle.addmm
   -  paddle.all
-  -  paddle.nn.functional.alpha_dropout
   -  paddle.amax
   -  paddle.amin
   -  paddle.amp.auto_cast
@@ -175,7 +174,6 @@ apis:
   -  paddle.argmax
   -  paddle.argmin
   -  paddle.argsort
-  -  paddle.nonzero
   -  paddle.as_strided
   -  paddle.to_tensor
   -  paddle.autograd.backward
@@ -184,7 +182,6 @@ apis:
   -  paddle.grad
   -  paddle.autograd.saved_tensors_hooks
   -  paddle.profiler.export_chrome_tracing
-  -  paddle.set_grad_enabled
   -  paddle.bernoulli
   -  paddle.bincount
   -  paddle.bitwise_and
@@ -196,11 +193,8 @@ apis:
   -  paddle.bmm
   -  paddle.broadcast_to
   -  paddle.bucketize
-  -  paddle.concat
   -  paddle.cdist
   -  paddle.ceil
-  -  paddle.nn.functional.celu
-  -  paddle.linalg.cholesky
   -  paddle.linalg.cholesky_solve
   -  paddle.chunk
   -  paddle.clip
@@ -208,6 +202,7 @@ apis:
   -  paddle.column_stack
   -  paddle.combinations
   -  paddle.complex
+  -  paddle.concat
   -  paddle.conj
   -  paddle.copysign
   -  paddle.cos
@@ -216,23 +211,19 @@ apis:
   -  paddle.linalg.cov
   -  paddle.cross
   -  paddle.device.cuda.Event
-  -  paddle.distributed.broadcast
   -  paddle.device.cuda.current_stream
   -  paddle.device.cuda.get_device_capability
   -  paddle.device.cuda.get_device_name
-  -  paddle.seed
   -  paddle.device.cuda.max_memory_allocated
   -  paddle.device.cuda.max_memory_reserved
   -  paddle.device.cuda.memory_allocated
   -  paddle.device.cuda.memory_reserved
-  -  paddle.set_rng_state
   -  paddle.device.stream_guard
   -  paddle.device.cuda.synchronize
   -  paddle.cumprod
   -  paddle.cumsum
   -  paddle.cumulative_trapezoid
   -  paddle.deg2rad
-  -  paddle.linalg.det
   -  paddle.diag
   -  paddle.diag_embed
   -  paddle.diagflat
@@ -242,6 +233,7 @@ apis:
   -  paddle.dist
   -  paddle.distributed.alltoall
   -  paddle.distributed.barrier
+  -  paddle.distributed.broadcast
   -  paddle.distributed.broadcast_object_list
   -  paddle.distributed.get_backend
   -  paddle.distributed.get_rank
@@ -300,7 +292,6 @@ apis:
   -  paddle.distribution.LKJCholesky
   -  paddle.distribution.Poisson
   -  paddle.dot
-  -  paddle.nn.functional.dropout
   -  paddle.dsplit
   -  paddle.dstack
   -  paddle.empty_like
@@ -329,18 +320,15 @@ apis:
   -  paddle.fft.rfft2
   -  paddle.fft.rfftfreq
   -  paddle.fft.rfftn
-  -  paddle.trunc
   -  paddle.flatten
   -  paddle.flip
   -  paddle.floor
   -  paddle.fmax
   -  paddle.fmin
   -  paddle.frac
-  -  paddle.utils.dlpack.from_dlpack
   -  paddle.full
   -  paddle.full_like
   -  paddle.gcd
-  -  paddle.outer
   -  paddle.heaviside
   -  paddle.histogramdd
   -  paddle.hsplit
@@ -354,7 +342,6 @@ apis:
   -  paddle.index_fill
   -  paddle.index_select
   -  paddle.inner
-  -  paddle.linalg.inv
   -  paddle.is_complex
   -  paddle.is_floating_point
   -  paddle.is_tensor
@@ -372,10 +359,13 @@ apis:
   -  paddle.lcm
   -  paddle.lerp
   -  paddle.lgamma
+  -  paddle.linalg.cholesky
   -  paddle.linalg.cond
+  -  paddle.linalg.det
   -  paddle.linalg.eigvals
   -  paddle.linalg.eigvalsh
   -  paddle.linalg.householder_product
+  -  paddle.linalg.inv
   -  paddle.linalg.lstsq
   -  paddle.matmul
   -  paddle.linalg.matrix_norm
@@ -397,11 +387,9 @@ apis:
   -  paddle.logical_or
   -  paddle.logical_xor
   -  paddle.logspace
+  -  paddle.seed
   -  paddle.masked_fill
   -  paddle.masked_select
-  -  paddle.nn.functional.max_pool1d
-  -  paddle.nn.functional.max_pool2d
-  -  paddle.nn.functional.max_pool3d
   -  paddle.maximum
   -  paddle.mean
   -  paddle.minimum
@@ -427,9 +415,6 @@ apis:
   -  paddle.nn.Bilinear
   -  paddle.nn.CELU
   -  paddle.nn.ChannelShuffle
-  -  paddle.nn.Pad1D
-  -  paddle.nn.Pad2D
-  -  paddle.nn.Pad3D
   -  paddle.nn.Conv1D
   -  paddle.nn.Conv2D
   -  paddle.nn.Conv3D
@@ -453,7 +438,6 @@ apis:
   -  paddle.nn.Hardsigmoid
   -  paddle.nn.Hardswish
   -  paddle.nn.Hardtanh
-  -  paddle.nn.SmoothL1Loss
   -  paddle.nn.LPPool1D
   -  paddle.nn.LPPool2D
   -  paddle.nn.LeakyReLU
@@ -512,6 +496,8 @@ apis:
   -  paddle.nn.functional.adaptive_max_pool2d
   -  paddle.nn.functional.adaptive_max_pool3d
   -  paddle.nn.functional.affine_grid
+  -  paddle.nn.functional.alpha_dropout
+  -  paddle.nn.functional.celu
   -  paddle.nn.functional.channel_shuffle
   -  paddle.nn.functional.conv1d
   -  paddle.nn.functional.conv2d
@@ -520,6 +506,7 @@ apis:
   -  paddle.nn.functional.conv2d_transpose
   -  paddle.nn.functional.conv3d_transpose
   -  paddle.nn.functional.cosine_similarity
+  -  paddle.nn.functional.dropout
   -  paddle.nn.functional.dropout2d
   -  paddle.nn.functional.dropout3d
   -  paddle.nn.functional.elu
@@ -536,7 +523,6 @@ apis:
   -  paddle.nn.functional.hardswish
   -  paddle.nn.functional.hardtanh
   -  paddle.nn.functional.hardtanh_
-  -  paddle.nn.functional.smooth_l1_loss
   -  paddle.nn.functional.interpolate
   -  paddle.nn.functional.layer_norm
   -  paddle.nn.functional.leaky_relu
@@ -545,6 +531,9 @@ apis:
   -  paddle.nn.functional.log_sigmoid
   -  paddle.nn.functional.lp_pool1d
   -  paddle.nn.functional.lp_pool2d
+  -  paddle.nn.functional.max_pool1d
+  -  paddle.nn.functional.max_pool2d
+  -  paddle.nn.functional.max_pool3d
   -  paddle.nn.functional.max_unpool1d
   -  paddle.nn.functional.max_unpool2d
   -  paddle.nn.functional.max_unpool3d
@@ -571,15 +560,14 @@ apis:
   -  paddle.nn.functional.thresholded_relu_
   -  paddle.nn.functional.triplet_margin_with_distance_loss
   -  paddle.nn.functional.unfold
-  -  paddle.nn.functional.upsample
   -  paddle.nn.initializer.calculate_gain
   -  paddle.nn.utils.clip_grad_norm_
   -  paddle.nn.utils.clip_grad_value_
   -  paddle.nn.utils.parameters_to_vector
-  -  paddle.nn.utils.spectral_norm
-  -  paddle.nn.utils.weight_norm
   -  paddle.nn.utils.remove_weight_norm
+  -  paddle.nn.utils.spectral_norm
   -  paddle.nn.utils.vector_to_parameters
+  -  paddle.nn.utils.weight_norm
   -  paddle.no_grad
   -  paddle.normal
   -  paddle.ones_like
@@ -588,6 +576,7 @@ apis:
   -  paddle.optimizer.Optimizer.load_state_dict
   -  paddle.optimizer.Rprop
   -  paddle.linalg.ormqr
+  -  paddle.outer
   -  paddle.linalg.pca_lowrank
   -  paddle.transpose
   -  paddle.poisson
@@ -610,14 +599,16 @@ apis:
   -  paddle.save
   -  paddle.select_scatter
   -  paddle.set_default_dtype
+  -  paddle.set_grad_enabled
+  -  paddle.set_rng_state
   -  paddle.sgn
   -  paddle.sign
   -  paddle.signbit
   -  paddle.sin
   -  paddle.sinh
-  -  paddle.sparse.sparse_coo_tensor
   -  paddle.sparse.addmm
   -  paddle.sparse.matmul
+  -  paddle.sparse.sparse_coo_tensor
   -  paddle.sparse.sparse_csr_tensor
   -  paddle.digamma
   -  paddle.erf
@@ -629,12 +620,10 @@ apis:
   -  paddle.i0e
   -  paddle.i1
   -  paddle.i1e
-  -  paddle.nn.functional.log_softmax
   -  paddle.logit
   -  paddle.logsumexp
   -  paddle.polygamma
   -  paddle.sinc
-  -  paddle.nn.functional.softmax
   -  paddle.sqrt
   -  paddle.square
   -  paddle.squeeze
@@ -644,7 +633,6 @@ apis:
   -  paddle.linalg.svd_lowrank
   -  paddle.t
   -  paddle.take
-  -  paddle.take_along_axis
   -  paddle.tan
   -  paddle.tensor_split
   -  paddle.tensordot
@@ -655,6 +643,7 @@ apis:
   -  paddle.tril_indices
   -  paddle.triu
   -  paddle.triu_indices
+  -  paddle.trunc
   -  paddle.unbind
   -  paddle.unflatten
   -  paddle.unique
@@ -676,6 +665,7 @@ apis:
   -  paddle.io.WeightedRandomSampler
   -  paddle.io.dataloader.collate.default_collate_fn
   -  paddle.io.random_split
+  -  paddle.utils.dlpack.from_dlpack
   -  paddle.utils.dlpack.to_dlpack
   -  paddle.vander
   -  paddle.var

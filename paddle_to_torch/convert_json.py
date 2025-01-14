@@ -11,6 +11,173 @@ paddle_multi_arg_to_torch_1_arg_dict = collections.OrderedDict()
 paddle_args_grate_than_torch_dict = collections.OrderedDict()
 default_value_diff_dict = collections.OrderedDict()
 
+skip_torch_api = [
+    "torch.ravel",
+    "torch.Tensor.addmv",
+    "torch.Tensor.addmv_",
+    "torch.addmv",
+    "torch.Tensor.addr",
+    "torch.Tensor.addr_",
+    "torch.addr",
+    "torch.ger",
+    "torch.Tensor.baddbmm",
+    "torch.Tensor.baddbmm_",
+    "torch.baddbmm",
+	"torch.Tensor.bfloat16",
+	"torch.Tensor.bool",
+	"torch.Tensor.byte",
+	"torch.Tensor.cdouble",
+	"torch.Tensor.cfloat",
+	"torch.Tensor.char",
+	"torch.Tensor.double",
+	"torch.Tensor.float",
+	"torch.Tensor.half",
+	"torch.Tensor.int",
+	"torch.Tensor.long",
+	"torch.Tensor.short",
+    "torch.Tensor.clamp_",
+    "torch.Tensor.histc",
+    "torch.Tensor.movedim",
+    "torch.Tensor.ger",
+	"torch.Tensor.scatter_add",
+	"torch.Tensor.scatter_reduce",
+    "torch.Tensor.scatter_add_",
+	"torch.Tensor.swapaxes",
+	"torch.Tensor.swapdims",
+	"torch.swapaxes",
+	"torch.swapdims",
+	"torch.transpose",
+    "torch.Tensor.gather",
+    "torch.Tensor.repeat",
+    "torch.Tensor.transpose",
+    "torch.Tensor.true_divide",
+    "torch.Tensor.true_divide_",
+    "torch.Tensor.random_",
+    "torch.Tensor.vdot",
+	"flash_attn.__version__.split",
+	"torch.Tensor.new_tensor",
+	"torch.asarray",
+	"torch.from_numpy",
+	"torch.scalar_tensor",
+	"torch.tensor",
+	"torch.autocast",
+	"torch.cpu.amp.autocast",
+	"torch.cuda.amp.autocast",
+	"torch.Tensor.bernoulli",
+	"torch.clamp_max",
+	"torch.clamp_min",
+	"torch.cat",
+	"torch.conj_physical",
+	"torch.cuda.manual_seed",
+	"torch.cuda.manual_seed_all",
+	"torch.cuda.comm.broadcast",
+	"torch.distributed.rpc.remote",
+	"torch.Tensor.new_empty",
+	"torch.fliplr",
+	"torch.flipud",
+	"torch.Tensor.new_full",
+	"torch.ge",
+	"torch.gt",
+	"torch.histc",
+	"torch.linalg.inv_ex",
+	"torch.cholesky_inverse",
+	"torch.inverse",
+	"torch.le",
+	"torch.linalg.cholesky_ex",
+	"torch.cholesky",
+	"torch.linalg.diagonal",
+	"torch.symeig",
+	"torch.Tensor.symeig",
+	"torch.linalg.lu_factor",
+	"torch.linalg.lu_factor_ex",
+	"torch.lu",
+	"torch.triangular_solve",
+	"torch.Tensor.triangular_solve",
+	"torch.linalg.svdvals",
+	"torch.svd",
+	"torch.Tensor.svd",
+	"torch.lt",
+	"torch.movedim",
+	"torch.Tensor.narrow",
+	"torch.negative",
+	"torch.nn.Dropout1d",
+	"torch.nn.Module.register_module",
+	"torch.nn.HuberLoss",
+	"torch.nn.Softmax2d",
+	"torch.nn.Softmin",
+	"torch.alpha_dropout",
+	"torch.celu",
+	"torch.nn.functional.dropout1d",
+	"torch.dropout",
+	"torch.Tensor.hardshrink",
+	"torch.max_pool1d",
+	"torch.max_pool2d",
+	"torch.max_pool3d",
+	"torch.nn.functional.rrelu_",
+	"torch.rrelu",
+	"torch.nn.functional.softmin",
+	"torch.softmax",
+	"torch.special.softmax",
+	"torch.Tensor.softmax",
+	"torch.nn.parallel.DistributedDataParallel",
+	"torch.nn.utils.parametrizations.spectral_norm",
+	"torch.nn.utils.parametrizations.weight_norm",
+	"torch.argwhere",
+	"torch.norm",
+	"torch.ne",
+	"torch.Tensor.new_ones",
+	"torch.Tensor.ormqr",
+	"torch.pinverse",
+	"torch.qr",
+	"torch.rand_like",
+	"torch.randn_like",
+	"torch.range",
+	"torch.relu",
+	"torch.scatter_add",
+	"torch.scatter_reduce",
+	"torch.selu",
+	"torch.set_default_tensor_type",
+	"torch.autograd.set_grad_enabled",
+	"torch.cuda.set_rng_state_all",
+	"torch.slogdet",
+	"torch.Tensor.slogdet",
+	"torch.msort",
+	"torch.sparse.FloatTensor",
+	"torch.special.gammaln",
+	"torch.special.log1p",
+	"torch.special.log_softmax",
+	"torch.special.multigammaln",
+	"torch.special.psi",
+	"torch.special.round",
+	"torch.Tensor.stft",
+	"torch.take_along_dim",
+	"torch.testing.assert_allclose",
+	"torch.testing.assert_close",
+	"torch.true_divide",
+	"torch.fix",
+	"torch.from_dlpack",
+	"torch.linalg.vander",
+	"torch.Tensor.new_zeros",
+	"torchvision.models.vgg11_bn",
+	"torchvision.models.vgg13_bn",
+	"torchvision.models.vgg16_bn",
+	"torchvision.models.vgg19_bn",
+    "torch.linalg.cross",
+    "torch.Tensor.det",
+    "torch.det",
+    "torch.vdot",
+]
+
+skip_paddle_api = [
+    "paddle.audio.functional.get_window",
+    "paddle.nn.Pad1D",
+    "paddle.nn.Pad2D",
+    "paddle.nn.Pad3D",
+    "paddle.nn.functional.smooth_l1_loss",
+    "paddle.nn.functional.upsample",
+    "paddle.nn.initializer.Constant"
+]
+
 for api in api_mapping:
     if len(api_mapping[api]) == 0:
         continue
@@ -20,8 +187,25 @@ for api in api_mapping:
         continue
     if "args_list" not in api_mapping[api]:
         continue
+    if api in skip_torch_api:
+        continue
     
     paddle_api = api_mapping[api]["paddle_api"]
+    
+    if paddle_api in skip_paddle_api:
+        continue
+
+    if paddle_api in regular_dict:
+        print(paddle_api + " double used")
+    if paddle_api in manual_matcher_dict:
+        print(paddle_api + " double used")
+    if paddle_api in paddle_multi_arg_to_torch_1_arg_dict:
+        print(paddle_api + " double used")
+    if paddle_api in paddle_args_grate_than_torch_dict:
+        print(paddle_api + " double used")
+    if paddle_api in default_value_diff_dict:
+        print(paddle_api + " double used")
+    
     torch_api = api
     matcher = api_mapping[api]["Matcher"]
     is_generic_matcher = matcher == "GenericMatcher"

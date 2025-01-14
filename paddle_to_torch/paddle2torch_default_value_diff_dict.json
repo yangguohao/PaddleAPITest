@@ -25,23 +25,6 @@
                   "has_bias": "True"
             }
       },
-      "paddle.audio.functional.get_window": {
-            "torch_api": "torch.hann_window",
-            "paddle_torch_args_map": {
-                  "win_length": "window_length",
-                  "fftbins": "periodic",
-                  "dtype": "dtype",
-                  "layout": "layout",
-                  "device": "device",
-                  "requires_grad": "requires_grad",
-                  "window": ""
-            },
-            "min_input_args": 1,
-            "paddle_default_kwargs": {
-                  "dtype": "'float32'",
-                  "window": "'hann'"
-            }
-      },
       "paddle.amp.GradScaler": {
             "torch_api": "torch.cuda.amp.GradScaler",
             "paddle_torch_args_map": {
@@ -79,33 +62,6 @@
             "paddle_default_kwargs": {
                   "loc": 0.0,
                   "scale": 1.0
-            }
-      },
-      "paddle.cross": {
-            "torch_api": "torch.linalg.cross",
-            "paddle_torch_args_map": {
-                  "x": "input",
-                  "y": "other",
-                  "axis": "dim",
-                  "out": "out"
-            },
-            "min_input_args": 2,
-            "paddle_default_kwargs": {
-                  "axis": -1
-            }
-      },
-      "paddle.diagonal": {
-            "torch_api": "torch.linalg.diagonal",
-            "paddle_torch_args_map": {
-                  "x": "A",
-                  "offset": "offset",
-                  "axis1": "dim1",
-                  "axis2": "dim2"
-            },
-            "min_input_args": 1,
-            "paddle_default_kwargs": {
-                  "axis1": -2,
-                  "axis2": -1
             }
       },
       "paddle.distributed.spawn": {
@@ -240,21 +196,6 @@
             "min_input_args": 1,
             "paddle_default_kwargs": {
                   "weight_decay": 0.0
-            }
-      },
-      "paddle.to_tensor": {
-            "torch_api": "torch.scalar_tensor",
-            "paddle_torch_args_map": {
-                  "data": "s",
-                  "dtype": "dtype",
-                  "layout": "layout",
-                  "place": "device",
-                  "requires_grad": "requires_grad",
-                  "pin_memory": "pin_memory"
-            },
-            "min_input_args": 1,
-            "paddle_default_kwargs": {
-                  "dtype": "paddle.float32"
             }
       },
       "paddle.io.DistributedBatchSampler": {
