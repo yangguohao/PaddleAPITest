@@ -250,9 +250,18 @@ class APITestAccuracy(APITestBase):
                 value = self.rand_tensor(arg_config)
             else:
                 value = arg_config
+                if isinstance(value, list):
+                    for i in range(len(value)):
+                        if isinstance(value[i], TensorConfig):
+                            value[i] = self.rand_tensor(value[i])
+                if isinstance(value, tuple):
+                    tmp = list(value)
+                    for i in range(len(tmp)):
+                        if isinstance(tmp[i], TensorConfig):
+                            tmp[i] = self.rand_tensor(tmp[i])
+                    value = tuple(tmp)
             kwargs[key] = value
             merged_kwargs[key] = value
-        
         api(*tuple(args), **kwargs)
            
   
