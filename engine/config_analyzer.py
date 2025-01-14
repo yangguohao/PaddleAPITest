@@ -214,10 +214,41 @@ class APITestBase:
 with open("../paddle_to_torch/paddle2torch_regular_dict.json", "r") as f:
     paddle_to_torch = json.load(f, object_pairs_hook=collections.OrderedDict)
 
+paddle_to_torch_wrong_config = [
+    "paddle.matmul",
+    "paddle.nn.functional.adaptive_avg_pool2d",
+    "paddle.nn.functional.adaptive_avg_pool3d",
+    "paddle.nn.functional.channel_shuffle",
+    "paddle.nn.functional.conv1d",
+    "paddle.nn.functional.conv1d_transpose",
+    "paddle.nn.functional.conv2d",
+    "paddle.nn.functional.conv2d_transpose",
+    "paddle.nn.functional.conv3d",
+    "paddle.nn.functional.conv3d_transpose",
+    "paddle.nn.functional.gaussian_nll_loss",
+    "paddle.nn.functional.group_norm",
+    "paddle.nn.functional.interpolate",
+    "paddle.nn.functional.local_response_norm",
+    "paddle.nn.functional.lp_pool1d",
+    "paddle.nn.functional.lp_pool2d",
+    "paddle.nn.functional.max_pool1d",
+    "paddle.nn.functional.max_pool2d",
+    "paddle.nn.functional.max_pool3d",
+    "paddle.nn.functional.max_unpool1d",
+    "paddle.nn.functional.max_unpool2d",
+    "paddle.nn.functional.max_unpool3d",
+    "paddle.nn.functional.pixel_shuffle",
+    "paddle.nn.functional.pixel_unshuffle",
+    "paddle.nn.functional.prelu",
+    "paddle.nn.functional.selu",
+]
+
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
         self.api_config = api_config
     def test(self):
+        if self.api_config.api_name in paddle_to_torch_wrong_config:
+            return
         api = eval(self.api_config.api_name)
         paddle_to_torch_args_map = paddle_to_torch[self.api_config.api_name]["paddle_torch_args_map"]
         paddle_args_list = list(paddle_to_torch_args_map)

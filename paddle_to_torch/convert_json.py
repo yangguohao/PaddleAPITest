@@ -166,6 +166,7 @@ skip_torch_api = [
     "torch.Tensor.det",
     "torch.det",
     "torch.vdot",
+    "torch.linalg.matmul",
 ]
 
 skip_paddle_api = [
