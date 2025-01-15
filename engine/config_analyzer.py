@@ -258,6 +258,47 @@ paddle_to_torch_wrong_config = [
     "paddle.as_strided",
 ]
 
+def np_assert_accuracy(
+    np_paddle,
+    np_torch,
+    atol,
+    rtol,
+    api,
+):
+    if np_paddle.dtype == numpy.bool:
+        numpy.testing.assert_equal(np_paddle, np_torch)
+        return
+    # max_atol_idx = numpy.argmax(numpy.abs(np_paddle - np_torch))
+    # np_paddle_flatten = np_paddle.flatten()
+    # np_torch_flatten = np_torch.flatten()
+    # sub_res = np_paddle_flatten - np_torch_flatten
+    # nonzero_idx = numpy.nonzero(np_torch_flatten)
+    # sub_res = sub_res.take(nonzero_idx)
+    # np_torch_flatten_nonzero = np_torch_flatten.take(nonzero_idx).flatten()
+    # np_paddle_flatten_nonzero = np_paddle_flatten.take(nonzero_idx).flatten()
+    # if sub_res.size ==0:
+    #     max_rtol_idx = 0
+    # else:
+    #     max_rtol_idx = numpy.argmax(numpy.abs(sub_res / np_torch_flatten_nonzero))
+    numpy.testing.assert_allclose(
+        np_paddle,
+        np_torch,
+        atol,
+        rtol,
+        # err_msg=(
+        #     '{api}: compare failed,\n'.format(
+        #         api=api,
+        #     )
+        #     + 'max_atol value, paddle_value: {value_paddle}, torch_value: {value_torch},\n'.format(
+        #         value_paddle=str(np_paddle_flatten[max_atol_idx].item()),
+        #         value_torch=str(np_torch_flatten[max_atol_idx].item()),
+        #     )
+        #     + 'max_rtol value , torch_value: {value_paddle}, paddle_value: {value_torch},\n'.format(
+        #         value_paddle=str(np_paddle_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_paddle_flatten_nonzero) else '',
+        #         value_torch=str(np_torch_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_torch_flatten_nonzero) else '',
+        #     )
+        # ),
+    )
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
         self.api_config = api_config
@@ -312,7 +353,7 @@ class APITestAccuracy(APITestBase):
             merged_kwargs[key] = value
 
         try:
-            paddle_out = api(*tuple(args), **kwargs)
+            paddle_output = api(*tuple(args), **kwargs)
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
             return
@@ -351,6 +392,33 @@ class APITestAccuracy(APITestBase):
             print("[torch error]", self.api_config.config, "\n", str(err))
             return
 
+        if isinstance(paddle_output, paddle.Tensor):
+            if isinstance(torch_output, torch.Tensor):
+                try:
+                    np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                except Exception as err:
+                    print("[accuracy error]", self.api_config.config, "\n", str(err))
+                    return
+            else:
+                print("[output type diff error]", self.api_config.config)
+        elif isinstance(paddle_output, (list, tuple)):
+            if isinstance(paddle_output, tuple):
+                paddle_output = list(paddle_output)
+            if not isinstance(torch_output, (list, tuple)):
+                print("[output type diff error]", self.api_config.config)
+                return
+            if isinstance(torch_output, tuple):
+                torch_output = list(torch_output)
+            if len(paddle_output) != len(torch_output):
+                print("[output type diff error]", self.api_config.config)
+                return
+            for i in range(len(paddle_output)):
+                try:
+                    np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                except Exception as err:
+                    print("[accuracy error]", self.api_config.config, "\n", str(err))
+                    return
+            
         print("[Pass]", self.api_config.config)
   
 
