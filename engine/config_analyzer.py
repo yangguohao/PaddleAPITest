@@ -263,6 +263,7 @@ class APITestAccuracy(APITestBase):
         self.api_config = api_config
     def test(self):
         if self.api_config.api_name in paddle_to_torch_wrong_config:
+            print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
             return
         api = eval(self.api_config.api_name)
         paddle_to_torch_args_map = paddle_to_torch[self.api_config.api_name]["paddle_torch_args_map"]
@@ -309,7 +310,12 @@ class APITestAccuracy(APITestBase):
                     value = tuple(tmp)
             kwargs[key] = value
             merged_kwargs[key] = value
-        paddle_out = api(*tuple(args), **kwargs)
+
+        try:
+            paddle_out = api(*tuple(args), **kwargs)
+        except Exception as err:
+            print("[paddle error]", self.api_config.config, "\n", str(err))
+            return
 
         torch_args = []
         torch_kwargs = {}
@@ -317,8 +323,10 @@ class APITestAccuracy(APITestBase):
         torch.set_default_device(device)
 
         for key, value in merged_kwargs.items():
+            if key == "name":
+                continue
             if key not in paddle_to_torch_args_map:
-                print(self.api_config.config, " ", key, "not in paddle_to_torch_args_map, can not call torch")
+                print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
                 return
             if isinstance(value, paddle.Tensor):
                 torch_value = self.paddle_tensor_to_torch(value)
@@ -337,8 +345,13 @@ class APITestAccuracy(APITestBase):
                 torch_value = value
 
             torch_kwargs[paddle_to_torch_args_map[key]] = torch_value
-        print(torch_kwargs)
-        torch_api(*tuple(torch_args), **torch_kwargs)
+        try:
+            torch_output = torch_api(*tuple(torch_args), **torch_kwargs)
+        except Exception as err:
+            print("[torch error]", self.api_config.config, "\n", str(err))
+            return
+
+        print("[Pass]", self.api_config.config)
   
 
 def analyse_configs(config_path):
@@ -348,19 +361,12 @@ def analyse_configs(config_path):
 
     api_configs = []
     for config in configs:
-        print(config.replace("\n", ""), "begin", flush=True)
         api_config = APIConfig(config)
         api_configs.append(api_config)
-        print(api_config.config, " -> ", api_config, flush=True)
-        case = APITestAccuracy(api_config)
-        case.test()
-        print("finish", flush=True)
     return api_configs
 
 if __name__ == '__main__':
     api_configs = analyse_configs("../api_config/api_config.txt")
     for api_config in api_configs:
-        print(api_config.config, " -> ", api_config, flush=True)
         case = APITestAccuracy(api_config)
         case.test()
-        print("finish", flush=True)
