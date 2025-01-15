@@ -5,9 +5,8 @@ import numpy
 import math
 import json
 import torch
-
-device = torch.device("cuda:0")
-torch.set_default_device(device)
+import paddle
+import inspect
 
 class TensorConfig:
     def __init__(self, shape, dtype):
@@ -215,6 +214,17 @@ class APITestBase:
     def test(self):
         pass
     
+    def paddle_tensor_to_torch(self, tensor):
+        if tensor.dtype == paddle.bfloat16:
+            return torch.tensor(tensor.cast("float32").numpy()).to(torch.bfloat16)
+        elif tensor.dtype == paddle.core.DataType.UINT16:
+            return torch.tensor(tensor.cast("int32").numpy()).to(torch.uint16)
+        elif tensor.dtype == paddle.core.DataType.UINT32:
+            return torch.tensor(tensor.cast("int64").numpy()).to(torch.uint32)
+        elif tensor.dtype == paddle.core.DataType.UINT64:
+            return torch.tensor(tensor.cast("int64").numpy()).to(torch.uint64)
+        return torch.tensor(tensor.numpy())
+    
 with open("../paddle_to_torch/paddle2torch_regular_dict.json", "r") as f:
     paddle_to_torch = json.load(f, object_pairs_hook=collections.OrderedDict)
 
@@ -245,6 +255,7 @@ paddle_to_torch_wrong_config = [
     "paddle.nn.functional.pixel_unshuffle",
     "paddle.nn.functional.prelu",
     "paddle.nn.functional.selu",
+    "paddle.as_strided",
 ]
 
 class APITestAccuracy(APITestBase):
@@ -255,7 +266,8 @@ class APITestAccuracy(APITestBase):
             return
         api = eval(self.api_config.api_name)
         paddle_to_torch_args_map = paddle_to_torch[self.api_config.api_name]["paddle_torch_args_map"]
-        paddle_args_list = list(paddle_to_torch_args_map)
+        sig = inspect.signature(api)
+        paddle_args_list = list(sig.parameters.keys())
         torch_api = eval(paddle_to_torch[self.api_config.api_name]["torch_api"])
         args = []
         kwargs = {}
@@ -298,48 +310,33 @@ class APITestAccuracy(APITestBase):
             kwargs[key] = value
             merged_kwargs[key] = value
         paddle_out = api(*tuple(args), **kwargs)
-        
+
         torch_args = []
         torch_kwargs = {}
-        
-        index = 0
-        for value in args:
+        device = torch.device("cuda:0")
+        torch.set_default_device(device)
+
+        for key, value in merged_kwargs.items():
+            if key not in paddle_to_torch_args_map:
+                print(self.api_config.config, " ", key, "not in paddle_to_torch_args_map, can not call torch")
+                return
             if isinstance(value, paddle.Tensor):
-                torch_value = torch.from_numpy(value.numpy())
+                torch_value = self.paddle_tensor_to_torch(value)
             elif isinstance(value, list):
                 torch_value = value
                 for i in range(len(torch_value)):
                     if isinstance(torch_value[i], paddle.Tensor):
-                        torch_value[i] = torch.from_numpy(torch_value[i].numpy())
+                        torch_value[i] = self.paddle_tensor_to_torch(torch_value[i])
             elif isinstance(value, tuple):
                 torch_value = list(value)
                 for i in range(len(torch_value)):
                     if isinstance(torch_value[i], paddle.Tensor):
-                        torch_value[i] = torch.from_numpy(torch_value[i].numpy())
-                torch_value = tuple(torch_value)
-            else:
-                torch_value = value
-            torch_args.append(torch_value)
-
-        for key, value in kwargs.items():
-            if isinstance(value, paddle.Tensor):
-                torch_value = torch.from_numpy(value.numpy())
-            elif isinstance(value, list):
-                torch_value = value
-                for i in range(len(torch_value)):
-                    if isinstance(torch_value[i], paddle.Tensor):
-                        torch_value[i] = torch.from_numpy(torch_value[i].numpy())
-            elif isinstance(value, tuple):
-                torch_value = list(value)
-                for i in range(len(torch_value)):
-                    if isinstance(torch_value[i], paddle.Tensor):
-                        torch_value[i] = torch.from_numpy(torch_value[i].numpy())
+                        torch_value[i] = self.paddle_tensor_to_torch(torch_value[i])
                 torch_value = tuple(torch_value)
             else:
                 torch_value = value
 
-            if key in paddle_to_torch_args_map:
-                torch_kwargs[paddle_to_torch_args_map[key]] = torch_value
+            torch_kwargs[paddle_to_torch_args_map[key]] = torch_value
         print(torch_kwargs)
         torch_api(*tuple(torch_args), **torch_kwargs)
   
