@@ -214,10 +214,10 @@ class APIConfig:
         result = ""
         result = result + self.api_name + "("
         for arg in self.args:
-            result = result + self.dump_item_str(arg) + ","
+            result = result + self.dump_item_str(arg) + ", "
         
         for key, value in self.kwargs.items():
-            result = result + key + "=" + self.dump_item_str(value) + ","
+            result = result + key + "=" + self.dump_item_str(value) + ", "
 
         result = result + ")"
         return result
@@ -361,6 +361,7 @@ def analyse_configs(config_path):
 
     api_configs = []
     for config in configs:
+        # print(config)
         api_config = APIConfig(config)
         api_configs.append(api_config)
     return api_configs

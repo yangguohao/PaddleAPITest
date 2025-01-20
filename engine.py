@@ -11,8 +11,9 @@ import paddle
 import inspect
 
 if __name__ == '__main__':
-    api_configs = analyse_configs("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config.txt")
+    api_configs = analyse_configs("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_0_size.txt")
     for api_config in api_configs:
+        print("test begin:", api_config.config)
         case = APITestAccuracy(api_config)
         case.test()
         case.clear_tensor()
