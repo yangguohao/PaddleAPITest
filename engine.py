@@ -15,3 +15,4 @@ if __name__ == '__main__':
     for api_config in api_configs:
         case = APITestAccuracy(api_config)
         case.test()
+        case.clear_tensor()

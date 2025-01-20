@@ -76,7 +76,10 @@ class TensorConfig:
             if self.dtype == "bfloat16":
                 self.torch_tensor = self.torch_tensor.to(dtype=torch.bfloat16)
         return self.torch_tensor
-        
+    def clear_tensor(self):
+        self.torch_tensor = None
+        self.paddle_tensor = None
+
 class APIConfig:
     def __init__(self, config):
         config = config.replace("\n", "")

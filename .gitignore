@@ -1,0 +1,4 @@
+log.log
+tester/__pycache__/
+tester/api_config/__pycache__/
+tester/paddle_to_torch/__pycache__/

@@ -11,6 +11,8 @@ import torch
 import paddle
 import inspect
 
+api_config_paddle_to_torch_faild = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_paddle_to_torch_faild.txt", "w")
+
 class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
@@ -19,6 +21,7 @@ class APITestBase:
         torch_api, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
         if paddle_to_torch_args_map is None:
             print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
+            api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
             return False
         self.paddle_api = eval(self.api_config.api_name)
         self.torch_api = eval(torch_api)
@@ -45,6 +48,7 @@ class APITestBase:
                 continue
             if key not in paddle_to_torch_args_map:
                 print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
+                api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
                 return False
 
             self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
@@ -192,3 +196,18 @@ class APITestBase:
 
     def test(self):
         pass
+
+    def clear_tensor(self):
+        if not hasattr(self, "torch_kwargs_config"):
+            return
+        for key, arg_config in self.torch_kwargs_config.items():
+            if isinstance(arg_config, TensorConfig):
+                arg_config.clear_tensor()
+            elif isinstance(arg_config, list):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_tensor()
+            elif isinstance(arg_config, tuple):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_tensor()

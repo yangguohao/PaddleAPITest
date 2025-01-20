@@ -11,6 +11,10 @@ import paddle
 import inspect
 from .base import APITestBase
 
+api_config_accuracy_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_accuracy_error.txt", "w")
+api_config_paddle_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_paddle_error.txt", "w")
+api_config_pass = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_pass.txt", "w")
+api_config_torch_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_torch_error.txt", "w")
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
@@ -26,12 +30,14 @@ class APITestAccuracy(APITestBase):
             torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
         except Exception as err:
             print("[torch error]", self.api_config.config, "\n", str(err))
+            api_config_torch_error.write(self.api_config.config+"\n")
             return
 
         try:
             paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
+            api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
         if isinstance(paddle_output, paddle.Tensor):
@@ -40,6 +46,7 @@ class APITestAccuracy(APITestBase):
                     self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
+                    api_config_accuracy_error.write(self.api_config.config+"\n")
                     return
             else:
                 print("[output type diff error]", self.api_config.config)
@@ -59,7 +66,9 @@ class APITestAccuracy(APITestBase):
                     self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
+                    api_config_accuracy_error.write(self.api_config.config+"\n")
                     return
 
         print("[Pass]", self.api_config.config)
+        api_config_pass.write(self.api_config.config+"\n")
   
