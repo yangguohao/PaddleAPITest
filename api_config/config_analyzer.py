@@ -19,25 +19,37 @@ class TensorConfig:
     def __str__(self):
         return "TensorConfig("+str(self.shape)+","+self.dtype+")"
     def convert_dtype_to_torch_type(self, dtype):
-        if dtype in ["float32", np.float32]:
+        if dtype in ["float32", numpy.float32]:
             return torch.float32
-        elif dtype in ['float16', np.float16]:
+        elif dtype in ['float16', numpy.float16]:
             return torch.float16
-        elif dtype in ['bfloat16', np.uint16]:
+        elif dtype in ['float64', numpy.float64]:
+            return torch.float64
+        elif dtype in ['int16', numpy.int16]:
+            return torch.int16
+        elif dtype in ['int8', numpy.int8]:
+            return torch.int8
+        elif dtype in ['bool', numpy.bool]:
+            return torch.bool
+        elif dtype in ['bfloat16', numpy.uint16]:
             return torch.bfloat16
-        elif dtype in ['uint8', np.uint8]:
+        elif dtype in ['uint8', numpy.uint8]:
             return torch.uint8
-        elif dtype in ['int32', np.int32]:
+        elif dtype in ['int32', numpy.int32]:
             return torch.int32
-        elif dtype in ['int64', np.int64]:
+        elif dtype in ['int64', numpy.int64]:
             return torch.int64
+        elif dtype in ['complex64', numpy.complex64]:
+            return torch.complex64
+        elif dtype in ['complex128', numpy.complex128]:
+            return torch.complex128
         else:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
     def get_numpy_tensor(self):
         if self.numpy_tensor is None:
             dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-            self.numpy_tensor = numpy.random.rand(*tuple(self.shape)).astype(dtype)
+            self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
         return self.numpy_tensor
     
     def get_paddle_tensor(self):
@@ -56,10 +68,10 @@ class TensorConfig:
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(
                 self.get_numpy_tensor(),
-                dtype=convert_dtype_to_torch_type(self.dtype)
+                dtype=self.convert_dtype_to_torch_type(self.dtype)
                 if self.dtype != 'bfloat16'
                 else torch.float32,
-                requires_grad=True,
+                # requires_grad=True,
             )
             if self.dtype == "bfloat16":
                 self.torch_tensor = self.torch_tensor.to(dtype=torch.bfloat16)

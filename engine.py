@@ -10,6 +10,7 @@ import json
 import torch
 import paddle
 import inspect
+import copy
 
 class APITestBase:
     def __init__(self, api_config):
@@ -19,7 +20,7 @@ class APITestBase:
         torch_api, paddle_to_torch_args_map = paddle_to_torch(api_config.api_name)
         if paddle_to_torch_args_map is None:
             print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
-            return
+            return False
         self.paddle_api = eval(self.api_config.api_name)
         self.torch_api = eval(torch_api)
 
@@ -35,7 +36,7 @@ class APITestBase:
             index = index + 1
 
         for key, arg_config in self.api_config.kwargs.items():
-            self.paddle_merged_kwargs_config[key] = value
+            self.paddle_merged_kwargs_config[key] = arg_config
 
         self.torch_args_config = []
         self.torch_kwargs_config = {}
@@ -45,78 +46,107 @@ class APITestBase:
                 continue
             if key not in paddle_to_torch_args_map:
                 print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
-                return
+                return False
 
             self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
 
-        self.paddle_args = self.paddle_args_config
+        self.paddle_args = []
         self.paddle_kwargs = {}
         self.paddle_merged_kwargs = {}
 
-        for i in range(len(self.paddle_args)):
-            if isinstance(self.paddle_args[i], TensorConfig):
-                self.paddle_args[i] = self.paddle_args[i].get_paddle_tensor()
-            elif isinstance(self.paddle_args[i], list):
-                for j in range(len(self.paddle_args[i])):
-                    if isinstance(self.paddle_args[i][j], TensorConfig):
-                        self.paddle_args[i][j] = self.paddle_args[i][j].get_paddle_tensor()
-            elif isinstance(value, tuple):
-                tmp = list(self.paddle_args[i])
-                for j in range(len(tmp)):
-                    if isinstance(tmp[j], TensorConfig):
-                        tmp[j] = tmp[j].get_paddle_tensor()
-                self.paddle_args[i] = tuple(tmp)
+        for i in range(len(self.paddle_args_config)):
+            if isinstance(self.paddle_args_config[i], TensorConfig):
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor())
+            elif isinstance(self.paddle_args_config[i], list):
+                tmp = []
+                for j in range(len(self.paddle_args_config[i])):
+                    if isinstance(self.paddle_args_config[i][j], TensorConfig):
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                    else:
+                        tmp.append(self.paddle_args_config[i][j])
+                self.paddle_args.append(tmp)
+            elif isinstance(self.paddle_args_config[i], tuple):
+                tmp = []
+                for j in range(len(self.paddle_args_config[i])):
+                    if isinstance(self.paddle_args_config[i][j], TensorConfig):
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                    else:
+                        tmp.append(self.paddle_args_config[i][j])
+                self.paddle_args.append(tuple(tmp))
+            else:
+                self.paddle_args.append(self.paddle_args_config[i])
 
         for key, arg_config in self.paddle_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
                 self.paddle_kwargs[key] = arg_config.get_paddle_tensor()
             elif isinstance(arg_config, list):
-                value = arg_config
-                for i in range(len(value)):
-                    if isinstance(value[i], TensorConfig):
-                        value[i] = value[i].get_paddle_tensor()
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_paddle_tensor())
+                    else:
+                        value.append(arg_config[i])
                 self.paddle_kwargs[key] = value
             elif isinstance(arg_config, tuple):
-                tmp = list(arg_config)
-                for i in range(len(tmp)):
-                    if isinstance(tmp[i], TensorConfig):
-                        tmp[i] = tmp[i].get_paddle_tensor()
+                tmp = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        tmp.append(arg_config[i].get_paddle_tensor())
+                    else:
+                        tmp.append(arg_config[i])
                 self.paddle_kwargs[key] = tuple(tmp)
+            else:
+                self.paddle_kwargs[key] = arg_config
 
         for key, arg_config in self.paddle_merged_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
                 self.paddle_merged_kwargs[key] = arg_config.get_paddle_tensor()
             elif isinstance(arg_config, list):
-                value = arg_config
-                for i in range(len(value)):
-                    if isinstance(value[i], TensorConfig):
-                        value[i] = value[i].get_paddle_tensor()
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_paddle_tensor())
+                    else:
+                        value.append(arg_config[i])
                 self.paddle_merged_kwargs[key] = value
             elif isinstance(arg_config, tuple):
-                tmp = list(arg_config)
-                for i in range(len(tmp)):
-                    if isinstance(tmp[i], TensorConfig):
-                        tmp[i] = tmp[i].get_paddle_tensor()
+                tmp = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        tmp.append(arg_config[i].get_paddle_tensor())
+                    else:
+                        tmp.append(arg_config[i])
                 self.paddle_merged_kwargs[key] = tuple(tmp)
+            else:
+                self.paddle_merged_kwargs[key] = arg_config
 
         self.torch_args = []
         self.torch_kwargs = {}
 
         for key, arg_config in self.torch_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.torch_kwargs[key] = arg_config.get_paddle_tensor()
+                self.torch_kwargs[key] = arg_config.get_torch_tensor()
             elif isinstance(arg_config, list):
-                value = arg_config
-                for i in range(len(value)):
-                    if isinstance(value[i], TensorConfig):
-                        value[i] = value[i].get_paddle_tensor()
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_torch_tensor())
+                    else:
+                        value.append(arg_config[i])
                 self.torch_kwargs[key] = value
             elif isinstance(arg_config, tuple):
-                tmp = list(arg_config)
-                for i in range(len(tmp)):
-                    if isinstance(tmp[i], TensorConfig):
-                        tmp[i] = tmp[i].get_paddle_tensor()
+                tmp = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        tmp.append(arg_config[i].get_torch_tensor())
+                    else:
+                        tmp.append(arg_config[i])
                 self.torch_kwargs[key] = tuple(tmp)
+            else:
+                self.torch_kwargs[key] = arg_config
+        # print(self.torch_kwargs_config)
+        # print(self.torch_kwargs)
+        return True
 
     def np_assert_accuracy(
         self,
@@ -168,7 +198,9 @@ class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
         self.api_config = api_config
     def test(self):
-        self.ana_api_info()
+        if not self.ana_api_info():
+            return
+
         device = torch.device("cuda:0")
         torch.set_default_device(device)
 
@@ -210,7 +242,7 @@ class APITestAccuracy(APITestBase):
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
                     return
-            
+
         print("[Pass]", self.api_config.config)
   
 
