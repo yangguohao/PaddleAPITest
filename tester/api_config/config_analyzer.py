@@ -17,7 +17,10 @@ class TensorConfig:
         self.torch_tensor = None
 
     def __str__(self):
-        return "TensorConfig("+str(self.shape)+","+self.dtype+")"
+        return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
+    def __repr__(self):
+        return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
+
     def convert_dtype_to_torch_type(self, dtype):
         if dtype in ["float32", numpy.float32]:
             return torch.float32
@@ -115,16 +118,107 @@ class APIConfig:
         
     def append_kwargs(self, name, arg):
         self.kwargs[name] = arg
-        
+
+    def dump_item_str(self, item):
+        type_mapping = {
+            numpy.int16: int,
+            numpy.int32: int,
+            numpy.int64: int,
+            numpy.float16: float,
+            numpy.float32: float,
+            numpy.float64: float,
+            numpy.integer: int,
+            numpy.floating: float,
+            numpy.bool_: bool,
+            numpy.complexfloating: complex,
+            numpy.str_: str,
+            numpy.bytes_: bytes,
+            # numpy.unicode_: str,
+        }
+        for numpy_type, builtin_type in type_mapping.items():
+            if isinstance(item, numpy_type):
+                item = builtin_type(item)
+                break
+
+        if isinstance(item, TensorConfig):
+            return str(item)
+        elif isinstance(item, paddle.base.core.DataType):
+            return "Dtype(" + str(item)[7:] + ")"
+        elif isinstance(item, paddle.base.core.VarDesc.VarType):
+            return "VarType(" + str(item)[7:] + ")"
+        elif isinstance(item, list):
+            result = "list["
+            for sub_item in item:
+                tmp = self.dump_item_str(sub_item)
+                if tmp == "":
+                    return ""
+                result = result + tmp + ","
+            result = result + "]"
+            return result
+        elif isinstance(item, tuple):
+            result = "tuple("
+            for sub_item in item:
+                tmp = self.dump_item_str(sub_item)
+                if tmp == "":
+                    return ""
+                result = result + tmp + ","
+            result = result + ")"
+            return result
+        elif isinstance(item, slice):
+            return (
+                "slice("
+                + str(item.start)
+                + ","
+                + str(item.stop)
+                + ","
+                + str(item.step)
+                + ")"
+            )
+        elif isinstance(item, complex):
+            return (
+                "complex("
+                + self.dump_item_str(item.real)
+                + ","
+                + self.dump_item_str(item.imag)
+                + ")"
+            )
+        elif item is None:
+            return "None"
+        elif isinstance(
+            item, (paddle.base.Variable, paddle.base.libpaddle.pir.Value)
+        ):
+            return ""
+        elif item == math.inf:
+            return "math.inf"
+        elif item == -math.inf:
+            return "-math.inf"
+        elif item == math.nan:
+            return "math.nan"
+        elif item == -math.nan:
+            return "-math.nan"
+        elif isinstance(item, (bool, int, float)):
+            return str(item)
+        elif isinstance(item, str):
+            return '"' + item + '"'
+        elif isinstance(item, type):
+            return (
+                "type("
+                + str(item)[str(item).index("'") + 1 : str(item).rindex("'")]
+                + ")"
+            )
+        else:
+            return str(item)
+
+
     def __str__(self):
-        result = "APIConfig:"
+        result = ""
         result = result + self.api_name + "("
         for arg in self.args:
-            result = result + str(arg) + ","
+            result = result + self.dump_item_str(arg) + ","
         
         for key, value in self.kwargs.items():
-            result = result + key + "=" + str(value) + ","
-        
+            result = result + key + "=" + self.dump_item_str(value) + ","
+
         result = result + ")"
         return result
 
