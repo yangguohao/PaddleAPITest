@@ -4,7 +4,6 @@ import paddle
 import numpy
 import math
 import json
-import torch
 import paddle
 import inspect
 
