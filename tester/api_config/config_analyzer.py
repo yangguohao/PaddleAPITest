@@ -32,7 +32,7 @@ class TensorConfig:
             return torch.int16
         elif dtype in ['int8', numpy.int8]:
             return torch.int8
-        elif dtype in ['bool', numpy.bool]:
+        elif dtype in ['bool', numpy.bool_]:
             return torch.bool
         elif dtype in ['bfloat16', numpy.uint16]:
             return torch.bfloat16
@@ -66,7 +66,7 @@ class TensorConfig:
             self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
     def get_torch_tensor(self):
-        device = torch.device("cuda:3")
+        device = torch.device("cuda:0")
         torch.set_default_device(device)
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(
@@ -82,6 +82,7 @@ class TensorConfig:
     def clear_tensor(self):
         self.torch_tensor = None
         self.paddle_tensor = None
+        self.numpy_tensor = None
 
 class APIConfig:
     def __init__(self, config):

@@ -23,13 +23,14 @@ class APITestAccuracy(APITestBase):
         if not self.ana_api_info():
             return
 
-        device = torch.device("cuda:3")
+        device = torch.device("cuda:0")
         torch.set_default_device(device)
 
         try:
             torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
         except Exception as err:
             print("[torch error]", self.api_config.config, "\n", str(err))
+            torch_output = None
             api_config_torch_error.write(self.api_config.config+"\n")
             return
 
@@ -37,6 +38,8 @@ class APITestAccuracy(APITestBase):
             paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
+            torch_output = None
+            paddle_output = None
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
@@ -44,6 +47,8 @@ class APITestAccuracy(APITestBase):
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err))
+            torch_output = None
+            paddle_output = None
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
@@ -53,6 +58,8 @@ class APITestAccuracy(APITestBase):
                     self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
+                    torch_output = None
+                    paddle_output = None
                     api_config_accuracy_error.write(self.api_config.config+"\n")
                     return
             else:
@@ -73,6 +80,8 @@ class APITestAccuracy(APITestBase):
                     self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
+                    torch_output = None
+                    paddle_output = None
                     api_config_accuracy_error.write(self.api_config.config+"\n")
                     return
 

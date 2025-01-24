@@ -12,8 +12,12 @@ import inspect
 
 if __name__ == '__main__':
     api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_big_tensor.txt")
-    for api_config in api_configs:
+    for i in range(len(api_configs)):
+        api_config = api_configs[i]
         print("test begin:", api_config.config)
         case = APITestAccuracy(api_config)
         case.test()
         case.clear_tensor()
+        api_configs[i] = None
+        del case
+        del api_config

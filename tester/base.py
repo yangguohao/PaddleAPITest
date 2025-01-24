@@ -159,7 +159,7 @@ class APITestBase:
         rtol,
         api,
     ):
-        if np_paddle.dtype == numpy.bool:
+        if np_paddle.dtype == numpy.bool_:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
         # max_atol_idx = numpy.argmax(numpy.abs(np_paddle - np_torch))
