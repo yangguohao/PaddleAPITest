@@ -83,6 +83,19 @@ class TensorConfig:
         self.torch_tensor = None
         self.paddle_tensor = None
         self.numpy_tensor = None
+        torch.cuda.empty_cache()
+        paddle.device.cuda.empty_cache()
+
+    def clear_paddle_tensor(self):
+        self.paddle_tensor = None
+        paddle.device.cuda.empty_cache()
+    
+    def clear_numpy_tensors(self):
+        self.numpy_tensor = None
+
+    def clear_torch_tensor(self):
+        self.torch_tensor = None
+        torch.cuda.empty_cache()
 
 class APIConfig:
     def __init__(self, config):

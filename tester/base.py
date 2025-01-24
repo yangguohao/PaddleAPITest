@@ -53,6 +53,9 @@ class APITestBase:
 
             self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
 
+        return True
+
+    def gen_paddle_input(self):
         self.paddle_args = []
         self.paddle_kwargs = {}
         self.paddle_merged_kwargs = {}
@@ -122,7 +125,9 @@ class APITestBase:
                 self.paddle_merged_kwargs[key] = tuple(tmp)
             else:
                 self.paddle_merged_kwargs[key] = arg_config
+        return True
 
+    def gen_torch_input(self):
         self.torch_args = []
         self.torch_kwargs = {}
 
@@ -147,8 +152,6 @@ class APITestBase:
                 self.torch_kwargs[key] = tuple(tmp)
             else:
                 self.torch_kwargs[key] = arg_config
-        # print(self.torch_kwargs_config)
-        # print(self.torch_kwargs)
         return True
 
     def np_assert_accuracy(
@@ -211,3 +214,52 @@ class APITestBase:
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
                         arg_config[i].clear_tensor()
+        torch.cuda.empty_cache()
+        paddle.device.cuda.empty_cache()
+
+    def clear_paddle_tensor(self):
+        if not hasattr(self, "torch_kwargs_config"):
+            return
+        for key, arg_config in self.torch_kwargs_config.items():
+            if isinstance(arg_config, TensorConfig):
+                arg_config.clear_paddle_tensor()
+            elif isinstance(arg_config, list):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_paddle_tensor()
+            elif isinstance(arg_config, tuple):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_paddle_tensor()
+        paddle.device.cuda.empty_cache()
+
+    def clear_torch_tensor(self):
+        if not hasattr(self, "torch_kwargs_config"):
+            return
+        for key, arg_config in self.torch_kwargs_config.items():
+            if isinstance(arg_config, TensorConfig):
+                arg_config.clear_torch_tensor()
+            elif isinstance(arg_config, list):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_torch_tensor()
+            elif isinstance(arg_config, tuple):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_torch_tensor()
+        torch.cuda.empty_cache()
+
+    def clear_numpy_tensor(self):
+        if not hasattr(self, "torch_kwargs_config"):
+            return
+        for key, arg_config in self.torch_kwargs_config.items():
+            if isinstance(arg_config, TensorConfig):
+                arg_config.clear_numpy_tensor()
+            elif isinstance(arg_config, list):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_numpy_tensor()
+            elif isinstance(arg_config, tuple):
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        arg_config[i].clear_numpy_tensor()

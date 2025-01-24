@@ -94,7 +94,8 @@ def to_big_tensor_config(api_config):
         for j in range(len(tensor_configs[i].shape)):
             tmp_api_config = copy.deepcopy(api_config)
             tmp_tensor_configs = get_tensor_configs(tmp_api_config)
-            tmp_tensor_configs[i].shape[j] = int(4294967294 / (tensor_numel(tmp_tensor_configs[i])/tmp_tensor_configs[i].shape[j])) + 1
+            base_size = 2147483648 if tmp_tensor_configs[i].dtype in ["float64", "int64", "uint64"] else 4294967294
+            tmp_tensor_configs[i].shape[j] = int(base_size / (tensor_numel(tmp_tensor_configs[i])/tmp_tensor_configs[i].shape[j])) + 1
             result.append(tmp_api_config)
 
     if shape_equal:
@@ -102,7 +103,8 @@ def to_big_tensor_config(api_config):
             tmp_api_config = copy.deepcopy(api_config)
             tmp_tensor_configs = get_tensor_configs(tmp_api_config)
             for i in range(len(tensor_configs)):
-                tmp_tensor_configs[i].shape[j] = int(4294967294 / (tensor_numel(tmp_tensor_configs[0])/tmp_tensor_configs[0].shape[j])) + 1
+                base_size = 2147483648 if tmp_tensor_configs[i].dtype in ["float64", "int64", "uint64"] else 4294967294
+                tmp_tensor_configs[i].shape[j] = int(base_size / (tensor_numel(tmp_tensor_configs[0])/tmp_tensor_configs[0].shape[j])) + 1
             result.append(tmp_api_config)
     return result
 
@@ -119,11 +121,11 @@ def to_big_tensor_config(api_config):
 
 if __name__ == '__main__':
     config_big_tensor = []
-    api_configs = analyse_configs("/home/PaddleAPITest/tester/api_config/api_config.txt")
+    api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config.txt")
     for api_config in api_configs:
         print(api_config.config)
         config_big_tensor = config_big_tensor + to_big_tensor_config(api_config)
-    with open("/home/PaddleAPITest/tester/api_config/api_config_big_tensor.txt", "w") as f:
+    with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_big_tensor.txt", "w") as f:
         for api_config in config_big_tensor:
             f.write(str(api_config)+"\n")
         f.close()

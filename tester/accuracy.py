@@ -23,11 +23,14 @@ class APITestAccuracy(APITestBase):
         if not self.ana_api_info():
             return
 
-        device = torch.device("cuda:0")
-        torch.set_default_device(device)
-
         try:
-            torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+            device = torch.device("cuda:0")
+            torch.set_default_device(device)
+            with torch.no_grad():
+                if not self.gen_torch_input():
+                    return
+                torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+                self.clear_torch_tensor()
         except Exception as err:
             print("[torch error]", self.api_config.config, "\n", str(err))
             torch_output = None
@@ -35,7 +38,11 @@ class APITestAccuracy(APITestBase):
             return
 
         try:
-            paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+            with paddle.no_grad():
+                if not self.gen_paddle_input():
+                    return
+                paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                self.clear_paddle_tensor()
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
             torch_output = None
@@ -69,11 +76,15 @@ class APITestAccuracy(APITestBase):
                 paddle_output = list(paddle_output)
             if not isinstance(torch_output, (list, tuple)):
                 print("[output type diff error]", self.api_config.config)
+                torch_output = None
+                paddle_output = None
                 return
             if isinstance(torch_output, tuple):
                 torch_output = list(torch_output)
             if len(paddle_output) != len(torch_output):
                 print("[output type diff error]", self.api_config.config)
+                torch_output = None
+                paddle_output = None
                 return
             for i in range(len(paddle_output)):
                 try:
@@ -84,7 +95,8 @@ class APITestAccuracy(APITestBase):
                     paddle_output = None
                     api_config_accuracy_error.write(self.api_config.config+"\n")
                     return
-
+        torch_output = None
+        paddle_output = None
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
   
