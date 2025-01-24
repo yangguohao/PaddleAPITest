@@ -6,6 +6,7 @@ import math
 import json
 import paddle
 import inspect
+import torch
 
 class TensorConfig:
     def __init__(self, shape, dtype):
@@ -65,7 +66,7 @@ class TensorConfig:
             self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
     def get_torch_tensor(self):
-        device = torch.device("cuda:0")
+        device = torch.device("cuda:3")
         torch.set_default_device(device)
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(

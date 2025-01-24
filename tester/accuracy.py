@@ -11,10 +11,10 @@ import paddle
 import inspect
 from .base import APITestBase
 
-api_config_accuracy_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_accuracy_error.txt", "w")
-api_config_paddle_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_paddle_error.txt", "w")
-api_config_pass = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_pass.txt", "w")
-api_config_torch_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_torch_error.txt", "w")
+api_config_accuracy_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_accuracy_error.txt", "w")
+api_config_paddle_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_paddle_error.txt", "w")
+api_config_pass = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_pass.txt", "w")
+api_config_torch_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_torch_error.txt", "w")
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
@@ -23,7 +23,7 @@ class APITestAccuracy(APITestBase):
         if not self.ana_api_info():
             return
 
-        device = torch.device("cuda:0")
+        device = torch.device("cuda:3")
         torch.set_default_device(device)
 
         try:
@@ -37,6 +37,13 @@ class APITestAccuracy(APITestBase):
             paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
+            api_config_paddle_error.write(self.api_config.config+"\n")
+            return
+
+        try:
+            paddle.base.core.eager._for_test_check_cuda_error()
+        except Exception as err:
+            print("[cuda error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
