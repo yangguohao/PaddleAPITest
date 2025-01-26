@@ -26,7 +26,7 @@ import subprocess
 #         torch.cuda.empty_cache()
 #         paddle.device.cuda.empty_cache()
 
-# python engine.py --api_config_file=/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_big_tensor.txt > log.log 2>&1
+# python engine.py --api_config_file=/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_big_tensor.txt > tester/api_config/test_log/log.log 2>&1
 def main():
     parser = argparse.ArgumentParser(
         description='API Test'
