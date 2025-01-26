@@ -87,6 +87,8 @@ def to_big_tensor_config(api_config):
     for tensor_config in tensor_configs:
         if is_0_size_tensor(tensor_config) or is_0D_tensor(tensor_config):
             return []
+        if tensor_config.dtype in ["complex64", "complex128"]:
+            return []
         if shape_len != len(tensor_config.shape):
             shape_equal = False
 
