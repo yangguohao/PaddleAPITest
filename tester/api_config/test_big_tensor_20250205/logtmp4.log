@@ -1,0 +1,776 @@
+test begin: paddle.squeeze(Tensor([1, 4294967295, 1, 1],"float32"), list[1,2,], )
+[Pass] paddle.squeeze(Tensor([1, 4294967295, 1, 1],"float32"), list[1,2,], )
+
+W0205 10:03:13.737128 89199 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:03:13.738193 89199 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 4294967295],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([1, 4294967295],"float32"), axis=-1, )
+
+W0205 10:06:58.733420 90258 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:06:58.734649 90258 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 536870913, 4],"float64"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 536870913, 4],"float64"), axis=0, )
+
+W0205 10:10:23.098326 90967 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:10:23.099311 90967 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 6, 1, 715827883],"float32"), list[], )
+[accuracy error] paddle.squeeze(Tensor([1, 6, 1, 715827883],"float32"), list[], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (6, 715827883), (1, 6, 1, 715827883) mismatch)
+ x: array([[0.501002, 0.787556, 0.011134, ..., 0.431484, 0.398936, 0.908241],
+       [0.368149, 0.570172, 0.90157 , ..., 0.822996, 0.086595, 0.137148],
+       [0.654342, 0.353504, 0.188255, ..., 0.777915, 0.657287, 0.802497],...
+ y: array([[[[0.501002, 0.787556, 0.011134, ..., 0.431484, 0.398936,
+          0.908241]],
+...
+
+W0205 10:13:42.146623 91567 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:13:42.147589 91567 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 6, 1, 715827883],"float32"), list[1,2,], )
+[Pass] paddle.squeeze(Tensor([1, 6, 1, 715827883],"float32"), list[1,2,], )
+
+W0205 10:15:25.623772 91932 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:15:25.625137 91932 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 6, 715827883, 1],"float32"), list[], )
+[accuracy error] paddle.squeeze(Tensor([1, 6, 715827883, 1],"float32"), list[], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (6, 715827883), (1, 6, 715827883, 1) mismatch)
+ x: array([[0.483237, 0.819532, 0.666336, ..., 0.403851, 0.420357, 0.508116],
+       [0.77376 , 0.868616, 0.270769, ..., 0.551455, 0.998575, 0.506986],
+       [0.159303, 0.504585, 0.239424, ..., 0.781955, 0.983597, 0.293371],...
+ y: array([[[[0.483237],
+         [0.819532],
+         [0.666336],...
+
+W0205 10:19:09.116250 92707 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:19:09.117275 92707 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 6, 715827883, 1],"float32"), list[1,2,], )
+[Pass] paddle.squeeze(Tensor([1, 6, 715827883, 1],"float32"), list[1,2,], )
+
+W0205 10:20:50.567853 93020 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:20:50.569080 93020 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 67108865, 32],"float64"), axis=list[1,], )
+[Pass] paddle.squeeze(Tensor([1, 67108865, 32],"float64"), axis=list[1,], )
+
+W0205 10:24:17.918139 93825 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:24:17.919040 93825 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 8, 16, 128, 262144],"float32"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 8, 16, 128, 262144],"float32"), axis=0, )
+
+W0205 10:27:40.048043 94425 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:27:40.049609 94425 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 8, 16, 524288, 64],"float32"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 8, 16, 524288, 64],"float32"), axis=0, )
+
+W0205 10:31:24.277642 95278 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:31:24.278739 95278 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 8, 65536, 128, 64],"float32"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 8, 65536, 128, 64],"float32"), axis=0, )
+
+W0205 10:34:58.598883 96043 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:34:58.599951 96043 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([10, 10, 21474837],"float64"), )
+[Pass] paddle.squeeze(Tensor([10, 10, 21474837],"float64"), )
+
+W0205 10:38:18.202266 96767 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:38:18.203372 96767 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([10, 10, 21474837],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([10, 10, 21474837],"float64"), axis=-1, )
+
+W0205 10:41:16.749234 97375 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:41:16.750192 97375 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([10, 20, 21474837],"float32"), )
+[Pass] paddle.squeeze(Tensor([10, 20, 21474837],"float32"), )
+
+W0205 10:44:34.991549 97987 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:44:34.992777 97987 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([10, 21474837, 10],"float64"), )
+[Pass] paddle.squeeze(Tensor([10, 21474837, 10],"float64"), )
+
+W0205 10:47:57.424770 98709 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:47:57.425711 98709 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([10, 21474837, 10],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([10, 21474837, 10],"float64"), axis=-1, )
+
+W0205 10:50:47.165087 99333 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:50:47.166008 99333 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([10, 429496730, 1],"float32"), )
+[Pass] paddle.squeeze(Tensor([10, 429496730, 1],"float32"), )
+
+W0205 10:53:59.602576 99928 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:53:59.603502 99928 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([100, 21474837],"float64"), 1, )
+[Pass] paddle.squeeze(Tensor([100, 21474837],"float64"), 1, )
+
+W0205 10:57:12.313374 100653 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 10:57:12.314218 100653 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([100, 21474837],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([100, 21474837],"float64"), -1, )
+
+W0205 11:00:03.358502 101272 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:00:03.359445 101272 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([100, 21474837],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([100, 21474837],"float64"), axis=-1, )
+
+W0205 11:02:55.745213 101826 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:02:55.746055 101826 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([128, 1, 33554432],"float32"), )
+[Pass] paddle.squeeze(Tensor([128, 1, 33554432],"float32"), )
+
+W0205 11:06:09.466377 102681 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:06:09.467321 102681 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([128, 3356, 10000],"float32"), )
+[Pass] paddle.squeeze(Tensor([128, 3356, 10000],"float32"), )
+
+W0205 11:09:47.995949 103741 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:09:47.996897 103741 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1431655765, 3, 1],"float32"), )
+[Pass] paddle.squeeze(Tensor([1431655765, 3, 1],"float32"), )
+
+W0205 11:13:38.123021 104669 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:13:38.124241 104669 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1431655765, 3],"float32"), )
+[Pass] paddle.squeeze(Tensor([1431655765, 3],"float32"), )
+
+W0205 11:17:17.800171 105474 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:17:17.801074 105474 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1431655765, 3],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([1431655765, 3],"float32"), axis=-1, )
+
+W0205 11:20:55.390094 106430 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:20:55.391032 106430 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([178956971, 3, 4],"float64"), axis=0, )
+[Pass] paddle.squeeze(Tensor([178956971, 3, 4],"float64"), axis=0, )
+
+W0205 11:24:12.311230 107266 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:24:12.312211 107266 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1, 2, 536870913],"float64"), 1, )
+[Pass] paddle.squeeze(Tensor([2, 1, 2, 536870913],"float64"), 1, )
+
+W0205 11:27:20.329782 107925 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:27:20.330632 107925 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1, 536870913, 2],"float64"), 1, )
+[Pass] paddle.squeeze(Tensor([2, 1, 536870913, 2],"float64"), 1, )
+
+W0205 11:30:09.661695 108537 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:30:09.662617 108537 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1000, 1, 2147484],"float32"), axis=list[2,3,], )
+[Pass] paddle.squeeze(Tensor([2, 1000, 1, 2147484],"float32"), axis=list[2,3,], )
+
+W0205 11:33:24.560633 109161 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:33:24.562167 109161 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1000, 2147484, 1],"float32"), axis=list[2,3,], )
+[Pass] paddle.squeeze(Tensor([2, 1000, 2147484, 1],"float32"), axis=list[2,3,], )
+
+W0205 11:37:18.629159 109873 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:37:18.630074 109873 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1024, 1, 2097152],"float32"), axis=list[2,3,], )
+[Pass] paddle.squeeze(Tensor([2, 1024, 1, 2097152],"float32"), axis=list[2,3,], )
+
+W0205 11:40:58.546494 110691 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:40:58.547459 110691 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1024, 2097152, 1],"float32"), axis=list[2,3,], )
+[Pass] paddle.squeeze(Tensor([2, 1024, 2097152, 1],"float32"), axis=list[2,3,], )
+
+W0205 11:44:42.439225 111404 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:44:42.440292 111404 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1073741825],"float64"), )
+[Pass] paddle.squeeze(Tensor([2, 1073741825],"float64"), )
+
+W0205 11:48:24.489979 112237 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:48:24.491420 112237 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1073741825],"float64"), 1, )
+[Pass] paddle.squeeze(Tensor([2, 1073741825],"float64"), 1, )
+
+W0205 11:51:31.363315 113001 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:51:31.364403 113001 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1073741825],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 1073741825],"float64"), axis=-1, )
+
+W0205 11:54:27.465334 113547 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:54:27.466256 113547 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 107374183, 2, 5],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 107374183, 2, 5],"float64"), axis=-1, )
+
+W0205 11:57:28.519850 114257 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 11:57:28.520788 114257 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 1073742, 10, 10, 10],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 1073742, 10, 10, 10],"float64"), axis=-1, )
+
+W0205 12:00:23.701428 115099 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:00:23.702464 115099 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2, 2, 268435457],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([2, 2, 2, 268435457],"float64"), -1, )
+
+W0205 12:03:25.048058 115690 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:03:25.049058 115690 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2, 2, 268435457],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 2, 2, 268435457],"float64"), axis=-1, )
+
+W0205 12:06:21.892764 116329 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:06:21.894218 116329 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2, 536870913, 1],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([2, 2, 536870913, 1],"float64"), -1, )
+
+W0205 12:09:26.657052 116982 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:09:26.658111 116982 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2, 536870913, 1],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 2, 536870913, 1],"float64"), axis=-1, )
+
+W0205 12:12:21.752144 117621 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:12:21.753105 117621 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2147483648, 1, 1],"float32"), axis=list[2,3,], )
+[Pass] paddle.squeeze(Tensor([2, 2147483648, 1, 1],"float32"), axis=list[2,3,], )
+
+W0205 12:15:53.675230 118289 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:15:53.676105 118289 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2147483648, 1],"float32"), )
+[Pass] paddle.squeeze(Tensor([2, 2147483648, 1],"float32"), )
+
+W0205 12:19:43.211532 119123 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:19:43.212453 119123 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2147483648],"float32"), )
+[Pass] paddle.squeeze(Tensor([2, 2147483648],"float32"), )
+
+W0205 12:23:33.510454 119930 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:23:33.511516 119930 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2147483648],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([2, 2147483648],"float32"), axis=1, )
+
+W0205 12:27:28.805384 120877 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:27:28.806322 120877 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2147483648],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 2147483648],"float32"), axis=-1, )
+
+W0205 12:31:29.067520 121575 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:31:29.068408 121575 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 2147483648],"float32"), axis=list[1,], )
+[Pass] paddle.squeeze(Tensor([2, 2147483648],"float32"), axis=list[1,], )
+
+W0205 12:35:27.504840 122369 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:35:27.505924 122369 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 268435457, 2, 2],"float64"), 1, )
+[Pass] paddle.squeeze(Tensor([2, 268435457, 2, 2],"float64"), 1, )
+
+W0205 12:39:03.840449 123245 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:39:03.841428 123245 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 3, 10, 10, 3579140],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 3, 10, 10, 3579140],"float64"), axis=-1, )
+
+W0205 12:42:11.199873 123885 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:42:11.200964 123885 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 3, 10, 3579140, 10],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 3, 10, 3579140, 10],"float64"), axis=-1, )
+
+W0205 12:45:03.431711 124483 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:45:03.432602 124483 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 3, 2, 178956971],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 3, 2, 178956971],"float64"), axis=-1, )
+
+W0205 12:48:02.456910 125067 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:48:02.458011 125067 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 3, 3579140, 10, 10],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 3, 3579140, 10, 10],"float64"), axis=-1, )
+
+W0205 12:51:15.841778 125661 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:51:15.842698 125661 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 3, 715827883],"float32"), )
+[Pass] paddle.squeeze(Tensor([2, 3, 715827883],"float32"), )
+
+W0205 12:54:33.864332 126233 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:54:33.865329 126233 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 3, 71582789, 5],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 3, 71582789, 5],"float64"), axis=-1, )
+
+W0205 12:58:12.107858 127023 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 12:58:12.108889 127023 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 536870913, 2, 1],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([2, 536870913, 2, 1],"float64"), -1, )
+
+W0205 13:01:19.595180 127642 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:01:19.596043 127642 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2, 536870913, 2, 1],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2, 536870913, 2, 1],"float64"), axis=-1, )
+
+W0205 13:04:30.703547 128277 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:04:30.704468 128277 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483648, 2, 1],"float32"), axis=2, )
+[Pass] paddle.squeeze(Tensor([2147483648, 2, 1],"float32"), axis=2, )
+
+W0205 13:08:10.579578 128983 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:08:10.580772 128983 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483648, 2],"float32"), )
+[Pass] paddle.squeeze(Tensor([2147483648, 2],"float32"), )
+
+W0205 13:12:35.148986 129857 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:12:35.150171 129857 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483648, 2],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2147483648, 2],"float32"), axis=-1, )
+
+W0205 13:16:11.892709 130605 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:16:11.893507 130605 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483649, 1],"float64"), 1, )
+[Pass] paddle.squeeze(Tensor([2147483649, 1],"float64"), 1, )
+
+W0205 13:19:46.227797 131444 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:19:46.228781 131444 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483649, 1],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([2147483649, 1],"float64"), -1, )
+
+W0205 13:22:50.569521 132049 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:22:50.570420 132049 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483649, 1],"float64"), axis=1, )
+[Pass] paddle.squeeze(Tensor([2147483649, 1],"float64"), axis=1, )
+
+W0205 13:25:46.321045 132638 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:25:46.321936 132638 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483649, 1],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2147483649, 1],"float64"), axis=-1, )
+
+W0205 13:29:04.189965 133304 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:29:04.191020 133304 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483649, 1],"int64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([2147483649, 1],"int64"), axis=-1, )
+
+W0205 13:32:19.587248 133900 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:32:19.588687 133900 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2147483649],"float64"), axis=0, )
+[Pass] paddle.squeeze(Tensor([2147483649],"float64"), axis=0, )
+
+W0205 13:35:59.470082 134596 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:35:59.471908 134596 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([214748365, 20, 1],"float32"), )
+[Pass] paddle.squeeze(Tensor([214748365, 20, 1],"float32"), )
+
+W0205 13:39:27.881202 135330 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:39:27.882118 135330 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([21474837, 10, 10],"float64"), )
+[Pass] paddle.squeeze(Tensor([21474837, 10, 10],"float64"), )
+
+W0205 13:42:42.509720 136068 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:42:42.510993 136068 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([21474837, 10, 10],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([21474837, 10, 10],"float64"), axis=-1, )
+
+W0205 13:45:54.070237 136709 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:45:54.071561 136709 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([268435456, 16, 1],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([268435456, 16, 1],"float32"), axis=-1, )
+
+W0205 13:49:19.991217 137351 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:49:19.992123 137351 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([26843546, 10, 8, 1, 2],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([26843546, 10, 8, 1, 2],"float32"), axis=-1, )
+
+W0205 13:53:02.469233 138158 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:53:02.470157 138158 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([2684355, 1, 40, 40],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([2684355, 1, 40, 40],"float32"), axis=1, )
+
+W0205 13:56:44.567471 138895 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 13:56:44.568404 138895 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([298262, 1, 3, 1600, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([298262, 1, 3, 1600, 3],"float32"), axis=1, )
+
+W0205 14:00:46.516978 139724 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:00:46.517892 139724 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([298262, 1, 3, 3, 1600],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([298262, 1, 3, 3, 1600],"float32"), axis=1, )
+
+W0205 14:04:34.905997 140566 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:04:34.907270 140566 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 11930465, 40, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 11930465, 40, 3],"float32"), axis=1, )
+
+W0205 14:08:22.626137 141288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:08:22.627683 141288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 298262, 1600, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 298262, 1600, 3],"float32"), axis=1, )
+
+W0205 14:12:23.723896 142080 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:12:23.724900 142080 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 298262, 3, 1600],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 298262, 3, 1600],"float32"), axis=1, )
+
+W0205 14:16:03.286648 142894 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:16:03.287521 142894 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 3, 11930465, 40],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 3, 11930465, 40],"float32"), axis=1, )
+
+W0205 14:19:55.657231 143659 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:19:55.658905 143659 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 3, 159072863, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 3, 159072863, 3],"float32"), axis=1, )
+
+W0205 14:23:45.231798 144423 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:23:45.232951 144423 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 3, 1600, 298262],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 3, 1600, 298262],"float32"), axis=1, )
+
+W0205 14:27:19.206748 145102 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:27:19.207706 145102 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 3, 298262, 1600],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 3, 298262, 1600],"float32"), axis=1, )
+
+W0205 14:30:53.767632 145850 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:30:53.768489 145850 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 3, 3, 159072863],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 3, 3, 159072863],"float32"), axis=1, )
+
+W0205 14:34:33.562426 146615 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:34:33.563652 146615 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 3, 40, 11930465],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 3, 40, 11930465],"float32"), axis=1, )
+
+W0205 14:38:26.182993 148277 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:38:26.183984 148277 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 35791395, 40],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 35791395, 40],"float32"), axis=1, )
+
+W0205 14:42:18.259284 150517 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:42:18.260159 150517 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 40, 11930465, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 40, 11930465, 3],"float32"), axis=1, )
+
+W0205 14:45:54.434620 151299 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:45:54.435492 151299 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 40, 35791395],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 40, 35791395],"float32"), axis=1, )
+
+W0205 14:49:32.227125 151979 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:49:32.228034 151979 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 40, 40, 894785],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 40, 40, 894785],"float32"), axis=1, )
+
+W0205 14:53:24.765640 152743 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:53:24.766562 152743 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1, 894785, 40, 40],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 1, 894785, 40, 40],"float32"), axis=1, )
+
+W0205 14:57:00.020527 153416 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 14:57:00.021572 153416 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1431655765, 1],"float32"), axis=2, )
+[Pass] paddle.squeeze(Tensor([3, 1431655765, 1],"float32"), axis=2, )
+
+W0205 15:00:48.631047 154127 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:00:48.632171 154127 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1431655765],"float32"), axis=list[1,], )
+[Pass] paddle.squeeze(Tensor([3, 1431655765],"float32"), axis=list[1,], )
+
+W0205 15:04:35.687414 154927 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:04:35.688239 154927 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 1431655765],"float32"), list[-1,], )
+[Pass] paddle.squeeze(Tensor([3, 1431655765],"float32"), list[-1,], )
+
+W0205 15:08:55.711004 155710 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:08:55.711814 155710 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 2, 2, 178956971],"int64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([3, 2, 2, 178956971],"int64"), axis=-1, )
+
+W0205 15:13:06.757969 156694 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:13:06.758797 156694 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 2, 357913942, 1],"int64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([3, 2, 357913942, 1],"int64"), axis=-1, )
+
+W0205 15:16:28.206897 157361 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:16:28.207800 157361 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 2, 715827883],"float32"), axis=2, )
+[Pass] paddle.squeeze(Tensor([3, 2, 715827883],"float32"), axis=2, )
+
+W0205 15:19:58.987709 157959 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:19:58.988714 157959 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 298262, 3, 40, 40],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 298262, 3, 40, 40],"float32"), axis=1, )
+
+W0205 15:24:34.132052 158871 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:24:34.133066 158871 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 298262, 40, 40, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 298262, 40, 40, 3],"float32"), axis=1, )
+
+W0205 15:28:15.656881 159566 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:28:15.657919 159566 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 357913942, 2, 1],"int64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([3, 357913942, 2, 1],"int64"), axis=-1, )
+
+W0205 15:31:51.781980 160391 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:31:51.782821 160391 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 894785, 40, 40],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 894785, 40, 40],"float32"), axis=1, )
+
+W0205 15:35:14.754673 161023 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:35:14.755548 161023 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 99421, 3, 1600, 3],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 99421, 3, 1600, 3],"float32"), axis=1, )
+
+W0205 15:38:50.187232 161725 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:38:50.188186 161725 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([3, 99421, 3, 3, 1600],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([3, 99421, 3, 3, 1600],"float32"), axis=1, )
+
+W0205 15:42:33.617336 162545 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:42:33.618286 162545 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([306783379, 7, 1],"float64"), axis=2, )
+[Pass] paddle.squeeze(Tensor([306783379, 7, 1],"float64"), axis=2, )
+
+W0205 15:45:51.326030   402 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:45:51.326958   402 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([357913942, 1, 6],"float64"), axis=1, )
+[Pass] paddle.squeeze(Tensor([357913942, 1, 6],"float64"), axis=1, )
+
+W0205 15:48:41.463197  1284 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:48:41.464128  1284 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([357913942, 12, 1],"float32"), axis=list[2,], )
+[Pass] paddle.squeeze(Tensor([357913942, 12, 1],"float32"), axis=list[2,], )
+
+W0205 15:51:59.689249  2044 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:51:59.690096  2044 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([390451573, 11, 1],"float32"), axis=list[2,], )
+[Pass] paddle.squeeze(Tensor([390451573, 11, 1],"float32"), axis=list[2,], )
+
+W0205 15:55:43.989341  3124 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:55:43.991015  3124 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 1, 536870913],"float64"), axis=1, )
+[Pass] paddle.squeeze(Tensor([4, 1, 536870913],"float64"), axis=1, )
+
+W0205 15:59:10.841090  4258 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 15:59:10.842159  4258 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 1048577, 512, 1],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([4, 1048577, 512, 1],"float64"), -1, )
+
+W0205 16:02:12.190450  5114 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:02:12.191293  5114 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 1073741824],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([4, 1073741824],"float32"), axis=1, )
+
+W0205 16:05:26.795323  5822 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:05:26.796129  5822 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 1073741824],"float32"), list[-1,], )
+[Pass] paddle.squeeze(Tensor([4, 1073741824],"float32"), list[-1,], )
+
+W0205 16:09:03.582857  6882 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:09:03.583762  6882 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 512, 1048577, 1],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([4, 512, 1048577, 1],"float64"), -1, )
+
+W0205 16:12:28.962790  8005 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:12:28.963985  8005 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 512, 512, 2049],"float64"), -1, )
+[Pass] paddle.squeeze(Tensor([4, 512, 512, 2049],"float64"), -1, )
+
+W0205 16:15:22.669091  8937 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:15:22.670079  8937 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 536870913, 1],"float64"), axis=2, )
+[Pass] paddle.squeeze(Tensor([4, 536870913, 1],"float64"), axis=2, )
+
+W0205 16:18:44.831360  9904 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:18:44.832505  9904 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 536870913],"float64"), axis=1, )
+[Pass] paddle.squeeze(Tensor([4, 536870913],"float64"), axis=1, )
+
+W0205 16:21:48.010262 10747 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:21:48.011149 10747 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 536870913],"int64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([4, 536870913],"int64"), axis=-1, )
+
+W0205 16:24:43.243045 11552 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:24:43.243894 11552 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 7, 76695845],"float64"), axis=2, )
+[Pass] paddle.squeeze(Tensor([4, 7, 76695845],"float64"), axis=2, )
+
+W0205 16:28:11.080386 12501 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:28:11.081326 12501 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4, 89478486, 6],"float64"), axis=1, )
+[Pass] paddle.squeeze(Tensor([4, 89478486, 6],"float64"), axis=1, )
+
+W0205 16:31:07.328389 13227 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:31:07.329432 13227 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4096, 8, 16, 128, 64],"float32"), axis=0, )
+[Pass] paddle.squeeze(Tensor([4096, 8, 16, 128, 64],"float32"), axis=0, )
+
+W0205 16:34:19.696756 14054 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:34:19.697702 14054 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4194304, 1024, 1, 1],"float32"), axis=list[2,3,], )
+[Pass] paddle.squeeze(Tensor([4194304, 1024, 1, 1],"float32"), axis=list[2,3,], )
+
+W0205 16:38:04.785804 15043 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:38:04.787230 15043 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295, 1],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([4294967295, 1],"float32"), axis=1, )
+
+W0205 16:42:14.667766 16255 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:42:14.668690 16255 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295, 1],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([4294967295, 1],"float32"), axis=-1, )
+
+W0205 16:45:46.771633 17270 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:45:46.772550 17270 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295, 1],"float32"), axis=list[1,], )
+[Pass] paddle.squeeze(Tensor([4294967295, 1],"float32"), axis=list[1,], )
+
+W0205 16:49:38.910199 18329 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:49:38.911743 18329 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295, 1],"float32"), list[-1,], )
+[Pass] paddle.squeeze(Tensor([4294967295, 1],"float32"), list[-1,], )
+
+W0205 16:53:30.122655 19444 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:53:30.123445 19444 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295],"float32"), )
+[Pass] paddle.squeeze(Tensor([4294967295],"float32"), )
+
+W0205 16:57:23.711481 20486 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 16:57:23.712384 20486 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295],"float32"), axis=0, )
+[Pass] paddle.squeeze(Tensor([4294967295],"float32"), axis=0, )
+
+W0205 17:01:05.978605 21579 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 17:01:05.979532 21579 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([4294967295],"float32"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([4294967295],"float32"), axis=-1, )
+
+W0205 17:04:42.925670 22540 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 17:04:42.926823 22540 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([429496730, 1, 10],"float32"), axis=1, )
+[Pass] paddle.squeeze(Tensor([429496730, 1, 10],"float32"), axis=1, )
+
+W0205 17:08:39.481983 23605 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 17:08:39.482964 23605 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([429496730, 5],"float64"), )
+[Pass] paddle.squeeze(Tensor([429496730, 5],"float64"), )
+
+W0205 17:11:54.241732 24583 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 17:11:54.242869 24583 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([429496730, 5],"float64"), axis=-1, )
+[Pass] paddle.squeeze(Tensor([429496730, 5],"float64"), axis=-1, )
+
+W0205 17:15:01.352634 25422 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0205 17:15:01.353551 25422 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
