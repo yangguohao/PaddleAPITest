@@ -1,93 +1,63 @@
-# accuracy error
-paddle.nn.functional.embedding
-paddle.all
-paddle.amax
-paddle.amin
-paddle.any
-paddle.nn.functional.grid_sample
-paddle.isfinite
-paddle.bernoulli
-paddle.nn.functional.pairwise_distance
-paddle.isreal
-paddle.tensordot
-paddle.nn.functional.relu
-paddle.linalg.norm
-paddle.linalg.pca_lowrank
-paddle.linalg.svd_lowrank
-paddle.linalg.vector_norm
-paddle.logsumexp
-paddle.mean
-paddle.multinomial
-paddle.nansum
-paddle.nn.functional.adaptive_avg_pool1d
-paddle.nn.functional.alpha_dropout
-paddle.nn.functional.dropout
-paddle.squeeze
-paddle.full_like
+cuda error
+	paddle.all
+	paddle.amax
+	paddle.amin
+	paddle.any
+	paddle.argmax
+	paddle.argmin
+	paddle.nn.functional.embedding
+	paddle.nn.functional.grid_sample
+	paddle.isfinite
+	paddle.isinf
+	paddle.isnan
+	paddle.isneginf
+	paddle.isposinf
+	paddle.linalg.norm
+	paddle.mean
+	paddle.nansum
+	paddle.nn.functional.adaptive_max_pool1d
+	paddle.nn.functional.adaptive_max_pool2d
 
-# error
-paddle.nn.functional.embedding
-paddle.all
-paddle.amax
-paddle.amin
-paddle.nn.functional.grid_sample
-paddle.any
-paddle.argmax
-paddle.argmin
-paddle.argsort
-paddle.gcd
-paddle.asin
-paddle.heaviside
-paddle.asinh
-paddle.tensordot
-paddle.atan
-paddle.atan2
-paddle.nn.functional.gumbel_softmax
-paddle.atanh
-paddle.hypot
-paddle.index_fill
-paddle.index_select
-paddle.bernoulli
-paddle.isfinite
-paddle.isinf
-paddle.nn.functional.normalize
-paddle.isnan
-paddle.nn.functional.pairwise_distance
-paddle.isneginf
-paddle.isposinf
-paddle.lcm
-paddle.lerp
-paddle.linalg.cholesky_solve
-paddle.linalg.cond
-paddle.linalg.cov
-paddle.linalg.lstsq
-paddle.linalg.matrix_norm
-paddle.linalg.matrix_rank
-paddle.linalg.norm
-paddle.linalg.ormqr
-paddle.linalg.pca_lowrank
-paddle.linalg.pinv
-paddle.linalg.solve
-paddle.linalg.svd_lowrank
-paddle.logcumsumexp
-paddle.logical_or
-paddle.logsumexp
-paddle.masked_fill
-paddle.maximum
-paddle.mean
-paddle.minimum
-paddle.mm
-paddle.multigammaln
-paddle.nan_to_num
-paddle.nanmean
-paddle.nanquantile
-paddle.nansum
-paddle.nextafter
-paddle.nn.functional.adaptive_avg_pool1d
-paddle.nn.functional.adaptive_max_pool1d
-paddle.nn.functional.adaptive_max_pool2d
-paddle.nn.functional.alpha_dropout
-paddle.tile
-paddle.concat
-paddle.fmin
-paddle.frac
+paddle error
+	paddle.nn.functional.normalize
+	paddle.hypot
+	paddle.linalg.cond
+	paddle.linalg.matrix_rank
+	paddle.linalg.ormqr
+	paddle.linalg.pca_lowrank
+	paddle.logical_or
+	paddle.logsumexp
+	paddle.masked_fill
+	paddle.maximum
+	paddle.minimum
+	paddle.nanmean
+	paddle.nanquantile
+	paddle.nn.functional.adaptive_avg_pool1d
+	paddle.fmin
+	paddle.sum
+	paddle.std
+
+accuracy error
+	paddle.all
+	paddle.amax
+	paddle.amin
+	paddle.any
+	paddle.nn.functional.grid_sample
+	paddle.nn.functional.pairwise_distance
+	paddle.isfinite
+	paddle.isreal
+	paddle.linalg.norm
+	paddle.linalg.pca_lowrank
+	paddle.linalg.svd_lowrank
+	paddle.linalg.vector_norm
+	paddle.logsumexp
+	paddle.mean
+	paddle.multinomial
+	paddle.nansum
+	paddle.nn.functional.adaptive_avg_pool1d
+	paddle.nn.functional.alpha_dropout
+	paddle.nn.functional.dropout
+	paddle.tensordot
+	paddle.full_like
+	paddle.sum
+	paddle.std

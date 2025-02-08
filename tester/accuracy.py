@@ -62,6 +62,9 @@ class APITestAccuracy(APITestBase):
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
                 try:
+                    if paddle_output.dtype == paddle.bfloat16:
+                        paddle_output = paddle.cast(paddle_output, dtype="float32")
+                        torch_output = torch_output.to(dtype=torch.float32)
                     self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
@@ -88,6 +91,9 @@ class APITestAccuracy(APITestBase):
                 return
             for i in range(len(paddle_output)):
                 try:
+                    if paddle_output.dtype == paddle.bfloat16:
+                        paddle_output = paddle.cast(paddle_output, dtype="float32")
+                        torch_output = torch_output.to(dtype=torch.float32)
                     self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))

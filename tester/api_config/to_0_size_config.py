@@ -121,14 +121,22 @@ def to_big_tensor_config(api_config):
 #             f.write(str(api_config)+"\n")
 #         f.close()
 
+# if __name__ == '__main__':
+#     config_big_tensor = []
+#     api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config.txt")
+#     for api_config in api_configs:
+#         print(api_config.config)
+#         config_big_tensor = config_big_tensor + to_big_tensor_config(api_config)
+#     with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_big_tensor.txt", "w") as f:
+#         for api_config in config_big_tensor:
+#             f.write(str(api_config)+"\n")
+#         f.close()
+
 if __name__ == '__main__':
     config_big_tensor = []
-    api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config.txt")
+    api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_dbz.txt")
     for api_config in api_configs:
-        print(api_config.config)
-        config_big_tensor = config_big_tensor + to_big_tensor_config(api_config)
-    with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_big_tensor.txt", "w") as f:
-        for api_config in config_big_tensor:
-            f.write(str(api_config)+"\n")
-        f.close()
-
+        tensor_configs = get_tensor_configs(api_config)
+        for tensor_config in tensor_configs:
+            if 1073741824 < tensor_numel(tensor_config):
+                print(api_config.config, tensor_numel(tensor_config))
