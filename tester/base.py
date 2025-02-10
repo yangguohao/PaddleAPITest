@@ -11,26 +11,35 @@ import torch
 import paddle
 import inspect
 
-api_config_paddle_to_torch_faild = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
+api_config_paddle_to_torch_faild = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
 
 class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
 
     def ana_api_info(self):
+        if not self.ana_paddle_api_info():
+            return False
+        return self.ana_torch_api_info()
+
+    def ana_paddle_api_info(self):
+        self.paddle_api = eval(self.api_config.api_name)
+
+        self.paddle_args_config = self.api_config.args
+        self.paddle_kwargs_config = self.api_config.kwargs
+
+        return True
+
+    def ana_torch_api_info(self):
         torch_api, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
         if paddle_to_torch_args_map is None:
             print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
             api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
             return False
-        self.paddle_api = eval(self.api_config.api_name)
         self.torch_api = eval(torch_api)
 
         api_sig = inspect.signature(self.paddle_api)
         api_args_list = list(api_sig.parameters.keys())
-
-        self.paddle_args_config = self.api_config.args
-        self.paddle_kwargs_config = self.api_config.kwargs
         self.paddle_merged_kwargs_config = {}
         index = 0
         for arg_config in self.api_config.args:
@@ -56,6 +65,57 @@ class APITestBase:
         return True
 
     def gen_paddle_input(self):
+        self.paddle_args = []
+        self.paddle_kwargs = {}
+        self.paddle_merged_kwargs = {}
+
+        for i in range(len(self.paddle_args_config)):
+            if isinstance(self.paddle_args_config[i], TensorConfig):
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor())
+            elif isinstance(self.paddle_args_config[i], list):
+                tmp = []
+                for j in range(len(self.paddle_args_config[i])):
+                    if isinstance(self.paddle_args_config[i][j], TensorConfig):
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                    else:
+                        tmp.append(self.paddle_args_config[i][j])
+                self.paddle_args.append(tmp)
+            elif isinstance(self.paddle_args_config[i], tuple):
+                tmp = []
+                for j in range(len(self.paddle_args_config[i])):
+                    if isinstance(self.paddle_args_config[i][j], TensorConfig):
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                    else:
+                        tmp.append(self.paddle_args_config[i][j])
+                self.paddle_args.append(tuple(tmp))
+            else:
+                self.paddle_args.append(self.paddle_args_config[i])
+
+        for key, arg_config in self.paddle_kwargs_config.items():
+            if isinstance(arg_config, TensorConfig):
+                self.paddle_kwargs[key] = arg_config.get_paddle_tensor()
+            elif isinstance(arg_config, list):
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_paddle_tensor())
+                    else:
+                        value.append(arg_config[i])
+                self.paddle_kwargs[key] = value
+            elif isinstance(arg_config, tuple):
+                tmp = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        tmp.append(arg_config[i].get_paddle_tensor())
+                    else:
+                        tmp.append(arg_config[i])
+                self.paddle_kwargs[key] = tuple(tmp)
+            else:
+                self.paddle_kwargs[key] = arg_config
+
+        return True
+
+    def gen_paddle_input_with_merged_kwargs(self):
         self.paddle_args = []
         self.paddle_kwargs = {}
         self.paddle_merged_kwargs = {}

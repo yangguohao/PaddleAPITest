@@ -103,7 +103,7 @@ class APIConfig:
         self.config = config
         self.args = []
         self.kwargs = collections.OrderedDict()
-        config = config.replace("Tensor", "TensorConfig")
+        config = config.replace("Tensor(", "TensorConfig(")
 
         self.api_name, offset = self.get_api(config)
 
@@ -305,7 +305,7 @@ class APIConfig:
                 break
         
         tuple_str = config[offset: last_index+1]
-        if "TensorConfig" not in tuple_str:
+        if "TensorConfig" not in tuple_str and "slice" not in tuple_str:
             tuple_str = tuple_str.replace(",", " ")
 
         offset = 1
