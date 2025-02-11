@@ -272,7 +272,6 @@ apis:
  - paddle.Tensor.real
  - paddle.Tensor.reciprocal
  - paddle.Tensor.reduce_as
- - paddle.Tensor.register_hook
  - paddle.Tensor.remainder
  - paddle.Tensor.renorm
  - paddle.Tensor.repeat_interleave
@@ -323,7 +322,6 @@ apis:
  - paddle.Tensor.tensor_split
  - paddle.Tensor.tensordot
  - paddle.Tensor.tile
- - paddle.Tensor.to
  - paddle.Tensor.tolist
  - paddle.Tensor.top_p_sampling
  - paddle.Tensor.topk
@@ -386,9 +384,7 @@ apis:
  - paddle.audio.functional.power_to_db
  - paddle.autograd.hessian
  - paddle.autograd.jacobian
- - paddle.batch
  - paddle.bernoulli
- - paddle.bfloat16
  - paddle.bincount
  - paddle.binomial
  - paddle.bitwise_and
@@ -400,7 +396,6 @@ apis:
  - paddle.bitwise_xor
  - paddle.block_diag
  - paddle.bmm
- - paddle.bool
  - paddle.broadcast_shape
  - paddle.broadcast_tensors
  - paddle.broadcast_to
@@ -417,8 +412,6 @@ apis:
  - paddle.column_stack
  - paddle.combinations
  - paddle.complex
- - paddle.complex128
- - paddle.complex64
  - paddle.concat
  - paddle.conj
  - paddle.copysign
@@ -480,14 +473,8 @@ apis:
  - paddle.fft.rfft2
  - paddle.fft.rfftfreq
  - paddle.fft.rfftn
- - paddle.finfo
  - paddle.flatten
  - paddle.flip
- - paddle.float16
- - paddle.float32
- - paddle.float64
- - paddle.float8_e4m3fn
- - paddle.float8_e5m2
  - paddle.floor
  - paddle.floor_divide
  - paddle.floor_mod
@@ -496,7 +483,6 @@ apis:
  - paddle.fmin
  - paddle.frac
  - paddle.frexp
- - paddle.from_dlpack
  - paddle.full
  - paddle.full_like
  - paddle.gammainc
@@ -530,7 +516,6 @@ apis:
  - paddle.i0e
  - paddle.i1
  - paddle.i1e
- - paddle.iinfo
  - paddle.imag
  - paddle.increment
  - paddle.incubate.nn.functional.blha_get_max_len
@@ -564,10 +549,6 @@ apis:
  - paddle.index_select
  - paddle.inf
  - paddle.inner
- - paddle.int16
- - paddle.int32
- - paddle.int64
- - paddle.int8
  - paddle.is_complex
  - paddle.is_empty
  - paddle.isclose
@@ -819,12 +800,10 @@ apis:
  - paddle.positive
  - paddle.pow
  - paddle.prod
- - paddle.pstring
  - paddle.put_along_axis
  - paddle.quantile
  - paddle.rad2deg
  - paddle.rank
- - paddle.raw
  - paddle.real
  - paddle.reciprocal
  - paddle.reduce_as
@@ -866,8 +845,6 @@ apis:
  - paddle.sparse.atanh
  - paddle.sparse.cast
  - paddle.sparse.coalesce
- - paddle.sparse.creation.sparse_coo_tensor
- - paddle.sparse.creation.sparse_csr_tensor
  - paddle.sparse.deg2rad
  - paddle.sparse.divide
  - paddle.sparse.expm1
@@ -898,8 +875,6 @@ apis:
  - paddle.sparse.sin
  - paddle.sparse.sinh
  - paddle.sparse.slice
- - paddle.sparse.sparse_coo_tensor
- - paddle.sparse.sparse_csr_tensor
  - paddle.sparse.sqrt
  - paddle.sparse.square
  - paddle.sparse.subtract
@@ -938,7 +913,6 @@ apis:
  - paddle.triu
  - paddle.triu_indices
  - paddle.trunc
- - paddle.uint8
  - paddle.unbind
  - paddle.unflatten
  - paddle.unfold
@@ -960,7 +934,6 @@ apis:
  - paddle.vision.ops.nms
  - paddle.vision.ops.prior_box
  - paddle.vision.ops.psroi_pool
- - paddle.vision.ops.read_file
  - paddle.vision.ops.roi_align
  - paddle.vision.ops.roi_pool
  - paddle.vision.ops.yolo_box
