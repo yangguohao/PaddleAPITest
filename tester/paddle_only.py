@@ -32,14 +32,13 @@ class APITestPaddleOnly(APITestBase):
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
-        paddle.device.cuda.synchronize()
-        # try:
-        #     paddle.base.core.eager._for_test_check_cuda_error()
-        # except Exception as err:
-        #     print("[cuda error]", self.api_config.config, "\n", str(err))
-        #     paddle_output = None
-        #     api_config_paddle_error.write(self.api_config.config+"\n")
-        #     return
+        try:
+            paddle.base.core.eager._for_test_check_cuda_error()
+        except Exception as err:
+            print("[cuda error]", self.api_config.config, "\n", str(err))
+            paddle_output = None
+            api_config_paddle_error.write(self.api_config.config+"\n")
+            return
 
         paddle_output = None
         print("[Pass]", self.api_config.config)

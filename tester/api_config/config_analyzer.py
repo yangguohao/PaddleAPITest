@@ -107,6 +107,15 @@ class APIConfig:
 
         self.api_name, offset = self.get_api(config)
 
+        if self.api_name == "paddle.einsum":
+            tmp = config[config.index("\"") + 1:]
+            value = tmp[:tmp.index("\"")]
+            offset = config.index("\"") + 1 + tmp.index("\"")
+            if "equation" in config:
+                self.append_kwargs("equation", value)
+            else:
+                self.append_args(value)
+
         while(True):
             tocken, offset = self.get_tocken(config, offset)
             if offset is None:
