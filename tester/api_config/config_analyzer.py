@@ -61,9 +61,10 @@ class TensorConfig:
                 self.get_numpy_tensor(),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
+            self.paddle_tensor.stop_gradient = False
             if self.dtype == "bfloat16":
                 self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
-            self.paddle_tensor.stop_gradient = False
+                self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
     def get_torch_tensor(self):
         device = torch.device("cuda:0")
@@ -246,9 +247,17 @@ class APIConfig:
         return result
 
     def get_tocken(self, config, offset):
+        def is_int(tocken):
+            try:
+                int(tocken)
+                return True
+            except Exception as err:
+                return False
         pattern = r'\b[A-Za-z0-9+-._]+\b|-[A-Za-z0-9+-._]+\b'
         match = re.search(pattern, config[offset:])
         if match:
+            if is_int(match.group()) and config[offset + match.start() + len(match.group())] == ".":
+                return match.group()+".", offset + match.start() + len(match.group()) + 1
             return match.group(), offset + match.start() + len(match.group())
         return None, None
 

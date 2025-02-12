@@ -44,16 +44,26 @@ def main():
     options = parser.parse_args()
 
     if options.paddle_only:
-        api_configs = analyse_configs(options.api_config_file)
-        for i in range(len(api_configs)):
-            api_config = api_configs[i]
+        if options.api_config != "":
+            api_config = APIConfig(options.api_config)
             print("test begin:", api_config.config, flush=True)
+            print(api_config)
             case = APITestPaddleOnly(api_config)
             case.test()
             case.clear_tensor()
-            api_configs[i] = None
             del case
             del api_config
+        elif options.api_config_file != "":
+            api_configs = analyse_configs(options.api_config_file)
+            for i in range(len(api_configs)):
+                api_config = api_configs[i]
+                print("test begin:", api_config.config, flush=True)
+                case = APITestPaddleOnly(api_config)
+                case.test()
+                case.clear_tensor()
+                api_configs[i] = None
+                del case
+                del api_config
     elif options.api_config != "":
         api_config = APIConfig(options.api_config)
         print("test begin:", api_config.config, flush=True)

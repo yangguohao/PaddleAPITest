@@ -21,14 +21,28 @@ class APITestPaddleOnly(APITestBase):
             return
 
         try:
-            with paddle.no_grad():
-                if not self.gen_paddle_input():
-                    return
-                paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
-                self.clear_paddle_tensor()
+            if not self.gen_paddle_input():
+                return
+            if self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__":
+                args, kwargs = self.copy_paddle_input()
+            else:
+                args = self.paddle_args
+                kwargs = self.paddle_kwargs
+            paddle_output = self.paddle_api(*tuple(args), **kwargs)
+            del args
+            del kwargs
+            if not self.is_forward_only():
+                inputs_list = self.get_paddle_input_list()
+                result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
+                if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
+                    out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads)
+            self.clear_paddle_tensor()
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
             paddle_output = None
+            result_outputs = None
+            result_outputs_grads = None
+            out_grads = None
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
@@ -37,10 +51,16 @@ class APITestPaddleOnly(APITestBase):
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err))
             paddle_output = None
+            result_outputs = None
+            result_outputs_grads = None
+            out_grads = None
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
         paddle_output = None
+        result_outputs = None
+        result_outputs_grads = None
+        out_grads = None
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
   
