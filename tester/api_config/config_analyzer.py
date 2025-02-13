@@ -50,22 +50,34 @@ class TensorConfig:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
     def get_numpy_tensor(self):
+        if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+            print("Warning ", self.dtype, "not supported")
+            return
         if self.numpy_tensor is None:
             dtype = "float32" if self.dtype == "bfloat16" else self.dtype
             self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
         return self.numpy_tensor
     
     def get_paddle_tensor(self):
+        if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+            print("Warning ", self.dtype, "not supported")
+            return
+
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
                 self.get_numpy_tensor(),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
+            self.paddle_tensor.stop_gradient = False
             if self.dtype == "bfloat16":
                 self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
-            self.paddle_tensor.stop_gradient = False
+                self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
     def get_torch_tensor(self):
+        if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+            print("Warning ", self.dtype, "not supported")
+            return
+
         device = torch.device("cuda:0")
         torch.set_default_device(device)
         if self.torch_tensor is None:
@@ -103,9 +115,18 @@ class APIConfig:
         self.config = config
         self.args = []
         self.kwargs = collections.OrderedDict()
-        config = config.replace("Tensor", "TensorConfig")
+        config = config.replace("Tensor(", "TensorConfig(")
 
         self.api_name, offset = self.get_api(config)
+
+        if self.api_name == "paddle.einsum":
+            tmp = config[config.index("\"") + 1:]
+            value = tmp[:tmp.index("\"")]
+            offset = config.index("\"") + 1 + tmp.index("\"")
+            if "equation" in config:
+                self.append_kwargs("equation", value)
+            else:
+                self.append_args(value)
 
         while(True):
             tocken, offset = self.get_tocken(config, offset)
@@ -237,9 +258,17 @@ class APIConfig:
         return result
 
     def get_tocken(self, config, offset):
+        def is_int(tocken):
+            try:
+                int(tocken)
+                return True
+            except Exception as err:
+                return False
         pattern = r'\b[A-Za-z0-9+-._]+\b|-[A-Za-z0-9+-._]+\b'
         match = re.search(pattern, config[offset:])
         if match:
+            if is_int(match.group()) and config[offset + match.start() + len(match.group())] == ".":
+                return match.group()+".", offset + match.start() + len(match.group()) + 1
             return match.group(), offset + match.start() + len(match.group())
         return None, None
 
@@ -305,8 +334,8 @@ class APIConfig:
                 break
         
         tuple_str = config[offset: last_index+1]
-        if "TensorConfig" not in tuple_str:
-            tuple_str = tuple_str.replace(",", " ")
+
+        tuple_str = tuple_str.replace(",", " , ")
 
         offset = 1
         while(True):
