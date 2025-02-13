@@ -1,0 +1,1812 @@
+test begin: paddle.reshape(Tensor([4294967295, 1],"float32"), list[-1,1,], )
+[Pass] paddle.reshape(Tensor([4294967295, 1],"float32"), list[-1,1,], )
+
+W0212 14:07:54.302161 102187 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:07:54.303288 102187 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295, 1],"float32"), shape=list[-1,3,], )
+[Pass] paddle.reshape(Tensor([4294967295, 1],"float32"), shape=list[-1,3,], )
+
+W0212 14:11:47.896905 104788 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:11:47.897822 104788 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295, 1],"float32"), Tensor([1],"int32"), )
+[torch error] paddle.reshape(Tensor([4294967295, 1],"float32"), Tensor([1],"int32"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 14:15:18.614558 107268 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:15:18.615787 107268 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295, 1],"float32"), Tensor([3],"int32"), )
+[torch error] paddle.reshape(Tensor([4294967295, 1],"float32"), Tensor([3],"int32"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 14:16:36.150477 107948 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:16:36.151597 107948 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295, 1],"int32"), shape=tuple(3,2,), )
+[torch error] paddle.reshape(Tensor([4294967295, 1],"int32"), shape=tuple(3,2,), ) 
+ shape '[3, 2]' is invalid for input of size 4294967295
+
+W0212 14:17:51.343416 108881 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:17:51.344482 108881 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[], ) 
+ shape '[]' is invalid for input of size 4294967295
+
+W0212 14:19:08.210673 109510 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:19:08.211781 109510 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[-1,], )
+[Pass] paddle.reshape(Tensor([4294967295],"float32"), list[-1,], )
+
+W0212 14:20:29.999915 110431 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:20:30.000913 110431 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,1,1,1,], ) 
+ shape '[1, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:24:02.851370 112669 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:24:02.852545 112669 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,10,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,10,1,1,], ) 
+ shape '[1, 10, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:25:19.979573 113605 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:25:19.980721 113605 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,12,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,12,1,1,], ) 
+ shape '[1, 12, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:26:34.152509 114270 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:26:34.153734 114270 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,12,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,12,1,1,1,], ) 
+ shape '[1, 12, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:27:50.153800 115191 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:27:50.154848 115191 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,2,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,2,], ) 
+ shape '[1, 2]' is invalid for input of size 4294967295
+
+W0212 14:29:05.599773 115876 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:29:05.600879 115876 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,2,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,2,1,1,], ) 
+ shape '[1, 2, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:30:20.043325 116803 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:30:20.044512 116803 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,3,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,3,1,1,], ) 
+ shape '[1, 3, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:31:36.101922 117482 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:31:36.103025 117482 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,3,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,3,1,1,1,], ) 
+ shape '[1, 3, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:32:54.705264 118412 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:32:54.706334 118412 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,4,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,4,1,1,], ) 
+ shape '[1, 4, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:34:13.648332 119120 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:34:13.649466 119120 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,4,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,4,1,1,1,], ) 
+ shape '[1, 4, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:35:29.817543 120224 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:35:29.818568 120224 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,5,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,5,1,1,], ) 
+ shape '[1, 5, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:36:44.938596 120895 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:36:44.939625 120895 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,5,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,5,1,1,1,], ) 
+ shape '[1, 5, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:38:01.986549 122003 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:38:01.987696 122003 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,512,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,512,1,1,], ) 
+ shape '[1, 512, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:39:16.792831 122929 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:39:16.805954 122929 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,6,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,6,1,1,], ) 
+ shape '[1, 6, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:40:37.162811 123608 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:40:37.163914 123608 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,6,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,6,1,1,1,], ) 
+ shape '[1, 6, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:41:52.164259 124551 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:41:52.165360 124551 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,1,], ) 
+ shape '[1, 8, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:43:11.283598 125225 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:43:11.284718 125225 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,1,1,], ) 
+ shape '[1, 8, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:44:33.076447 126157 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:44:33.077668 126157 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,16,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,16,], ) 
+ shape '[1, 8, 1, 16]' is invalid for input of size 4294967295
+
+W0212 14:45:49.043737 127091 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:45:49.044833 127091 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,8,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[1,8,1,8,], ) 
+ shape '[1, 8, 1, 8]' is invalid for input of size 4294967295
+
+W0212 14:47:10.334355 127756 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:47:10.335469 127756 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[100,], name="Uniform_sample", )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[100,], name="Uniform_sample", ) 
+ shape '[100]' is invalid for input of size 4294967295
+
+W0212 14:48:26.392915 128693 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:48:26.395694 128693 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[2,2,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[2,2,], ) 
+ shape '[2, 2]' is invalid for input of size 4294967295
+
+W0212 14:49:43.544880 129378 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:49:43.546082 129378 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[2,5,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[2,5,], ) 
+ shape '[2, 5]' is invalid for input of size 4294967295
+
+W0212 14:51:03.775017 130319 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:51:03.776087 130319 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[3,1,1,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[3,1,1,1,], ) 
+ shape '[3, 1, 1, 1]' is invalid for input of size 4294967295
+
+W0212 14:52:17.198446 131253 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:52:17.199626 131253 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[4,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[4,], ) 
+ shape '[4]' is invalid for input of size 4294967295
+
+W0212 14:53:33.461418 131953 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:53:33.462955 131953 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[7,], name="Normal_sample", )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[7,], name="Normal_sample", ) 
+ shape '[7]' is invalid for input of size 4294967295
+
+W0212 14:54:46.756111 133221 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:54:46.757534 133221 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[7,], name="Uniform_sample", )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[7,], name="Uniform_sample", ) 
+ shape '[7]' is invalid for input of size 4294967295
+
+W0212 14:56:01.862124 133897 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:56:01.863564 133897 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), list[8,1,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), list[8,1,], ) 
+ shape '[8, 1]' is invalid for input of size 4294967295
+
+W0212 14:57:20.868705 134832 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:57:20.869818 134832 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), shape=list[1,-1,], )
+[Pass] paddle.reshape(Tensor([4294967295],"float32"), shape=list[1,-1,], )
+
+W0212 14:58:54.979148 135525 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:58:54.980037 135525 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), shape=list[-1,4,], )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), shape=list[-1,4,], ) 
+ shape '[-1, 4]' is invalid for input of size 4294967295
+
+W0212 15:02:38.687683 138076 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:02:38.688656 138076 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), Tensor([1],"int64"), )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), Tensor([1],"int64"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 15:03:55.633381 139003 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:03:55.634539 139003 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"float32"), Tensor([2147483649],"int64"), )
+[torch error] paddle.reshape(Tensor([4294967295],"float32"), Tensor([2147483649],"int64"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 15:05:53.266063 139689 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:05:53.267390 139689 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"int32"), list[-1,1,], )
+[Pass] paddle.reshape(Tensor([4294967295],"int32"), list[-1,1,], )
+
+W0212 15:07:17.978685 140953 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:07:17.979976 140953 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"int32"), list[5,], )
+[torch error] paddle.reshape(Tensor([4294967295],"int32"), list[5,], ) 
+ shape '[5]' is invalid for input of size 4294967295
+
+W0212 15:13:08.132447 144724 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:13:08.133476 144724 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"int32"), shape=list[1,5,], )
+[torch error] paddle.reshape(Tensor([4294967295],"int32"), shape=list[1,5,], ) 
+ shape '[1, 5]' is invalid for input of size 4294967295
+
+W0212 15:14:25.046908 145645 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:14:25.048019 145645 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"int32"), shape=list[5,], )
+[torch error] paddle.reshape(Tensor([4294967295],"int32"), shape=list[5,], ) 
+ shape '[5]' is invalid for input of size 4294967295
+
+W0212 15:15:48.656438 146324 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:15:48.657820 146324 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"int32"), shape=tuple(-1,5,), )
+[Pass] paddle.reshape(Tensor([4294967295],"int32"), shape=tuple(-1,5,), )
+
+W0212 15:17:14.280417 147302 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:17:14.281579 147302 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294967295],"int32"), shape=tuple(-1,5,1,), )
+[Pass] paddle.reshape(Tensor([4294967295],"int32"), shape=tuple(-1,5,1,), )
+
+W0212 15:22:31.809623 150489 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:22:31.810559 150489 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 1, 10],"float32"), list[10,10,], )
+[torch error] paddle.reshape(Tensor([429496730, 1, 10],"float32"), list[10,10,], ) 
+ shape '[10, 10]' is invalid for input of size 4294967300
+
+W0212 15:27:27.683789 153941 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:27:27.684876 153941 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 1, 10],"float32"), shape=list[-1,10,], )
+[Pass] paddle.reshape(Tensor([429496730, 1, 10],"float32"), shape=list[-1,10,], )
+
+W0212 15:28:56.309010 154632 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:28:56.309931 154632 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 10, 1, 1],"float32"), list[-1,10,], )
+[Pass] paddle.reshape(Tensor([429496730, 10, 1, 1],"float32"), list[-1,10,], )
+
+W0212 15:32:54.166097 157123 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:32:54.167117 157123 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 10],"float32"), list[-1,10,1,1,], )
+[Pass] paddle.reshape(Tensor([429496730, 10],"float32"), list[-1,10,1,1,], )
+
+W0212 15:36:32.153157 159562 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:36:32.154042 159562 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 10],"float32"), shape=list[1,-1,10,], )
+[Pass] paddle.reshape(Tensor([429496730, 10],"float32"), shape=list[1,-1,10,], )
+
+W0212 15:40:05.839555 161775 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:40:05.840741 161775 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 10],"float32"), shape=list[-1,1,10,], )
+[Pass] paddle.reshape(Tensor([429496730, 10],"float32"), shape=list[-1,1,10,], )
+
+W0212 15:44:00.319561   492 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:44:00.320427   492 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 2, 5],"float32"), list[6,5,], )
+[torch error] paddle.reshape(Tensor([429496730, 2, 5],"float32"), list[6,5,], ) 
+ shape '[6, 5]' is invalid for input of size 4294967300
+
+W0212 15:47:34.400991  3032 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:47:34.402043  3032 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 5],"float64"), list[3,5,], )
+[torch error] paddle.reshape(Tensor([429496730, 5],"float64"), list[3,5,], ) 
+ shape '[3, 5]' is invalid for input of size 2147483650
+
+W0212 15:48:28.428390  3955 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:48:28.429540  3955 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 5],"int64"), list[10,], )
+[torch error] paddle.reshape(Tensor([429496730, 5],"int64"), list[10,], ) 
+ shape '[10]' is invalid for input of size 2147483650
+
+W0212 15:49:20.823356  4317 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:49:20.824612  4317 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 5],"int64"), list[15,4,], )
+[torch error] paddle.reshape(Tensor([429496730, 5],"int64"), list[15,4,], ) 
+ shape '[15, 4]' is invalid for input of size 2147483650
+
+W0212 15:50:18.597625  4952 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:50:18.599376  4952 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([429496730, 5],"int64"), list[2,25,], )
+[torch error] paddle.reshape(Tensor([429496730, 5],"int64"), list[2,25,], ) 
+ shape '[2, 25]' is invalid for input of size 2147483650
+
+W0212 15:51:17.655234  5599 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:51:17.656549  5599 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4294968, 100, 10],"float32"), list[100,10,], )
+[torch error] paddle.reshape(Tensor([4294968, 100, 10],"float32"), list[100,10,], ) 
+ shape '[100, 10]' is invalid for input of size 4294968000
+
+W0212 15:52:37.322916  6241 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:52:37.323907  6241 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([44739243, 3, 1, 32],"float32"), shape=list[-1,32,], )
+[Pass] paddle.reshape(Tensor([44739243, 3, 1, 32],"float32"), shape=list[-1,32,], )
+
+W0212 15:54:03.071764  7177 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:54:03.072902  7177 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([44904, 244, 2, 14, 14],"float32"), shape=list[2,488,14,14,], )
+[torch error] paddle.reshape(Tensor([44904, 244, 2, 14, 14],"float32"), shape=list[2,488,14,14,], ) 
+ shape '[2, 488, 14, 14]' is invalid for input of size 4294977792
+
+W0212 15:57:42.851234  9412 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:57:42.852243  9412 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([44904, 488, 14, 14],"float32"), shape=list[2,2,244,14,14,], )
+[torch error] paddle.reshape(Tensor([44904, 488, 14, 14],"float32"), shape=list[2,2,244,14,14,], ) 
+ shape '[2, 2, 244, 14, 14]' is invalid for input of size 4294977792
+
+W0212 15:58:57.317698 10340 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:58:57.319103 10340 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([45000, 47722],"int64"), list[9,5000,10,], name="Categorical_sample", )
+[torch error] paddle.reshape(Tensor([45000, 47722],"int64"), list[9,5000,10,], name="Categorical_sample", ) 
+ shape '[9, 5000, 10]' is invalid for input of size 2147490000
+
+W0212 15:59:49.160161 11006 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:59:49.161159 11006 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([456523, 192, 7, 7],"float32"), shape=list[2,2,96,7,7,], )
+[torch error] paddle.reshape(Tensor([456523, 192, 7, 7],"float32"), shape=list[2,2,96,7,7,], ) 
+ shape '[2, 2, 96, 7, 7]' is invalid for input of size 4294968384
+
+W0212 16:01:06.332070 11628 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:01:06.333241 11628 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([456523, 24, 2, 14, 14],"float32"), shape=list[2,48,14,14,], )
+[torch error] paddle.reshape(Tensor([456523, 24, 2, 14, 14],"float32"), shape=list[2,48,14,14,], ) 
+ shape '[2, 48, 14, 14]' is invalid for input of size 4294968384
+
+W0212 16:02:29.611944 12565 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:02:29.613260 12565 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([456523, 48, 14, 14],"float32"), shape=list[2,2,24,14,14,], )
+[torch error] paddle.reshape(Tensor([456523, 48, 14, 14],"float32"), shape=list[2,2,24,14,14,], ) 
+ shape '[2, 2, 24, 14, 14]' is invalid for input of size 4294968384
+
+W0212 16:03:54.716707 13266 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:03:54.718444 13266 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([456523, 96, 2, 7, 7],"float32"), shape=list[2,192,7,7,], )
+[torch error] paddle.reshape(Tensor([456523, 96, 2, 7, 7],"float32"), shape=list[2,192,7,7,], ) 
+ shape '[2, 192, 7, 7]' is invalid for input of size 4294968384
+
+W0212 16:05:09.245749 14213 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:05:09.246986 14213 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([47227, 116, 28, 28],"float32"), shape=list[2,2,58,28,28,], )
+[torch error] paddle.reshape(Tensor([47227, 116, 28, 28],"float32"), shape=list[2,2,58,28,28,], ) 
+ shape '[2, 2, 58, 28, 28]' is invalid for input of size 4295012288
+
+W0212 16:06:23.442003 15147 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:06:23.443245 15147 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([47227, 58, 2, 28, 28],"float32"), shape=list[2,116,28,28,], )
+[torch error] paddle.reshape(Tensor([47227, 58, 2, 28, 28],"float32"), shape=list[2,116,28,28,], ) 
+ shape '[2, 116, 28, 28]' is invalid for input of size 4295012288
+
+W0212 16:07:35.823873 15849 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:07:35.825064 15849 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([477218589, 1, 3, 3, 1],"float32"), list[1,3,3,1,1,], )
+[torch error] paddle.reshape(Tensor([477218589, 1, 3, 3, 1],"float32"), list[1,3,3,1,1,], ) 
+ shape '[1, 3, 3, 1, 1]' is invalid for input of size 4294967301
+
+W0212 16:08:49.849188 16961 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:08:49.850435 16961 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([477218589, 3, 3, 1],"float32"), list[3,3,1,1,], )
+[torch error] paddle.reshape(Tensor([477218589, 3, 3, 1],"float32"), list[3,3,1,1,], ) 
+ shape '[3, 3, 1, 1]' is invalid for input of size 4294967301
+
+W0212 16:10:14.023942 17672 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:10:14.025676 17672 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([477218589, 3, 3],"float32"), list[3,-1,3,], )
+[Pass] paddle.reshape(Tensor([477218589, 3, 3],"float32"), list[3,-1,3,], )
+
+W0212 16:11:36.681617 18652 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:11:36.682462 18652 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4971027, 48, 2, 3, 3],"float32"), shape=list[1,96,3,3,], )
+[torch error] paddle.reshape(Tensor([4971027, 48, 2, 3, 3],"float32"), shape=list[1,96,3,3,], ) 
+ shape '[1, 96, 3, 3]' is invalid for input of size 4294967328
+
+W0212 16:15:32.310988 21323 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:15:32.312242 21323 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([4971027, 96, 3, 3],"float32"), shape=list[1,2,48,3,3,], )
+[torch error] paddle.reshape(Tensor([4971027, 96, 3, 3],"float32"), shape=list[1,2,48,3,3,], ) 
+ shape '[1, 2, 48, 3, 3]' is invalid for input of size 4294967328
+
+W0212 16:16:46.925942 22287 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:16:46.926996 22287 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 1, 2, 429496730],"float32"), list[-1,3,], )
+[torch error] paddle.reshape(Tensor([5, 1, 2, 429496730],"float32"), list[-1,3,], ) 
+ shape '[-1, 3]' is invalid for input of size 4294967300
+
+W0212 16:18:02.838608 22995 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:18:02.839772 22995 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 1, 286331153, 3],"float32"), list[-1,3,], )
+[Pass] paddle.reshape(Tensor([5, 1, 286331153, 3],"float32"), list[-1,3,], )
+
+W0212 16:19:30.893275 23968 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:19:30.894191 23968 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 10, 85899346],"float32"), list[5,10,8,], name="Normal_sample", )
+[torch error] paddle.reshape(Tensor([5, 10, 85899346],"float32"), list[5,10,8,], name="Normal_sample", ) 
+ shape '[5, 10, 8]' is invalid for input of size 4294967300
+
+W0212 16:23:10.035094 26481 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:23:10.036243 26481 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 107374183, 8],"float32"), list[5,10,8,], name="Normal_sample", )
+[torch error] paddle.reshape(Tensor([5, 107374183, 8],"float32"), list[5,10,8,], name="Normal_sample", ) 
+ shape '[5, 10, 8]' is invalid for input of size 4294967320
+
+W0212 16:24:26.865619 27455 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:24:26.866925 27455 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 143165577, 2, 3],"float32"), list[-1,3,], )
+[Pass] paddle.reshape(Tensor([5, 143165577, 2, 3],"float32"), list[-1,3,], )
+
+W0212 16:25:56.385810 28152 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:25:56.386631 28152 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 2, 143165577, 3],"float16"), list[-1,3,], )
+[Pass] paddle.reshape(Tensor([5, 2, 143165577, 3],"float16"), list[-1,3,], )
+
+W0212 16:29:52.304128 30738 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:29:52.305055 30738 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 2, 5, 85899346],"float16"), list[-1,3,], )
+[torch error] paddle.reshape(Tensor([5, 2, 5, 85899346],"float16"), list[-1,3,], ) 
+ shape '[-1, 3]' is invalid for input of size 4294967300
+
+W0212 16:39:24.501896 36996 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:39:24.502910 36996 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 57266231, 5, 3],"float16"), list[-1,3,], )
+[Pass] paddle.reshape(Tensor([5, 57266231, 5, 3],"float16"), list[-1,3,], )
+
+W0212 16:41:00.439025 38016 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:41:00.439792 38016 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 858993459],"float32"), shape=list[5,-1,], )
+[Pass] paddle.reshape(Tensor([5, 858993459],"float32"), shape=list[5,-1,], )
+
+W0212 16:49:56.056510 44223 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:49:56.057336 44223 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5, 858993459],"int32"), shape=tuple(7,5,), )
+[torch error] paddle.reshape(Tensor([5, 858993459],"int32"), shape=tuple(7,5,), ) 
+ shape '[7, 5]' is invalid for input of size 4294967295
+
+W0212 16:53:32.468465 46562 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:53:32.469727 46562 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([524288, 2, 64, 32, 2],"float16"), Tensor([4],"int64"), )
+[torch error] paddle.reshape(Tensor([524288, 2, 64, 32, 2],"float16"), Tensor([4],"int64"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 16:55:09.831830 47553 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:55:09.833073 47553 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 1, 8],"float32"), list[-1,8,], )
+[Pass] paddle.reshape(Tensor([536870912, 1, 8],"float32"), list[-1,8,], )
+
+W0212 16:56:43.836256 48573 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:56:43.837174 48573 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 2, 4],"float16"), shape=list[6,8,], )
+[torch error] paddle.reshape(Tensor([536870912, 2, 4],"float16"), shape=list[6,8,], ) 
+ shape '[6, 8]' is invalid for input of size 4294967296
+
+W0212 17:00:30.918022 51095 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:00:30.919060 51095 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 2, 4],"float32"), shape=list[6,8,], )
+[torch error] paddle.reshape(Tensor([536870912, 2, 4],"float32"), shape=list[6,8,], ) 
+ shape '[6, 8]' is invalid for input of size 4294967296
+
+W0212 17:01:49.913457 52356 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:01:49.914486 52356 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 8],"float32"), list[-1,1,8,], )
+[Pass] paddle.reshape(Tensor([536870912, 8],"float32"), list[-1,1,8,], )
+
+W0212 17:03:13.783602 53232 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:03:13.784507 53232 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 8],"float32"), list[-1,3,8,], )
+[torch error] paddle.reshape(Tensor([536870912, 8],"float32"), list[-1,3,8,], ) 
+ shape '[-1, 3, 8]' is invalid for input of size 4294967296
+
+W0212 17:07:01.935282 55854 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:07:01.936371 55854 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 8],"float32"), list[18,4,], )
+[torch error] paddle.reshape(Tensor([536870912, 8],"float32"), list[18,4,], ) 
+ shape '[18, 4]' is invalid for input of size 4294967296
+
+W0212 17:08:25.400182 56833 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:08:25.413604 56833 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 8],"float32"), list[2,8,1,], )
+[torch error] paddle.reshape(Tensor([536870912, 8],"float32"), list[2,8,1,], ) 
+ shape '[2, 8, 1]' is invalid for input of size 4294967296
+
+W0212 17:09:43.940871 57552 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:09:43.942025 57552 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([536870912, 8],"float32"), shape=tuple(-1,4,8,), )
+[Pass] paddle.reshape(Tensor([536870912, 8],"float32"), shape=tuple(-1,4,8,), )
+
+W0212 17:11:12.133764 58531 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:11:12.134675 58531 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([53687092, 10, 8],"float32"), list[5,10,8,], name="Normal_sample", )
+[torch error] paddle.reshape(Tensor([53687092, 10, 8],"float32"), list[5,10,8,], name="Normal_sample", ) 
+ shape '[5, 10, 8]' is invalid for input of size 4294967360
+
+W0212 17:14:56.353477 61160 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:14:56.354530 61160 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5368710, 4, 100],"float64"), list[-1,400,], )
+[Pass] paddle.reshape(Tensor([5368710, 4, 100],"float64"), list[-1,400,], )
+
+W0212 17:15:57.890434 61875 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:15:57.891284 61875 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5368710, 50, 4, 4],"float16"), shape=list[-1,800,], )
+[Pass] paddle.reshape(Tensor([5368710, 50, 4, 4],"float16"), shape=list[-1,800,], )
+
+W0212 17:19:49.165064 64139 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:19:49.166102 64139 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5368710, 50, 4, 4],"float32"), shape=list[-1,800,], )
+[Pass] paddle.reshape(Tensor([5368710, 50, 4, 4],"float32"), shape=list[-1,800,], )
+
+W0212 17:29:31.278544 70578 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:29:31.279404 70578 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([54, 39768216],"int64"), list[9,6,10,], name="Categorical_sample", )
+[torch error] paddle.reshape(Tensor([54, 39768216],"int64"), list[9,6,10,], name="Categorical_sample", ) 
+ shape '[9, 6, 10]' is invalid for input of size 2147483664
+
+W0212 17:33:22.737562 73241 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:33:22.738710 73241 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5478275, 1, 784],"float32"), shape=list[128,-1,], )
+[torch error] paddle.reshape(Tensor([5478275, 1, 784],"float32"), shape=list[128,-1,], ) 
+ shape '[128, -1]' is invalid for input of size 4294967600
+
+W0212 17:34:40.066560 74228 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:34:40.067786 74228 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([559241, 128, 60],"float32"), list[-1,60,], )
+[Pass] paddle.reshape(Tensor([559241, 128, 60],"float32"), list[-1,60,], )
+
+W0212 17:36:07.270668 75180 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:36:07.271514 75180 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([58, 1, 74051161],"float32"), shape=list[-1,2,], )
+[Pass] paddle.reshape(Tensor([58, 1, 74051161],"float32"), shape=list[-1,2,], )
+
+W0212 17:39:57.632880 77471 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:39:57.634017 77471 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([58, 37025581, 2],"float32"), shape=list[-1,2,], )
+[Pass] paddle.reshape(Tensor([58, 37025581, 2],"float32"), shape=list[-1,2,], )
+
+W0212 17:44:14.491849 80583 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:44:14.492931 80583 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([5965233, 3, 4, 4, 5, 3],"float32"), list[24,8,10,3,], )
+[torch error] paddle.reshape(Tensor([5965233, 3, 4, 4, 5, 3],"float32"), list[24,8,10,3,], ) 
+ shape '[24, 8, 10, 3]' is invalid for input of size 4294967760
+
+W0212 17:47:55.394414 83223 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:47:55.395675 83223 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[0,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[0,0,-1,], ) 
+ shape '[0, 0, -1]' is invalid for input of size 2147483664
+
+W0212 17:48:46.214797 83901 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:48:46.216068 83901 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,0,2,-1,3,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,0,2,-1,3,], ) 
+ shape '[1, 0, 2, -1, 3]' is invalid for input of size 2147483664
+
+W0212 17:49:40.426919 84554 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:49:40.428658 84554 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,0,3,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,0,3,], ) 
+ shape '[-1, 0, 3]' is invalid for input of size 2147483664
+
+W0212 17:50:37.025326 85213 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:50:37.026283 85213 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,-1,2,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,-1,2,], )
+
+W0212 17:51:43.165724 85867 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:51:43.167003 85867 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,1,3,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,1,3,], )
+
+W0212 17:55:03.647975 88160 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:55:03.648742 88160 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,18,2,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,18,2,], ) 
+ shape '[1, 18, 2]' is invalid for input of size 2147483664
+
+W0212 17:58:10.581048 90118 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:58:10.582625 90118 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,2,2,3,3,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[1,2,2,3,3,], ) 
+ shape '[1, 2, 2, 3, 3]' is invalid for input of size 2147483664
+
+W0212 17:59:08.925709 90789 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:59:08.926818 90789 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,3,2,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,3,2,], )
+
+W0212 18:00:14.130336 91436 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:00:14.131182 91436 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,6,2,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,6,2,], )
+
+W0212 18:03:31.009806 93733 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:03:31.010715 93733 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,9,1,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,9,1,], )
+
+W0212 18:06:38.135041 95729 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:06:38.135885 95729 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,9,2,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[-1,9,2,], )
+
+W0212 18:10:23.556304 97978 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:10:23.557344 97978 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[12,1,3,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[12,1,3,], ) 
+ shape '[12, 1, 3]' is invalid for input of size 2147483664
+
+W0212 18:13:56.874941 100814 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:13:56.876252 100814 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,-1,0,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,-1,0,], ) 
+ shape '[2, -1, 0]' is invalid for input of size 2147483664
+
+W0212 18:14:52.067018 101203 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:14:52.067947 101203 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,1,18,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,1,18,], ) 
+ shape '[2, 1, 18]' is invalid for input of size 2147483664
+
+W0212 18:15:42.743358 101846 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:15:42.744968 101846 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,-1,18,], )
+[Pass] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,-1,18,], )
+
+W0212 18:16:46.741148 102511 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:16:46.742841 102511 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,3,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,3,0,-1,], ) 
+ shape '[2, 3, 0, -1]' is invalid for input of size 2147483664
+
+W0212 18:19:43.848104 104508 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:19:43.849239 104508 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,3,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,3,3,2,], ) 
+ shape '[2, 3, 3, 2]' is invalid for input of size 2147483664
+
+W0212 18:20:36.321204 105165 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:20:36.322362 105165 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,6,3,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,6,3,], ) 
+ shape '[2, 6, 3]' is invalid for input of size 2147483664
+
+W0212 18:21:25.517944 105818 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:21:25.519096 105818 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,9,2,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[2,9,2,], ) 
+ shape '[2, 9, 2]' is invalid for input of size 2147483664
+
+W0212 18:22:15.767711 106200 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:22:15.768814 106200 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[3,6,2,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[3,6,2,], ) 
+ shape '[3, 6, 2]' is invalid for input of size 2147483664
+
+W0212 18:23:08.949187 106853 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:23:08.950327 106853 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[4,9,1,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[4,9,1,], ) 
+ shape '[4, 9, 1]' is invalid for input of size 2147483664
+
+W0212 18:24:00.838459 107504 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:24:00.839612 107504 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[6,2,3,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[6,2,3,], ) 
+ shape '[6, 2, 3]' is invalid for input of size 2147483664
+
+W0212 18:25:00.336244 108168 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:25:00.338181 108168 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[6,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 119304648, 3],"int64"), list[6,3,2,], ) 
+ shape '[6, 3, 2]' is invalid for input of size 2147483664
+
+W0212 18:25:51.185159 108561 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:25:51.186304 108561 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 178956971, 4],"float16"), shape=list[6,8,], )
+[torch error] paddle.reshape(Tensor([6, 178956971, 4],"float16"), shape=list[6,8,], ) 
+ shape '[6, 8]' is invalid for input of size 4294967304
+
+W0212 18:27:26.205899 109219 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:27:26.207551 109219 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 178956971, 4],"float32"), shape=list[6,8,], )
+[torch error] paddle.reshape(Tensor([6, 178956971, 4],"float32"), shape=list[6,8,], ) 
+ shape '[6, 8]' is invalid for input of size 4294967304
+
+W0212 18:28:48.761722 110227 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:28:48.763020 110227 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[0,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[0,0,-1,], ) 
+ shape '[0, 0, -1]' is invalid for input of size 2147483652
+
+W0212 18:29:44.156100 111210 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:29:44.166523 111210 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,0,2,-1,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,0,2,-1,3,], ) 
+ shape '[1, 0, 2, -1, 3]' is invalid for input of size 2147483652
+
+W0212 18:30:36.598718 111875 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:30:36.600018 111875 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,0,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,0,3,], ) 
+ shape '[-1, 0, 3]' is invalid for input of size 2147483652
+
+W0212 18:31:29.603569 112526 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:31:29.605127 112526 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,-1,2,], )
+[Pass] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,-1,2,], )
+
+W0212 18:32:38.482523 112901 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:32:38.483628 112901 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,1,3,], )
+[Pass] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,1,3,], )
+
+W0212 18:35:47.202318 115148 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:35:47.203346 115148 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,18,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,18,2,], ) 
+ shape '[1, 18, 2]' is invalid for input of size 2147483652
+
+W0212 18:38:58.043450 117421 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:38:58.044798 117421 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,2,2,3,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[1,2,2,3,3,], ) 
+ shape '[1, 2, 2, 3, 3]' is invalid for input of size 2147483652
+
+W0212 18:39:53.300539 117795 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:39:53.301512 117795 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,3,2,], )
+[Pass] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,3,2,], )
+
+W0212 18:40:53.572737 118451 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:40:53.573695 118451 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,6,2,], )
+[Pass] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,6,2,], )
+
+W0212 18:44:25.804018 120899 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:44:25.805406 120899 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,9,1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,9,1,], ) 
+ shape '[-1, 9, 1]' is invalid for input of size 2147483652
+
+W0212 18:48:07.048997 123634 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:48:07.050216 123634 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,9,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[-1,9,2,], ) 
+ shape '[-1, 9, 2]' is invalid for input of size 2147483652
+
+W0212 18:48:59.771430 124278 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:48:59.772673 124278 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[12,1,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[12,1,3,], ) 
+ shape '[12, 1, 3]' is invalid for input of size 2147483652
+
+W0212 18:49:51.190771 124654 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:49:51.191988 124654 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,-1,0,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,-1,0,], ) 
+ shape '[2, -1, 0]' is invalid for input of size 2147483652
+
+W0212 18:50:48.895099 125304 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:50:48.896113 125304 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,1,18,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,1,18,], ) 
+ shape '[2, 1, 18]' is invalid for input of size 2147483652
+
+W0212 18:51:39.881098 125962 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:51:39.882401 125962 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,-1,18,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,-1,18,], ) 
+ shape '[2, -1, 18]' is invalid for input of size 2147483652
+
+W0212 18:52:35.678694 126616 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:52:35.679661 126616 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,3,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,3,0,-1,], ) 
+ shape '[2, 3, 0, -1]' is invalid for input of size 2147483652
+
+W0212 18:53:32.734170 127280 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:53:32.735975 127280 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,3,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,3,3,2,], ) 
+ shape '[2, 3, 3, 2]' is invalid for input of size 2147483652
+
+W0212 18:54:28.328718 127932 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:54:28.329782 127932 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,6,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,6,3,], ) 
+ shape '[2, 6, 3]' is invalid for input of size 2147483652
+
+W0212 18:55:25.695363 128334 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:55:25.696834 128334 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,9,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[2,9,2,], ) 
+ shape '[2, 9, 2]' is invalid for input of size 2147483652
+
+W0212 18:56:16.799660 128987 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:56:16.800882 128987 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[3,6,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[3,6,2,], ) 
+ shape '[3, 6, 2]' is invalid for input of size 2147483652
+
+W0212 18:57:14.217504 129624 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:57:14.218804 129624 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[4,9,1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[4,9,1,], ) 
+ shape '[4, 9, 1]' is invalid for input of size 2147483652
+
+W0212 18:58:05.645028 130277 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:58:05.646792 130277 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[6,2,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[6,2,3,], ) 
+ shape '[6, 2, 3]' is invalid for input of size 2147483652
+
+W0212 18:58:56.202731 130924 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:58:56.203969 130924 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[6,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 178956971],"int64"), list[6,3,2,], ) 
+ shape '[6, 3, 2]' is invalid for input of size 2147483652
+
+W0212 18:59:54.470597 131295 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:59:54.471871 131295 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float16"), shape=list[6,8,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float16"), shape=list[6,8,], ) 
+ shape '[6, 8]' is invalid for input of size 4294967304
+
+W0212 19:01:23.054970 131954 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:01:23.056028 131954 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[0,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[0,0,-1,], ) 
+ shape '[0, 0, -1]' is invalid for input of size 4294967304
+
+W0212 19:02:40.349022 133254 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:02:40.350312 133254 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,0,2,-1,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,0,2,-1,3,], ) 
+ shape '[1, 0, 2, -1, 3]' is invalid for input of size 4294967304
+
+W0212 19:03:54.897292 134221 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:03:54.898428 134221 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,0,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,0,3,], ) 
+ shape '[-1, 0, 3]' is invalid for input of size 4294967304
+
+W0212 19:05:09.165176 134906 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:05:09.166271 134906 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,-1,2,], )
+[Pass] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,-1,2,], )
+
+W0212 19:06:33.155822 135852 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:06:33.157613 135852 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,1,3,], )
+[Pass] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,1,3,], )
+
+W0212 19:10:19.574168 138172 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:10:19.575042 138172 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,18,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,18,2,], ) 
+ shape '[1, 18, 2]' is invalid for input of size 4294967304
+
+W0212 19:13:50.957420 140772 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:13:50.958647 140772 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,2,2,3,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[1,2,2,3,3,], ) 
+ shape '[1, 2, 2, 3, 3]' is invalid for input of size 4294967304
+
+W0212 19:15:12.299453 141466 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:15:12.300449 141466 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,3,2,], )
+[Pass] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,3,2,], )
+
+W0212 19:16:43.271569 142422 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:16:43.272481 142422 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,6,2,], )
+[Pass] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,6,2,], )
+
+W0212 19:20:21.053857 144732 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:20:21.054704 144732 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,9,1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,9,1,], ) 
+ shape '[-1, 9, 1]' is invalid for input of size 4294967304
+
+W0212 19:24:15.852524 147355 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:24:15.853652 147355 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,9,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[-1,9,2,], ) 
+ shape '[-1, 9, 2]' is invalid for input of size 4294967304
+
+W0212 19:25:33.993654 148340 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:25:33.995106 148340 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[12,1,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[12,1,3,], ) 
+ shape '[12, 1, 3]' is invalid for input of size 4294967304
+
+W0212 19:26:51.436856 149295 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:26:51.437881 149295 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,-1,0,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,-1,0,], ) 
+ shape '[2, -1, 0]' is invalid for input of size 4294967304
+
+W0212 19:28:16.523963 149979 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:28:16.525460 149979 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,1,18,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,1,18,], ) 
+ shape '[2, 1, 18]' is invalid for input of size 4294967304
+
+W0212 19:29:41.460182 150971 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:29:41.461517 150971 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,-1,18,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,-1,18,], ) 
+ shape '[2, -1, 18]' is invalid for input of size 4294967304
+
+W0212 19:31:04.519819 151926 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:31:04.521019 151926 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,3,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,3,0,-1,], ) 
+ shape '[2, 3, 0, -1]' is invalid for input of size 4294967304
+
+W0212 19:32:17.591696 152883 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:32:17.592784 152883 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,3,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,3,3,2,], ) 
+ shape '[2, 3, 3, 2]' is invalid for input of size 4294967304
+
+W0212 19:33:32.541672 153578 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:33:32.542820 153578 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,6,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,6,3,], ) 
+ shape '[2, 6, 3]' is invalid for input of size 4294967304
+
+W0212 19:34:54.989264 154551 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:34:54.990309 154551 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,9,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[2,9,2,], ) 
+ shape '[2, 9, 2]' is invalid for input of size 4294967304
+
+W0212 19:36:24.542477 155258 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:36:24.543644 155258 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[3,6,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[3,6,2,], ) 
+ shape '[3, 6, 2]' is invalid for input of size 4294967304
+
+W0212 19:37:47.144382 156237 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:37:47.145757 156237 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[4,9,1,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[4,9,1,], ) 
+ shape '[4, 9, 1]' is invalid for input of size 4294967304
+
+W0212 19:39:02.135546 157210 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:39:02.137199 157210 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[6,2,3,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[6,2,3,], ) 
+ shape '[6, 2, 3]' is invalid for input of size 4294967304
+
+W0212 19:40:18.996840 158149 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:40:18.997977 158149 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[6,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), list[6,3,2,], ) 
+ shape '[6, 3, 2]' is invalid for input of size 4294967304
+
+W0212 19:41:32.226464 158833 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:41:32.227694 158833 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 2, 357913942],"float32"), shape=list[6,8,], )
+[torch error] paddle.reshape(Tensor([6, 2, 357913942],"float32"), shape=list[6,8,], ) 
+ shape '[6, 8]' is invalid for input of size 4294967304
+
+W0212 19:42:55.226830 159791 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:42:55.227875 159791 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 22369622, 1, 32],"float32"), shape=list[-1,32,], )
+[Pass] paddle.reshape(Tensor([6, 22369622, 1, 32],"float32"), shape=list[-1,32,], )
+
+W0212 19:44:24.715459 160467 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:44:24.716650 160467 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[0,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[0,0,-1,], ) 
+ shape '[0, 0, -1]' is invalid for input of size 4294967310
+
+W0212 19:48:01.852519 162905 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:48:01.853608 162905 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,0,2,-1,3,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,0,2,-1,3,], ) 
+ shape '[1, 0, 2, -1, 3]' is invalid for input of size 4294967310
+
+W0212 19:49:15.333112   355 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:49:15.341506   355 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,0,3,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,0,3,], ) 
+ shape '[-1, 0, 3]' is invalid for input of size 4294967310
+
+W0212 19:50:30.719834  1056 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:50:30.721138  1056 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,-1,2,], )
+[Pass] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,-1,2,], )
+
+W0212 19:52:18.640539  1807 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:52:18.641763  1807 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,1,3,], )
+[Pass] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,1,3,], )
+
+W0212 19:56:31.185499  4647 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:56:31.186664  4647 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,18,2,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,18,2,], ) 
+ shape '[1, 18, 2]' is invalid for input of size 4294967310
+
+W0212 20:00:32.541877  7524 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:00:32.542866  7524 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,2,2,3,3,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[1,2,2,3,3,], ) 
+ shape '[1, 2, 2, 3, 3]' is invalid for input of size 4294967310
+
+W0212 20:01:53.043932  8492 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:01:53.045055  8492 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,3,2,], )
+[Pass] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,3,2,], )
+
+W0212 20:03:20.745231  9183 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:03:20.746182  9183 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,6,2,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,6,2,], ) 
+ shape '[-1, 6, 2]' is invalid for input of size 4294967310
+
+W0212 20:07:05.507512 11757 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:07:05.508736 11757 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,9,1,], )
+[Pass] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,9,1,], )
+
+W0212 20:08:30.936949 12747 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:08:30.937808 12747 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,9,2,], )
+[Pass] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[-1,9,2,], )
+
+W0212 20:12:09.982723 15003 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:12:09.984006 15003 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[12,1,3,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[12,1,3,], ) 
+ shape '[12, 1, 3]' is invalid for input of size 4294967310
+
+W0212 20:15:44.778601 17601 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:15:44.779735 17601 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,-1,0,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,-1,0,], ) 
+ shape '[2, -1, 0]' is invalid for input of size 4294967310
+
+W0212 20:17:07.520831 18280 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:17:07.522468 18280 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,1,18,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,1,18,], ) 
+ shape '[2, 1, 18]' is invalid for input of size 4294967310
+
+W0212 20:18:22.574090 19242 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:18:22.575338 19242 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,-1,18,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,-1,18,], ) 
+ shape '[2, -1, 18]' is invalid for input of size 4294967310
+
+W0212 20:19:46.259152 19956 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:19:46.260437 19956 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,3,0,-1,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,3,0,-1,], ) 
+ shape '[2, 3, 0, -1]' is invalid for input of size 4294967310
+
+W0212 20:21:02.512593 20926 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:21:02.513797 20926 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,3,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,3,3,2,], ) 
+ shape '[2, 3, 3, 2]' is invalid for input of size 4294967310
+
+W0212 20:22:27.315140 21880 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:22:27.316320 21880 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,6,3,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,6,3,], ) 
+ shape '[2, 6, 3]' is invalid for input of size 4294967310
+
+W0212 20:23:42.813998 22611 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:23:42.815196 22611 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,9,2,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[2,9,2,], ) 
+ shape '[2, 9, 2]' is invalid for input of size 4294967310
+
+W0212 20:25:04.227046 23558 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:25:04.228255 23558 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[3,6,2,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[3,6,2,], ) 
+ shape '[3, 6, 2]' is invalid for input of size 4294967310
+
+W0212 20:26:22.254604 24520 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:26:22.255743 24520 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[4,9,1,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[4,9,1,], ) 
+ shape '[4, 9, 1]' is invalid for input of size 4294967310
+
+W0212 20:27:40.863865 25215 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:27:40.864845 25215 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[6,2,3,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[6,2,3,], ) 
+ shape '[6, 2, 3]' is invalid for input of size 4294967310
+
+W0212 20:28:55.880527 26336 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:28:55.881798 26336 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[6,3,2,], )
+[torch error] paddle.reshape(Tensor([6, 238609295, 3],"float32"), list[6,3,2,], ) 
+ shape '[6, 3, 2]' is invalid for input of size 4294967310
+
+W0212 20:30:16.688102 26954 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:30:16.689175 26954 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 3, 1, 238609295],"float32"), shape=list[-1,32,], )
+[torch error] paddle.reshape(Tensor([6, 3, 1, 238609295],"float32"), shape=list[-1,32,], ) 
+ shape '[-1, 32]' is invalid for input of size 4294967310
+
+W0212 20:31:31.762344 27939 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:31:31.763648 27939 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 3, 7456541, 32],"float32"), shape=list[-1,32,], )
+[Pass] paddle.reshape(Tensor([6, 3, 7456541, 32],"float32"), shape=list[-1,32,], )
+
+W0212 20:32:54.785102 28893 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:32:54.785940 28893 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 715827883],"float32"), list[-1,3,8,], )
+[torch error] paddle.reshape(Tensor([6, 715827883],"float32"), list[-1,3,8,], ) 
+ shape '[-1, 3, 8]' is invalid for input of size 4294967298
+
+W0212 20:36:34.164530 31210 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:36:34.165768 31210 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([6, 715827883],"int32"), shape=tuple(3,2,), )
+[torch error] paddle.reshape(Tensor([6, 715827883],"int32"), shape=tuple(3,2,), ) 
+ shape '[3, 2]' is invalid for input of size 4294967298
+
+W0212 20:37:56.753803 32172 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:37:56.754866 32172 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([60, 35791395],"int64"), list[60,], )
+[torch error] paddle.reshape(Tensor([60, 35791395],"int64"), list[60,], ) 
+ shape '[60]' is invalid for input of size 2147483700
+
+W0212 20:38:47.269142 32864 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:38:47.270239 32864 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([613566757, 7],"int32"), shape=tuple(7,5,), )
+[torch error] paddle.reshape(Tensor([613566757, 7],"int32"), shape=tuple(7,5,), ) 
+ shape '[7, 5]' is invalid for input of size 4294967299
+
+W0212 20:40:00.905800 33510 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:40:00.906956 33510 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([62254, 176, 2, 14, 14],"float32"), shape=list[2,352,14,14,], )
+[torch error] paddle.reshape(Tensor([62254, 176, 2, 14, 14],"float32"), shape=list[2,352,14,14,], ) 
+ shape '[2, 352, 14, 14]' is invalid for input of size 4295027968
+
+W0212 20:41:24.110013 34469 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:41:24.111506 34469 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([62254, 352, 14, 14],"float32"), shape=list[2,2,176,14,14,], )
+[torch error] paddle.reshape(Tensor([62254, 352, 14, 14],"float32"), shape=list[2,2,176,14,14,], ) 
+ shape '[2, 2, 176, 14, 14]' is invalid for input of size 4295027968
+
+W0212 20:42:43.032645 35161 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:42:43.034036 35161 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([63, 34087043],"int64"), list[63,], )
+[torch error] paddle.reshape(Tensor([63, 34087043],"int64"), list[63,], ) 
+ shape '[63]' is invalid for input of size 2147483709
+
+W0212 20:43:40.221724 36103 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:43:40.222934 36103 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 33554433],"int64"), tuple(-1,1,), )
+[Pass] paddle.reshape(Tensor([64, 33554433],"int64"), tuple(-1,1,), )
+
+W0212 20:44:39.707412 36700 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:44:39.708292 36700 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 4194304, 4, 4],"float16"), shape=list[-1,800,], )
+[torch error] paddle.reshape(Tensor([64, 4194304, 4, 4],"float16"), shape=list[-1,800,], ) 
+ shape '[-1, 800]' is invalid for input of size 4294967296
+
+W0212 20:48:11.505507 38638 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:48:11.506850 38638 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 4194304, 4, 4],"float32"), shape=list[-1,800,], )
+[torch error] paddle.reshape(Tensor([64, 4194304, 4, 4],"float32"), shape=list[-1,800,], ) 
+ shape '[-1, 800]' is invalid for input of size 4294967296
+
+W0212 20:49:26.355832 39633 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:49:26.357115 39633 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 50, 335545, 4],"float16"), shape=list[-1,800,], )
+[Pass] paddle.reshape(Tensor([64, 50, 335545, 4],"float16"), shape=list[-1,800,], )
+
+W0212 20:51:18.468990 40332 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:51:18.469954 40332 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 50, 335545, 4],"float32"), shape=list[-1,800,], )
+[Pass] paddle.reshape(Tensor([64, 50, 335545, 4],"float32"), shape=list[-1,800,], )
+
+W0212 21:00:15.798681 46522 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:00:15.799487 46522 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 50, 4, 335545],"float16"), shape=list[-1,800,], )
+[Pass] paddle.reshape(Tensor([64, 50, 4, 335545],"float16"), shape=list[-1,800,], )
+
+W0212 21:04:18.401722 49068 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:04:18.402571 49068 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 50, 4, 335545],"float32"), shape=list[-1,800,], )
+[Pass] paddle.reshape(Tensor([64, 50, 4, 335545],"float32"), shape=list[-1,800,], )
+
+W0212 21:13:33.861660 55614 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:13:33.862454 55614 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 67108864],"float16"), tuple(1,1,64,64,), )
+[torch error] paddle.reshape(Tensor([64, 67108864],"float16"), tuple(1,1,64,64,), ) 
+ shape '[1, 1, 64, 64]' is invalid for input of size 4294967296
+
+W0212 21:17:22.155711 57939 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:17:22.157042 57939 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([64, 67108864],"float32"), list[16,-1,], )
+[Pass] paddle.reshape(Tensor([64, 67108864],"float32"), list[16,-1,], )
+
+W0212 21:18:46.416152 58939 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:18:46.416970 58939 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([65, 66076420],"float16"), tuple(1,1,65,64,), )
+[torch error] paddle.reshape(Tensor([65, 66076420],"float16"), tuple(1,1,65,64,), ) 
+ shape '[1, 1, 65, 64]' is invalid for input of size 4294967300
+
+W0212 21:22:30.609936 61241 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:22:30.611088 61241 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108864, 1, 1, 32, 2],"float16"), list[1,1,1,64,], )
+[torch error] paddle.reshape(Tensor([67108864, 1, 1, 32, 2],"float16"), list[1,1,1,64,], ) 
+ shape '[1, 1, 1, 64]' is invalid for input of size 4294967296
+
+W0212 21:24:01.862167 62216 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:24:01.863343 62216 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108864, 1, 8, 4, 2],"float32"), Tensor([4],"int64"), )
+[torch error] paddle.reshape(Tensor([67108864, 1, 8, 4, 2],"float32"), Tensor([4],"int64"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 21:25:25.486990 63466 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:25:25.488216 63466 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108864, 1, 8, 8],"float32"), Tensor([4],"int64"), )
+[torch error] paddle.reshape(Tensor([67108864, 1, 8, 8],"float32"), Tensor([4],"int64"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 21:26:45.795114 64156 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:26:45.796075 64156 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108864, 4, 4, 4],"float32"), list[2,64,], )
+[torch error] paddle.reshape(Tensor([67108864, 4, 4, 4],"float32"), list[2,64,], ) 
+ shape '[2, 64]' is invalid for input of size 4294967296
+
+W0212 21:28:02.376354 65159 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:28:02.377633 65159 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108864, 64],"float16"), tuple(1,1,64,64,), )
+[torch error] paddle.reshape(Tensor([67108864, 64],"float16"), tuple(1,1,64,64,), ) 
+ shape '[1, 1, 64, 64]' is invalid for input of size 4294967296
+
+W0212 21:29:37.312230 66107 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:29:37.313340 66107 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108864, 64],"float16"), tuple(1,1,65,64,), )
+[torch error] paddle.reshape(Tensor([67108864, 64],"float16"), tuple(1,1,65,64,), ) 
+ shape '[1, 1, 65, 64]' is invalid for input of size 4294967296
+
+W0212 21:31:08.008244 67096 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:31:08.009261 67096 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108865, 32],"float64"), shape=list[-1,4,32,], )
+[torch error] paddle.reshape(Tensor([67108865, 32],"float64"), shape=list[-1,4,32,], ) 
+ shape '[-1, 4, 32]' is invalid for input of size 2147483680
+
+W0212 21:32:07.693490 68096 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:32:07.694633 68096 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([67108865, 32],"int64"), shape=list[-1,1,], )
+[Pass] paddle.reshape(Tensor([67108865, 32],"int64"), shape=list[-1,1,], )
+
+W0212 21:33:08.366348 68760 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:33:08.367563 68760 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([684785, 128, 7, 7],"float32"), shape=list[2,2,64,7,7,], )
+[torch error] paddle.reshape(Tensor([684785, 128, 7, 7],"float32"), shape=list[2,2,64,7,7,], ) 
+ shape '[2, 2, 64, 7, 7]' is invalid for input of size 4294971520
+
+W0212 21:36:34.514437 70751 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:36:34.515527 70751 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([684785, 64, 2, 7, 7],"float32"), shape=list[2,128,7,7,], )
+[torch error] paddle.reshape(Tensor([684785, 64, 2, 7, 7],"float32"), shape=list[2,128,7,7,], ) 
+ shape '[2, 128, 7, 7]' is invalid for input of size 4294971520
+
+W0212 21:37:54.345834 71722 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:37:54.346937 71722 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([699051, 6, 32, 32],"float32"), list[2,-1,], )
+[Pass] paddle.reshape(Tensor([699051, 6, 32, 32],"float32"), list[2,-1,], )
+
+W0212 21:39:23.157032 72431 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:39:23.158043 72431 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 1, 2, 3],"float32"), list[-1,3,], )
+[Pass] paddle.reshape(Tensor([715827883, 1, 2, 3],"float32"), list[-1,3,], )
+
+W0212 21:43:04.740679 75324 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:43:04.741432 75324 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[0,0,-1,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[0,0,-1,], ) 
+ shape '[0, 0, -1]' is invalid for input of size 4294967298
+
+W0212 21:46:40.033766 77622 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:46:40.034869 77622 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,0,2,-1,3,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,0,2,-1,3,], ) 
+ shape '[1, 0, 2, -1, 3]' is invalid for input of size 4294967298
+
+W0212 21:47:59.410099 78581 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:47:59.411298 78581 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,0,3,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,0,3,], ) 
+ shape '[-1, 0, 3]' is invalid for input of size 4294967298
+
+W0212 21:49:15.934058 79496 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:49:15.935117 79496 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,-1,2,], )
+[Pass] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,-1,2,], )
+
+W0212 21:50:37.928985 80451 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:50:37.929873 80451 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,1,3,], )
+[Pass] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,1,3,], )
+
+W0212 21:54:12.814128 82782 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:54:12.815028 82782 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,18,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,18,2,], ) 
+ shape '[1, 18, 2]' is invalid for input of size 4294967298
+
+W0212 21:57:39.615705 85064 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:57:39.616724 85064 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,2,2,3,3,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[1,2,2,3,3,], ) 
+ shape '[1, 2, 2, 3, 3]' is invalid for input of size 4294967298
+
+W0212 21:58:54.790372 86004 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:58:54.791762 86004 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,3,2,], )
+[Pass] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,3,2,], )
+
+W0212 22:00:21.870709 86696 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:00:21.871678 86696 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,6,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,6,2,], ) 
+ shape '[-1, 6, 2]' is invalid for input of size 4294967298
+
+W0212 22:04:04.075215 89200 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:04:04.076167 89200 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,9,1,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,9,1,], ) 
+ shape '[-1, 9, 1]' is invalid for input of size 4294967298
+
+W0212 22:05:25.784008 90052 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:05:25.785014 90052 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,9,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[-1,9,2,], ) 
+ shape '[-1, 9, 2]' is invalid for input of size 4294967298
+
+W0212 22:06:47.878346 90615 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:06:47.879859 90615 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[12,1,3,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[12,1,3,], ) 
+ shape '[12, 1, 3]' is invalid for input of size 4294967298
+
+W0212 22:08:13.532145 91463 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:08:13.533157 91463 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,-1,0,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,-1,0,], ) 
+ shape '[2, -1, 0]' is invalid for input of size 4294967298
+
+W0212 22:09:29.811333 92315 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:09:29.812402 92315 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,1,18,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,1,18,], ) 
+ shape '[2, 1, 18]' is invalid for input of size 4294967298
+
+W0212 22:10:51.235450 92893 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:10:51.236557 92893 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,-1,18,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,-1,18,], ) 
+ shape '[2, -1, 18]' is invalid for input of size 4294967298
+
+W0212 22:12:16.638135 93744 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:12:16.639346 93744 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,3,0,-1,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,3,0,-1,], ) 
+ shape '[2, 3, 0, -1]' is invalid for input of size 4294967298
+
+W0212 22:13:41.407368 94607 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:13:41.408568 94607 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,3,3,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,3,3,2,], ) 
+ shape '[2, 3, 3, 2]' is invalid for input of size 4294967298
+
+W0212 22:15:04.537153 95445 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:15:04.538267 95445 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,6,3,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,6,3,], ) 
+ shape '[2, 6, 3]' is invalid for input of size 4294967298
+
+W0212 22:16:28.458132 96309 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:16:28.459654 96309 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,9,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[2,9,2,], ) 
+ shape '[2, 9, 2]' is invalid for input of size 4294967298
+
+W0212 22:17:49.287429 96887 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:17:49.288448 96887 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[3,6,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[3,6,2,], ) 
+ shape '[3, 6, 2]' is invalid for input of size 4294967298
+
+W0212 22:19:07.647882 97736 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:19:07.649076 97736 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[4,9,1,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[4,9,1,], ) 
+ shape '[4, 9, 1]' is invalid for input of size 4294967298
+
+W0212 22:20:21.771324 98601 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:20:21.772434 98601 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[6,2,3,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[6,2,3,], ) 
+ shape '[6, 2, 3]' is invalid for input of size 4294967298
+
+W0212 22:21:39.425612 99194 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:21:39.426687 99194 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[6,3,2,], )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), list[6,3,2,], ) 
+ shape '[6, 3, 2]' is invalid for input of size 4294967298
+
+W0212 22:22:58.984480 100262 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:22:58.985445 100262 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 2, 3],"float32"), Tensor([3],"int64"), )
+[torch error] paddle.reshape(Tensor([715827883, 2, 3],"float32"), Tensor([3],"int64"), ) 
+ reshape(): argument 'shape' must be tuple of ints, not Tensor
+
+W0212 22:24:20.247916 100852 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:24:20.249046 100852 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 3],"float64"), list[-1,], )
+[Pass] paddle.reshape(Tensor([715827883, 3],"float64"), list[-1,], )
+
+W0212 22:25:22.183743 101697 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:25:22.184574 101697 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 3],"int64"), list[-1,], )
+[Pass] paddle.reshape(Tensor([715827883, 3],"int64"), list[-1,], )
+
+W0212 22:28:13.326050 103386 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:28:13.326951 103386 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 3],"int64"), list[-1,1,], )
+[Pass] paddle.reshape(Tensor([715827883, 3],"int64"), list[-1,1,], )
+
+W0212 22:31:16.818352 105107 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:31:16.819559 105107 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 3],"int64"), list[2,4,3,], name="Categorical_sample", )
+[torch error] paddle.reshape(Tensor([715827883, 3],"int64"), list[2,4,3,], name="Categorical_sample", ) 
+ shape '[2, 4, 3]' is invalid for input of size 2147483649
+
+W0212 22:34:15.773595 106803 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:34:15.774698 106803 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 6],"float16"), shape=list[1,3,5,6,], )
+[torch error] paddle.reshape(Tensor([715827883, 6],"float16"), shape=list[1,3,5,6,], ) 
+ shape '[1, 3, 5, 6]' is invalid for input of size 4294967298
+
+W0212 22:35:45.101855 107377 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:35:45.103317 107377 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 6],"float16"), shape=list[2,3,5,6,], )
+[torch error] paddle.reshape(Tensor([715827883, 6],"float16"), shape=list[2,3,5,6,], ) 
+ shape '[2, 3, 5, 6]' is invalid for input of size 4294967298
+
+W0212 22:37:21.308326 108254 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:37:21.314970 108254 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 6],"float32"), shape=list[1,3,5,6,], )
+[torch error] paddle.reshape(Tensor([715827883, 6],"float32"), shape=list[1,3,5,6,], ) 
+ shape '[1, 3, 5, 6]' is invalid for input of size 4294967298
+
+W0212 22:38:39.736008 109118 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:38:39.737006 109118 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 6],"float32"), shape=list[-1,6,], )
+[Pass] paddle.reshape(Tensor([715827883, 6],"float32"), shape=list[-1,6,], )
+
+W0212 22:40:03.853361 109970 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:40:03.854233 109970 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715827883, 6],"float32"), shape=list[2,3,5,6,], )
+[torch error] paddle.reshape(Tensor([715827883, 6],"float32"), shape=list[2,3,5,6,], ) 
+ shape '[2, 3, 5, 6]' is invalid for input of size 4294967298
+
+W0212 22:43:56.692947 112227 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:43:56.694025 112227 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([71582789, 60],"float32"), list[12,10,], )
+[torch error] paddle.reshape(Tensor([71582789, 60],"float32"), list[12,10,], ) 
+ shape '[12, 10]' is invalid for input of size 4294967340
+
+W0212 22:45:18.166077 112806 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:45:18.167239 112806 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([715828, 3, 1000],"float64"), shape=list[-1,1000,], )
+[Pass] paddle.reshape(Tensor([715828, 3, 1000],"float64"), shape=list[-1,1000,], )
+
+W0212 22:46:22.933933 113645 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:46:22.934774 113645 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([7669585, 4, 4, 5, 7],"float32"), list[1,12,2,5,14,], )
+[torch error] paddle.reshape(Tensor([7669585, 4, 4, 5, 7],"float32"), list[1,12,2,5,14,], ) 
+ shape '[1, 12, 2, 5, 14]' is invalid for input of size 4294967600
+
+W0212 22:50:11.965137 115610 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:50:11.966421 115610 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([8, 1, 536870912],"float32"), shape=list[-1,128,], )
+[Pass] paddle.reshape(Tensor([8, 1, 536870912],"float32"), shape=list[-1,128,], )
+
+W0212 22:51:46.113680 116462 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:51:46.114842 116462 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([8, 1024, 1, 524288],"float32"), shape=list[-1,1024,], )
+[Pass] paddle.reshape(Tensor([8, 1024, 1, 524288],"float32"), shape=list[-1,1024,], )
+
+W0212 22:55:34.812849 118721 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:55:34.814059 118721 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([8, 1024, 524288, 1],"float32"), shape=list[-1,1024,], )
+[Pass] paddle.reshape(Tensor([8, 1024, 524288, 1],"float32"), shape=list[-1,1024,], )
+
+W0212 22:59:17.723639 120871 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:59:17.724454 120871 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([8, 1118482, 4, 4, 5, 3],"int64"), list[24,8,10,3,], )
+[torch error] paddle.reshape(Tensor([8, 1118482, 4, 4, 5, 3],"int64"), list[24,8,10,3,], ) 
+ shape '[24, 8, 10, 3]' is invalid for input of size 2147485440
+
+W0212 23:02:23.099488 122997 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:02:23.100577 122997 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.reshape(Tensor([8, 2048, 1, 262144],"float16"), shape=list[-1,2048,], )
+[Pass] paddle.reshape(Tensor([8, 2048, 1, 262144],"float16"), shape=list[-1,2048,], )
+
+W0212 23:03:59.239547 123570 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:03:59.240417 123570 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
