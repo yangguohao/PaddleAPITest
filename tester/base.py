@@ -17,6 +17,48 @@ class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
 
+    def need_skip(self):
+        if "sparse." in self.api_config.api_name:
+            return True
+        for i in range(len(self.api_config.args)):
+            if isinstance(self.api_config.args[i], TensorConfig):
+                if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                    return True
+            elif isinstance(self.api_config.args[i], list):
+                tmp = []
+                for j in range(len(self.api_config.args[i])):
+                    if isinstance(self.api_config.args[i][j], TensorConfig):
+                        if self.api_config.args[i][j].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            return True
+            elif isinstance(self.api_config.args[i], tuple):
+                tmp = []
+                for j in range(len(self.api_config.args[i])):
+                    if isinstance(self.api_config.args[i][j], TensorConfig):
+                        if self.api_config.args[i][j].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            return True
+            elif self.api_config.args[i] in [paddle.base.core.DataType.FLOAT8_E4M3FN, paddle.base.core.DataType.FLOAT8_E5M2, "float8_e5m2", "float8_e4m3fn"]:
+                return True
+
+        for key, arg_config in self.api_config.kwargs.items():
+            if isinstance(arg_config, TensorConfig):
+                if arg_config.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                    return True
+            elif isinstance(arg_config, list):
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        if arg_config[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            return True
+            elif isinstance(arg_config, tuple):
+                tmp = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        if arg_config[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            return True
+            elif arg_config in [paddle.base.core.DataType.FLOAT8_E4M3FN, paddle.base.core.DataType.FLOAT8_E5M2, "float8_e5m2", "float8_e4m3fn"]:
+                return True
+
+        return False
     def ana_api_info(self):
         if not self.ana_paddle_api_info():
             return False
@@ -122,12 +164,12 @@ class APITestBase:
         for i in range(len(self.paddle_args)):
             if isinstance(self.paddle_args[i], paddle.Tensor):
                 args.append(paddle.assign(self.paddle_args[i]))
-            elif isinstance(self.paddle_args[i], list):
+            elif isinstance(self.paddle_args[i], list) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
                 tmp = []
                 for j in range(len(self.paddle_args[i])):
                     tmp.append(paddle.assign(self.paddle_args[i][j]))
                 args.append(tmp)
-            elif isinstance(self.paddle_args[i], tuple):
+            elif isinstance(self.paddle_args[i], tuple) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
                 tmp = []
                 for j in range(len(self.paddle_args[i])):
                     tmp.append(paddle.assign(self.paddle_args[i][j]))
@@ -161,7 +203,7 @@ class APITestBase:
             elif isinstance(self.paddle_args[i], list) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
                 result = result + self.paddle_args[i]
             elif isinstance(self.paddle_args[i], tuple) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                result.append(self.paddle_args[i])
+                result = result + list(self.paddle_args[i])
 
         for key, value in self.paddle_kwargs.items():
             if isinstance(value, paddle.Tensor):
@@ -169,7 +211,7 @@ class APITestBase:
             elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
                 result = result + value
             elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
-                result.append(value)
+                result = result + list(value)
 
         return result
 
@@ -454,6 +496,7 @@ class APITestBase:
             "bitwise_and",
             "bitwise_left_shift",
             "bitwise_not",
+            "bitwise_invert",
             "bitwise_or",
             "bitwise_right_shift",
             "bitwise_xor",
@@ -525,6 +568,7 @@ class APITestBase:
             "empty",
             "empty_like",
             "equal",
+            "isreal",
             "equal_all",
             "eye",
             "fake_channel_wise_dequantize_max_abs",
@@ -576,12 +620,14 @@ class APITestBase:
             "fusion_transpose_flatten_concat",
             "gather_tree",
             "gaussian",
+            "standard_normal",
             "gemm_epilogue",
             "generate_proposals",
             "generate_sequence_xpu",
             "get_tensor_from_selected_rows",
             "graph_khop_sampler",
             "graph_sample_neighbors",
+            "sample_neighbors",
             "greater_equal",
             "greater_than",
             "group_norm_silu_xpu",
@@ -598,15 +644,21 @@ class APITestBase:
             "layer_norm_act_xpu",
             "less_equal",
             "less_than",
+            "less",
             "limit_by_capacity",
             "linspace",
+            "histogram_bin_edges",
+            "block_multihead_attention",
             "llm_int8_linear",
             "load_combine",
             "lod_array_length",
             "logical_and",
+            "isneginf",
+            "isposinf",
             "logical_not",
             "logical_or",
             "logical_xor",
+            "diff",
             "logspace",
             "lower",
             "lstsq",
@@ -669,6 +721,7 @@ class APITestBase:
             "rprop_",
             "save_combine",
             "searchsorted",
+            "bucketize",
             "seed",
             "self_dp_attention",
             "send_and_recv",
@@ -713,6 +766,105 @@ class APITestBase:
             "yolo_box_xpu",
             "zeros",
             "zeros_like",
+            "atleast_1d",
+            "atleast_2d",
+            "atleast_3d",
+            "add_act_xpu",
+            "add_layernorm_xpu",
+            "addcmul_xpu",
+            "blha_get_max_len",
+            "block_multihead_attention_",
+            "block_multihead_attention_xpu",
+            "bn_act_xpu",
+            "conv1d_xpu",
+            "conv2d_transpose_xpu",
+            "conv2d_xpu",
+            "cross_attention_xpu",
+            "dequantize_xpu",
+            "distributed_fused_lamb_init",
+            "embedding_with_eltwise_add_xpu",
+            "fast_layernorm_xpu",
+            "fast_where_xpu",
+            "fc",
+            "fc_xpu",
+            "fp8_fp8_half_gemm_fused",
+            "fused_bias_act",
+            "fused_bias_residual_layernorm",
+            "fused_conv2d_add_act",
+            "fused_dconv_drelu_dbn",
+            "fused_elementwise_add",
+            "fused_elementwise_div",
+            "fused_elementwise_mul",
+            "fused_elementwise_sub",
+            "fused_embedding_eltwise_layernorm",
+            "fused_fc_elementwise_layernorm",
+            "fused_linear_param_grad_add",
+            "fused_multi_transformer_",
+            "fused_multi_transformer_int8_xpu",
+            "fused_multi_transformer_xpu",
+            "fused_scale_bias_add_relu",
+            "fused_scale_bias_relu_conv_bn",
+            "fused_token_prune",
+            "fusion_group",
+            "fusion_gru",
+            "fusion_lstm",
+            "fusion_repeated_fc_relu",
+            "fusion_seqconv_eltadd_relu",
+            "fusion_seqpool_concat",
+            "fusion_seqpool_cvm_concat",
+            "fusion_squared_mat_sub",
+            "fusion_transpose_flatten_concat",
+            "gemm_epilogue",
+            "generate_sequence_xpu",
+            "group_norm_silu_xpu",
+            "layer_norm_act_xpu",
+            "layer_norm_relu_xpu",
+            "mask_adaptive_xpu",
+            "multi_encoder_xpu",
+            "multihead_matmul",
+            "pad2d_xpu",
+            "qkv_attention_xpu",
+            "qkv_unpack_mha",
+            "quantize_xpu",
+            "roformer_relative_embedding_xpu",
+            "self_dp_attention",
+            "sequence_unpad_xpu",
+            "sine_pos_xpu",
+            "skip_layernorm",
+            "spatial_transformer_resblock_xpu",
+            "squeeze_excitation_block",
+            "variable_length_memory_efficient_attention",
+            "weight_only_linear_xpu",
+            "yolo_box_xpu",
+            "add_group_norm_silu",
+            "fused_embedding_fc_lstm",
+            "fused_moe",
+            "histogramdd",
+            "fused_layer_norm",
+            "isin",
+            "qr",
+            "svd_lowrank",
+            "__eq__",
+            "__ne__",
+            "__lt__",
+            "__le__",
+            "__gt__",
+            "__ge__",
+            "__and__",
+            "__rand__",
+            "__rand__",
+            "__or__",
+            "__ror__",
+            "__ror__",
+            "__xor__",
+            "__rxor__",
+            "__rxor__",
+            "__invert__",
+            "__lshift__",
+            "__rlshift__",
+            "__rrshift__",
+            "__rshift__",
+
         ]
         
         api = self.api_config.api_name[self.api_config.api_name.rindex(".")+1:]

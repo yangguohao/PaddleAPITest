@@ -50,12 +50,19 @@ class TensorConfig:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
     def get_numpy_tensor(self):
+        if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+            print("Warning ", self.dtype, "not supported")
+            return
         if self.numpy_tensor is None:
             dtype = "float32" if self.dtype == "bfloat16" else self.dtype
             self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
         return self.numpy_tensor
     
     def get_paddle_tensor(self):
+        if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+            print("Warning ", self.dtype, "not supported")
+            return
+
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
                 self.get_numpy_tensor(),
@@ -67,6 +74,10 @@ class TensorConfig:
                 self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
     def get_torch_tensor(self):
+        if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+            print("Warning ", self.dtype, "not supported")
+            return
+
         device = torch.device("cuda:0")
         torch.set_default_device(device)
         if self.torch_tensor is None:
@@ -323,8 +334,8 @@ class APIConfig:
                 break
         
         tuple_str = config[offset: last_index+1]
-        if "TensorConfig" not in tuple_str and "slice" not in tuple_str:
-            tuple_str = tuple_str.replace(",", " ")
+
+        tuple_str = tuple_str.replace(",", " , ")
 
         offset = 1
         while(True):

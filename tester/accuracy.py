@@ -20,6 +20,9 @@ class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
         self.api_config = api_config
     def test(self):
+        if self.need_skip():
+            return
+
         if not self.ana_api_info():
             return
 
