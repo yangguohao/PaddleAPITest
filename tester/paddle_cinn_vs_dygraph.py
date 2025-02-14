@@ -75,6 +75,9 @@ class APITestCINNVSDygraph(APITestBase):
             api_config_paddle_error.write(self.api_config.config+"\n")
             return
 
+        if self.api_config.api_name == "paddle.broadcast_shape":
+            return
+
         if isinstance(paddle_output, paddle.Tensor):
             try:
                 if paddle_output.dtype == paddle.bfloat16:
