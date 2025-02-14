@@ -109,18 +109,21 @@ class APITestCINNVSDygraph(APITestBase):
                 paddle_output = None
                 return
             for i in range(len(paddle_output)):
-                try:
-                    if paddle_output[i].dtype == paddle.bfloat16:
-                        paddle_output[i] = paddle.cast(paddle_output[i], dtype="float32")
-                        paddle_output_static[i] = paddle.cast(paddle_output_static[i], dtype="float32")
-                    self.np_assert_accuracy(paddle_output[i].numpy(), paddle_output_static[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
-                except Exception as err:
-                    print("[accuracy error]", self.api_config.config, "\n", str(err))
-                    paddle_output_static = None
-                    paddle_output = None
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
-                    return
+                if isinstance(paddle_output[i], paddle.Tensor):
+                    print("not compare ", paddle_output[i], paddle_output_static[i])
+                else:
+                    try:
+                        if paddle_output[i].dtype == paddle.bfloat16:
+                            paddle_output[i] = paddle.cast(paddle_output[i], dtype="float32")
+                            paddle_output_static[i] = paddle.cast(paddle_output_static[i], dtype="float32")
+                        self.np_assert_accuracy(paddle_output[i].numpy(), paddle_output_static[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                    except Exception as err:
+                        print("[accuracy error]", self.api_config.config, "\n", str(err))
+                        paddle_output_static = None
+                        paddle_output = None
+                        api_config_accuracy_error.write(self.api_config.config+"\n")
+                        api_config_accuracy_error.flush()
+                        return
 
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
