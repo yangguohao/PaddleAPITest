@@ -26,31 +26,21 @@ class APITestCINNVSDygraph(APITestBase):
             return
 
         try:
-            def func(args, kwargs):
-                paddle_output = self.paddle_api(*tuple(args), **kwargs)
-                del args
-                del kwargs
-                if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
-                    inputs_list = self.get_paddle_input_list()
-                    result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
-                    if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
-                        out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
-                        return paddle_output, out_grads
-                return paddle_output, None
+            def func_backward(result_outputs, inputs_list, result_outputs_grads):
+                return paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
 
-            @to_static
+            build_strategy = paddle.static.BuildStrategy()
+            build_strategy.build_cinn_pass = True
+            @to_static(full_graph=True, build_strategy=build_strategy)
+            def func_backward_static(result_outputs, inputs_list, result_outputs_grads):
+                return func_backward(result_outputs, inputs_list, result_outputs_grads)
+
+            def func(args, kwargs):
+                return self.paddle_api(*tuple(args), **kwargs)
+
+            @to_static(full_graph=True, build_strategy=build_strategy)
             def func_static(args, kwargs):
-                paddle_output = self.paddle_api(*tuple(args), **kwargs)
-                del args
-                del kwargs
-                if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
-                    inputs_list = self.get_paddle_input_list()
-                    result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
-                    if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
-                        out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
-                        return paddle_output, out_grads
-                return paddle_output, None
-                # return func(args, kwargs)
+                return func(args, kwargs)
 
             if not self.gen_paddle_input():
                 return
@@ -59,8 +49,16 @@ class APITestCINNVSDygraph(APITestBase):
             else:
                 args = self.paddle_args
                 kwargs = self.paddle_kwargs
-            # paddle_output, out_grads = func(args, kwargs)
-            paddle_output_static, out_grads_static = func_static(args, kwargs)
+
+            paddle_output = func(args, kwargs)
+            paddle_output_static = func_static(args, kwargs)
+
+            if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
+                inputs_list = self.get_paddle_input_list()
+                result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
+                if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
+                    out_grads = func_backward(result_outputs, inputs_list, result_outputs_grads)
+                    out_grads_static = func_backward_static(result_outputs, inputs_list, result_outputs_grads)
             self.clear_paddle_tensor()
         except Exception as err:
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
