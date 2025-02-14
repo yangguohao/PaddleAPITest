@@ -84,14 +84,21 @@ def main():
             del case
             del api_config
         elif options.api_config_file != "":
-            api_configs = analyse_configs(options.api_config_file)
-            for i in range(len(api_configs)):
-                api_config = api_configs[i]
+            checkpoint_r = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/checkpoint.txt", "r")
+            finish_configs = checkpoint_r.readlines()
+            checkpoint_r.close()
+            checkpoint = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/checkpoint.txt", "a")
+            api_configs = open(options.api_config_file, "r")
+            for api_config_str in api_configs:
+                if api_config_str in finish_configs:
+                    continue
+                api_config = APIConfig(api_config_str)
                 print("test begin:", api_config.config, flush=True)
+                checkpoint.write(api_config.config+"\n")
+                checkpoint.flush()
                 case = APITestCINNVSDygraph(api_config)
                 case.test()
                 case.clear_tensor()
-                api_configs[i] = None
                 del case
                 del api_config
     if options.accuracy:
