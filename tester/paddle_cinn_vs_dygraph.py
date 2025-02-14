@@ -66,6 +66,7 @@ class APITestCINNVSDygraph(APITestBase):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         try:
@@ -73,6 +74,7 @@ class APITestCINNVSDygraph(APITestBase):
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         if self.api_config.api_name == "paddle.broadcast_shape":
@@ -89,6 +91,7 @@ class APITestCINNVSDygraph(APITestBase):
                 paddle_output_static = None
                 paddle_output = None
                 api_config_accuracy_error.write(self.api_config.config+"\n")
+                api_config_accuracy_error.flush()
                 return
         elif isinstance(paddle_output, (list, tuple)):
             if isinstance(paddle_output, tuple):
@@ -116,8 +119,10 @@ class APITestCINNVSDygraph(APITestBase):
                     paddle_output_static = None
                     paddle_output = None
                     api_config_accuracy_error.write(self.api_config.config+"\n")
+                    api_config_accuracy_error.flush()
                     return
 
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
+        api_config_pass.flush()
   

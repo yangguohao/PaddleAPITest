@@ -49,6 +49,7 @@ class APITestPaddleOnly(APITestBase):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         try:
@@ -60,6 +61,7 @@ class APITestPaddleOnly(APITestBase):
             result_outputs_grads = None
             out_grads = None
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         paddle_output = None
@@ -68,4 +70,5 @@ class APITestPaddleOnly(APITestBase):
         out_grads = None
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
+        api_config_pass.flush()
   

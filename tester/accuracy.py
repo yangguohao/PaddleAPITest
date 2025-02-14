@@ -38,6 +38,7 @@ class APITestAccuracy(APITestBase):
             print("[torch error]", self.api_config.config, "\n", str(err))
             torch_output = None
             api_config_torch_error.write(self.api_config.config+"\n")
+            api_config_torch_error.flush()
             return
 
         try:
@@ -51,6 +52,7 @@ class APITestAccuracy(APITestBase):
             torch_output = None
             paddle_output = None
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         try:
@@ -60,6 +62,7 @@ class APITestAccuracy(APITestBase):
             torch_output = None
             paddle_output = None
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         if isinstance(paddle_output, paddle.Tensor):
@@ -74,6 +77,7 @@ class APITestAccuracy(APITestBase):
                     torch_output = None
                     paddle_output = None
                     api_config_accuracy_error.write(self.api_config.config+"\n")
+                    api_config_accuracy_error.flush()
                     return
             else:
                 print("[output type diff error]", self.api_config.config)
@@ -103,9 +107,11 @@ class APITestAccuracy(APITestBase):
                     torch_output = None
                     paddle_output = None
                     api_config_accuracy_error.write(self.api_config.config+"\n")
+                    api_config_accuracy_error.flush()
                     return
         torch_output = None
         paddle_output = None
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
+        api_config_pass.flush()
   
