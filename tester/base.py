@@ -11,7 +11,7 @@ import torch
 import paddle
 import inspect
 
-api_config_paddle_to_torch_faild = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
+api_config_paddle_to_torch_faild = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
 
 class APITestBase:
     def __init__(self, api_config):

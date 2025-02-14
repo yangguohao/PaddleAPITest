@@ -9,9 +9,9 @@ import json
 import paddle
 import inspect
 from .base import APITestBase
-api_config_accuracy_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_pass = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_pass.txt", "a")
+api_config_accuracy_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
+api_config_paddle_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_error.txt", "a")
+api_config_pass = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_pass.txt", "a")
 
 class APITestPaddleOnly(APITestBase):
     def __init__(self, api_config):
