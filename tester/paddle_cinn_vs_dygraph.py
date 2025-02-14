@@ -109,7 +109,7 @@ class APITestCINNVSDygraph(APITestBase):
                 paddle_output = None
                 return
             for i in range(len(paddle_output)):
-                if isinstance(paddle_output[i], paddle.Tensor):
+                if not isinstance(paddle_output[i], paddle.Tensor):
                     print("not compare ", paddle_output[i], paddle_output_static[i])
                 else:
                     try:
