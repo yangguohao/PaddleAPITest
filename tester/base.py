@@ -11,7 +11,7 @@ import torch
 import paddle
 import inspect
 
-api_config_paddle_to_torch_faild = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
+api_config_paddle_to_torch_faild = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
 
 class APITestBase:
     def __init__(self, api_config):
@@ -77,6 +77,7 @@ class APITestBase:
         if paddle_to_torch_args_map is None:
             print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
             api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
+            api_config_paddle_to_torch_faild.flush()
             return False
         self.torch_api = eval(torch_api)
 
@@ -100,6 +101,7 @@ class APITestBase:
             if key not in paddle_to_torch_args_map:
                 print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
                 api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
+                api_config_paddle_to_torch_faild.flush()
                 return False
 
             self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value

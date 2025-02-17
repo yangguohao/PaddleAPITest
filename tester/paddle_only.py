@@ -9,9 +9,9 @@ import json
 import paddle
 import inspect
 from .base import APITestBase
-api_config_accuracy_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_pass = open("/data/OtherRepo/PaddleAPITest/tester/api_config/test_log/api_config_pass.txt", "a")
+api_config_accuracy_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
+api_config_paddle_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_error.txt", "a")
+api_config_pass = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_pass.txt", "a")
 
 class APITestPaddleOnly(APITestBase):
     def __init__(self, api_config):
@@ -49,6 +49,7 @@ class APITestPaddleOnly(APITestBase):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         try:
@@ -60,6 +61,7 @@ class APITestPaddleOnly(APITestBase):
             result_outputs_grads = None
             out_grads = None
             api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
             return
 
         paddle_output = None
@@ -68,4 +70,5 @@ class APITestPaddleOnly(APITestBase):
         out_grads = None
         print("[Pass]", self.api_config.config)
         api_config_pass.write(self.api_config.config+"\n")
+        api_config_pass.flush()
   

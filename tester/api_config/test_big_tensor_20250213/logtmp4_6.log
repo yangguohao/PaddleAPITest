@@ -1,0 +1,1421 @@
+test begin: paddle.sin(Tensor([8, 16, 16777217],"float64"), )
+[Pass] paddle.sin(Tensor([8, 16, 16777217],"float64"), )
+
+W0212 14:08:00.937110 102609 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:08:00.937992 102609 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8, 16, 33554432],"float16"), )
+[Pass] paddle.sin(Tensor([8, 16, 33554432],"float16"), )
+
+W0212 14:11:38.392549 104743 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:11:38.393682 104743 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8, 16, 33554432],"float32"), )
+[Pass] paddle.sin(Tensor([8, 16, 33554432],"float32"), )
+
+W0212 14:20:32.850962 110457 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:20:32.851866 110457 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8, 16777216, 32],"float16"), )
+[Pass] paddle.sin(Tensor([8, 16777216, 32],"float16"), )
+
+W0212 14:24:17.996637 112658 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:24:17.997646 112658 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8, 16777216, 32],"float32"), )
+[Pass] paddle.sin(Tensor([8, 16777216, 32],"float32"), )
+
+W0212 14:33:19.637413 118458 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:33:19.638387 118458 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8, 8388609, 32],"float64"), )
+[Pass] paddle.sin(Tensor([8, 8388609, 32],"float64"), )
+
+W0212 14:36:43.495316 121182 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:36:43.496395 121182 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8388608, 16, 32],"float16"), )
+[Pass] paddle.sin(Tensor([8388608, 16, 32],"float16"), )
+
+W0212 14:40:22.182485 123282 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:40:22.183377 123282 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sin(Tensor([8388608, 16, 32],"float32"), )
+[Pass] paddle.sin(Tensor([8388608, 16, 32],"float32"), )
+
+W0212 14:49:17.158293 129057 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:49:17.159296 129057 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinc(Tensor([16, 134217729],"float64"), )
+[paddle error] paddle.sinc(Tensor([16, 134217729],"float64"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_where(_object*, _object*, _object*)
+1   where_ad_func(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+2   paddle::experimental::where(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+3   void phi::WhereKernel<double, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor*)
+4   double* phi::DeviceContext::Alloc<double>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DeviceContext::Impl::Alloc(phi::TensorBase*, phi::Place const&, phi::DataType, unsigned long, bool, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+12  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+13  paddle::memory::allocation::CUDAAllocator::AllocateImpl(unsigned long)
+14  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+15  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 16.000000GB memory on GPU 0, 67.594666GB memory has been allocated and available memory is only 11.590210GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:84)
+
+
+W0212 14:52:35.597286 131606 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:52:35.598260 131606 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinc(Tensor([16, 268435456],"float32"), )
+[paddle error] paddle.sinc(Tensor([16, 268435456],"float32"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_where(_object*, _object*, _object*)
+1   where_ad_func(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+2   paddle::experimental::where(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+3   void phi::WhereKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor*)
+4   float* phi::DeviceContext::Alloc<float>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DeviceContext::Impl::Alloc(phi::TensorBase*, phi::Place const&, phi::DataType, unsigned long, bool, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+12  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+13  paddle::memory::allocation::CUDAAllocator::AllocateImpl(unsigned long)
+14  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+15  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 16.000000GB memory on GPU 0, 69.584900GB memory has been allocated and available memory is only 9.599976GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:84)
+
+
+W0212 14:54:02.997171 132279 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:54:02.998075 132279 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinc(Tensor([2147483649],"float64"), )
+[paddle error] paddle.sinc(Tensor([2147483649],"float64"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_expand(_object*, _object*, _object*)
+1   expand_ad_func(paddle::Tensor const&, paddle::experimental::IntArrayBase<paddle::Tensor>)
+2   paddle::experimental::expand(paddle::Tensor const&, paddle::experimental::IntArrayBase<paddle::Tensor> const&)
+3   void phi::ExpandKernel<double, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, paddle::experimental::IntArrayBase<phi::DenseTensor> const&, phi::DenseTensor*)
+4   double* phi::DeviceContext::Alloc<double>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DeviceContext::Impl::Alloc(phi::TensorBase*, phi::Place const&, phi::DataType, unsigned long, bool, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+12  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+13  paddle::memory::allocation::CUDAAllocator::AllocateImpl(unsigned long)
+14  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+15  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 16.000000GB memory on GPU 0, 69.596619GB memory has been allocated and available memory is only 9.588257GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:84)
+
+
+W0212 14:55:10.377192 133564 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:55:10.378093 133564 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinc(Tensor([33554433, 64],"float64"), )
+[paddle error] paddle.sinc(Tensor([33554433, 64],"float64"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_where(_object*, _object*, _object*)
+1   where_ad_func(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+2   paddle::experimental::where(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+3   void phi::WhereKernel<double, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor*)
+4   double* phi::DeviceContext::Alloc<double>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DeviceContext::Impl::Alloc(phi::TensorBase*, phi::Place const&, phi::DataType, unsigned long, bool, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+12  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+13  paddle::memory::allocation::CUDAAllocator::AllocateImpl(unsigned long)
+14  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+15  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 16.000000GB memory on GPU 0, 67.594666GB memory has been allocated and available memory is only 11.590210GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:84)
+
+
+W0212 14:56:15.099032 134231 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:56:15.099906 134231 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinc(Tensor([4294967295],"float32"), )
+[paddle error] paddle.sinc(Tensor([4294967295],"float32"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_expand(_object*, _object*, _object*)
+1   expand_ad_func(paddle::Tensor const&, paddle::experimental::IntArrayBase<paddle::Tensor>)
+2   paddle::experimental::expand(paddle::Tensor const&, paddle::experimental::IntArrayBase<paddle::Tensor> const&)
+3   void phi::ExpandKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, paddle::experimental::IntArrayBase<phi::DenseTensor> const&, phi::DenseTensor*)
+4   float* phi::DeviceContext::Alloc<float>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DeviceContext::Impl::Alloc(phi::TensorBase*, phi::Place const&, phi::DataType, unsigned long, bool, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+12  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+13  paddle::memory::allocation::CUDAAllocator::AllocateImpl(unsigned long)
+14  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+15  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 16.000000GB memory on GPU 0, 73.584900GB memory has been allocated and available memory is only 5.599976GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:84)
+
+
+W0212 14:57:40.298236 134891 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:57:40.299124 134891 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinc(Tensor([67108864, 64],"float32"), )
+[paddle error] paddle.sinc(Tensor([67108864, 64],"float32"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_where(_object*, _object*, _object*)
+1   where_ad_func(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+2   paddle::experimental::where(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&)
+3   void phi::WhereKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor*)
+4   float* phi::DeviceContext::Alloc<float>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DeviceContext::Impl::Alloc(phi::TensorBase*, phi::Place const&, phi::DataType, unsigned long, bool, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+12  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+13  paddle::memory::allocation::CUDAAllocator::AllocateImpl(unsigned long)
+14  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+15  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 16.000000GB memory on GPU 0, 69.584900GB memory has been allocated and available memory is only 9.599976GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:84)
+
+
+W0212 14:59:07.410019 135846 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 14:59:07.410908 135846 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([10, 20, 21474837],"float32"), )
+[Pass] paddle.sinh(Tensor([10, 20, 21474837],"float32"), )
+
+W0212 15:00:37.785233 136794 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:00:37.786427 136794 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([10, 429496730, 1],"float32"), )
+[Pass] paddle.sinh(Tensor([10, 429496730, 1],"float32"), )
+
+W0212 15:04:33.585939 139323 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:04:33.586869 139323 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([1431655765, 3],"float32"), )
+[Pass] paddle.sinh(Tensor([1431655765, 3],"float32"), )
+
+W0212 15:08:18.516834 141594 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:08:18.517735 141594 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([2, 2147483648],"float32"), )
+[Pass] paddle.sinh(Tensor([2, 2147483648],"float32"), )
+
+W0212 15:12:14.278851 144085 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:12:14.279747 144085 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([214748365, 20, 1],"float32"), )
+[Pass] paddle.sinh(Tensor([214748365, 20, 1],"float32"), )
+
+W0212 15:15:52.106408 146623 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:15:52.107344 146623 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([4194305, 16, 32],"float64"), )
+[Pass] paddle.sinh(Tensor([4194305, 16, 32],"float64"), )
+
+W0212 15:19:05.427776 148870 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:19:05.428855 148870 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8, 16, 16777217],"float64"), )
+[Pass] paddle.sinh(Tensor([8, 16, 16777217],"float64"), )
+
+W0212 15:22:17.127668 150790 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:22:17.128589 150790 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8, 16, 33554432],"float16"), )
+[Pass] paddle.sinh(Tensor([8, 16, 33554432],"float16"), )
+
+W0212 15:25:54.661053 152707 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:25:54.662125 152707 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8, 16, 33554432],"float32"), )
+[Pass] paddle.sinh(Tensor([8, 16, 33554432],"float32"), )
+
+W0212 15:34:54.024606 158601 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:34:54.025668 158601 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8, 16777216, 32],"float16"), )
+[Pass] paddle.sinh(Tensor([8, 16777216, 32],"float16"), )
+
+W0212 15:38:43.385804 160822 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:38:43.386865 160822 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8, 16777216, 32],"float32"), )
+[Pass] paddle.sinh(Tensor([8, 16777216, 32],"float32"), )
+
+W0212 15:47:44.807309  3013 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:47:44.808705  3013 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8, 8388609, 32],"float64"), )
+[Pass] paddle.sinh(Tensor([8, 8388609, 32],"float64"), )
+
+W0212 15:51:14.479144  5580 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:51:14.480053  5580 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8388608, 16, 32],"float16"), )
+[Pass] paddle.sinh(Tensor([8388608, 16, 32],"float16"), )
+
+W0212 15:54:49.956997  7510 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 15:54:49.958113  7510 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sinh(Tensor([8388608, 16, 32],"float32"), )
+[Pass] paddle.sinh(Tensor([8388608, 16, 32],"float32"), )
+
+W0212 16:03:50.741750 13254 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:03:50.742614 13254 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 2, 2147483648],"float32"), )
+[Pass] paddle.sqrt(Tensor([1, 2, 2147483648],"float32"), )
+
+W0212 16:07:25.894513 15785 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:07:25.895473 15785 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 2147483648, 2],"float32"), )
+[Pass] paddle.sqrt(Tensor([1, 2147483648, 2],"float32"), )
+
+W0212 16:11:11.400321 18343 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:11:11.401237 18343 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 2147483649],"float64"), )
+[Pass] paddle.sqrt(Tensor([1, 2147483649],"float64"), )
+
+W0212 16:15:08.513502 21297 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:15:08.514384 21297 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 214748365, 10],"float64"), )
+[Pass] paddle.sqrt(Tensor([1, 214748365, 10],"float64"), )
+
+W0212 16:18:01.881841 23296 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:18:01.882886 23296 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 3, 715827883],"float64"), )
+[Pass] paddle.sqrt(Tensor([1, 3, 715827883],"float64"), )
+
+W0212 16:21:01.193244 25299 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:21:01.194172 25299 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 4294967295, 1],"float32"), )
+[Pass] paddle.sqrt(Tensor([1, 4294967295, 1],"float32"), )
+
+W0212 16:24:27.331460 27416 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:24:27.332500 27416 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1, 4294967295],"float32"), )
+[Pass] paddle.sqrt(Tensor([1, 4294967295],"float32"), )
+
+W0212 16:28:09.146402 29769 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:28:09.147249 29769 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1048576, 32, 128],"float32"), )
+[Pass] paddle.sqrt(Tensor([1048576, 32, 128],"float32"), )
+
+W0212 16:31:43.110167 32099 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:31:43.111764 32099 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1073741824, 2, 2],"float32"), )
+[Pass] paddle.sqrt(Tensor([1073741824, 2, 2],"float32"), )
+
+W0212 16:35:51.867872 34719 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:35:51.868781 34719 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1073741824, 4],"float32"), )
+[Pass] paddle.sqrt(Tensor([1073741824, 4],"float32"), )
+
+W0212 16:39:27.403031 37323 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:39:27.403939 37323 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([1431655765, 3],"float32"), )
+[Pass] paddle.sqrt(Tensor([1431655765, 3],"float32"), )
+
+W0212 16:43:14.379405 39681 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:43:14.380360 39681 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([2, 1073741824, 2],"float32"), )
+[Pass] paddle.sqrt(Tensor([2, 1073741824, 2],"float32"), )
+
+W0212 16:46:55.846489 42276 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:46:55.847443 42276 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([2, 2, 1073741824],"float32"), )
+[Pass] paddle.sqrt(Tensor([2, 2, 1073741824],"float32"), )
+
+W0212 16:50:24.161185 44594 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:50:24.162096 44594 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([2, 2147483648, 1],"float32"), )
+[Pass] paddle.sqrt(Tensor([2, 2147483648, 1],"float32"), )
+
+W0212 16:54:04.769770 46896 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:54:04.770777 46896 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([2, 2147483648],"float32"), )
+[Pass] paddle.sqrt(Tensor([2, 2147483648],"float32"), )
+
+W0212 16:57:54.353220 49566 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 16:57:54.354065 49566 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([2147483648, 2, 1],"float32"), )
+[Pass] paddle.sqrt(Tensor([2147483648, 2, 1],"float32"), )
+
+W0212 17:01:27.403962 52033 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:01:27.404915 52033 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([2147483649],"float64"), )
+[Pass] paddle.sqrt(Tensor([2147483649],"float64"), )
+
+W0212 17:04:53.974354 54546 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:04:53.975291 54546 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([214748365, 10],"float64"), )
+[Pass] paddle.sqrt(Tensor([214748365, 10],"float64"), )
+
+W0212 17:07:47.765897 56525 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:07:47.766800 56525 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([32, 1048576, 128],"float32"), )
+[Pass] paddle.sqrt(Tensor([32, 1048576, 128],"float32"), )
+
+W0212 17:11:09.743289 58550 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:11:09.744182 58550 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([32, 32, 4194304],"float32"), )
+[Pass] paddle.sqrt(Tensor([32, 32, 4194304],"float32"), )
+
+W0212 17:14:58.048507 60867 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:14:58.049701 60867 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([4294967295, 1],"float32"), )
+[Pass] paddle.sqrt(Tensor([4294967295, 1],"float32"), )
+
+W0212 17:19:00.440781 63495 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:19:00.441723 63495 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([4294967295],"float32"), )
+[Pass] paddle.sqrt(Tensor([4294967295],"float32"), )
+
+W0212 17:23:24.848677 66401 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:23:24.850147 66401 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([5, 429496730],"float64"), )
+[Pass] paddle.sqrt(Tensor([5, 429496730],"float64"), )
+
+W0212 17:27:36.031174 69605 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:27:36.032033 69605 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([536870913, 4],"float64"), )
+[Pass] paddle.sqrt(Tensor([536870913, 4],"float64"), )
+
+W0212 17:30:20.645639 71288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:30:20.646545 71288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([715827883, 3],"float64"), )
+[Pass] paddle.sqrt(Tensor([715827883, 3],"float64"), )
+
+W0212 17:33:51.125473 73723 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:33:51.126426 73723 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([71582789, 3, 10],"float64"), )
+[Pass] paddle.sqrt(Tensor([71582789, 3, 10],"float64"), )
+
+W0212 17:36:43.544615 75851 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:36:43.545480 75851 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([8, 16, 33554432],"float32"), )
+[Pass] paddle.sqrt(Tensor([8, 16, 33554432],"float32"), )
+
+W0212 17:40:04.535172 77774 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:40:04.536152 77774 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([8, 16777216, 32],"float32"), )
+[Pass] paddle.sqrt(Tensor([8, 16777216, 32],"float32"), )
+
+W0212 17:43:46.376174 80233 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:43:46.376962 80233 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.sqrt(Tensor([8388608, 16, 32],"float32"), )
+[Pass] paddle.sqrt(Tensor([8388608, 16, 32],"float32"), )
+
+W0212 17:47:23.831013 82879 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:47:23.832046 82879 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1, 4294967295],"float32"), )
+[Pass] paddle.square(Tensor([1, 4294967295],"float32"), )
+
+W0212 17:51:04.227834 85194 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:51:04.229672 85194 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([10, 143165577, 3],"float32"), )
+[Pass] paddle.square(Tensor([10, 143165577, 3],"float32"), )
+
+W0212 17:55:04.636551 87540 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:55:04.637513 87540 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([10, 2, 214748365],"float32"), )
+[Pass] paddle.square(Tensor([10, 2, 214748365],"float32"), )
+
+W0212 17:59:00.775400 90453 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 17:59:00.776296 90453 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([10, 214748365],"float64"), )
+[Pass] paddle.square(Tensor([10, 214748365],"float64"), )
+
+W0212 18:02:13.063079 92775 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:02:13.064179 92775 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([10, 429496730],"float32"), )
+[Pass] paddle.square(Tensor([10, 429496730],"float32"), )
+
+W0212 18:05:27.345037 94727 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:05:27.345834 94727 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([10, 429496730],"float32"), name=None, )
+[Pass] paddle.square(Tensor([10, 429496730],"float32"), name=None, )
+
+W0212 18:09:33.204624 97011 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:09:33.205612 97011 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1000, 4294968],"float16"), )
+[Pass] paddle.square(Tensor([1000, 4294968],"float16"), )
+
+W0212 18:13:52.615828 100152 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:13:52.616714 100152 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1000, 4294968],"float32"), )
+[Pass] paddle.square(Tensor([1000, 4294968],"float32"), )
+
+W0212 18:23:29.841895 106806 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:23:29.842912 106806 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([102261127, 42],"float32"), )
+[Pass] paddle.square(Tensor([102261127, 42],"float32"), )
+
+W0212 18:27:09.879648 109194 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:27:09.880928 109194 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1024, 4194304],"float16"), )
+[Pass] paddle.square(Tensor([1024, 4194304],"float16"), )
+
+W0212 18:31:14.233697 111849 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:31:14.234671 111849 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1024, 4194304],"float32"), )
+[Pass] paddle.square(Tensor([1024, 4194304],"float32"), )
+
+W0212 18:40:43.961205 118130 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:40:43.962105 118130 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1048576, 4096],"float32"), )
+[Pass] paddle.square(Tensor([1048576, 4096],"float32"), )
+
+W0212 18:44:40.976894 120888 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:44:40.977782 120888 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1073741824, 4],"float32"), )
+[Pass] paddle.square(Tensor([1073741824, 4],"float32"), )
+
+W0212 18:48:51.309574 123935 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:48:51.310642 123935 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1073741825, 2],"float64"), )
+[Pass] paddle.square(Tensor([1073741825, 2],"float64"), )
+
+W0212 18:52:08.092123 126285 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:52:08.093014 126285 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1398102, 3072],"float32"), )
+[Pass] paddle.square(Tensor([1398102, 3072],"float32"), )
+
+W0212 18:55:33.211644 128288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:55:33.212556 128288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([1431655765, 3],"float32"), )
+[Pass] paddle.square(Tensor([1431655765, 3],"float32"), )
+
+W0212 18:59:27.711443 130638 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 18:59:27.712302 130638 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([14316558, 3, 10, 10],"float32"), )
+[Pass] paddle.square(Tensor([14316558, 3, 10, 10],"float32"), )
+
+W0212 19:03:06.428736 133570 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:03:06.429482 133570 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([14316558, 3, 10, 10],"float32"), name=None, )
+[Pass] paddle.square(Tensor([14316558, 3, 10, 10],"float32"), name=None, )
+
+W0212 19:06:51.259375 135884 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:06:51.260325 135884 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2, 10, 214748365],"float32"), )
+[Pass] paddle.square(Tensor([2, 10, 214748365],"float32"), )
+
+W0212 19:10:30.720847 138480 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:10:30.721825 138480 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2, 10, 214748365],"float32"), name=None, )
+[Pass] paddle.square(Tensor([2, 10, 214748365],"float32"), name=None, )
+
+W0212 19:14:06.846627 140791 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:14:06.847432 140791 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2, 1073741825],"float64"), )
+[Pass] paddle.square(Tensor([2, 1073741825],"float64"), )
+
+W0212 19:17:32.369383 143094 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:17:32.370299 143094 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2, 2147483648],"float32"), )
+[Pass] paddle.square(Tensor([2, 2147483648],"float32"), )
+
+W0212 19:21:06.308475 145352 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:21:06.309357 145352 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2, 214748365, 10],"float32"), )
+[Pass] paddle.square(Tensor([2, 214748365, 10],"float32"), )
+
+W0212 19:25:26.329162 148288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:25:26.330171 148288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2, 214748365, 10],"float32"), name=None, )
+[Pass] paddle.square(Tensor([2, 214748365, 10],"float32"), name=None, )
+
+W0212 19:28:53.815232 150609 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:28:53.816064 150609 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2147483648, 2],"float16"), )
+[Pass] paddle.square(Tensor([2147483648, 2],"float16"), )
+
+W0212 19:32:47.149076 152900 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:32:47.151955 152900 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2147483648, 2],"float32"), )
+[Pass] paddle.square(Tensor([2147483648, 2],"float32"), )
+
+W0212 19:42:24.719385 159181 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:42:24.720675 159181 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([2147483649],"float64"), )
+[Pass] paddle.square(Tensor([2147483649],"float64"), )
+
+W0212 19:45:36.048301 161736 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:45:36.049150 161736 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([214748365, 20],"float32"), )
+[Pass] paddle.square(Tensor([214748365, 20],"float32"), )
+
+W0212 19:49:12.265316 163586 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:49:12.266067 163586 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([21846, 196608],"float32"), )
+[Pass] paddle.square(Tensor([21846, 196608],"float32"), )
+
+W0212 19:52:58.563174  2691 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:52:58.564069  2691 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([238609295, 2, 3, 3],"float32"), )
+[Pass] paddle.square(Tensor([238609295, 2, 3, 3],"float32"), )
+
+W0212 19:57:17.230165  5264 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 19:57:17.231374  5264 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 1431655765],"float32"), )
+[Pass] paddle.square(Tensor([3, 1431655765],"float32"), )
+
+W0212 20:01:12.095979  7869 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:01:12.096797  7869 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 14316558, 10, 10],"float32"), )
+[Pass] paddle.square(Tensor([3, 14316558, 10, 10],"float32"), )
+
+W0212 20:04:42.371212 10167 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:04:42.372056 10167 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 14316558, 10, 10],"float32"), name=None, )
+[Pass] paddle.square(Tensor([3, 14316558, 10, 10],"float32"), name=None, )
+
+W0212 20:08:15.713511 12444 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:08:15.714346 12444 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 159072863, 3, 3],"float32"), )
+[Pass] paddle.square(Tensor([3, 159072863, 3, 3],"float32"), )
+
+W0212 20:12:02.849800 15023 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:12:02.850705 15023 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 2, 238609295, 3],"float32"), )
+[Pass] paddle.square(Tensor([3, 2, 238609295, 3],"float32"), )
+
+W0212 20:15:48.172498 17312 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:15:48.173563 17312 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 2, 3, 238609295],"float32"), )
+[Pass] paddle.square(Tensor([3, 2, 3, 238609295],"float32"), )
+
+W0212 20:19:24.479094 19917 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:19:24.479952 19917 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 3, 10, 47721859],"float32"), )
+[Pass] paddle.square(Tensor([3, 3, 10, 47721859],"float32"), )
+
+W0212 20:22:52.988739 22235 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:22:52.989609 22235 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 3, 10, 47721859],"float32"), name=None, )
+[Pass] paddle.square(Tensor([3, 3, 10, 47721859],"float32"), name=None, )
+
+W0212 20:26:31.787107 24537 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:26:31.788177 24537 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 3, 47721859, 10],"float32"), )
+[Pass] paddle.square(Tensor([3, 3, 47721859, 10],"float32"), )
+
+W0212 20:30:29.966499 27251 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:30:29.967604 27251 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 3, 47721859, 10],"float32"), name=None, )
+[Pass] paddle.square(Tensor([3, 3, 47721859, 10],"float32"), name=None, )
+
+W0212 20:34:14.340183 29580 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:34:14.341084 29580 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([3, 715827883],"float64"), )
+[Pass] paddle.square(Tensor([3, 715827883],"float64"), )
+
+W0212 20:37:32.378296 31876 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:37:32.379165 31876 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([300, 14316558],"float32"), )
+[Pass] paddle.square(Tensor([300, 14316558],"float32"), )
+
+W0212 20:41:10.514392 34126 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:41:10.515380 34126 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([32, 134217728],"float32"), )
+[Pass] paddle.square(Tensor([32, 134217728],"float32"), )
+
+W0212 20:45:02.368099 36681 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:45:02.368922 36681 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([357913942, 3, 2],"float64"), )
+[Pass] paddle.square(Tensor([357913942, 3, 2],"float64"), )
+
+W0212 20:48:25.536437 38980 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:48:25.537274 38980 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4, 268435457, 2],"float64"), )
+[Pass] paddle.square(Tensor([4, 268435457, 2],"float64"), )
+
+W0212 20:51:33.062520 40994 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:51:33.063551 40994 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4, 3, 178956971],"float64"), )
+[Pass] paddle.square(Tensor([4, 3, 178956971],"float64"), )
+
+W0212 20:54:39.820240 42941 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:54:39.821496 42941 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4194304, 1024],"float16"), )
+[Pass] paddle.square(Tensor([4194304, 1024],"float16"), )
+
+W0212 20:58:17.280427 45186 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 20:58:17.281353 45186 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4194304, 1024],"float32"), )
+[Pass] paddle.square(Tensor([4194304, 1024],"float32"), )
+
+W0212 21:07:36.576253 51533 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:07:36.577108 51533 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4194305, 16, 32],"float64"), )
+[Pass] paddle.square(Tensor([4194305, 16, 32],"float64"), )
+
+W0212 21:11:10.817792 54312 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:11:10.818778 54312 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4294967295, 1],"float32"), )
+[Pass] paddle.square(Tensor([4294967295, 1],"float32"), )
+
+W0212 21:14:24.176820 56288 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:14:24.177760 56288 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4294967295],"float16"), )
+[Pass] paddle.square(Tensor([4294967295],"float16"), )
+
+W0212 21:18:20.642340 58584 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:18:20.643452 58584 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4294967295],"float32"), )
+[Pass] paddle.square(Tensor([4294967295],"float32"), )
+
+W0212 21:27:54.405381 64830 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:27:54.406275 64830 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([42949673, 10, 10],"float32"), )
+[Pass] paddle.square(Tensor([42949673, 10, 10],"float32"), )
+
+W0212 21:31:27.826902 67446 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:31:27.828441 67446 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([42949673, 10, 10],"float32"), name=None, )
+[Pass] paddle.square(Tensor([42949673, 10, 10],"float32"), name=None, )
+
+W0212 21:35:08.044359 69756 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:35:08.045260 69756 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([429496730, 10],"float16"), )
+[Pass] paddle.square(Tensor([429496730, 10],"float16"), )
+
+W0212 21:39:13.575608 72392 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:39:13.576550 72392 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([429496730, 10],"float32"), )
+[Pass] paddle.square(Tensor([429496730, 10],"float32"), )
+
+W0212 21:48:22.944453 79092 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:48:22.945353 79092 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([429496730, 10],"float32"), name=None, )
+[Pass] paddle.square(Tensor([429496730, 10],"float32"), name=None, )
+
+W0212 21:52:05.906522 81451 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:52:05.907536 81451 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4294968, 1000],"float16"), )
+[Pass] paddle.square(Tensor([4294968, 1000],"float16"), )
+
+W0212 21:55:50.040315 83748 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 21:55:50.041191 83748 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([4294968, 1000],"float32"), )
+[Pass] paddle.square(Tensor([4294968, 1000],"float32"), )
+
+W0212 22:05:12.670269 89746 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:05:12.671515 89746 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([5, 429496730],"float64"), )
+[Pass] paddle.square(Tensor([5, 429496730],"float64"), )
+
+W0212 22:08:41.950309 92035 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:08:41.951270 92035 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([536870912, 8],"float32"), )
+[Pass] paddle.square(Tensor([536870912, 8],"float32"), )
+
+W0212 22:12:09.981492 93739 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:12:09.982383 93739 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([715827883, 2, 3],"float32"), )
+[Pass] paddle.square(Tensor([715827883, 2, 3],"float32"), )
+
+W0212 22:15:59.329433 96029 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:15:59.330462 96029 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([715827883, 3],"float64"), )
+[Pass] paddle.square(Tensor([715827883, 3],"float64"), )
+
+W0212 22:19:36.264257 98034 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:19:36.265206 98034 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8, 16, 16777217],"float64"), )
+[Pass] paddle.square(Tensor([8, 16, 16777217],"float64"), )
+
+W0212 22:22:51.244864 100276 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:22:51.245713 100276 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8, 16, 33554432],"float16"), )
+[Pass] paddle.square(Tensor([8, 16, 33554432],"float16"), )
+
+W0212 22:26:26.989811 101976 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:26:26.990959 101976 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8, 16, 33554432],"float32"), )
+[Pass] paddle.square(Tensor([8, 16, 33554432],"float32"), )
+
+W0212 22:36:07.842299 107657 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:36:07.843096 107657 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8, 16777216, 32],"float16"), )
+[Pass] paddle.square(Tensor([8, 16777216, 32],"float16"), )
+
+W0212 22:40:10.325579 109693 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:40:10.326426 109693 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8, 16777216, 32],"float32"), )
+[Pass] paddle.square(Tensor([8, 16777216, 32],"float32"), )
+
+W0212 22:49:39.689608 115330 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:49:39.690400 115330 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8, 8388609, 32],"float64"), )
+[Pass] paddle.square(Tensor([8, 8388609, 32],"float64"), )
+
+W0212 22:52:55.275825 117313 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:52:55.276831 117313 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8388608, 16, 32],"float16"), )
+[Pass] paddle.square(Tensor([8388608, 16, 32],"float16"), )
+
+W0212 22:56:22.869457 119014 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 22:56:22.870275 119014 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.square(Tensor([8388608, 16, 32],"float32"), )
+[Pass] paddle.square(Tensor([8388608, 16, 32],"float32"), )
+
+W0212 23:05:41.082746 124690 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:05:41.083654 124690 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 1, 2147483649],"float64"), axis=list[1,], )
+[Pass] paddle.squeeze(Tensor([1, 1, 2147483649],"float64"), axis=list[1,], )
+
+W0212 23:08:58.504673 126651 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:08:58.505784 126651 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 2147483649],"float64"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 2147483649],"float64"), axis=0, )
+
+W0212 23:11:48.813772 128344 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:11:48.814735 128344 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 3, 715827883],"float64"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 3, 715827883],"float64"), axis=0, )
+
+W0212 23:15:01.175073 130019 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:15:01.176111 130019 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 32768, 16, 128, 64],"float32"), axis=0, )
+[Pass] paddle.squeeze(Tensor([1, 32768, 16, 128, 64],"float32"), axis=0, )
+
+W0212 23:18:15.527771 131614 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:18:15.528857 131614 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.squeeze(Tensor([1, 4294967295, 1, 1],"float32"), list[], )
+[accuracy error] paddle.squeeze(Tensor([1, 4294967295, 1, 1],"float32"), list[], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (4294967295,), (1, 4294967295, 1, 1) mismatch)
+ x: array([0.334666, 0.559991, 0.022402, ..., 0.315395, 0.556648, 0.816234],
+      dtype=float32)
+ y: array([[[[0.334666]],
+
+        [[0.559991]],...
+
+W0212 23:21:57.712831 133819 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:21:57.713996 133819 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 33554432, 8, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 33554432, 8, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:23:45.340075 134859 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:23:45.341038 134859 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 4, 67108864, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 4, 67108864, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:27:55.266840 137108 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:27:55.267750 137108 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 4, 8, 67108864],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 4, 8, 67108864],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:31:42.153651 138857 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:31:42.154804 138857 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 67108864, 2, 16],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 67108864, 2, 16],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:35:20.333297 140626 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:35:20.334307 140626 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 67108864, 4, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 67108864, 4, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:39:01.384696 142660 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:39:01.385622 142660 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 8, 1, 268435456],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 8, 1, 268435456],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:43:00.547317 144451 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:43:00.548692 144451 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 8, 16777216, 16],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 8, 16777216, 16],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:46:41.909840 146489 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:46:41.910785 146489 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 8, 2, 134217728],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 8, 2, 134217728],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:50:33.042332 148513 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:50:33.043380 148513 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 8, 33554432, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 8, 33554432, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:54:18.356565 150304 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:54:18.357481 150304 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2, 8, 4, 67108864],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2, 8, 4, 67108864],"float32"), perm=list[0,2,1,3,], )
+
+W0212 23:57:57.705293 152324 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0212 23:57:57.706164 152324 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([2097152, 4, 8, 64],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([2097152, 4, 8, 64],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:01:26.797288 154088 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:01:26.798215 154088 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([3, 143165577, 10],"float32"), perm=list[1,0,2,], )
+[Pass] paddle.transpose(x=Tensor([3, 143165577, 10],"float32"), perm=list[1,0,2,], )
+
+W0213 00:05:02.518239 155853 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:05:02.519172 155853 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([3, 4, 357913942],"float32"), perm=list[1,0,2,], )
+[Pass] paddle.transpose(x=Tensor([3, 4, 357913942],"float32"), perm=list[1,0,2,], )
+
+W0213 00:08:37.389016 157632 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:08:37.390010 157632 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([32, 262144, 8, 64],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([32, 262144, 8, 64],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:12:12.337378 159406 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:12:12.338305 159406 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([32, 4, 524288, 64],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([32, 4, 524288, 64],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:15:55.898376 161427 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:15:55.899325 161427 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([32, 4, 8, 4194304],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([32, 4, 8, 4194304],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:19:35.972920 163219 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:19:35.973774 163219 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([33554432, 2, 8, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([33554432, 2, 8, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:23:10.669752  1472 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:23:10.670847  1472 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([33554432, 8, 1, 16],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([33554432, 8, 1, 16],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:26:53.370968  3494 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:26:53.371853  3494 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([33554432, 8, 2, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([33554432, 8, 2, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:30:31.372014  5281 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:30:31.372900  5281 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([4, 1, 1073741824],"float32"), perm=list[1,0,2,], )
+[Pass] paddle.transpose(x=Tensor([4, 1, 1073741824],"float32"), perm=list[1,0,2,], )
+
+W0213 00:34:26.896773  7055 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:34:26.897662  7055 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([4, 107374183, 10],"float32"), perm=list[1,0,2,], )
+[Pass] paddle.transpose(x=Tensor([4, 107374183, 10],"float32"), perm=list[1,0,2,], )
+
+W0213 00:37:59.051297  9083 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:37:59.052268  9083 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([429496730, 1, 10],"float32"), perm=list[1,0,2,], )
+[Pass] paddle.transpose(x=Tensor([429496730, 1, 10],"float32"), perm=list[1,0,2,], )
+
+W0213 00:41:33.905344 10862 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:41:33.906991 10862 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([58, 140, 2, 264469],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([58, 140, 2, 264469],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:45:22.296964 12877 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:45:22.297832 12877 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([58, 140, 528937, 1],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([58, 140, 528937, 1],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:48:50.547314 14656 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:48:50.548324 14656 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([58, 37025581, 2, 1],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([58, 37025581, 2, 1],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:52:56.081841 16456 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:52:56.082837 16456 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([67108864, 1, 8, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([67108864, 1, 8, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0213 00:56:21.994916 18474 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 00:56:21.995800 18474 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.transpose(x=Tensor([67108864, 8, 1, 8],"float32"), perm=list[0,2,1,3,], )
+[Pass] paddle.transpose(x=Tensor([67108864, 8, 1, 8],"float32"), perm=list[0,2,1,3,], )
+
+W0213 01:00:16.944206 19537 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:00:16.945029 19537 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(Tensor([4294967295],"float32"), dx=2.0, )
+[paddle error] paddle.trapezoid(Tensor([4294967295],"float32"), dx=2.0, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+
+W0213 01:03:49.006062 19608 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:03:49.006946 19608 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+Traceback (most recent call last):
+  File "/host_home/wanghuan29/PaddleAPITest/engine.py", line 70, in <module>
+    main()
+  File "/host_home/wanghuan29/PaddleAPITest/engine.py", line 50, in main
+    case.clear_tensor()
+  File "/host_home/wanghuan29/PaddleAPITest/tester/base.py", line 208, in clear_tensor
+    arg_config.clear_tensor()
+  File "/host_home/wanghuan29/PaddleAPITest/tester/api_config/config_analyzer.py", line 86, in clear_tensor
+    torch.cuda.empty_cache()
+  File "/usr/local/lib/python3.9/dist-packages/torch/cuda/memory.py", line 192, in empty_cache
+    torch._C._cuda_emptyCache()
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+test begin: paddle.trapezoid(y=Tensor([1073741824, 4],"float16"), x=Tensor([1073741824, 4],"float16"), )
+[Pass] paddle.trapezoid(y=Tensor([1073741824, 4],"float16"), x=Tensor([1073741824, 4],"float16"), )
+
+W0213 01:06:44.303107 19649 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:06:44.303936 19649 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([1073741824, 4],"float16"), x=Tensor([4, 4],"float16"), )
+[torch error] paddle.trapezoid(y=Tensor([1073741824, 4],"float16"), x=Tensor([4, 4],"float16"), ) 
+ The size of tensor a (1073741824) must match the size of tensor b (4) at non-singleton dimension 0
+
+W0213 01:10:07.781236 19733 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:10:07.782332 19733 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([1431655765, 3],"float32"), x=None, dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([1431655765, 3],"float32"), x=None, dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=NoneType, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:11:23.560287 19775 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:11:23.561296 19775 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([1431655765, 3],"float32"), x=Tensor([1431655765, 3],"float32"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([1431655765, 3],"float32"), x=Tensor([1431655765, 3],"float32"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:13:43.648443 19803 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:13:43.649681 19803 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([1431655765, 3],"float32"), x=Tensor([2, 3],"float32"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([1431655765, 3],"float32"), x=Tensor([2, 3],"float32"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:14:56.290577 19845 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:14:56.291720 19845 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 1073741825],"float64"), x=None, dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 1073741825],"float64"), x=None, dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=NoneType, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:15:52.817024 19873 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:15:52.818486 19873 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 1073741825],"float64"), x=Tensor([2, 1073741825],"float64"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 1073741825],"float64"), x=Tensor([2, 1073741825],"float64"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:17:28.615618 19901 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:17:28.616957 19901 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 1073741825],"float64"), x=Tensor([2, 3],"float64"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 1073741825],"float64"), x=Tensor([2, 3],"float64"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:18:27.842052 19929 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:18:27.843451 19929 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 2147483648],"float32"), x=None, dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 2147483648],"float32"), x=None, dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=NoneType, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:19:40.240096 19957 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:19:40.241075 19957 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 2147483648],"float32"), x=Tensor([2, 2147483648],"float32"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 2147483648],"float32"), x=Tensor([2, 2147483648],"float32"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:22:02.353809 19985 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:22:02.355243 19985 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 2147483648],"float32"), x=Tensor([2, 3],"float32"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 2147483648],"float32"), x=Tensor([2, 3],"float32"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:23:22.107470 20027 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:23:22.108909 20027 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 3],"float32"), x=Tensor([1431655765, 3],"float32"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 3],"float32"), x=Tensor([1431655765, 3],"float32"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:24:36.336643 20055 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:24:36.338011 20055 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 3],"float32"), x=Tensor([2, 2147483648],"float32"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 3],"float32"), x=Tensor([2, 2147483648],"float32"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:25:57.444466 20083 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:25:57.445611 20083 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 3],"float64"), x=Tensor([2, 1073741825],"float64"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 3],"float64"), x=Tensor([2, 1073741825],"float64"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:26:46.122715 20125 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:26:46.123795 20125 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([2, 3],"float64"), x=Tensor([715827883, 3],"float64"), dx=None, axis=-1, )
+[torch error] paddle.trapezoid(y=Tensor([2, 3],"float64"), x=Tensor([715827883, 3],"float64"), dx=None, axis=-1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:27:39.713549 20153 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:27:39.714823 20153 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([3, 3, 4],"float32"), x=Tensor([4294967295],"float32"), dx=None, axis=1, )
+[torch error] paddle.trapezoid(y=Tensor([3, 3, 4],"float32"), x=Tensor([4294967295],"float32"), dx=None, axis=1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:28:49.572525 20181 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:28:49.573689 20181 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([3, 3, 477218589],"float32"), x=Tensor([3],"float32"), dx=None, axis=1, )
+[torch error] paddle.trapezoid(y=Tensor([3, 3, 477218589],"float32"), x=Tensor([3],"float32"), dx=None, axis=1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:30:09.121381 20209 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:30:09.122469 20209 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([3, 357913942, 4],"float32"), x=Tensor([3],"float32"), dx=None, axis=1, )
+[torch error] paddle.trapezoid(y=Tensor([3, 357913942, 4],"float32"), x=Tensor([3],"float32"), dx=None, axis=1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:31:28.569228 20237 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:31:28.570691 20237 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.trapezoid(y=Tensor([357913942, 3, 4],"float32"), x=Tensor([3],"float32"), dx=None, axis=1, )
+[torch error] paddle.trapezoid(y=Tensor([357913942, 3, 4],"float32"), x=Tensor([3],"float32"), dx=None, axis=1, ) 
+ trapezoid() received an invalid combination of arguments - got (dim=int, dx=NoneType, y=Tensor, x=Tensor, ), but expected one of:
+ * (Tensor y, Tensor x, *, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx
+ * (Tensor y, *, Number dx = 1, int dim = -1)
+      didn't match because some of the keywords were incorrect: dim, dx, x
+
+
+W0213 01:32:39.526708 20265 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 01:32:39.527881 20265 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+Traceback (most recent call last):
+  File "/host_home/wanghuan29/PaddleAPITest/engine.py", line 70, in <module>
+    main()
+  File "/host_home/wanghuan29/PaddleAPITest/engine.py", line 65, in main
+    print(str(res.stdout.read(), encoding="utf-8"), flush=True)
+KeyboardInterrupt

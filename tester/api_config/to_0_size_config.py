@@ -112,11 +112,11 @@ def to_big_tensor_config(api_config):
 
 # if __name__ == '__main__':
 #     config_0_size = []
-#     api_configs = analyse_configs("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config.txt")
+#     api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config.txt")
 #     for api_config in api_configs:
 #         print(api_config.config)
 #         config_0_size = config_0_size + to_0_size_config(api_config)
-#     with open("/data/OtherRepo/PaddleAPITest/tester/api_config/api_config_0_size.txt", "w") as f:
+#     with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_0_size.txt", "w") as f:
 #         for api_config in config_0_size:
 #             f.write(str(api_config)+"\n")
 #         f.close()

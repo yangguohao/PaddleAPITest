@@ -1,0 +1,1890 @@
+test begin: paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(Tensor([8, 128, 1024],"float32"), Tensor([8, 128, 1024],"float32"), None, Tensor([1024],"float32"), Tensor([1024],"float32"), 0.0, 1e-05, )
+[paddle error] paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(Tensor([8, 128, 1024],"float32"), Tensor([8, 128, 1024],"float32"), None, Tensor([1024],"float32"), Tensor([1024],"float32"), 0.0, 1e-05, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 912, in append_backward_ops
+	input_grads = paddle.framework.core.call_vjp(
+
+    ValueError: 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::dialect::VjpInterface::Model<paddle::dialect::FusedBiasDropoutResidualLayerNormOp>::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+1   paddle::dialect::FusedBiasDropoutResidualLayerNormOp::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+2   paddle::primitive::fused_bias_dropout_residual_layer_norm_vjp(paddle::Tensor const&, paddle::Tensor const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, float, bool, bool, int, std::string const&, float, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+3   std::tuple<paddle::Tensor, paddle::Tensor, paddle::optional<paddle::Tensor> const, paddle::optional<paddle::Tensor> const, paddle::optional<paddle::Tensor> const> paddle::primitive::backend::fused_bias_dropout_residual_layer_norm_grad<paddle::primitive::LazyTensor>(paddle::Tensor const&, paddle::Tensor const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, float, bool, bool, int, std::string const&, float)
+4   paddle::dialect::fused_bias_dropout_residual_layer_norm_grad(pir::Value const&, pir::Value const&, paddle::optional<pir::Value> const&, paddle::optional<pir::Value> const&, paddle::optional<pir::Value> const&, pir::Value const&, pir::Value const&, pir::Value const&, pir::Value const&, pir::Value const&, float, bool, bool, int, std::string const&, float)
+5   paddle::dialect::FusedBiasDropoutResidualLayerNormGradOp::Build(pir::Builder&, pir::OperationArgument&, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, float, bool, bool, int, std::string const&, float)
+6   paddle::dialect::FusedBiasDropoutResidualLayerNormGradOp::InferMeta(std::vector<pir::Value, std::allocator<pir::Value> > const&, std::unordered_map<std::string, pir::Attribute, std::hash<std::string >, std::equal_to<std::string >, std::allocator<std::pair<std::string const, pir::Attribute> > >*)
+7   phi::FusedBiasDropoutResidualLnGradInferMeta(phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, float, bool, bool, int, std::string const&, float, phi::MetaTensor*, phi::MetaTensor*, phi::MetaTensor*, phi::MetaTensor*, phi::MetaTensor*)
+8   paddle::dialect::IrMetaTensor::dims() const
+9   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+InvalidArgumentError: The current MetaTensor is not initialized.
+  [Hint: Expected meta_tensor.initialized() == true, but received meta_tensor.initialized():0 != true:1.] (at ../paddle/fluid/pir/dialect/operator/ir/ir_meta_tensor.cc:25)
+
+
+test begin: paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(Tensor([8, 128, 1024],"float32"), Tensor([8, 128, 1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), 0.0, 1e-05, )
+W0214 18:31:05.850090 75462 shape_optimization_pass.cc:281] pd_op.fused_bias_dropout_residual_layer_norm DOES NOT have InferSymbolicShapeInterface!
+I0214 18:31:05.850818 75462 build_cinn_pass.cc:68] Time of building group ops (size=11): 0 min 0 s 0 ms
+I0214 18:31:05.851405 75462 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 18:31:05.851465 75462 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 18:31:05.851490 75462 add_cinn_pass.cc:303] Number of ops in the original program is: 11, after lowering it becomes: 11. (compression ratio: 11/11 = 1)
+I0214 18:31:05.853184 75462 build_cinn_pass.cc:68] Time of building group ops (size=6): 0 min 0 s 0 ms
+I0214 18:31:05.853637 75462 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 18:31:05.853679 75462 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 18:31:05.853684 75462 add_cinn_pass.cc:303] Number of ops in the original program is: 6, after lowering it becomes: 6. (compression ratio: 6/6 = 1)
+[Pass] paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(Tensor([8, 128, 1024],"float32"), Tensor([8, 128, 1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), 0.0, 1e-05, )
+test begin: paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(x=Tensor([1, 2, 4],"float32"), residual=Tensor([1, 2, 4],"float32"), bias=None, ln_scale=Tensor([4],"float32"), ln_bias=None, dropout_rate=0.0, ln_epsilon=1e-05, training=True, mode="upscale_in_train", name=None, )
+[paddle error] paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(x=Tensor([1, 2, 4],"float32"), residual=Tensor([1, 2, 4],"float32"), bias=None, ln_scale=Tensor([4],"float32"), ln_bias=None, dropout_rate=0.0, ln_epsilon=1e-05, training=True, mode="upscale_in_train", name=None, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 912, in append_backward_ops
+	input_grads = paddle.framework.core.call_vjp(
+
+    ValueError: 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::dialect::VjpInterface::Model<paddle::dialect::FusedBiasDropoutResidualLayerNormOp>::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+1   paddle::dialect::FusedBiasDropoutResidualLayerNormOp::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+2   paddle::primitive::fused_bias_dropout_residual_layer_norm_vjp(paddle::Tensor const&, paddle::Tensor const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, float, bool, bool, int, std::string const&, float, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+3   std::tuple<paddle::Tensor, paddle::Tensor, paddle::optional<paddle::Tensor> const, paddle::optional<paddle::Tensor> const, paddle::optional<paddle::Tensor> const> paddle::primitive::backend::fused_bias_dropout_residual_layer_norm_grad<paddle::primitive::LazyTensor>(paddle::Tensor const&, paddle::Tensor const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::optional<paddle::Tensor> const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, float, bool, bool, int, std::string const&, float)
+4   paddle::dialect::fused_bias_dropout_residual_layer_norm_grad(pir::Value const&, pir::Value const&, paddle::optional<pir::Value> const&, paddle::optional<pir::Value> const&, paddle::optional<pir::Value> const&, pir::Value const&, pir::Value const&, pir::Value const&, pir::Value const&, pir::Value const&, float, bool, bool, int, std::string const&, float)
+5   paddle::dialect::FusedBiasDropoutResidualLayerNormGradOp::Build(pir::Builder&, pir::OperationArgument&, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, pir::Value, float, bool, bool, int, std::string const&, float)
+6   paddle::dialect::FusedBiasDropoutResidualLayerNormGradOp::InferMeta(std::vector<pir::Value, std::allocator<pir::Value> > const&, std::unordered_map<std::string, pir::Attribute, std::hash<std::string >, std::equal_to<std::string >, std::allocator<std::pair<std::string const, pir::Attribute> > >*)
+7   phi::FusedBiasDropoutResidualLnGradInferMeta(phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, phi::MetaTensor const&, float, bool, bool, int, std::string const&, float, phi::MetaTensor*, phi::MetaTensor*, phi::MetaTensor*, phi::MetaTensor*, phi::MetaTensor*)
+8   paddle::dialect::IrMetaTensor::dims() const
+9   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+InvalidArgumentError: The current MetaTensor is not initialized.
+  [Hint: Expected meta_tensor.initialized() == true, but received meta_tensor.initialized():0 != true:1.] (at ../paddle/fluid/pir/dialect/operator/ir/ir_meta_tensor.cc:25)
+
+
+
+test begin: paddle.incubate.nn.functional.fused_linear_activation(Tensor([8, 4],"float64"), Tensor([4, 128],"float64"), Tensor([128],"float64"), False, False, "relu", )
+[paddle error] paddle.incubate.nn.functional.fused_linear_activation(Tensor([8, 4],"float64"), Tensor([4, 128],"float64"), Tensor([128],"float64"), False, False, "relu", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 912, in append_backward_ops
+	input_grads = paddle.framework.core.call_vjp(
+
+    ValueError: 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::dialect::VjpInterface::Model<paddle::dialect::FusedGemmEpilogueOp>::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+1   paddle::dialect::FusedGemmEpilogueOp::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+2   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+3   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+InvalidArgumentError: fused_gemm_epilogue op could not run backward with activation
+  [Hint: Expected !reserve_space_value.type() == true, but received !reserve_space_value.type():0 != true:1.] (at ../paddle/fluid/pir/dialect/operator/ir/manual_op_vjp.cc:338)
+
+
+test begin: paddle.incubate.nn.functional.fused_linear_activation(Tensor([8, 4],"float64"), Tensor([4, 128],"float64"), Tensor([128],"float64"), False, False, "gelu", )
+[paddle error] paddle.incubate.nn.functional.fused_linear_activation(Tensor([8, 4],"float64"), Tensor([4, 128],"float64"), Tensor([128],"float64"), False, False, "gelu", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 912, in append_backward_ops
+	input_grads = paddle.framework.core.call_vjp(
+
+    ValueError: 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::dialect::VjpInterface::Model<paddle::dialect::FusedGemmEpilogueOp>::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+1   paddle::dialect::FusedGemmEpilogueOp::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+2   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+3   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+InvalidArgumentError: fused_gemm_epilogue op could not run backward with activation
+  [Hint: Expected !reserve_space_value.type() == true, but received !reserve_space_value.type():0 != true:1.] (at ../paddle/fluid/pir/dialect/operator/ir/manual_op_vjp.cc:338)
+
+
+test begin: paddle.incubate.nn.functional.blha_get_max_len(Tensor([10],"int32"), Tensor([10],"int32"), Tensor([10],"float32"), )
+[paddle error] paddle.incubate.nn.functional.blha_get_max_len(Tensor([10],"int32"), Tensor([10],"int32"), Tensor([10],"float32"), ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.blha_get_max_len' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 64, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 64, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 64, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 64, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=True, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=True, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 3],"int32"), Tensor([2, 8, 64, 64],"float16"), Tensor([2, 8, 64, 64],"float16"), None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 64, 128],"float16"), None, 64, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 3],"int32"), Tensor([2, 8, 64, 64],"float16"), Tensor([2, 8, 64, 64],"float16"), None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 64, 128],"float16"), None, 64, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"int32"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([1536],"float32"), Tensor([1536],"float16"), None, None, None, None, None, None, None, 64, 64, False, compute_dtype="fp16", )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 1536],"int32"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([1536],"float32"), Tensor([1536],"float16"), None, None, None, None, None, None, None, 64, 64, False, compute_dtype="fp16", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 64, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 64, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 64, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 64, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=True, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=True, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), None, None, None, None, None, None, None, None, None, 64, 64, False, use_dynamic_cachekv_quant=False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"int32"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([768],"float32"), Tensor([768],"float16"), None, None, None, None, None, None, None, 64, 64, False, compute_dtype="fp16", )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([128, 768],"int32"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([128],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([768],"float32"), Tensor([768],"float16"), None, None, None, None, None, None, None, 64, 64, False, compute_dtype="fp16", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 8, 1, 65],"float16"), 1, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 8, 1, 65],"float16"), 1, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 1, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 1, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=True, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), Tensor([2, 8],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=True, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([4, 8, 64, 64],"uint8"), Tensor([4, 8, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 3],"int32"), Tensor([2, 8, 64, 64],"float16"), Tensor([2, 8, 64, 64],"float16"), None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 64, 128],"float16"), None, 1, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([6, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 3],"int32"), Tensor([2, 8, 64, 64],"float16"), Tensor([2, 8, 64, 64],"float16"), None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 64, 128],"float16"), None, 1, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"int32"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([1536],"float32"), Tensor([1536],"float16"), None, None, None, None, None, None, None, 1, 64, False, compute_dtype="fp16", )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 1536],"int32"), Tensor([4, 8, 64, 64],"float16"), Tensor([4, 8, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([1536],"float32"), Tensor([1536],"float16"), None, None, None, None, None, None, None, 1, 64, False, compute_dtype="fp16", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 8, 1, 65],"float16"), 1, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 8, 1, 65],"float16"), 1, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 1, 64, False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, None, None, None, None, None, None, Tensor([2, 1, 128, 1, 32],"float32"), None, None, 1, 64, False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=True, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=True, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=False, )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"float16"), Tensor([4, 2, 64, 64],"uint8"), Tensor([4, 2, 64, 64],"uint8"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), Tensor([2],"float32"), None, None, None, None, None, None, None, None, None, 1, 64, False, use_dynamic_cachekv_quant=False, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"int32"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([768],"float32"), Tensor([768],"float16"), None, None, None, None, None, None, None, 1, 64, False, compute_dtype="fp16", )
+[paddle error] paddle.incubate.nn.functional.block_multihead_attention(Tensor([2, 768],"int32"), Tensor([4, 2, 64, 64],"float16"), Tensor([4, 2, 64, 64],"float16"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), Tensor([2, 2],"int32"), None, None, None, None, None, None, Tensor([768],"float32"), Tensor([768],"float16"), None, None, None, None, None, None, None, 1, 64, False, compute_dtype="fp16", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.block_multihead_attention_' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 10],"int32"), bias=Tensor([10],"float16"), dequant_scales=Tensor([10],"float32"), act_method="gelu", compute_dtype="fp16", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 10],"int32"), bias=Tensor([10],"float16"), dequant_scales=Tensor([10],"float32"), act_method="gelu", compute_dtype="fp16", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 10],"int32"), bias=Tensor([10],"float32"), dequant_scales=Tensor([10],"float32"), act_method="gelu", compute_dtype="fp32", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 10],"int32"), bias=Tensor([10],"float32"), dequant_scales=Tensor([10],"float32"), act_method="gelu", compute_dtype="fp32", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="geglu", compute_dtype="default", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="geglu", compute_dtype="default", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="gelu", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="gelu", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="gelu", compute_dtype="default", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="gelu", compute_dtype="default", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="gelu", compute_dtype="fp16", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="gelu", compute_dtype="fp16", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="swiglu", compute_dtype="default", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float16"), bias=Tensor([512],"float16"), act_method="swiglu", compute_dtype="default", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float32"), bias=None, act_method="gelu", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float32"), bias=None, act_method="gelu", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float32"), bias=Tensor([512],"float32"), act_method="gelu", compute_dtype="default", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float32"), bias=Tensor([512],"float32"), act_method="gelu", compute_dtype="default", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float32"), bias=Tensor([512],"float32"), act_method="gelu", compute_dtype="fp32", )
+[paddle error] paddle.incubate.nn.functional.fused_bias_act(x=Tensor([2, 20, 512],"float32"), bias=Tensor([512],"float32"), act_method="gelu", compute_dtype="fp32", ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_act' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, )
+[paddle error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_residual_layernorm' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, )
+[paddle error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_residual_layernorm' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, )
+[paddle error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_residual_layernorm' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, )
+[paddle error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_residual_layernorm' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, )
+[paddle error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_residual_layernorm' has no grad op, consider enable prim to decompose it.
+
+test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, )
+[paddle error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, ) 
+ In transformed code:
+
+
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 715, in __call__
+	attrs = self._prepare_attributes(in_sot_mode=False)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1104, in _prepare_attributes
+	self.program.forward_program,
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 921, in program
+	return self.train_program
+    File "/usr/lib/python3.9/functools.py", line 993, in __get__
+	val = self.func(instance)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 937, in train_program
+	return self._create_program()
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 823, in _create_program
+	train_program = self._append_backward_desc(train_program)
+    File "/usr/local/lib/python3.9/dist-packages/decorator.py", line 232, in fun
+	return caller(func, *(extras + args), **kw)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/wrapped_decorator.py", line 40, in __impl__
+	return wrapped_func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/base/dygraph/base.py", line 101, in __impl__
+	return func(*args, **kwargs)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/jit/dy2static/pir_partial_program.py", line 1009, in _append_backward_desc
+	grad_info_map = grad(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1355, in grad
+	input_grad = calc_gradient(outputs, inputs, grad_outputs, no_grad_set)
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1240, in calc_gradient
+	input_to_inputgrad_map = calc_gradient_helper(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 1158, in calc_gradient_helper
+	append_backward_ops(
+    File "/usr/local/lib/python3.9/dist-packages/paddle/autograd/ir_backward.py", line 960, in append_backward_ops
+	raise ValueError(
+
+    ValueError: op 'pd_op.fused_bias_residual_layernorm' has no grad op, consider enable prim to decompose it.
+

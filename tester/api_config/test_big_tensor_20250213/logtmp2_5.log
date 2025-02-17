@@ -1,0 +1,871 @@
+test begin: paddle.vsplit(Tensor([536870913, 4],"int64"), list[2,4,], )
+[torch error] paddle.vsplit(Tensor([536870913, 4],"int64"), list[2,4,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 26200 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:28:25.144064 24804 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:28:25.145048 24804 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([536870913, 4],"int64"), tuple(2,1,3,), )
+[torch error] paddle.vsplit(Tensor([536870913, 4],"int64"), tuple(2,1,3,), ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 43951 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:29:14.905228 25567 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:29:14.906178 25567 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 119304648, 3],"int64"), 2, )
+[torch error] paddle.vsplit(Tensor([6, 119304648, 3],"int64"), 2, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 63931 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:30:02.995219 26227 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:30:02.996361 26227 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 119304648, 3],"int64"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 119304648, 3],"int64"), 3, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 73590 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:30:53.361783 26871 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:30:53.362743 26871 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 119304648, 3],"int64"), list[-1,], )
+[torch error] paddle.vsplit(Tensor([6, 119304648, 3],"int64"), list[-1,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 91958 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:31:40.354223 27519 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:31:40.355316 27519 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 119304648, 3],"int64"), list[-1,1,3,], )
+[torch error] paddle.vsplit(Tensor([6, 119304648, 3],"int64"), list[-1,1,3,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 108419 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:32:27.150197 27906 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:32:27.151304 27906 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 119304648, 3],"int64"), list[2,4,], )
+[torch error] paddle.vsplit(Tensor([6, 119304648, 3],"int64"), list[2,4,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 126384 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:33:15.410759 28570 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:33:15.411809 28570 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 119304648, 3],"int64"), tuple(2,1,3,), )
+[torch error] paddle.vsplit(Tensor([6, 119304648, 3],"int64"), tuple(2,1,3,), ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 141641 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:34:01.749886 28968 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:34:01.751302 28968 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"float64"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"float64"), 3, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 152042 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:34:52.926448 29621 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:34:52.927443 29621 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"int64"), 2, )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"int64"), 2, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 6023 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:35:43.280602 30282 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:35:43.281566 30282 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"int64"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"int64"), 3, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 25404 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:36:31.388283 30665 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:36:31.389278 30665 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"int64"), list[-1,], )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"int64"), list[-1,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 52836 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:37:21.876945 31308 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:37:21.877935 31308 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"int64"), list[-1,1,3,], )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"int64"), list[-1,1,3,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 77175 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:38:12.295815 31976 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:38:12.296828 31976 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"int64"), list[2,4,], )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"int64"), list[2,4,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 96698 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:38:58.784185 32379 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:38:58.785187 32379 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 357913942],"int64"), tuple(2,1,3,), )
+[torch error] paddle.vsplit(Tensor([6, 357913942],"int64"), tuple(2,1,3,), ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 109004 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:39:48.925189 33056 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:39:48.926162 33056 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 4, 89478486],"int64"), 2, )
+[torch error] paddle.vsplit(Tensor([6, 4, 89478486],"int64"), 2, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 130420 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:40:35.300500 33711 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:40:35.301641 33711 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 4, 89478486],"int64"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 4, 89478486],"int64"), 3, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 148635 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:41:25.620920 34075 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:41:25.621934 34075 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 4, 89478486],"int64"), list[-1,], )
+[torch error] paddle.vsplit(Tensor([6, 4, 89478486],"int64"), list[-1,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 7945 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:42:12.974483 34731 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:42:12.975613 34731 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 4, 89478486],"int64"), list[-1,1,3,], )
+[torch error] paddle.vsplit(Tensor([6, 4, 89478486],"int64"), list[-1,1,3,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 26603 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:42:59.450606 35114 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:42:59.451682 35114 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 4, 89478486],"int64"), list[2,4,], )
+[torch error] paddle.vsplit(Tensor([6, 4, 89478486],"int64"), list[2,4,], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 37537 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:43:46.716177 35762 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:43:46.717162 35762 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 4, 89478486],"int64"), tuple(2,1,3,), )
+[torch error] paddle.vsplit(Tensor([6, 4, 89478486],"int64"), tuple(2,1,3,), ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 58086 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:44:35.749099 36147 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:44:35.750216 36147 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 715827883],"bool"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 715827883],"bool"), 3, ) 
+ vsplit() received an invalid combination of arguments - got (indices=int, input=Tensor, ), but expected one of:
+ * (Tensor input, int sections)
+      didn't match because some of the keywords were incorrect: indices
+ * (Tensor input, tuple of ints indices)
+      didn't match because some of the arguments have invalid types: (input=Tensor, !indices=int!, )
+
+
+W0213 09:45:50.217514 36789 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:45:50.218904 36789 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 715827883],"float16"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 715827883],"float16"), 3, ) 
+ vsplit() received an invalid combination of arguments - got (indices=int, input=Tensor, ), but expected one of:
+ * (Tensor input, int sections)
+      didn't match because some of the keywords were incorrect: indices
+ * (Tensor input, tuple of ints indices)
+      didn't match because some of the arguments have invalid types: (input=Tensor, !indices=int!, )
+
+
+W0213 09:47:20.950449 37767 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:47:20.951709 37767 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 715827883],"float32"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 715827883],"float32"), 3, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 155798 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:48:32.090660 38790 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:48:32.096575 38790 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 715827883],"int32"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 715827883],"int32"), 3, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 17128 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:49:43.419773 39500 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:49:43.420848 39500 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vsplit(Tensor([6, 715827883],"uint8"), 3, )
+[torch error] paddle.vsplit(Tensor([6, 715827883],"uint8"), 3, ) 
+ vsplit() received an invalid combination of arguments - got (indices=int, input=Tensor, ), but expected one of:
+ * (Tensor input, int sections)
+      didn't match because some of the keywords were incorrect: indices
+ * (Tensor input, tuple of ints indices)
+      didn't match because some of the arguments have invalid types: (input=Tensor, !indices=int!, )
+
+
+W0213 09:50:49.179533 40188 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:50:49.180806 40188 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 66115 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:51:40.367146 41180 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:51:40.368197 41180 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 87382 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:52:30.362766 41578 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:52:30.363737 41578 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 106682 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:53:22.055783 42226 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:53:22.058118 42226 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 127644 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:54:10.914537 42886 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:54:10.915594 42886 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 146819 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:54:59.501434 43292 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:54:59.502489 43292 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 160102 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:55:51.441540 43943 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:55:51.442518 43943 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 21445 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:56:44.097528 44604 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:56:44.098664 44604 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 45543 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:57:34.237557 45000 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:57:34.238652 45000 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 64682 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:58:26.464061 45665 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:58:26.465138 45665 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 86797 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 09:59:16.988970 46332 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 09:59:16.989974 46332 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 107084 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:00:07.914465 47000 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:00:07.915601 47000 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 121129 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:00:57.312177 47379 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:00:57.313302 47379 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 143516 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:01:49.317296 48032 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:01:49.318348 48032 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 801 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:02:38.268339 48728 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:02:38.269480 48728 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 20193 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:03:30.483783 49105 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:03:30.484789 49105 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 40411 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:04:18.816488 49709 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:04:18.817502 49709 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 62766 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:05:08.884846 50541 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:05:08.885900 50541 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 73104 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:06:01.057392 50931 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:06:01.058514 50931 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 98862 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:06:54.367017 51593 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:06:54.368100 51593 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 122564 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:07:44.518961 52262 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:07:44.519954 52262 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 142518 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:08:37.101624 52639 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:08:37.102694 52639 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),Tensor([1, 1, 1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 163243 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:09:30.467413 53491 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:09:30.468405 53491 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 21377 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:10:25.559478 54165 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:10:25.560453 54165 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 42570 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:11:18.268718 54841 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:11:18.269812 54841 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 65107 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:12:10.198451 55498 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:12:10.199555 55498 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 78950 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:13:02.448690 55901 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:13:02.449666 55901 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 98412 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:13:54.633688 56570 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:13:54.634910 56570 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 121756 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:14:45.261895 57221 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:14:45.262954 57221 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 142247 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:15:36.763764 57622 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:15:36.764868 57622 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 162216 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:16:25.782248 58285 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:16:25.783223 58285 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 26088 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:17:18.420010 58933 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:17:18.421100 58933 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 50806 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:18:07.830320 59610 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:18:07.831290 59610 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 62124 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:19:00.578156 60007 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:19:00.579154 60007 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 1],"float64"),Tensor([2147483649, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 83779 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:19:53.091049 60675 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:19:53.092098 60675 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 104663 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:20:43.504596 61342 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:20:43.505692 61342 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 126006 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:21:38.241596 61734 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:21:38.242561 61734 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 145658 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:22:27.641386 62424 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:22:27.642606 62424 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 4106 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:23:22.996500 63071 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:23:23.011713 63071 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 25121 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:24:18.811004 63733 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:24:18.812080 63733 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),Tensor([1, 1, 2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 49816 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:25:10.506546 64422 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:25:10.507654 64422 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 62388 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:26:04.500286 64806 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:26:04.501314 64806 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 84794 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:26:59.812426 65492 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:26:59.813512 65492 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 110785 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:27:49.179948 66166 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:27:49.181057 66166 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 131775 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:28:39.278256 66861 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:28:39.279347 66861 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 151538 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:29:29.816524 67264 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:29:29.838744 67264 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),Tensor([1, 1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 7828 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:30:18.328672 67915 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:30:18.330154 67915 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 27857 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:31:14.932662 68582 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:31:14.933624 68582 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 48150 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:32:08.243934 68975 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:32:08.244999 68975 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 61624 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:33:02.299394 69645 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:33:02.300475 69645 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 87749 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:33:52.253530 70284 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:33:52.254484 70284 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 110251 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:34:46.004863 70945 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:34:46.005949 70945 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 132635 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:35:35.303105 71313 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:35:35.304106 71313 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),Tensor([1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),Tensor([1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 150902 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:36:33.855798 71954 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:36:33.856998 71954 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),Tensor([1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 1],"float64"),Tensor([2147483649, 1],"float64"),Tensor([1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 17192 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:37:24.008512 72614 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:37:24.009545 72614 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 33515 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:38:20.277287 73264 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:38:20.278438 73264 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 59084 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:39:23.751344 74258 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:39:23.752413 74258 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 81953 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:40:12.618360 74923 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:40:12.619470 74923 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 95142 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:41:14.485544 75306 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:41:14.486627 75306 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 124348 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:42:05.043099 75973 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:42:05.044317 75973 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),Tensor([1, 2147483649, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 138539 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:43:12.063081 76606 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:43:12.064273 76606 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 163602 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:44:18.522753 77273 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:44:18.523927 77273 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 34234 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:45:11.275338 78224 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:45:11.276469 78224 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 46939 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:46:05.424162 78601 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:46:05.425278 78601 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 1, 1],"float64"),Tensor([1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 70802 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:46:57.605206 79436 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:46:57.606207 79436 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 96445 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:47:46.999692 80092 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:47:47.000629 80092 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),Tensor([1, 2147483649, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 117381 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:48:39.663864 80463 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:48:39.664842 80463 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 140609 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:49:28.535650 81112 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:49:28.536844 81112 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 161395 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:50:26.315281 81752 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:50:26.316291 81752 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 19843 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:51:26.643039 82406 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:51:26.644114 82406 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 1],"float64"),Tensor([1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 43680 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:52:19.013788 83079 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:52:19.014793 83079 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 60495 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:53:14.463850 83722 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:53:14.464915 83722 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),Tensor([1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 76698 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:54:03.974948 84090 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:54:03.975976 84090 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1],"float64"),Tensor([1],"float64"),Tensor([2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1],"float64"),Tensor([1],"float64"),Tensor([2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 99048 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:54:59.267040 84737 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:54:59.268039 84737 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1],"float64"),Tensor([1],"float64"),Tensor([2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1],"float64"),Tensor([1],"float64"),Tensor([2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 121641 has 1016.00 MiB memory in use. Of the allocated memory 1024 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:55:52.484408 85407 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:55:52.485517 85407 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1],"float64"),Tensor([2147483649],"float64"),Tensor([1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1],"float64"),Tensor([2147483649],"float64"),Tensor([1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 145907 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:56:46.209262 86055 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:56:46.210327 86055 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1],"float64"),Tensor([2147483649],"float64"),Tensor([1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1],"float64"),Tensor([2147483649],"float64"),Tensor([1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 6715 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:57:35.770328 86541 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:57:35.771323 86541 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1073741825, 2],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1073741825, 2],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 24978 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:58:27.256301 87072 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:58:27.257563 87072 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1073741825, 2],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1073741825, 2],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 46392 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 10:59:30.288497 87722 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 10:59:30.289837 87722 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 69130 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:00:25.361754 88406 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:00:25.362776 88406 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),Tensor([1073741825, 2],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 89461 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:01:20.699836 89069 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:01:20.700838 89069 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([3, 2],"float64"),Tensor([3, 2],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([3, 2],"float64"),Tensor([3, 2],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 108199 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:02:28.556668 89724 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:02:28.557832 89724 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([3, 2],"float64"),Tensor([3, 2],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([1073741825, 2],"float64"),Tensor([3, 2],"float64"),Tensor([3, 2],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 138297 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:03:26.717721 90390 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:03:26.718811 90390 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2],"float64"),Tensor([1, 2147483649],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([2],"float64"),Tensor([1, 2147483649],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 159872 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:04:19.860628 91044 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:04:19.861590 91044 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2],"float64"),Tensor([1, 2147483649],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([2],"float64"),Tensor([1, 2147483649],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 15176 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:05:24.853094 91705 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:05:24.854187 91705 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2],"float64"),Tensor([1073741825, 2],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([2],"float64"),Tensor([1073741825, 2],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 48063 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:06:25.606869 92381 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:06:25.607894 92381 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2],"float64"),Tensor([1073741825, 2],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([2],"float64"),Tensor([1073741825, 2],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 74739 has 1016.00 MiB memory in use. Of the allocated memory 512 bytes is allocated by PyTorch, and 2.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:07:21.428792 93035 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:07:21.429903 93035 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 93782 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:08:14.909111 93689 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:08:14.913594 93689 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 111414 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:09:07.572479 94034 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:09:07.573499 94034 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 130164 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:10:11.533102 94632 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:10:11.534227 94632 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, )
+[torch error] paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),Tensor([1, 1, 1, 1],"float64"),], name=None, ) 
+ CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 79.18 GiB of which 12.21 GiB is free. Process 52666 has 32.99 GiB memory in use. Process 55939 has 32.99 GiB memory in use. Process 153030 has 1014.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+W0213 11:11:05.925276 95210 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:11:05.926396 95210 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], )
+[torch error] paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], ) 
+ Unable to allocate 16.0 GiB for an array with shape (2147483649, 1, 1, 1) and data type float64
+
+W0213 11:11:16.792291 95786 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:11:16.793332 95786 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+test begin: paddle.vstack(list[Tensor([2147483649, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),Tensor([2147483649, 1, 1, 1],"float64"),], name=None, )
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   phi::DeviceContextPool::Get(phi::Place const&)
+1   std::__future_base::_Deferred_state<std::thread::_Invoker<std::tuple<std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > (*)(phi::Place const&, bool, int), phi::Place, bool, int> >, std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > >::_M_complete_async()
+2   std::__future_base::_State_baseV2::_M_do_set(std::function<std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter> ()>*, bool*)
+3   std::_Function_handler<std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter> (), std::__future_base::_Task_setter<std::unique_ptr<std::__future_base::_Result<std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > >, std::__future_base::_Result_base::_Deleter>, std::thread::_Invoker<std::tuple<std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > (*)(phi::Place const&, bool, int), phi::Place, bool, int> >, std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > > >::_M_invoke(std::_Any_data const&)
+4   std::unique_ptr<phi::DeviceContext, std::default_delete<phi::DeviceContext> > paddle::platform::CreateDeviceContext<phi::GPUContext>(phi::Place const&, bool, int)
+5   std::enable_if<std::is_same<phi::GPUContext, phi::GPUContext>::value, phi::GPUContext*>::type paddle::platform::ConstructDevCtx<phi::GPUContext>(phi::Place const&, int)
+6   phi::GPUContext::GPUContext(phi::GPUPlace const&, bool, int)
+7   phi::CUDAStream::CUDAStream(phi::Place const&, int, phi::CUDAStream::StreamFlag const&)
+8   phi::backends::gpu::GetGpuStreamPriorityRange()
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739416329 (unix time) try "date -d @1739416329" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x570) received by PID 95802 (TID 0x7fef07ce1740) from PID 1392 ***]
+
+
+W0213 11:12:07.647418 95802 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0213 11:12:07.655052 95802 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+Traceback (most recent call last):
+  File "/host_home/wanghuan29/PaddleAPITest/engine.py", line 70, in <module>
+    main()
+  File "/host_home/wanghuan29/PaddleAPITest/engine.py", line 63, in main
+    res = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+  File "/usr/lib/python3.9/subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.9/subprocess.py", line 1754, in _execute_child
+    self.pid = _posixsubprocess.fork_exec(
+OSError: [Errno 12] Cannot allocate memory
