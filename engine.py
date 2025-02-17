@@ -47,7 +47,6 @@ def main():
     parser.add_argument(
         '--accuracy',
         default=False,
-        action='store_true'
     )
 
     options = parser.parse_args()

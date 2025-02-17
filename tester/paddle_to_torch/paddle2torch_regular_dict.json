@@ -6385,5 +6385,14 @@
                   "attentions": "attentions"
             },
             "min_input_args": 0
+      },
+      "paddle.take_along_axis": {
+            "torch_api": "torch.take_along_dim",
+            "paddle_torch_args_map": {
+                  "arr": "input",
+                  "indices": "indices",
+                  "axis": "dim"
+            },
+            "min_input_args": 3
       }
 }
