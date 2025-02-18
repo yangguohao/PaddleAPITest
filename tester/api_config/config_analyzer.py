@@ -75,10 +75,18 @@ class TensorConfig:
             print("Warning ", self.dtype, "not supported")
             return
         if self.numpy_tensor is None:
-            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-            self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
-        if api_config.api_name in not_zero_apis:
-            self.numpy_tensor= self.numpy_tensor + 1
+            if api_config.api_name in not_zero_apis:
+                if "int" in self.dtype:
+                    self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
+                else:
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+            else:
+                if "int" in self.dtype:
+                    self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
+                else:
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
     
     def get_paddle_tensor(self, api_config):
