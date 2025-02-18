@@ -8,6 +8,27 @@ import paddle
 import inspect
 import torch
 
+not_zero_apis = [
+    "paddle.Tensor.__div__",
+    "paddle.Tensor.__floordiv__",
+    "paddle.Tensor.__rdiv__",
+    "paddle.Tensor.__rfloordiv__",
+    "paddle.Tensor.__rtruediv__",
+    "paddle.Tensor.__truediv__",
+    "paddle.Tensor.divide",
+    "paddle.Tensor.floor_divide",
+    "paddle.divide",
+    "paddle.floor_divide",
+    "paddle.nn.functional.kl_div",
+    "paddle.sparse.divide",
+    "paddle.Tensor.__mod__",
+    "paddle.Tensor.__rmod__",
+    "paddle.Tensor.floor_mod",
+    "paddle.Tensor.mod",
+    "paddle.floor_mod",
+    "paddle.mod",
+]
+
 class TensorConfig:
     def __init__(self, shape, dtype):
         self.shape = shape
@@ -49,23 +70,25 @@ class TensorConfig:
         else:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
-    def get_numpy_tensor(self):
+    def get_numpy_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
         if self.numpy_tensor is None:
             dtype = "float32" if self.dtype == "bfloat16" else self.dtype
             self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
+        if api_config.api_name in not_zero_apis:
+            self.numpy_tensor= self.numpy_tensor + 1
         return self.numpy_tensor
     
-    def get_paddle_tensor(self):
+    def get_paddle_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(),
+                self.get_numpy_tensor(api_config),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
             self.paddle_tensor.stop_gradient = False
@@ -73,7 +96,7 @@ class TensorConfig:
                 self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
                 self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
-    def get_torch_tensor(self):
+    def get_torch_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -82,7 +105,7 @@ class TensorConfig:
         torch.set_default_device(device)
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(
-                self.get_numpy_tensor(),
+                self.get_numpy_tensor(api_config),
                 dtype=self.convert_dtype_to_torch_type(self.dtype)
                 if self.dtype != 'bfloat16'
                 else torch.float32,

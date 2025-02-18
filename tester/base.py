@@ -23,6 +23,8 @@ class APITestBase:
     def need_skip(self):
         if "sparse." in self.api_config.api_name:
             return True
+        if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced"]:
+            return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
@@ -118,12 +120,12 @@ class APITestBase:
 
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor())
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config))
             elif isinstance(self.paddle_args_config[i], list):
                 tmp = []
                 for j in range(len(self.paddle_args_config[i])):
                     if isinstance(self.paddle_args_config[i][j], TensorConfig):
-                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(self.paddle_args_config[i][j])
                 self.paddle_args.append(tmp)
@@ -131,7 +133,7 @@ class APITestBase:
                 tmp = []
                 for j in range(len(self.paddle_args_config[i])):
                     if isinstance(self.paddle_args_config[i][j], TensorConfig):
-                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(self.paddle_args_config[i][j])
                 self.paddle_args.append(tuple(tmp))
@@ -140,12 +142,12 @@ class APITestBase:
 
         for key, arg_config in self.paddle_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.paddle_kwargs[key] = arg_config.get_paddle_tensor()
+                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config)
             elif isinstance(arg_config, list):
                 value = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        value.append(arg_config[i].get_paddle_tensor())
+                        value.append(arg_config[i].get_paddle_tensor(self.api_config))
                     else:
                         value.append(arg_config[i])
                 self.paddle_kwargs[key] = value
@@ -153,7 +155,7 @@ class APITestBase:
                 tmp = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        tmp.append(arg_config[i].get_paddle_tensor())
+                        tmp.append(arg_config[i].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(arg_config[i])
                 self.paddle_kwargs[key] = tuple(tmp)
@@ -262,12 +264,12 @@ class APITestBase:
 
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor())
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config))
             elif isinstance(self.paddle_args_config[i], list):
                 tmp = []
                 for j in range(len(self.paddle_args_config[i])):
                     if isinstance(self.paddle_args_config[i][j], TensorConfig):
-                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(self.paddle_args_config[i][j])
                 self.paddle_args.append(tmp)
@@ -275,7 +277,7 @@ class APITestBase:
                 tmp = []
                 for j in range(len(self.paddle_args_config[i])):
                     if isinstance(self.paddle_args_config[i][j], TensorConfig):
-                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor())
+                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(self.paddle_args_config[i][j])
                 self.paddle_args.append(tuple(tmp))
@@ -284,12 +286,12 @@ class APITestBase:
 
         for key, arg_config in self.paddle_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.paddle_kwargs[key] = arg_config.get_paddle_tensor()
+                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config)
             elif isinstance(arg_config, list):
                 value = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        value.append(arg_config[i].get_paddle_tensor())
+                        value.append(arg_config[i].get_paddle_tensor(self.api_config))
                     else:
                         value.append(arg_config[i])
                 self.paddle_kwargs[key] = value
@@ -297,7 +299,7 @@ class APITestBase:
                 tmp = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        tmp.append(arg_config[i].get_paddle_tensor())
+                        tmp.append(arg_config[i].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(arg_config[i])
                 self.paddle_kwargs[key] = tuple(tmp)
@@ -306,12 +308,12 @@ class APITestBase:
 
         for key, arg_config in self.paddle_merged_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.paddle_merged_kwargs[key] = arg_config.get_paddle_tensor()
+                self.paddle_merged_kwargs[key] = arg_config.get_paddle_tensor(self.api_config)
             elif isinstance(arg_config, list):
                 value = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        value.append(arg_config[i].get_paddle_tensor())
+                        value.append(arg_config[i].get_paddle_tensor(self.api_config))
                     else:
                         value.append(arg_config[i])
                 self.paddle_merged_kwargs[key] = value
@@ -319,7 +321,7 @@ class APITestBase:
                 tmp = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        tmp.append(arg_config[i].get_paddle_tensor())
+                        tmp.append(arg_config[i].get_paddle_tensor(self.api_config))
                     else:
                         tmp.append(arg_config[i])
                 self.paddle_merged_kwargs[key] = tuple(tmp)
@@ -333,12 +335,12 @@ class APITestBase:
 
         for key, arg_config in self.torch_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.torch_kwargs[key] = arg_config.get_torch_tensor()
+                self.torch_kwargs[key] = arg_config.get_torch_tensor(self.api_config)
             elif isinstance(arg_config, list):
                 value = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        value.append(arg_config[i].get_torch_tensor())
+                        value.append(arg_config[i].get_torch_tensor(self.api_config))
                     else:
                         value.append(arg_config[i])
                 self.torch_kwargs[key] = value
@@ -346,7 +348,7 @@ class APITestBase:
                 tmp = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
-                        tmp.append(arg_config[i].get_torch_tensor())
+                        tmp.append(arg_config[i].get_torch_tensor(self.api_config))
                     else:
                         tmp.append(arg_config[i])
                 self.torch_kwargs[key] = tuple(tmp)
@@ -589,6 +591,8 @@ class APITestBase:
             "feed",
             "fetch",
             "floor_divide",
+            "__floordiv__",
+            "__rfloordiv__",
             "ftrl",
             "full",
             "full_",
