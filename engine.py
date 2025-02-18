@@ -58,9 +58,12 @@ def main():
         del case
         del api_config
     elif options.api_config_file != "":
-        checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "r")
-        finish_configs = checkpoint_r.readlines()
-        checkpoint_r.close()
+        try:
+            checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "r")
+            finish_configs = checkpoint_r.readlines()
+            checkpoint_r.close()
+        except Exception as err:
+            finish_configs = []
         checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "a")
         api_configs = open(options.api_config_file, "r")
         for api_config_str in api_configs:
