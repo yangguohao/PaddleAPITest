@@ -60,15 +60,15 @@ def main():
     elif options.api_config_file != "":
         try:
             checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "r")
-            finish_configs = checkpoint_r.readlines()
+            finish_configs = set(checkpoint_r.readlines())
             checkpoint_r.close()
         except Exception as err:
-            finish_configs = []
+            finish_configs = set()
         checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "a")
-        api_configs = open(options.api_config_file, "r")
-        for api_config_str in api_configs:
-            if api_config_str in finish_configs:
-                continue
+        api_config_file = open(options.api_config_file, "r")
+        api_configs = set(api_config_file.readlines())
+        api_configs = api_configs - finish_configs
+        for api_config_str in sorted(api_configs):
             api_config = APIConfig(api_config_str)
             print("test begin:", api_config.config, flush=True)
             checkpoint.write(api_config.config+"\n")
