@@ -10,8 +10,11 @@ import json
 import torch
 import paddle
 import inspect
+import os
 
-api_config_paddle_to_torch_faild = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+
+api_config_paddle_to_torch_faild = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
 
 class APITestBase:
     def __init__(self, api_config):

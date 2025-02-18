@@ -10,11 +10,14 @@ import torch
 import paddle
 import inspect
 from .base import APITestBase
+import os
 
-api_config_accuracy_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_pass = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_pass.txt", "a")
-api_config_torch_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_torch_error.txt", "a")
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+
+api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
+api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error.txt", "a")
+api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
+api_config_torch_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_torch_error.txt", "a")
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
