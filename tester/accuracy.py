@@ -55,6 +55,8 @@ class APITestAccuracy(APITestBase):
             print("[torch error]", self.api_config.config, "\n", str(err))
             api_config_torch_error.write(self.api_config.config+"\n")
             api_config_torch_error.flush()
+            if "CUDA error" in str(err):
+                raise Exception(err)
             return
 
         if self.need_check_grad():
@@ -75,6 +77,8 @@ class APITestAccuracy(APITestBase):
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 torch_grad_success = False
+                if "CUDA error" in str(err):
+                    raise Exception(err)
         else:
             del self.torch_args
             del self.torch_kwargs
@@ -95,6 +99,8 @@ class APITestAccuracy(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             api_config_paddle_error.flush()
+            if "CUDA error" in str(err):
+                raise Exception(err)
             return
 
         try:
@@ -171,6 +177,8 @@ class APITestAccuracy(APITestBase):
                 print("[paddle error]", self.api_config.config, "\n", str(err))
                 api_config_paddle_error.write(self.api_config.config+"\n")
                 api_config_paddle_error.flush()
+                if "CUDA error" in str(err):
+                    raise Exception(err)
                 return
 
             try:
