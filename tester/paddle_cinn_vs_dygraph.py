@@ -20,9 +20,11 @@ class APITestCINNVSDygraph(APITestBase):
         self.api_config = api_config
     def test(self):
         if self.need_skip():
+            print("[Skip]")
             return
 
         if not self.ana_paddle_api_info():
+            print("ana_paddle_api_info failed")
             return
 
         try:
@@ -43,12 +45,8 @@ class APITestCINNVSDygraph(APITestBase):
                 return func(args, kwargs)
 
             if not self.gen_paddle_input():
+                print("gen_paddle_input failed")
                 return
-            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
-                args, kwargs = self.copy_paddle_input()
-            else:
-                args = self.paddle_args
-                kwargs = self.paddle_kwargs
 
             paddle_output = func(args, kwargs)
             paddle_output_static = func_static(args, kwargs)
@@ -60,13 +58,14 @@ class APITestCINNVSDygraph(APITestBase):
             #         out_grads = func_backward(result_outputs, inputs_list, result_outputs_grads)
             #         out_grads_static = func_backward_static(result_outputs, inputs_list, result_outputs_grads)
             #         print("out_grads_static = ", out_grads_static)
-            self.clear_paddle_tensor()
         except Exception as err:
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             api_config_paddle_error.flush()
+            if "cudaErrorLaunchFailure" in str(err):
+                exit(0)
             return
 
         try:

@@ -22,13 +22,16 @@ class APITestPaddleOnly(APITestBase):
         self.api_config = api_config
     def test(self):
         if self.need_skip():
+            print("[Skip]")
             return
 
         if not self.ana_paddle_api_info():
+            print("ana_paddle_api_info failed")
             return
 
         try:
             if not self.gen_paddle_input():
+                print("gen_paddle_input failed")
                 return
             paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
             if self.need_check_grad():
@@ -36,7 +39,6 @@ class APITestPaddleOnly(APITestBase):
                 result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
                 if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
                     out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
-            self.clear_paddle_tensor()
         except Exception as err:
             paddle_output = None
             result_outputs = None

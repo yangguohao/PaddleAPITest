@@ -22,58 +22,45 @@ class APITestBase:
 
     def need_skip(self):
         if "sparse." in self.api_config.api_name:
-            print("[Skip]")
             return True
-        # if ".__" in self.api_config.api_name:
-        #     print("[Skip]")
-        #     return True
         if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced"]:
-            print("[Skip]")
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
-                    print("[Skip]")
                     return True
             elif isinstance(self.api_config.args[i], list):
                 tmp = []
                 for j in range(len(self.api_config.args[i])):
                     if isinstance(self.api_config.args[i][j], TensorConfig):
                         if self.api_config.args[i][j].dtype in ["float8_e5m2", "float8_e4m3fn"]:
-                            print("[Skip]")
                             return True
             elif isinstance(self.api_config.args[i], tuple):
                 tmp = []
                 for j in range(len(self.api_config.args[i])):
                     if isinstance(self.api_config.args[i][j], TensorConfig):
                         if self.api_config.args[i][j].dtype in ["float8_e5m2", "float8_e4m3fn"]:
-                            print("[Skip]")
                             return True
             elif self.api_config.args[i] in [paddle.base.core.DataType.FLOAT8_E4M3FN, paddle.base.core.DataType.FLOAT8_E5M2, "float8_e5m2", "float8_e4m3fn"]:
-                print("[Skip]")
                 return True
 
         for key, arg_config in self.api_config.kwargs.items():
             if isinstance(arg_config, TensorConfig):
                 if arg_config.dtype in ["float8_e5m2", "float8_e4m3fn"]:
-                    print("[Skip]")
                     return True
             elif isinstance(arg_config, list):
                 value = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
                         if arg_config[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
-                            print("[Skip]")
                             return True
             elif isinstance(arg_config, tuple):
                 tmp = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
                         if arg_config[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
-                            print("[Skip]")
                             return True
             elif arg_config in [paddle.base.core.DataType.FLOAT8_E4M3FN, paddle.base.core.DataType.FLOAT8_E5M2, "float8_e5m2", "float8_e4m3fn"]:
-                print("[Skip]")
                 return True
 
         return False
@@ -96,13 +83,13 @@ class APITestBase:
         return True
 
     def ana_torch_api_info(self):
-        torch_api, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
+        self.torch_api_str, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
         if paddle_to_torch_args_map is None:
             print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
             api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
             api_config_paddle_to_torch_faild.flush()
             return False
-        self.torch_api = eval(torch_api)
+        self.torch_api = eval(self.torch_api_str)
 
         api_sig = inspect.signature(self.paddle_api)
         api_args_list = list(api_sig.parameters.keys())
@@ -118,7 +105,12 @@ class APITestBase:
         self.torch_args_config = []
         self.torch_kwargs_config = collections.OrderedDict()
 
+        first = True
         for key, value in self.paddle_merged_kwargs_config.items():
+            if first and "paddle.Tensor." in self.api_config.api_name:
+                self.torch_args_config.append(value)
+                continue
+            first = False
             if key == "name":
                 continue
             if key not in paddle_to_torch_args_map:
@@ -180,10 +172,10 @@ class APITestBase:
             else:
                 self.paddle_kwargs[key] = arg_config
 
-            if self.need_check_grad():
-                if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
-                    self.paddle_args, self.paddle_kwargs = self.copy_paddle_input()
-
+        if self.need_check_grad():
+            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+                self.paddle_args, self.paddle_kwargs = self.copy_paddle_input()
+        self.clear_paddle_tensor()
         return True
 
     def copy_paddle_input(self):
@@ -244,6 +236,27 @@ class APITestBase:
 
         return result
 
+    def get_torch_input_list(self):
+        result = []
+
+        for i in range(len(self.torch_args)):
+            if isinstance(self.torch_args[i], paddle.Tensor):
+                result.append(self.torch_args[i])
+            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], paddle.Tensor):
+                result = result + self.torch_args[i]
+            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], paddle.Tensor):
+                result = result + list(self.torch_args[i])
+
+        for key, value in self.torch_kwargs.items():
+            if isinstance(value, paddle.Tensor):
+                result.append(value)
+            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
+                result = result + value
+            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
+                result = result + list(value)
+
+        return result
+
     def gen_paddle_output_and_output_grad(self, outputs):
         result_outputs = []
         if isinstance(outputs, paddle.Tensor):
@@ -266,7 +279,11 @@ class APITestBase:
 
         for output in result_outputs:
             dtype = str(output.dtype)[7:]
-            numpy_tensor = numpy.random.random(output.shape).astype("float32" if dtype == "bfloat16" else dtype)
+            if "int" in dtype:
+                numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
+            else:
+                dtype = "float32" if dtype == "bfloat16" else dtype
+                numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
             self.outputs_grad_numpy.append(numpy_tensor)
             result_output_grad = paddle.to_tensor(
                 numpy_tensor,
@@ -275,6 +292,79 @@ class APITestBase:
             result_output_grad.stop_gradient = False
             if dtype == "bfloat16":
                 result_output_grad = paddle.cast(result_output_grad, dtype="uint16")
+            result_outputs_grads.append(result_output_grad)
+
+        return result_outputs, result_outputs_grads
+
+    def convert_dtype_to_torch_type(self, dtype):
+        if dtype in ["float32", numpy.float32]:
+            return torch.float32
+        elif dtype in ['float16', numpy.float16]:
+            return torch.float16
+        elif dtype in ['float64', numpy.float64]:
+            return torch.float64
+        elif dtype in ['int16', numpy.int16]:
+            return torch.int16
+        elif dtype in ['int8', numpy.int8]:
+            return torch.int8
+        elif dtype in ['bool', numpy.bool_]:
+            return torch.bool
+        elif dtype in ['bfloat16', numpy.uint16]:
+            return torch.bfloat16
+        elif dtype in ['uint8', numpy.uint8]:
+            return torch.uint8
+        elif dtype in ['int32', numpy.int32]:
+            return torch.int32
+        elif dtype in ['int64', numpy.int64]:
+            return torch.int64
+        elif dtype in ['complex64', numpy.complex64]:
+            return torch.complex64
+        elif dtype in ['complex128', numpy.complex128]:
+            return torch.complex128
+        else:
+            raise ValueError(f'Unsupport dtype: {dtype}')
+
+    def gen_torch_output_and_output_grad(self, outputs):
+        result_outputs = []
+        if isinstance(outputs, torch.Tensor):
+            result_outputs.append(outputs)
+        elif isinstance(outputs, list) and len(outputs) > 0 and isinstance(outputs[0], torch.Tensor):
+            result_outputs = outputs
+        elif isinstance(outputs, tuple):
+            for output in outputs:
+                if isinstance(output, torch.Tensor):
+                    result_outputs.append(output)
+                else:
+                    raise ValueError("outputs format not support")
+                # elif isinstance(output, list) and len(output) > 0 and isinstance(output[0], torch.Tensor):
+                #     result_outputs.append(output)
+                # elif isinstance(output, tuple) and len(output) > 0 and isinstance(output[0], torch.Tensor):
+                #     result_outputs.append(output)
+
+        result_outputs_grads = []
+        self.outputs_grad_numpy = []
+
+        for output in result_outputs:
+            dtype = str(output.dtype)[6:]
+            if "int" in dtype:
+                numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
+            else:
+                dtype = "float32" if dtype == "bfloat16" else dtype
+                numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
+            self.outputs_grad_numpy.append(numpy_tensor)
+            result_output_grad = paddle.to_tensor(
+                numpy_tensor,
+                dtype=dtype if dtype != 'bfloat16' else "float32",
+            )
+            result_output_grad = torch.tensor(
+                numpy_tensor,
+                dtype=self.convert_dtype_to_torch_type(dtype)
+                if dtype != 'bfloat16'
+                else torch.float32,
+            )
+
+            if dtype == "bfloat16":
+                result_output_grad = result_output_grad.to(dtype=torch.bfloat16)
             result_outputs_grads.append(result_output_grad)
 
         return result_outputs, result_outputs_grads
@@ -355,6 +445,28 @@ class APITestBase:
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
 
+        for arg_config in self.torch_args_config:
+            if isinstance(arg_config, TensorConfig):
+                self.torch_args.append(arg_config.get_torch_tensor(self.api_config))
+            elif isinstance(arg_config, list):
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_torch_tensor(self.api_config))
+                    else:
+                        value.append(arg_config[i])
+                self.torch_args.append(value)
+            elif isinstance(arg_config, tuple):
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_torch_tensor(self.api_config))
+                    else:
+                        value.append(arg_config[i])
+                self.torch_args.append(tuple(value))
+            else:
+                self.torch_args.append(arg_config)
+
         for key, arg_config in self.torch_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
                 self.torch_kwargs[key] = arg_config.get_torch_tensor(self.api_config)
@@ -376,6 +488,7 @@ class APITestBase:
                 self.torch_kwargs[key] = tuple(tmp)
             else:
                 self.torch_kwargs[key] = arg_config
+        self.clear_torch_tensor()
         return True
 
     def np_assert_accuracy(

@@ -6394,5 +6394,22 @@
                   "axis": "dim"
             },
             "min_input_args": 3
+      },
+      "paddle.Tensor.__getitem__": {
+            "torch_api": "torch.Tensor.__getitem__",
+            "paddle_torch_args_map": {
+                  "self": "input",
+                  "item": "key"
+            },
+            "min_input_args": 2
+      },
+      "paddle.Tensor.__setitem__": {
+            "torch_api": "torch.Tensor.__setitem__",
+            "paddle_torch_args_map": {
+                  "self": "input",
+                  "item": "key",
+                  "value": "value"
+            },
+            "min_input_args": 3
       }
 }

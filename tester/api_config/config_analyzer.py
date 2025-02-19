@@ -70,6 +70,12 @@ class TensorConfig:
         else:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
+    def numel(self):
+        numel = 1
+        for i in self.shape:
+            numel = numel * i
+        return numel
+
     def get_numpy_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
@@ -81,6 +87,16 @@ class TensorConfig:
                 else:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+            elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
+                if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or "indices" in api_config.kwargs:
+                    if len(api_config.args) > 0:
+                        arr = api_config.args[0]
+                    elif "arr" in api_config.kwargs:
+                        arr = api_config.kwargs["arr"]
+                min_dim = min(arr.shape)
+                indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
+                self.numpy_tensor = indices.reshape(self.shape)
+                self.dtype = "int64"
             else:
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
