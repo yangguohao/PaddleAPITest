@@ -47,7 +47,7 @@ def main():
     elif options.paddle_cinn:
         test_class = APITestCINNVSDygraph
     elif options.accuracy:
-        test_class = APITestAccuracy            
+        test_class = APITestAccuracy
 
     if options.api_config != "":
         api_config = APIConfig(options.api_config)
@@ -69,10 +69,10 @@ def main():
         api_configs = set(api_config_file.readlines())
         api_configs = api_configs - finish_configs
         for api_config_str in sorted(api_configs):
+            checkpoint.write(api_config_str+"\n")
+            checkpoint.flush()
             api_config = APIConfig(api_config_str)
             print("test begin:", api_config.config, flush=True)
-            checkpoint.write(api_config.config+"\n")
-            checkpoint.flush()
             case = test_class(api_config)
             case.test()
             case.clear_tensor()

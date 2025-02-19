@@ -22,48 +22,66 @@ class APITestBase:
 
     def need_skip(self):
         if "sparse." in self.api_config.api_name:
+            print("[Skip]")
             return True
+        # if ".__" in self.api_config.api_name:
+        #     print("[Skip]")
+        #     return True
         if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced"]:
+            print("[Skip]")
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                    print("[Skip]")
                     return True
             elif isinstance(self.api_config.args[i], list):
                 tmp = []
                 for j in range(len(self.api_config.args[i])):
                     if isinstance(self.api_config.args[i][j], TensorConfig):
                         if self.api_config.args[i][j].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            print("[Skip]")
                             return True
             elif isinstance(self.api_config.args[i], tuple):
                 tmp = []
                 for j in range(len(self.api_config.args[i])):
                     if isinstance(self.api_config.args[i][j], TensorConfig):
                         if self.api_config.args[i][j].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            print("[Skip]")
                             return True
             elif self.api_config.args[i] in [paddle.base.core.DataType.FLOAT8_E4M3FN, paddle.base.core.DataType.FLOAT8_E5M2, "float8_e5m2", "float8_e4m3fn"]:
+                print("[Skip]")
                 return True
 
         for key, arg_config in self.api_config.kwargs.items():
             if isinstance(arg_config, TensorConfig):
                 if arg_config.dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                    print("[Skip]")
                     return True
             elif isinstance(arg_config, list):
                 value = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
                         if arg_config[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            print("[Skip]")
                             return True
             elif isinstance(arg_config, tuple):
                 tmp = []
                 for i in range(len(arg_config)):
                     if isinstance(arg_config[i], TensorConfig):
                         if arg_config[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
+                            print("[Skip]")
                             return True
             elif arg_config in [paddle.base.core.DataType.FLOAT8_E4M3FN, paddle.base.core.DataType.FLOAT8_E5M2, "float8_e5m2", "float8_e4m3fn"]:
+                print("[Skip]")
                 return True
 
         return False
+    def need_check_grad(self):
+        if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
+            return True
+        return False
+
     def ana_api_info(self):
         if not self.ana_paddle_api_info():
             return False
@@ -161,6 +179,10 @@ class APITestBase:
                 self.paddle_kwargs[key] = tuple(tmp)
             else:
                 self.paddle_kwargs[key] = arg_config
+
+            if self.need_check_grad():
+                if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+                    self.paddle_args, self.paddle_kwargs = self.copy_paddle_input()
 
         return True
 
