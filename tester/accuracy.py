@@ -11,6 +11,8 @@ import paddle
 import inspect
 from .base import APITestBase
 import os
+import time
+from func_timeout import func_set_timeout
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -22,6 +24,8 @@ api_config_torch_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_t
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
         self.api_config = api_config
+    
+    @func_set_timeout(600)
     def test(self):
         if self.need_skip():
             print("[Skip]")

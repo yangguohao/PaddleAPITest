@@ -10,6 +10,8 @@ import paddle
 from paddle.jit import to_static
 import inspect
 from .base import APITestBase
+import time
+from func_timeout import func_set_timeout
 
 api_config_accuracy_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
 api_config_paddle_error = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/api_config_paddle_error.txt", "a")
@@ -18,6 +20,7 @@ api_config_pass = open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/te
 class APITestCINNVSDygraph(APITestBase):
     def __init__(self, api_config):
         self.api_config = api_config
+    @func_set_timeout(600)
     def test(self):
         if self.need_skip():
             print("[Skip]")
