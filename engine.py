@@ -68,6 +68,7 @@ def main():
         api_config_file = open(options.api_config_file, "r")
         api_configs = set(api_config_file.readlines())
         api_configs = api_configs - finish_configs
+        api_configs = sorted(api_configs)
         for api_config_str in api_configs:
             checkpoint.write(api_config_str)
             checkpoint.flush()
