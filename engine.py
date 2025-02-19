@@ -75,7 +75,11 @@ def main():
             api_config = APIConfig(api_config_str)
             print("test begin:", api_config.config, flush=True)
             case = test_class(api_config)
-            case.test()
+            try:
+                case.test()
+            except Exception as err:
+                if "CUDA error" in str(err):
+                    exit(0)
             case.clear_tensor()
             del case
             del api_config

@@ -67,8 +67,8 @@ class APITestCINNVSDygraph(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             api_config_paddle_error.flush()
-            if "cudaErrorLaunchFailure" in str(err):
-                exit(0)
+            if "CUDA error" in str(err):
+                raise Exception(err)
             return
 
         try:
