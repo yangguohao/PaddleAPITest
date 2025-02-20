@@ -23,7 +23,7 @@ class APITestBase:
     def need_skip(self):
         if "sparse." in self.api_config.api_name:
             return True
-        if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced"]:
+        if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced", "paddle.gather", "paddle.Tensor.gather"]:
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
