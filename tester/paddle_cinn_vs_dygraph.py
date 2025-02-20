@@ -131,3 +131,23 @@ class APITestCINNVSDygraph(APITestBase):
         api_config_pass.write(self.api_config.config+"\n")
         api_config_pass.flush()
   
+
+
+# import paddle
+# from paddle.jit import to_static
+
+# def test():
+#     build_strategy = paddle.static.BuildStrategy()
+#     build_strategy.build_cinn_pass = False
+#     @to_static(full_graph=True, build_strategy=build_strategy)
+#     def func_static(x, y):
+#         return paddle.add(x, y)
+
+#     a = paddle.rand([16, 1, 128])
+#     b = paddle.rand([128])
+#     a.stop_gradient = False
+#     b.stop_gradient = False
+#     func_static(a, b)
+
+# for i in range(200):
+#     test()
