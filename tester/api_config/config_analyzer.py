@@ -8,6 +8,9 @@ import paddle
 import inspect
 import torch
 
+USE_CACHED_NUMPY = True
+cached_numpy = {}
+
 not_zero_apis = [
     "paddle.Tensor.__div__",
     "paddle.Tensor.__floordiv__",
@@ -75,6 +78,21 @@ class TensorConfig:
         for i in self.shape:
             numel = numel * i
         return numel
+    def get_cached_numpy(self, dtype, shape):
+        numel = 1
+        for i in shape:
+            numel = numel * i
+
+        if dtype in cached_numpy:
+            tensor = cached_numpy[dtype][:numel].reshape(shape)
+        else:
+            if "int" in dtype:
+                cached_numpy[dtype] = numpy.random.randint(-65535, 65535, size=4294967294, dtype="int64").astype(dtype)
+                tensor = cached_numpy[dtype][:numel].reshape(shape)
+            else:
+                cached_numpy[dtype] = (numpy.random.random([4294967294]) - 0.5).astype(dtype)
+                tensor = cached_numpy[dtype][:numel].reshape(shape)
+        return tensor
 
     def get_numpy_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
@@ -98,11 +116,15 @@ class TensorConfig:
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
             else:
-                if "int" in self.dtype:
-                    self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
-                else:
+                if USE_CACHED_NUMPY:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+                    self.numpy_tensor = self.get_cached_numpy(dtype, self.shape)
+                else:
+                    if "int" in self.dtype:
+                        self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
+                    else:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
     
     def get_paddle_tensor(self, api_config):
