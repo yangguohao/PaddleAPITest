@@ -21,9 +21,10 @@ class APITestBase:
         self.api_config = api_config
 
     def need_skip(self):
+        # not support
         if "sparse." in self.api_config.api_name:
             return True
-        if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced", "paddle.gather", "paddle.Tensor.gather", "paddle.index_select", "paddle.Tensor.index_select", "paddle.Tensor.index_put", "paddle.Tensor.index_sample", "paddle.index_put", "paddle.index_sample", "paddle.gather_nd", "paddle.Tensor.gather_nd", "paddle.incubate.segment_max", "paddle.incubate.segment_mean", "paddle.incubate.segment_min", "paddle.incubate.segment_sum", "paddle.geometric.segment_max", "paddle.geometric.segment_mean", "paddle.geometric.segment_min", "paddle.geometric.segment_sum"]:
+        if self.api_config.api_name in ["paddle.Tensor.coalesce", "paddle.Tensor.is_coalesced", "paddle.gather", "paddle.Tensor.gather", "paddle.index_select", "paddle.Tensor.index_select", "paddle.Tensor.index_put", "paddle.Tensor.index_sample", "paddle.index_put", "paddle.index_sample", "paddle.gather_nd", "paddle.Tensor.gather_nd", "paddle.incubate.segment_max", "paddle.incubate.segment_mean", "paddle.incubate.segment_min", "paddle.incubate.segment_sum", "paddle.geometric.segment_max", "paddle.geometric.segment_mean", "paddle.geometric.segment_min", "paddle.geometric.segment_sum", "paddle.geometric.send_u_recv", "paddle.geometric.send_ue_recv", "paddle.geometric.send_uv", "paddle.nn.functional.cross_entropy", "paddle.nn.functional.one_hot", "paddle.nn.functional.upsample", "paddle.vision.ops.roi_align", "paddle.vision.ops.roi_pool"]:
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
