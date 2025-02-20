@@ -154,7 +154,6 @@
                   "start": "start",
                   "end": "end",
                   "step": "step",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -248,8 +247,7 @@
             "torch_api": "torch.cummax",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "axis": "dim",
-                  "out": "out"
+                  "axis": "dim"
             },
             "min_input_args": 2,
             "matcher": "DoubleAssignMatcher"
@@ -258,8 +256,7 @@
             "torch_api": "torch.cummin",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "axis": "dim",
-                  "out": "out"
+                  "axis": "dim"
             },
             "min_input_args": 2,
             "matcher": "DoubleAssignMatcher"
@@ -366,7 +363,6 @@
             "torch_api": "torch.empty",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -388,8 +384,7 @@
       "paddle.frexp": {
             "torch_api": "torch.frexp",
             "paddle_torch_args_map": {
-                  "x": "input",
-                  "out": "out"
+                  "x": "input"
             },
             "min_input_args": 0,
             "matcher": "DoubleAssignMatcher"
@@ -402,8 +397,7 @@
                   "min": "range",
                   "max": "range",
                   "weight": "weight",
-                  "density": "density",
-                  "out": "out"
+                  "density": "density"
             },
             "min_input_args": 2,
             "matcher": "HistogramMatcher"
@@ -430,8 +424,7 @@
                   "x": "input",
                   "k": "k",
                   "axis": "dim",
-                  "keepdim": "keepdim",
-                  "out": "out"
+                  "keepdim": "keepdim"
             },
             "min_input_args": 2,
             "matcher": "DoubleAssignMatcher"
@@ -439,8 +432,7 @@
       "paddle.linalg.eig": {
             "torch_api": "torch.linalg.eig",
             "paddle_torch_args_map": {
-                  "x": "input",
-                  "out": "out"
+                  "x": "input"
             },
             "min_input_args": 1,
             "matcher": "DoubleAssignMatcher"
@@ -449,8 +441,7 @@
             "torch_api": "torch.linalg.eigh",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "UPLO": "UPLO",
-                  "out": "out"
+                  "UPLO": "UPLO"
             },
             "min_input_args": 1,
             "matcher": "DoubleAssignMatcher"
@@ -459,8 +450,7 @@
             "torch_api": "torch.linalg.lu",
             "paddle_torch_args_map": {
                   "x": "A",
-                  "pivot": "pivot",
-                  "out": "out"
+                  "pivot": "pivot"
             },
             "min_input_args": 1,
             "matcher": "LinalgLuMatcher"
@@ -469,8 +459,7 @@
             "torch_api": "torch.linalg.qr",
             "paddle_torch_args_map": {
                   "x": "A",
-                  "mode": "mode",
-                  "out": "out"
+                  "mode": "mode"
             },
             "min_input_args": 1,
             "matcher": "Linalg_qrMatcher"
@@ -478,8 +467,7 @@
       "paddle.linalg.slogdet": {
             "torch_api": "torch.linalg.slogdet",
             "paddle_torch_args_map": {
-                  "A": "A",
-                  "out": "out"
+                  "A": "A"
             },
             "min_input_args": 1,
             "matcher": "SLogDetMatcher"
@@ -491,8 +479,7 @@
                   "y": "B",
                   "upper": "upper",
                   "transpose": "left",
-                  "unitriangular": "unitriangular",
-                  "out": "out"
+                  "unitriangular": "unitriangular"
             },
             "min_input_args": 2,
             "matcher": "LinalgSolveTriangularMatcher"
@@ -501,8 +488,7 @@
             "torch_api": "torch.linalg.svd",
             "paddle_torch_args_map": {
                   "x": "A",
-                  "full_matrices": "full_matrices",
-                  "out": "out"
+                  "full_matrices": "full_matrices"
             },
             "min_input_args": 1,
             "matcher": "TripleAssignMatcher"
@@ -522,8 +508,7 @@
                   "x": "LU_data",
                   "y": "LU_pivots",
                   "unpack_ludata": "unpack_data",
-                  "unpack_pivots": "unpack_pivots",
-                  "out": "out"
+                  "unpack_pivots": "unpack_pivots"
             },
             "min_input_args": 2,
             "matcher": "Lu_unpackMatcher"
@@ -534,7 +519,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "out": "out",
                   "mode": ""
             },
             "min_input_args": 1,
@@ -555,7 +539,6 @@
                   "x": "input",
                   "axis": "dim",
                   "keepdim": "keepdim",
-                  "out": "out",
                   "mode": ""
             },
             "min_input_args": 1,
@@ -1530,7 +1513,6 @@
             "torch_api": "torch.nonzero",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "out": "out",
                   "as_tuple": "as_tuple"
             },
             "min_input_args": 1,
@@ -1540,8 +1522,7 @@
             "torch_api": "torch.not_equal",
             "paddle_torch_args_map": {
                   "x": "input",
-                  "y": "other",
-                  "out": "out"
+                  "y": "other"
             },
             "min_input_args": 2,
             "matcher": "Num2TensorBinaryMatcher"
@@ -1558,7 +1539,6 @@
             "torch_api": "torch.ones",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -1804,7 +1784,6 @@
             "paddle_torch_args_map": {
                   "*size": "*size",
                   "generator": "generator",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -1821,7 +1800,6 @@
                   "high": "high",
                   "shape": "size",
                   "generator": "generator",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -1835,7 +1813,6 @@
             "torch_api": "torch.randn",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
@@ -1849,8 +1826,7 @@
             "torch_api": "torch.remainder",
             "paddle_torch_args_map": {
                   "input": "input",
-                  "other": "other",
-                  "out": "out"
+                  "other": "other"
             },
             "min_input_args": 2,
             "matcher": "Num2TensorBinaryMatcher"
@@ -1859,8 +1835,7 @@
             "torch_api": "torch.round",
             "paddle_torch_args_map": {
                   "input": "input",
-                  "decimals": "decimals",
-                  "out": "out"
+                  "decimals": "decimals"
             },
             "min_input_args": 1,
             "matcher": "RoundMatcher"
@@ -1873,8 +1848,7 @@
                   "out_int32": "out_int32",
                   "right": "right",
                   "side": "side",
-                  "sorter": "sorter",
-                  "out": "out"
+                  "sorter": "sorter"
             },
             "min_input_args": 2,
             "matcher": "SearchsortedMatcher"
@@ -1911,8 +1885,7 @@
                   "x": "input",
                   "axis": "dim",
                   "descending": "descending",
-                  "stable": "stable",
-                  "out": "out"
+                  "stable": "stable"
             },
             "min_input_args": 1,
             "matcher": "SortMatcher"
@@ -1968,8 +1941,7 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "other",
-                  "alpha": "alpha",
-                  "out": "out"
+                  "alpha": "alpha"
             },
             "min_input_args": 2,
             "matcher": "Num2TensorBinaryWithAlphaMatcher"
@@ -1981,8 +1953,7 @@
                   "k": "k",
                   "axis": "dim",
                   "largest": "largest",
-                  "sorted": "sorted",
-                  "out": "out"
+                  "sorted": "sorted"
             },
             "min_input_args": 2,
             "matcher": "DoubleAssignMatcher"
@@ -2012,8 +1983,7 @@
             "paddle_torch_args_map": {
                   "condition": "condition",
                   "x": "input",
-                  "y": "other",
-                  "out": "out"
+                  "y": "other"
             },
             "min_input_args": 3,
             "matcher": "WhereMatcher"
@@ -2022,7 +1992,6 @@
             "torch_api": "torch.zeros",
             "paddle_torch_args_map": {
                   "*size": "*size",
-                  "out": "out",
                   "dtype": "dtype",
                   "layout": "layout",
                   "device": "device",
