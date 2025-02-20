@@ -51,8 +51,8 @@ class APITestCINNVSDygraph(APITestBase):
                 print("gen_paddle_input failed")
                 return
 
-            paddle_output = func(args, kwargs)
-            paddle_output_static = func_static(args, kwargs)
+            paddle_output = func(self.paddle_args, self.paddle_kwargs)
+            paddle_output_static = func_static(self.paddle_args, self.paddle_kwargs)
 
             # if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
             #     inputs_list = self.get_paddle_input_list()
