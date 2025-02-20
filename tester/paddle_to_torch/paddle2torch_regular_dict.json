@@ -1574,8 +1574,7 @@
             "paddle_torch_args_map": {
                   "x": "input",
                   "y": "input2",
-                  "upper": "upper",
-                  "out": "out"
+                  "upper": "upper"
             },
             "min_input_args": 2
       },
@@ -6415,7 +6414,6 @@
       "paddle.Tensor.add": {
             "torch_api": "torch.Tensor.add",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6423,7 +6421,6 @@
       "paddle.Tensor.add_": {
             "torch_api": "torch.Tensor.add_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6431,7 +6428,6 @@
       "paddle.Tensor.all": {
             "torch_api": "torch.Tensor.all",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "keepdim": "keepdim"
             },
@@ -6440,7 +6436,6 @@
       "paddle.Tensor.allclose": {
             "torch_api": "torch.Tensor.allclose",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other",
                   "rtol": "rtol",
                   "atol": "atol",
@@ -6451,7 +6446,6 @@
       "paddle.Tensor.any": {
             "torch_api": "torch.Tensor.any",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "keepdim": "keepdim"
             },
@@ -6460,7 +6454,6 @@
       "paddle.Tensor.copysign": {
             "torch_api": "torch.Tensor.copysign",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6468,7 +6461,6 @@
       "paddle.Tensor.copysign_": {
             "torch_api": "torch.Tensor.copysign_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6476,7 +6468,6 @@
       "paddle.Tensor.cummax": {
             "torch_api": "torch.Tensor.cummax",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim"
             },
             "min_input_args": 2
@@ -6484,7 +6475,6 @@
       "paddle.Tensor.cummin": {
             "torch_api": "torch.Tensor.cummin",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim"
             },
             "min_input_args": 2
@@ -6492,7 +6482,6 @@
       "paddle.Tensor.divide": {
             "torch_api": "torch.Tensor.divide",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6500,7 +6489,6 @@
       "paddle.Tensor.divide_": {
             "torch_api": "torch.Tensor.divide_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6508,7 +6496,6 @@
       "paddle.Tensor.equal_": {
             "torch_api": "torch.Tensor.eq_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6516,7 +6503,6 @@
       "paddle.Tensor.equal_all": {
             "torch_api": "torch.Tensor.equal",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6524,7 +6510,6 @@
       "paddle.Tensor.expand": {
             "torch_api": "torch.Tensor.expand",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "shape": "size"
             },
             "min_input_args": 2
@@ -6532,7 +6517,6 @@
       "paddle.Tensor.floor_divide": {
             "torch_api": "torch.Tensor.floor_divide",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6540,7 +6524,6 @@
       "paddle.Tensor.floor_divide_": {
             "torch_api": "torch.Tensor.floor_divide_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6548,7 +6531,6 @@
       "paddle.Tensor.mod": {
             "torch_api": "torch.Tensor.fmod",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6556,7 +6538,6 @@
       "paddle.Tensor.mod_": {
             "torch_api": "torch.Tensor.fmod_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6564,7 +6545,6 @@
       "paddle.Tensor.greater_than": {
             "torch_api": "torch.Tensor.greater",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6572,7 +6552,6 @@
       "paddle.Tensor.greater_than_": {
             "torch_api": "torch.Tensor.greater_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6580,7 +6559,6 @@
       "paddle.Tensor.greater_equal": {
             "torch_api": "torch.Tensor.greater_equal",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6588,7 +6566,6 @@
       "paddle.Tensor.greater_equal_": {
             "torch_api": "torch.Tensor.greater_equal_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6596,7 +6573,6 @@
       "paddle.Tensor.histogram": {
             "torch_api": "torch.Tensor.histogram",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "bins": "bins",
                   "min": "range",
                   "max": "range",
@@ -6608,7 +6584,6 @@
       "paddle.Tensor.index_add": {
             "torch_api": "torch.Tensor.index_add",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "index": "index",
                   "value": "source",
@@ -6619,7 +6594,6 @@
       "paddle.Tensor.index_add_": {
             "torch_api": "torch.Tensor.index_add_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "index": "index",
                   "value": "source",
@@ -6630,7 +6604,6 @@
       "paddle.Tensor.less_than": {
             "torch_api": "torch.Tensor.less",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6638,7 +6611,6 @@
       "paddle.Tensor.less_than_": {
             "torch_api": "torch.Tensor.less_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6646,7 +6618,6 @@
       "paddle.Tensor.less_equal": {
             "torch_api": "torch.Tensor.less_equal",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6654,7 +6625,6 @@
       "paddle.Tensor.less_equal_": {
             "torch_api": "torch.Tensor.less_equal_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6662,7 +6632,6 @@
       "paddle.Tensor.logical_and_": {
             "torch_api": "torch.Tensor.logical_and_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6670,7 +6639,6 @@
       "paddle.Tensor.logical_or_": {
             "torch_api": "torch.Tensor.logical_or_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6678,7 +6646,6 @@
       "paddle.Tensor.logical_xor_": {
             "torch_api": "torch.Tensor.logical_xor_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6686,7 +6653,6 @@
       "paddle.Tensor.max": {
             "torch_api": "torch.Tensor.max",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "keepdim": "keepdim",
                   "other": "other"
@@ -6696,7 +6662,6 @@
       "paddle.Tensor.min": {
             "torch_api": "torch.Tensor.min",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "keepdim": "keepdim",
                   "other": "other"
@@ -6706,7 +6671,6 @@
       "paddle.Tensor.multiply": {
             "torch_api": "torch.Tensor.multiply",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6714,7 +6678,6 @@
       "paddle.Tensor.multiply_": {
             "torch_api": "torch.Tensor.multiply_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6722,7 +6685,6 @@
       "paddle.Tensor.norm": {
             "torch_api": "torch.Tensor.norm",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "p": "p",
                   "axis": "dim",
                   "keepdim": "keepdim",
@@ -6733,7 +6695,6 @@
       "paddle.Tensor.not_equal": {
             "torch_api": "torch.Tensor.not_equal",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6741,7 +6702,6 @@
       "paddle.Tensor.not_equal_": {
             "torch_api": "torch.Tensor.not_equal_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6749,7 +6709,6 @@
       "paddle.Tensor.reshape": {
             "torch_api": "torch.Tensor.reshape",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "shape": "shape"
             },
             "min_input_args": 1,
@@ -6772,7 +6731,6 @@
       "paddle.Tensor.slice_scatter": {
             "torch_api": "torch.Tensor.slice_scatter",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "value": "src",
                   "axes": "dim",
                   "starts": "start",
@@ -6784,7 +6742,6 @@
       "paddle.Tensor.sort": {
             "torch_api": "torch.Tensor.sort",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "axis": "dim",
                   "descending": "descending",
                   "stable": "stable"
@@ -6795,7 +6752,6 @@
             "self": "self",
             "torch_api": "torch.Tensor.split",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "num_or_sections": "split_size",
                   "axis": "dim"
             },
@@ -6804,7 +6760,6 @@
       "paddle.Tensor.subtract": {
             "torch_api": "torch.Tensor.subtract",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2
@@ -6812,7 +6767,6 @@
       "paddle.Tensor.subtract_": {
             "torch_api": "torch.Tensor.subtract_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "y": "other"
             },
             "min_input_args": 2

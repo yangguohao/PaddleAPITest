@@ -61,7 +61,6 @@
       "paddle.Tensor.transpose": {
             "torch_api": "torch.Tensor.permute",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "*dims": "*dims"
             },
             "min_input_args": 1,
@@ -70,7 +69,6 @@
       "paddle.Tensor.qr": {
             "torch_api": "torch.Tensor.qr",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "some": "some"
             },
             "min_input_args": 0,
@@ -79,7 +77,6 @@
       "paddle.Tensor.shape": {
             "torch_api": "torch.Tensor.size",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "dim": "dim"
             },
             "min_input_args": 0,
@@ -88,7 +85,6 @@
       "paddle.Tensor.get_strides": {
             "torch_api": "torch.Tensor.stride",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "dim": "dim"
             },
             "min_input_args": 0,
@@ -97,7 +93,6 @@
       "paddle.Tensor.take": {
             "torch_api": "torch.Tensor.take",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "index": "index"
             },
             "min_input_args": 1,
@@ -106,7 +101,6 @@
       "paddle.Tensor.tile": {
             "torch_api": "torch.Tensor.tile",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "*dims": "*dims"
             },
             "min_input_args": 1,
@@ -115,7 +109,6 @@
       "paddle.Tensor.to": {
             "torch_api": "torch.Tensor.to",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "other": "other",
                   "device": "device",
                   "dtype": "dtype",
@@ -129,7 +122,6 @@
       "paddle.Tensor.transpose_": {
             "torch_api": "torch.Tensor.transpose_",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "dim0": "dim0",
                   "dim1": "dim1"
             },
@@ -139,7 +131,6 @@
       "paddle.Tensor.astype": {
             "torch_api": "torch.Tensor.type",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "dtype": "dtype",
                   "non_blocking": "non_blocking",
                   "dst_type": "dst_type",
@@ -151,7 +142,6 @@
       "paddle.Tensor.view": {
             "torch_api": "torch.Tensor.view",
             "paddle_torch_args_map": {
-                  "self": "self",
                   "*size": "*size",
                   "dtype": "dtype"
             },

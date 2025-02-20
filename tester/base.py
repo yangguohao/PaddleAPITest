@@ -172,6 +172,9 @@ class APITestBase:
             else:
                 self.paddle_kwargs[key] = arg_config
 
+        if len(self.paddle_args) == 0 and "paddle.Tensor." in self.api_config.api_name:
+            self.paddle_args.append(self.paddle_kwargs.popitem(last=False)[1])
+
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 self.paddle_args, self.paddle_kwargs = self.copy_paddle_input()
