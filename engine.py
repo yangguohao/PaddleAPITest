@@ -11,6 +11,7 @@ import inspect
 import argparse
 import subprocess
 import os
+from datetime import datetime
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -50,8 +51,13 @@ def main():
         test_class = APITestAccuracy
 
     if options.api_config != "":
-        api_config = APIConfig(options.api_config)
-        print("test begin:", api_config.config, flush=True)
+        print("test begin:", options.api_config, flush=True)
+        try:
+            api_config = APIConfig(options.api_config)
+        except Exception as err:
+            print("[config parse error]", options.api_config, str(err))
+            return
+
         case = test_class(api_config)
         case.test()
         case.clear_tensor()
@@ -74,8 +80,14 @@ def main():
         for api_config_str in api_configs:
             checkpoint.write(api_config_str)
             checkpoint.flush()
-            api_config = APIConfig(api_config_str)
-            print("test begin:", api_config.config, flush=True)
+
+            print(datetime.now(), "test begin:", api_config_str, flush=True)
+            try:
+                api_config = APIConfig(api_config_str)
+            except Exception as err:
+                print("[config parse error]", api_config_str, str(err))
+                continue
+
             case = test_class(api_config)
             try:
                 case.test()
