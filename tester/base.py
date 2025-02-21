@@ -52,6 +52,8 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.nn.functional.gather_tree",
  "paddle.nn.functional.margin_cross_entropy",
  "paddle.index_add",
+ "paddle.nn.functional.softmax_with_cross_entropy",
+ "paddle.put_along_axis"
  ]
 
 class APITestBase:
@@ -60,7 +62,7 @@ class APITestBase:
 
     def need_skip(self):
         # not support
-        if "sparse." in self.api_config.api_name:
+        if "sparse" in self.api_config.api_name:
             return True
         if self.api_config.api_name in not_support_api:
             return True
