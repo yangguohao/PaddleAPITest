@@ -53,7 +53,7 @@ class APITestPaddleOnly(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             api_config_paddle_error.flush()
-            if "CUDA error" in str(err):
+            if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
 

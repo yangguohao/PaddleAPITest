@@ -55,7 +55,7 @@ class APITestAccuracy(APITestBase):
             print("[torch error]", self.api_config.config, "\n", str(err))
             api_config_torch_error.write(self.api_config.config+"\n")
             api_config_torch_error.flush()
-            if "CUDA error" in str(err):
+            if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
 
@@ -77,7 +77,7 @@ class APITestAccuracy(APITestBase):
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 torch_grad_success = False
-                if "CUDA error" in str(err):
+                if "CUDA error" in str(err) or "memory corruption" in str(err):
                     raise Exception(err)
         else:
             del self.torch_args
@@ -99,7 +99,7 @@ class APITestAccuracy(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             api_config_paddle_error.flush()
-            if "CUDA error" in str(err):
+            if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
 
@@ -177,7 +177,7 @@ class APITestAccuracy(APITestBase):
                 print("[paddle error]", self.api_config.config, "\n", str(err))
                 api_config_paddle_error.write(self.api_config.config+"\n")
                 api_config_paddle_error.flush()
-                if "CUDA error" in str(err):
+                if "CUDA error" in str(err) or "memory corruption" in str(err):
                     raise Exception(err)
                 return
 
