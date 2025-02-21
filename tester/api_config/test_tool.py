@@ -64,22 +64,51 @@
 #                     log_str += line
 
 
-logs = [
-"/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/core_dump.log",]
+# logs = [
+# "/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/core_dump.log",]
 
-with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/cinn_core_dump.log", "w") as get_log:
-    with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/other.log", "w") as other:
-        for log in logs:
-            with open(log, "r") as f:
-                lines = f.readlines()
-                is_log_str = False
-                log_str = ""
-                for line in lines:
-                    if "test begin" in line:
-                        if "cinn_op." in log_str or "cinn::" in log_str:
-                            get_log.write(log_str)
-                        else:
-                            other.write(log_str)
-                        log_str = line
-                    else:
-                        log_str += line
+# with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/cinn_core_dump.log", "w") as get_log:
+#     with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/test_log/other.log", "w") as other:
+#         for log in logs:
+#             with open(log, "r") as f:
+#                 lines = f.readlines()
+#                 is_log_str = False
+#                 log_str = ""
+#                 for line in lines:
+#                     if "test begin" in line:
+#                         if "cinn_op." in log_str or "cinn::" in log_str:
+#                             get_log.write(log_str)
+#                         else:
+#                             other.write(log_str)
+#                         log_str = line
+#                     else:
+#                         log_str += line
+
+
+logs = [
+"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log1.log",
+"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log2.log",
+"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log3.log",
+"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log4.log",
+]
+
+with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/error2.log", "w") as get_log:
+    for log in logs:
+        with open(log, "r") as f:
+            lines = f.readlines()
+            is_log_str = False
+            log_str = ""
+            config = ""
+            for line in lines:
+                if "test begin" in line:
+                    # if "[Pass]" not in log_str and "cudaErrorIllegalAddress" not in log_str and "scatter.cu" not in log_str and "Skip" not in log_str and "paddle.Tensor.__getitem__" not in log_str and "paddle.Tensor.__setitem__" not in log_str:
+                    # if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str and "cudaErrorIllegalAddress" not in log_str and "scatter.cu" not in log_str:
+                    # if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str and ("cudaErrorIllegalAddress" in log_str or "scatter.cu" in log_str):
+                    if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str:
+                    # if "cudaErrorLaunchFailure" in log_str or "cudaErrorLaunchFailure" in log_str:
+                    # if config == log_str:
+                        get_log.write(log_str)
+                    log_str = line
+                    config = line
+                else:
+                    log_str += line
