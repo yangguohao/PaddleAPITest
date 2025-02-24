@@ -1,0 +1,2 @@
+paddle.Tensor.unflatten(Tensor([7, 126, 3072],"float32"), -1, tuple(3,Tensor([],"int64"),), )
+paddle.unflatten(x=Tensor([4, 6, 16],"float32"), axis=0, shape=Tensor([2],"int64"), )

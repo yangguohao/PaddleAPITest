@@ -86,13 +86,13 @@
 
 
 logs = [
-"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log1.log",
-"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log2.log",
-"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log3.log",
-"/host_home/wanghuan29/APItest4/PaddleAPITest/tester/api_config/test_log/log4.log",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log1.log",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log2.log",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log3.log",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log4.log",
 ]
 
-with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/error2.log", "w") as get_log:
+with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/error.log", "w") as get_log:
     for log in logs:
         with open(log, "r") as f:
             lines = f.readlines()
@@ -104,10 +104,11 @@ with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_l
                     # if "[Pass]" not in log_str and "cudaErrorIllegalAddress" not in log_str and "scatter.cu" not in log_str and "Skip" not in log_str and "paddle.Tensor.__getitem__" not in log_str and "paddle.Tensor.__setitem__" not in log_str:
                     # if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str and "cudaErrorIllegalAddress" not in log_str and "scatter.cu" not in log_str:
                     # if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str and ("cudaErrorIllegalAddress" in log_str or "scatter.cu" in log_str):
-                    if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str:
+                    # if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str and "__getitem__" not in log_str and "__setitem__" not in log_str and ".reshape" not in log_str and ".put_along_axis" not in log_str and "dense_tensor.cc:160" not in log_str:
                     # if "cudaErrorLaunchFailure" in log_str or "cudaErrorLaunchFailure" in log_str:
+                    if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str:
                     # if config == log_str:
-                        get_log.write(log_str)
+                        get_log.write(config)
                     log_str = line
                     config = line
                 else:

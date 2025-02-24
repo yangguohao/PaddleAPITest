@@ -56,7 +56,8 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.put_along_axis",
  "paddle.scatter",
  "paddle.scatter_nd",
- "paddle.scatter_nd_add"
+ "paddle.scatter_nd_add",
+ "paddle.bernoulli"
  ]
 
 class APITestBase:
