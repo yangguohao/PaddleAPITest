@@ -1,7 +1,36 @@
+import os
+
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+
+def get_notsupport_config():
+    not_support_files = [
+        "tester/api_config/api_config_merged_not_support_amp.txt",
+        "tester/api_config/api_config_merged_not_support_arange.txt",
+        "tester/api_config/api_config_merged_not_support_empty.txt",
+        "tester/api_config/api_config_merged_not_support_flatten.txt",
+        "tester/api_config/api_config_merged_not_support_getset_item.txt",
+        "tester/api_config/api_config_merged_not_support_reshape.txt",
+        "tester/api_config/api_config_merged_not_support_slice.txt",
+        "tester/api_config/api_config_merged_not_support_topk.txt",
+        "tester/api_config/api_config_merged_not_support_zeros.txt",
+        "tester/api_config/api_config_merged_not_support.txt"
+    ]
+    configs = set()
+
+    for flie in not_support_files:
+        with open(DIR_PATH+"/"+flie, "r") as f:
+            origin_configs = f.readlines()
+            f.close()
+
+        for config in origin_configs:
+            configs.add(config)
+    return configs
 
 logs = [
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all8.txt",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_not_support_getset_item.txt"
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_1.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_2.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_3.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_4.txt"
 ]
 
 configs = set()
@@ -14,20 +43,11 @@ for log in logs:
     for config in origin_configs:
         configs.add(config)
 
+configs = configs - get_notsupport_config()
 
-with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all9.txt", "w") as f:
-    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_getset_item.txt", "w") as gss:
-        with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_not_support_getset_item2.txt", "w") as gs:
-            for config in sorted(configs):
-                if ("__getitem__" in config or "__setitem__" in config):
-                    if config.count("Tensor(") > 1:
-                        gs.write(config)
-                    else:
-                        gss.write(config)
-                else:
-                    f.write(config)
-            f.close()
-            gs.close()
+with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all.txt", "w") as f:
+    for config in sorted(configs):
+        f.write(config)
 
 
 # with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all3.txt", "w") as f:
