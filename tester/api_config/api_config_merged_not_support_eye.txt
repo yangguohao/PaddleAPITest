@@ -1,0 +1,2 @@
+paddle.eye(Tensor([],"int64"), Tensor([],"int64"), )
+paddle.eye(num_rows=Tensor([1],"float64"), num_columns=Tensor([1],"float64"), dtype="float32", )

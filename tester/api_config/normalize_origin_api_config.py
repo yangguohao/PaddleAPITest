@@ -1,4 +1,5 @@
 import os
+from config_analyzer import APIConfig,TensorConfig
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -26,11 +27,35 @@ def get_notsupport_config():
             configs.add(config)
     return configs
 
+# logs = [
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_1.txt",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_2.txt",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_3.txt",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_4.txt",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_5.txt",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_6.txt",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_7.txt"
+# ]
+
+# configs = set()
+
+# for log in logs:
+#     with open(log, "r") as f:
+#         origin_configs = f.readlines()
+#         f.close()
+
+#     for config in origin_configs:
+#         configs.add(config)
+
+# configs = configs - get_notsupport_config()
+
+# with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all.txt", "w") as f:
+#     for config in sorted(configs):
+#         f.write(config)
+
+
 logs = [
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_1.txt",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_2.txt",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_3.txt",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_4.txt"
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all2.txt"
 ]
 
 configs = set()
@@ -43,31 +68,65 @@ for log in logs:
     for config in origin_configs:
         configs.add(config)
 
-configs = configs - get_notsupport_config()
+# configs = configs - get_notsupport_config()
 
-with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all.txt", "w") as f:
-    for config in sorted(configs):
-        f.write(config)
+# with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all.txt", "w") as f:
+#     for config in sorted(configs):
+#         f.write(config)
 
-
-# with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all3.txt", "w") as f:
-#     with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_not_support_concat_amp.txt", "w") as gs:
-#         for config in sorted(configs):
-#             if "concat" in config:
-#                 lala = 0
-#                 if "float32" in config:
-#                     lala = lala + 1
-#                 if "float64" in config:
-#                     lala = lala + 1
-#                 if "float16" in config:
-#                     lala = lala + 1
-#                 if "bfloat16" in config:
-#                     lala = lala + 1
-#                 if lala > 1:
-#                     gs.write(config)
-#                 else:
-#                     f.write(config)
-#             else:
-#                 f.write(config)
-#         f.close()
-#         gs.close()
+not_support_api = [
+ "paddle.gather",
+ "paddle.Tensor.gather",
+ "paddle.index_select",
+ "paddle.Tensor.index_select",
+ "paddle.Tensor.index_put",
+ "paddle.Tensor.index_sample",
+ "paddle.index_put",
+ "paddle.index_sample",
+ "paddle.gather_nd",
+ "paddle.Tensor.gather_nd",
+ "paddle.incubate.segment_max",
+ "paddle.incubate.segment_mean",
+ "paddle.incubate.segment_min",
+ "paddle.incubate.segment_sum",
+ "paddle.geometric.segment_max",
+ "paddle.geometric.segment_mean",
+ "paddle.geometric.segment_min",
+ "paddle.geometric.segment_sum",
+ "paddle.geometric.send_u_recv",
+ "paddle.geometric.send_ue_recv",
+ "paddle.geometric.send_uv",
+ "paddle.nn.functional.cross_entropy",
+ "paddle.nn.functional.one_hot",
+ "paddle.nn.functional.upsample",
+ "paddle.vision.ops.roi_align",
+ "paddle.vision.ops.roi_pool",
+ "paddle.nn.functional.binary_cross_entropy",
+ "paddle.multinomial",
+ "paddle.nn.functional.embedding",
+ "paddle.nn.functional.hsigmoid_loss",
+ "paddle.nn.functional.nll_loss",
+ "paddle.nn.functional.gather_tree",
+ "paddle.nn.functional.margin_cross_entropy",
+ "paddle.index_add",
+ "paddle.nn.functional.softmax_with_cross_entropy",
+ "paddle.put_along_axis",
+ "paddle.Tensor.put_along_axis",
+ "paddle.scatter",
+ "paddle.scatter_nd",
+ "paddle.scatter_nd_add",
+ "paddle.bernoulli",
+ "paddle.incubate.nn.functional.fused_multi_head_attention",
+ "paddle.geometric.sample_neighbors",
+ "paddle.incubate.nn.functional.block_multihead_attention"
+ ]
+with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all3.txt", "w") as f:
+    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_tensor_init.txt", "w") as f2:
+        for config in sorted(configs):
+            api = config[0:config.index("(")]
+            if api in not_support_api:
+                f2.write(config)
+            else:
+                f.write(config)
+        f.close()
+        f2.close()

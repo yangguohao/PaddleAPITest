@@ -54,10 +54,14 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.index_add",
  "paddle.nn.functional.softmax_with_cross_entropy",
  "paddle.put_along_axis",
+ "paddle.Tensor.put_along_axis",
  "paddle.scatter",
  "paddle.scatter_nd",
  "paddle.scatter_nd_add",
- "paddle.bernoulli"
+ "paddle.bernoulli",
+ "paddle.incubate.nn.functional.fused_multi_head_attention",
+ "paddle.geometric.sample_neighbors",
+ "paddle.incubate.nn.functional.block_multihead_attention"
  ]
 
 class APITestBase:
