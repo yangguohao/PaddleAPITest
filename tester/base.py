@@ -61,7 +61,8 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.bernoulli",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.geometric.sample_neighbors",
- "paddle.incubate.nn.functional.block_multihead_attention"
+ "paddle.incubate.nn.functional.block_multihead_attention",
+ "paddle.linalg.pca_lowrank"
  ]
 
 class APITestBase:
