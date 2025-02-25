@@ -20,13 +20,17 @@ def get_notsupport_config():
         "tester/api_config/api_config_merged_not_support_amp.txt",
         "tester/api_config/api_config_merged_not_support_arange.txt",
         "tester/api_config/api_config_merged_not_support_empty.txt",
+        "tester/api_config/api_config_merged_not_support_eye.txt",
         "tester/api_config/api_config_merged_not_support_flatten.txt",
+        "tester/api_config/api_config_merged_not_support_full.txt",
         "tester/api_config/api_config_merged_not_support_getset_item.txt",
         "tester/api_config/api_config_merged_not_support_reshape.txt",
         "tester/api_config/api_config_merged_not_support_slice.txt",
+        "tester/api_config/api_config_merged_not_support_sparse.txt",
+        "tester/api_config/api_config_merged_not_support_tensor_init.txt",
         "tester/api_config/api_config_merged_not_support_topk.txt",
         "tester/api_config/api_config_merged_not_support_zeros.txt",
-        "tester/api_config/api_config_merged_not_support.txt"
+        "tester/api_config/api_config_merged_not_support.txt",
     ]
     configs = set()
 
