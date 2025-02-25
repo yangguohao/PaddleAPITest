@@ -65,6 +65,31 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.linalg.pca_lowrank"
  ]
 
+rand_apis = ["paddle.rand",
+ "paddle.randn",
+ "paddle.randint",
+ "paddle.randperm",
+ "paddle.rand_like",
+ "paddle.Tensor.cauchy_",
+ "paddle.Tensor.exponential_",
+ "paddle.Tensor.geometric_",
+ "paddle.Tensor.lognormal",
+ "paddle.Tensor.normal_",
+ "paddle.Tensor.poisson",
+ "paddle.Tensor.uniform_",
+ "paddle.Tensor.uniform_like",
+ "paddle.Tensor.triangular",
+ "paddle.Tensor.triangular_like",
+ "paddle.Tensor.weibull",
+ "paddle.Tensor.weibull_like",
+ "paddle.weibull_like",
+ "paddle.rand_like",
+ "paddle.Tensor.rand_like",
+ "paddle.Tensor.randint_like",
+ "paddle.empty_like",
+ "paddle.linalg.eigvals",
+]
+
 class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
@@ -74,6 +99,8 @@ class APITestBase:
         if "sparse" in self.api_config.api_name:
             return True
         if self.api_config.api_name in not_support_api:
+            return True
+        if self.api_config.api_name in rand_apis:
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
@@ -159,6 +186,7 @@ class APITestBase:
         for key, value in self.paddle_merged_kwargs_config.items():
             if first and "paddle.Tensor." in self.api_config.api_name:
                 self.torch_args_config.append(value)
+                first = False
                 continue
             first = False
             if key == "name":
