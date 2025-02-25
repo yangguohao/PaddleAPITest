@@ -212,22 +212,25 @@ class APITestBase:
         self.torch_args_config = []
         self.torch_kwargs_config = collections.OrderedDict()
 
-        first = True
-        for key, value in self.paddle_merged_kwargs_config.items():
-            if first and "paddle.Tensor." in self.api_config.api_name:
-                self.torch_args_config.append(value)
+        if self.api_config.api_name in ["paddle.Tensor.__getitem__", "paddle.Tensor.__setitem__"]:
+            self.torch_args_config = self.paddle_args_config
+        else:
+            first = True
+            for key, value in self.paddle_merged_kwargs_config.items():
+                if first and "paddle.Tensor." in self.api_config.api_name:
+                    self.torch_args_config.append(value)
+                    first = False
+                    continue
                 first = False
-                continue
-            first = False
-            if key == "name":
-                continue
-            if key not in paddle_to_torch_args_map:
-                print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
-                api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
-                api_config_paddle_to_torch_faild.flush()
-                return False
+                if key == "name":
+                    continue
+                if key not in paddle_to_torch_args_map:
+                    print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
+                    api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
+                    api_config_paddle_to_torch_faild.flush()
+                    return False
 
-            self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
+                self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
 
         return True
 
