@@ -118,6 +118,24 @@ rand_apis = ["paddle.rand",
     "paddle.empty",
     "paddle.linalg.eigvals",
     "paddle.linalg.eigvalsh",
+    "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
+    "paddle.incubate.nn.functional.fused_dropout_add",
+    "paddle.nn.functional.alpha_dropout",
+    "paddle.nn.functional.dropout",
+    "paddle.nn.functional.dropout2d",
+    "paddle.nn.functional.dropout3d",
+    "paddle.nn.functional.feature_alpha_dropout",
+]
+
+int_too_big_fail_api = [
+    "paddle.cumprod",
+    "paddle.Tensor.cumprod",
+    "paddle.pow",
+    "paddle.Tensor.pow",
+    "paddle.lcm",
+    "paddle.Tensor.lcm",
+    "paddle.Tensor.prod",
+    "paddle.prod"
 ]
 
 class APITestBase:
@@ -131,6 +149,8 @@ class APITestBase:
         if self.api_config.api_name in not_support_api:
             return True
         if self.api_config.api_name in rand_apis:
+            return True
+        if self.api_config.api_name in int_too_big_fail_api:
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):

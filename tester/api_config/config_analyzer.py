@@ -8,7 +8,7 @@ import paddle
 import inspect
 import torch
 
-USE_CACHED_NUMPY = True
+USE_CACHED_NUMPY = False
 cached_numpy = {}
 
 not_zero_apis = [
