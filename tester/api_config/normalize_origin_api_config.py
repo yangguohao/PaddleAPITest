@@ -55,7 +55,20 @@ def get_notsupport_config():
 
 
 logs = [
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all2.txt"
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_amp.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_arange.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_empty.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_eye.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_flatten.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_full.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_getset_item.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_reshape.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_slice.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_sparse.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_tensor_init.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_topk.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_zeros.txt",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support.txt",
 ]
 
 configs = set()
@@ -120,13 +133,11 @@ not_support_api = [
  "paddle.geometric.sample_neighbors",
  "paddle.incubate.nn.functional.block_multihead_attention"
  ]
-with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_all3.txt", "w") as f:
-    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/api_config_merged_not_support_tensor_init.txt", "w") as f2:
-        for config in sorted(configs):
-            api = config[0:config.index("(")]
-            if api in not_support_api:
-                f2.write(config)
-            else:
-                f.write(config)
-        f.close()
-        f2.close()
+apis = set()
+print(len(configs))
+with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/lala.txt", "w") as f2:
+    for config in sorted(configs):
+        api = config[0:config.index("(")]
+        apis.add(api)
+    for api in apis:
+        f2.write(api+"\n")
