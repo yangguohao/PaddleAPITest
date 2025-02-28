@@ -115,6 +115,16 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
+            elif api_config.api_name == "paddle.Tensor.__getitem__" and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
+                arr = None
+                if len(api_config.args) > 0:
+                    arr = api_config.args[0]
+                elif "arr" in api_config.kwargs:
+                    arr = api_config.kwargs["arr"]
+                min_dim = min(arr.shape)
+                indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
+                self.numpy_tensor = indices.reshape(self.shape)
+                self.dtype = "int64"
             else:
                 if USE_CACHED_NUMPY:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
