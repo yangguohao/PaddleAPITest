@@ -87,10 +87,10 @@ class TensorConfig:
             tensor = cached_numpy[dtype][:numel].reshape(shape)
         else:
             if "int" in dtype:
-                cached_numpy[dtype] = numpy.random.randint(-65535, 65535, size=4294967500, dtype="int64").astype(dtype)
+                cached_numpy[dtype] = numpy.random.randint(-65535, 65535, size=4300000000, dtype="int64").astype(dtype)
                 tensor = cached_numpy[dtype][:numel].reshape(shape)
             else:
-                cached_numpy[dtype] = (numpy.random.random([4294967500]) - 0.5).astype(dtype)
+                cached_numpy[dtype] = (numpy.random.random([4300000000]) - 0.5).astype(dtype)
                 tensor = cached_numpy[dtype][:numel].reshape(shape)
         return tensor
 

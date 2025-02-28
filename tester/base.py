@@ -396,15 +396,15 @@ class APITestBase:
         for i in shape:
             numel = numel * i
 
-        start = (4294967500 - numel - 100) if (4294967500 - numel - 100) > 0 else 0
+        start = (4300000000 - numel - 100) if (4300000000 - numel - 100) > 0 else 0
         if dtype in cached_numpy:
             tensor = cached_numpy[dtype][start:start+numel].reshape(shape)
         else:
             if "int" in dtype:
-                cached_numpy[dtype] = numpy.random.randint(-65535, 65535, size=4294967500, dtype="int64").astype(dtype)
+                cached_numpy[dtype] = numpy.random.randint(-65535, 65535, size=4300000000, dtype="int64").astype(dtype)
                 tensor = cached_numpy[dtype][start:start+numel].reshape(shape)
             else:
-                cached_numpy[dtype] = (numpy.random.random([4294967500]) - 0.5).astype(dtype)
+                cached_numpy[dtype] = (numpy.random.random([4300000000]) - 0.5).astype(dtype)
                 tensor = cached_numpy[dtype][start:start+numel].reshape(shape)
         return tensor
 
