@@ -7,6 +7,7 @@ import json
 import paddle
 import inspect
 import torch
+import copy
 
 USE_CACHED_NUMPY = True
 cached_numpy = {}
@@ -39,6 +40,13 @@ class TensorConfig:
         self.numpy_tensor = None
         self.paddle_tensor = None
         self.torch_tensor = None
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        result.shape = copy.deepcopy(self.shape)
+        result.dtype = copy.deepcopy(self.dtype)
+        return result
 
     def __str__(self):
         return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
@@ -189,6 +197,15 @@ class TensorConfig:
         torch.cuda.empty_cache()
 
 class APIConfig:
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        result.args = copy.deepcopy(self.args)
+        result.kwargs = copy.deepcopy(self.kwargs)
+        result.api_name = self.api_name
+        return result
+
     def __init__(self, config):
         config = config.replace("\n", "")
         self.config = config

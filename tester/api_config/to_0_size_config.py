@@ -1,3 +1,5 @@
+import cProfile, pstats, io
+from pstats import SortKey
 from config_analyzer import TensorConfig, APIConfig, analyse_configs
 import copy
 from tqdm import tqdm
@@ -55,6 +57,19 @@ def get_tensor_configs(api_config):
 
 
 def to_0_size_config(api_config):
+    if api_config.api_name not in apis_map:
+        apis_map[api_config.api_name] = {}
+
+    key = config_key(api_config)
+
+    if key not in apis_map[api_config.api_name]:
+        apis_map[api_config.api_name][key] = 1
+    else:
+        apis_map[api_config.api_name][key] += 1
+
+    if apis_map[api_config.api_name][key] > 2:
+        return []
+
     result = []
     tensor_configs = get_tensor_configs(api_config)
     
@@ -74,7 +89,7 @@ def to_0_size_config(api_config):
             tmp_api_config = copy.deepcopy(api_config)
             tmp_tensor_configs = get_tensor_configs(tmp_api_config)
             tmp_tensor_configs[i].shape[j] = 0
-            result.append(tmp_api_config)
+            result.append(str(tmp_api_config))
 
     if shape_equal:
         for j in range(shape_len):
@@ -82,7 +97,7 @@ def to_0_size_config(api_config):
             tmp_tensor_configs = get_tensor_configs(tmp_api_config)
             for i in range(len(tensor_configs)):
                 tmp_tensor_configs[i].shape[j] = 0
-            result.append(tmp_api_config)
+            result.append(str(tmp_api_config))
     return result
 
 apis_map = {}
@@ -200,7 +215,7 @@ def to_big_tensor_config(api_config):
     else:
         apis_map[api_config.api_name][key] += 1
 
-    if apis_map[api_config.api_name][key] > 5:
+    if apis_map[api_config.api_name][key] > 2:
         return []
 
     tensor_configs = get_tensor_configs(api_config)
@@ -226,7 +241,7 @@ def to_big_tensor_config(api_config):
             tmp_tensor_configs = get_tensor_configs(tmp_api_config)
             base_size = 2147483648 if tmp_tensor_configs[i].dtype in ["float64", "int64", "uint64"] else 4294967294
             tmp_tensor_configs[i].shape[j] = int(base_size / (tensor_numel(tmp_tensor_configs[i])/tmp_tensor_configs[i].shape[j])) + 1
-            result.append(tmp_api_config)
+            result.append(str(tmp_api_config))
 
     if shape_equal:
         for j in range(shape_len):
@@ -235,29 +250,32 @@ def to_big_tensor_config(api_config):
             for i in range(len(tensor_configs)):
                 base_size = 2147483648 if tmp_tensor_configs[i].dtype in ["float64", "int64", "uint64"] else 4294967294
                 tmp_tensor_configs[i].shape[j] = int(base_size / (tensor_numel(tmp_tensor_configs[0])/tmp_tensor_configs[0].shape[j])) + 1
-            result.append(tmp_api_config)
+            result.append(str(tmp_api_config))
     return result
 
-# if __name__ == '__main__':
-#     config_0_size = []
-#     api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config.txt")
-#     for api_config in api_configs:
-#         print(api_config.config)
-#         config_0_size = config_0_size + to_0_size_config(api_config)
-#     with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/api_config_0_size.txt", "w") as f:
-#         for api_config in config_0_size:
-#             f.write(str(api_config)+"\n")
-#         f.close()
-
 if __name__ == '__main__':
-    config_big_tensor = []
+    config_0_size = set()
     api_configs = analyse_configs("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log_acc/api_config_pass.txt")
+
     for api_config in tqdm(api_configs):
         # print(api_config.config)
-        config_big_tensor = config_big_tensor + to_big_tensor_config(api_config)
-    config_big_tensor = set(config_big_tensor)
-    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/bigtensor_accuracy2.txt", "w") as f:
-        for api_config in config_big_tensor:
+        config_0_size = config_0_size.union(set(to_0_size_config(api_config)))
+
+
+    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/0sizetensor.txt", "w") as f:
+        for api_config in config_0_size:
             f.write(str(api_config)+"\n")
         f.close()
+
+# if __name__ == '__main__':
+#     config_big_tensor = set()
+#     api_configs = analyse_configs("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log_acc/api_config_pass.txt")
+#     for api_config in tqdm(api_configs):
+#         # print(api_config.config)
+#         config_big_tensor = config_big_tensor.union(set(to_big_tensor_config(api_config)))
+#     config_big_tensor = set(config_big_tensor)
+#     with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/bigtensor_accuracy2.txt", "w") as f:
+#         for api_config in config_big_tensor:
+#             f.write(str(api_config)+"\n")
+#         f.close()
 
