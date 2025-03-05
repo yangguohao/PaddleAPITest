@@ -57,6 +57,8 @@ def get_tensor_configs(api_config):
 
 
 def to_0_size_config(api_config):
+    if api_config.api_name in ["paddle.Tensor.__getitem__", "paddle.Tensor.__setitem__"]:
+        return []
     if api_config.api_name not in apis_map:
         apis_map[api_config.api_name] = {}
 
@@ -257,14 +259,14 @@ if __name__ == '__main__':
     config_0_size = set()
     api_configs = analyse_configs("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log_acc/api_config_pass.txt")
 
-    for api_config in tqdm(api_configs):
-        # print(api_config.config)
-        config_0_size = config_0_size.union(set(to_0_size_config(api_config)))
+    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/0sizetensor2.txt", "w") as f:
+        for api_config in tqdm(api_configs):
+            # print(api_config.config)
+            # config_0_size = config_0_size.union(set(to_0_size_config(api_config)))
 
 
-    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/0sizetensor.txt", "w") as f:
-        for api_config in config_0_size:
-            f.write(str(api_config)+"\n")
+            for api_config in to_0_size_config(api_config):
+                f.write(str(api_config)+"\n")
         f.close()
 
 # if __name__ == '__main__':
