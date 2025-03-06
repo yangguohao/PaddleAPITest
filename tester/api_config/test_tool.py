@@ -92,11 +92,13 @@ logs = [
 "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log4.log",
 "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log5.log",
 "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log6.log",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item1.log",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item2.log",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item3.log",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item4.log",
-"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item5.log",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log7.log",
+"/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/log8.log",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item1.log",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item2.log",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item3.log",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item4.log",
+# "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/getset_item5.log",
 # "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/tmp1.log",
 # "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/tmp2.log",
 # "/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log/tmp3.log",
@@ -170,7 +172,7 @@ with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_l
                     # if "cudaErrorLaunchFailure" in log_str or "cudaErrorLaunchFailure" in log_str:
                     # if "[Pass]" not in log_str and "Skip" not in log_str and "error" in log_str and "__getitem__" not in log_str:
                     # if config == log_str:
-                    if "accuracy error" in log_str:
+                    if "cuda error" in log_str or "CUDA error" in log_str or "CUDNN error" in log_str or "TID" in log_str:
                         error.write(log_str)
                     log_str = line
                     config = line
