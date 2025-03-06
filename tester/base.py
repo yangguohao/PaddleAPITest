@@ -374,20 +374,26 @@ class APITestBase:
         result = []
 
         for i in range(len(self.torch_args)):
-            if isinstance(self.torch_args[i], paddle.Tensor):
+            if isinstance(self.torch_args[i], torch.Tensor):
                 result.append(self.torch_args[i])
-            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], paddle.Tensor):
+            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
                 result = result + self.torch_args[i]
-            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], paddle.Tensor):
+            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
                 result = result + list(self.torch_args[i])
+            else:
+                raise ValueError("torch_args format not support")
 
         for key, value in self.torch_kwargs.items():
-            if isinstance(value, paddle.Tensor):
+            print(key)
+            print(value)
+            if isinstance(value, torch.Tensor):
                 result.append(value)
-            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
+            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], torch.Tensor):
                 result = result + value
-            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
+            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], torch.Tensor):
                 result = result + list(value)
+            else:
+                raise ValueError("torch_kwargs format not support")
 
         return result
 

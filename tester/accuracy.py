@@ -60,9 +60,9 @@ class APITestAccuracy(APITestBase):
             return
 
         if self.need_check_grad():
+            inputs_list = self.get_torch_input_list()
+            result_outputs, result_outputs_grads = self.gen_torch_output_and_output_grad(torch_output)
             try:
-                inputs_list = self.get_torch_input_list()
-                result_outputs, result_outputs_grads = self.gen_torch_output_and_output_grad(torch_output)
                 if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
                     del self.torch_args
                     del self.torch_kwargs
@@ -82,6 +82,8 @@ class APITestAccuracy(APITestBase):
         else:
             del self.torch_args
             del self.torch_kwargs
+
+        torch.cuda.empty_cache()
 
         try:
             if not self.gen_paddle_input():
@@ -118,7 +120,7 @@ class APITestAccuracy(APITestBase):
                     if paddle_output.dtype == paddle.bfloat16:
                         paddle_output = paddle.cast(paddle_output, dtype="float32")
                         torch_output = torch_output.to(dtype=torch.float32)
-                    self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                    self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().detach().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
                     api_config_accuracy_error.write(self.api_config.config+"\n")

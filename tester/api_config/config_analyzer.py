@@ -9,7 +9,7 @@ import inspect
 import torch
 import copy
 
-USE_CACHED_NUMPY = True
+USE_CACHED_NUMPY = False
 cached_numpy = {}
 
 not_zero_apis = [
@@ -173,7 +173,7 @@ class TensorConfig:
                 dtype=self.convert_dtype_to_torch_type(self.dtype)
                 if self.dtype != 'bfloat16'
                 else torch.float32,
-                # requires_grad=True,
+                requires_grad=True,
             )
             if self.dtype == "bfloat16":
                 self.torch_tensor = self.torch_tensor.to(dtype=torch.bfloat16)
