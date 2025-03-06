@@ -141,6 +141,7 @@ int_too_big_fail_api = [
 class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
+        self.outputs_grad_numpy = []
 
     def need_skip(self):
         # not support
@@ -384,8 +385,6 @@ class APITestBase:
                 raise ValueError("torch_args format not support")
 
         for key, value in self.torch_kwargs.items():
-            print(key)
-            print(value)
             if isinstance(value, torch.Tensor):
                 result.append(value)
             elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], torch.Tensor):
@@ -432,20 +431,22 @@ class APITestBase:
                 #     result_outputs.append(output)
 
         result_outputs_grads = []
-        self.outputs_grad_numpy = []
 
-        for output in result_outputs:
-            dtype = str(output.dtype)[7:]
-            if USE_CACHED_NUMPY:
-                dtype = "float32" if dtype == "bfloat16" else dtype
-                numpy_tensor = self.get_cached_numpy(dtype, output.shape)
-            else:
-                if "int" in dtype:
-                    numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
-                else:
+        if len(self.outputs_grad_numpy) == 0:
+            for output in result_outputs:
+                dtype = str(output.dtype)[7:]
+                if USE_CACHED_NUMPY:
                     dtype = "float32" if dtype == "bfloat16" else dtype
-                    numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
-            self.outputs_grad_numpy.append(numpy_tensor)
+                    numpy_tensor = self.get_cached_numpy(dtype, output.shape)
+                else:
+                    if "int" in dtype:
+                        numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
+                    else:
+                        dtype = "float32" if dtype == "bfloat16" else dtype
+                        numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
+                self.outputs_grad_numpy.append(numpy_tensor)
+        for numpy_tensor in self.outputs_grad_numpy:
+            dtype = str(numpy_tensor.dtype)
             result_output_grad = paddle.to_tensor(
                 numpy_tensor,
                 dtype=dtype if dtype != 'bfloat16' else "float32",
@@ -503,24 +504,21 @@ class APITestBase:
                 #     result_outputs.append(output)
 
         result_outputs_grads = []
-        self.outputs_grad_numpy = []
-
-        for output in result_outputs:
-            dtype = str(output.dtype)[6:]
-            if USE_CACHED_NUMPY:
-                dtype = "float32" if dtype == "bfloat16" else dtype
-                numpy_tensor = self.get_cached_numpy(dtype, output.shape)
-            else:
-                if "int" in dtype:
-                    numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
-                else:
+        if len(self.outputs_grad_numpy) == 0:
+            for output in result_outputs:
+                dtype = str(output.dtype)[6:]
+                if USE_CACHED_NUMPY:
                     dtype = "float32" if dtype == "bfloat16" else dtype
-                    numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
-            self.outputs_grad_numpy.append(numpy_tensor)
-            result_output_grad = paddle.to_tensor(
-                numpy_tensor,
-                dtype=dtype if dtype != 'bfloat16' else "float32",
-            )
+                    numpy_tensor = self.get_cached_numpy(dtype, output.shape)
+                else:
+                    if "int" in dtype:
+                        numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
+                    else:
+                        dtype = "float32" if dtype == "bfloat16" else dtype
+                        numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
+                self.outputs_grad_numpy.append(numpy_tensor)
+        for numpy_tensor in self.outputs_grad_numpy:
+            dtype = str(numpy_tensor.dtype)
             result_output_grad = torch.tensor(
                 numpy_tensor,
                 dtype=self.convert_dtype_to_torch_type(dtype)

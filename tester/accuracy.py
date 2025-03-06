@@ -23,6 +23,7 @@ api_config_torch_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_t
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config):
+        super().__init__(api_config)
         self.api_config = api_config
     
     @func_set_timeout(600)
@@ -187,10 +188,10 @@ class APITestAccuracy(APITestBase):
                         return
 
         if self.need_check_grad() and torch_grad_success:
+            paddle_out_grads = None
+            inputs_list = self.get_paddle_input_list()
+            result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
             try:
-                paddle_out_grads = None
-                inputs_list = self.get_paddle_input_list()
-                result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
                 if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
                     del self.paddle_args
                     del self.paddle_kwargs
