@@ -123,16 +123,15 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
-            elif api_config.api_name == "paddle.Tensor.__getitem__" and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
+            elif api_config.api_name in ["paddle.Tensor.__getitem__","paddle.Tensor.__setitem__"] and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
                 arr = None
                 if len(api_config.args) > 0:
                     arr = api_config.args[0]
                 elif "arr" in api_config.kwargs:
                     arr = api_config.kwargs["arr"]
                 min_dim = min(arr.shape)
-                indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
+                indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
-                self.dtype = "int64"
             else:
                 if USE_CACHED_NUMPY:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
@@ -155,9 +154,10 @@ class TensorConfig:
                 self.get_numpy_tensor(api_config),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
-            self.paddle_tensor.stop_gradient = False
-            if self.dtype == "bfloat16":
-                self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
+            self.paddle_tensor.stop_gradient = True
+            if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
+                if self.dtype == "bfloat16":
+                    self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
                 self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
     def get_torch_tensor(self, api_config):
@@ -173,7 +173,7 @@ class TensorConfig:
                 dtype=self.convert_dtype_to_torch_type(self.dtype)
                 if self.dtype != 'bfloat16'
                 else torch.float32,
-                requires_grad=True,
+                requires_grad=True if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16'] else False,
             )
             if self.dtype == "bfloat16":
                 self.torch_tensor = self.torch_tensor.to(dtype=torch.bfloat16)
