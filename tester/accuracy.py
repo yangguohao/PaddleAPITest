@@ -143,7 +143,7 @@ class APITestAccuracy(APITestBase):
                     if paddle_output.dtype == paddle.bfloat16:
                         paddle_output = paddle.cast(paddle_output, dtype="float32")
                         torch_output = torch_output.to(dtype=torch.float32)
-                    self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                    self.np_assert_accuracy(paddle_output.numpy(), torch_output.cpu().detach().numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
                     api_config_accuracy_error.write(self.api_config.config+"\n")
@@ -180,7 +180,7 @@ class APITestAccuracy(APITestBase):
                         if paddle_output[i].dtype == paddle.bfloat16:
                             paddle_output[i] = paddle.cast(paddle_output[i], dtype="float32")
                             torch_output[i] = torch_output[i].to(dtype=torch.float32)
-                        self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                        self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].cpu().detach().numpy(), 1e-2, 1e-2, self.api_config)
                     except Exception as err:
                         print("[accuracy error]", self.api_config.config, "\n", str(err))
                         api_config_accuracy_error.write(self.api_config.config+"\n")
@@ -221,7 +221,7 @@ class APITestAccuracy(APITestBase):
                         if paddle_out_grads.dtype == paddle.bfloat16:
                             paddle_out_grads = paddle.cast(paddle_out_grads, dtype="float32")
                             torch_out_grads = torch_out_grads.to(dtype=torch.float32)
-                        self.np_assert_accuracy(paddle_out_grads.numpy(), torch_out_grads.cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                        self.np_assert_accuracy(paddle_out_grads.numpy(), torch_out_grads.cpu().detach().numpy(), 1e-2, 1e-2, self.api_config)
                     except Exception as err:
                         print("[accuracy error] backward ", self.api_config.config, "\n", str(err))
                         api_config_accuracy_error.write(self.api_config.config+"\n")
@@ -258,7 +258,7 @@ class APITestAccuracy(APITestBase):
                             if paddle_out_grads[i].dtype == paddle.bfloat16:
                                 paddle_out_grads[i] = paddle.cast(paddle_out_grads[i], dtype="float32")
                                 torch_out_grads[i] = torch_out_grads[i].to(dtype=torch.float32)
-                            self.np_assert_accuracy(paddle_out_grads[i].numpy(), torch_out_grads[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
+                            self.np_assert_accuracy(paddle_out_grads[i].numpy(), torch_out_grads[i].cpu().detach().numpy(), 1e-2, 1e-2, self.api_config)
                         except Exception as err:
                             print("[accuracy error] backward ", self.api_config.config, "\n", str(err))
                             api_config_accuracy_error.write(self.api_config.config+"\n")
