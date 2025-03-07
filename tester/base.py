@@ -600,6 +600,43 @@ class APITestBase:
                 self.paddle_merged_kwargs[key] = arg_config
         return True
 
+    def copy_torch_input(self):
+        args = []
+        kwargs = collections.OrderedDict()
+
+        for i in range(len(self.torch_args)):
+            if isinstance(self.torch_args[i], torch.Tensor):
+                args.append(torch.clone(self.torch_args[i]))
+            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
+                tmp = []
+                for j in range(len(self.torch_args[i])):
+                    tmp.append(torch.clone(self.torch_args[i][j]))
+                args.append(tmp)
+            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
+                tmp = []
+                for j in range(len(self.torch_args[i])):
+                    tmp.append(torch.clone(self.torch_args[i][j]))
+                args.append(tmp)
+            else:
+                args.append(self.torch_args[i])
+
+        for key, value in self.torch_kwargs.items():
+            if isinstance(value, torch.Tensor):
+                kwargs[key] = torch.clone(value)
+            elif isinstance(value, list):
+                tmp = []
+                for j in range(len(value)):
+                    tmp.append(torch.clone(value[j]))
+                kwargs[key] = tmp
+            elif isinstance(value, tuple):
+                tmp = []
+                for j in range(len(value)):
+                    tmp.append(torch.clone(value[j]))
+                kwargs[key] = tmp
+            else:
+                kwargs[key] = value
+        return args, kwargs
+
     def gen_torch_input(self):
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
@@ -647,6 +684,10 @@ class APITestBase:
                 self.torch_kwargs[key] = tuple(tmp)
             else:
                 self.torch_kwargs[key] = arg_config
+        if self.need_check_grad():
+            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+                self.torch_args, self.torch_kwargs = self.copy_torch_input()
+
         self.clear_torch_tensor()
         return True
 

@@ -51,6 +51,8 @@ class APITestAccuracy(APITestBase):
                 del args
             else:
                 torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+                torch_output = self.torch_args[0] if len(self.torch_args) > 0 else next(iter(self.torch_kwargs.values()))
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[torch error]", self.api_config.config, "\n", str(err))
@@ -99,6 +101,8 @@ class APITestAccuracy(APITestBase):
                 paddle_output = api(*tuple(args), **self.paddle_kwargs)
             else:
                 paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+                paddle_output = self.paddle_args[0] if len(self.paddle_args) > 0 else next(iter(self.paddle_kwargs.values()))
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
