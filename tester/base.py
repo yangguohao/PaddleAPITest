@@ -381,8 +381,6 @@ class APITestBase:
                 result = result + self.torch_args[i]
             elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
                 result = result + list(self.torch_args[i])
-            else:
-                raise ValueError("torch_args format not support")
 
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
@@ -391,8 +389,6 @@ class APITestBase:
                 result = result + value
             elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], torch.Tensor):
                 result = result + list(value)
-            else:
-                raise ValueError("torch_kwargs format not support")
 
         return result
 
