@@ -173,7 +173,10 @@ class APITestAccuracy(APITestBase):
                 return
             for i in range(len(paddle_output)):
                 if not isinstance(paddle_output[i], paddle.Tensor):
-                    print("not compare ", paddle_output[i], torch_output[i])
+                    print("[not compare] ", paddle_output[i], torch_output[i])
+                    api_config_accuracy_error.write(self.api_config.config+"\n")
+                    api_config_accuracy_error.flush()
+                    return
                 elif not isinstance(torch_output[i], torch.Tensor):
                     print("[accuracy error]", self.api_config.config, "\n[output type diff error3], ", type(torch_output[i]))
                     api_config_accuracy_error.write(self.api_config.config+"\n")
@@ -251,7 +254,10 @@ class APITestAccuracy(APITestBase):
                     return
                 for i in range(len(paddle_out_grads)):
                     if not isinstance(paddle_out_grads[i], paddle.Tensor):
-                        print("not compare ", paddle_out_grads[i], torch_out_grads[i])
+                        print("[not compare] ", paddle_out_grads[i], torch_out_grads[i])
+                        api_config_accuracy_error.write(self.api_config.config+"\n")
+                        api_config_accuracy_error.flush()
+                        return
                     elif not isinstance(torch_out_grads[i], torch.Tensor):
                         print("[accuracy error] backward ", self.api_config.config, "\n[output type diff error3], ", type(torch_out_grads[i]))
                         api_config_accuracy_error.write(self.api_config.config+"\n")
