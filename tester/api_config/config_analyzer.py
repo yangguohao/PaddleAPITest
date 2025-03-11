@@ -186,15 +186,19 @@ class TensorConfig:
         paddle.device.cuda.empty_cache()
 
     def clear_paddle_tensor(self):
+        del self.paddle_tensor
         self.paddle_tensor = None
         paddle.device.cuda.empty_cache()
     
     def clear_numpy_tensors(self):
+        del self.numpy_tensor
         self.numpy_tensor = None
 
     def clear_torch_tensor(self):
+        del self.torch_tensor
         self.torch_tensor = None
         torch.cuda.empty_cache()
+
 
 class APIConfig:
     def __deepcopy__(self, memo):

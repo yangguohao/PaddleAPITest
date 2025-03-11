@@ -689,6 +689,7 @@ class APITestBase:
                 self.torch_kwargs[key] = tuple(tmp)
             else:
                 self.torch_kwargs[key] = arg_config
+
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 self.torch_args, self.torch_kwargs = self.copy_torch_input()
