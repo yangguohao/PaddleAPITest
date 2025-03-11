@@ -84,8 +84,6 @@ class APITestAccuracy(APITestBase):
                 del result_outputs_grads
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
-                del self.torch_args
-                del self.torch_kwargs
                 print(str(err))
                 torch_grad_success = False
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
