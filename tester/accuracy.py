@@ -86,7 +86,7 @@ class APITestAccuracy(APITestBase):
             except Exception as err:
                 print(str(err))
                 torch_grad_success = False
-                if "CUDA error" in str(err) or "memory corruption" in str(err):
+                if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise Exception(err)
         else:
             del self.torch_args

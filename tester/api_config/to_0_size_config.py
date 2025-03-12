@@ -217,7 +217,7 @@ def to_big_tensor_config(api_config):
     else:
         apis_map[api_config.api_name][key] += 1
 
-    if apis_map[api_config.api_name][key] > 2:
+    if apis_map[api_config.api_name][key] > 5:
         return []
 
     tensor_configs = get_tensor_configs(api_config)
@@ -245,7 +245,9 @@ def to_big_tensor_config(api_config):
                 base_size = 4294967296
             elif tmp_tensor_configs[i].dtype in ["float64"]:
                 base_size = 4294967296
-                tmp_tensor_configs[i].dtype = "float16"
+                for k in range(len(tmp_tensor_configs)):
+                    if tmp_tensor_configs[k].dtype in ["float64"]:
+                        tmp_tensor_configs[k].dtype = "float16"
             else:
                 base_size = 2281701378 
             tmp_tensor_configs[i].shape[j] = int(base_size / (tensor_numel(tmp_tensor_configs[i])/tmp_tensor_configs[i].shape[j])) + 1
@@ -292,7 +294,7 @@ if __name__ == '__main__':
         # print(api_config.config)
         config_big_tensor = config_big_tensor.union(set(to_big_tensor_config(api_config)))
     config_big_tensor = set(config_big_tensor)
-    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log_accuracy_all/bigtensor_accuracy2.txt", "w") as f:
+    with open("/host_home/wanghuan29/APItest3/PaddleAPITest/tester/api_config/test_log_accuracy_all/bigtensor_accuracy3.txt", "w") as f:
         for api_config in config_big_tensor:
             f.write(str(api_config)+"\n")
         f.close()

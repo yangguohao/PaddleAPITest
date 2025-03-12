@@ -121,7 +121,7 @@ def main():
             try:
                 case.test()
             except Exception as err:
-                if "CUDA error" in str(err) or "memory corruption" in str(err):
+                if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     exit(0)
             case.clear_tensor()
             del case
