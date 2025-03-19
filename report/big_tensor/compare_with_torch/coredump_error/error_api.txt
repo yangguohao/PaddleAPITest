@@ -1,0 +1,9 @@
+paddle.isfinite
+paddle.isinf
+paddle.isnan
+paddle.isneginf
+paddle.isposinf
+paddle.mean
+paddle.nansum
+paddle.nn.functional.adaptive_max_pool1d
+paddle.nn.functional.adaptive_max_pool2d

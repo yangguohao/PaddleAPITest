@@ -1,0 +1,11 @@
+paddle.flatten
+paddle.fmin
+paddle.logical_or
+paddle.logsumexp
+paddle.masked_fill
+paddle.maximum
+paddle.minimum
+paddle.nanmean
+paddle.nn.functional.normalize
+paddle.std
+paddle.sum

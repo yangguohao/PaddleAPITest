@@ -1,0 +1,1 @@
+report/0size_tensor/compare_with_torch report/0size_tensor/not_compare_with_torch
