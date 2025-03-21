@@ -113,6 +113,26 @@ class TensorConfig:
                 else:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+            # a
+            # b
+            # c
+            # d
+            # e
+            # f
+            # g
+            # h
+            # i
+            # j
+            # k
+            # l
+            # m
+            # n
+            # o
+            # p
+            # q
+            # r
+            # s
+            # t
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or "indices" in api_config.kwargs:
                     if len(api_config.args) > 0:
@@ -123,6 +143,14 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
+
+            # u
+            # v
+            # w
+            # x
+            # y
+            # z
+            # _
             elif api_config.api_name in ["paddle.Tensor.__getitem__","paddle.Tensor.__setitem__"] and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
                 arr = None
                 if len(api_config.args) > 0:
@@ -143,7 +171,7 @@ class TensorConfig:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
-    
+
     def get_paddle_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
