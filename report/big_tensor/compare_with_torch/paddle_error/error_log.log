@@ -2439,3 +2439,1682 @@ W0303 11:05:48.481348 59158 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
 [paddle error] paddle.sum(Tensor([858993459, 5],"bool"), axis=None, keepdim=True, ) 
  (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
 
+2025-03-12 04:02:15.235591 test begin: paddle.argsort(Tensor([2, 1140850690],"int64"), axis=1, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([2, 1140850690],"int64"), axis=1, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:06:01.223436 test begin: paddle.argsort(Tensor([22817014, 100],"int64"), axis=1, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([22817014, 100],"int64"), axis=1, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:06:25.527649 test begin: paddle.argsort(Tensor([26, 87757746],"int64"), axis=-1, )
+
+[paddle error] paddle.argsort(Tensor([26, 87757746],"int64"), axis=-1, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:07:26.901759 test begin: paddle.argsort(Tensor([285212673, 4, 2],"int64"), axis=2, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([285212673, 4, 2],"int64"), axis=2, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:08:38.484595 test begin: paddle.argsort(Tensor([3, 380283564, 2],"int64"), axis=2, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([3, 380283564, 2],"int64"), axis=2, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:10:16.954662 test begin: paddle.argsort(Tensor([3, 4, 190141782],"int64"), axis=2, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([3, 4, 190141782],"int64"), axis=2, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:12:45.252349 test begin: paddle.argsort(Tensor([35651585, 64],"int64"), axis=-1, )
+
+[paddle error] paddle.argsort(Tensor([35651585, 64],"int64"), axis=-1, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-12 04:25:06.458825 test begin: paddle.argsort(Tensor([285212673, 4, 2],"int64"), axis=2, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([285212673, 4, 2],"int64"), axis=2, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-13 13:42:23.839819 test begin: paddle.argsort(Tensor([228170138, 10],"int64"), axis=1, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([228170138, 10],"int64"), axis=1, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-13 13:43:59.178843 test begin: paddle.argsort(Tensor([3, 760567127],"int64"), axis=1, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([3, 760567127],"int64"), axis=1, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-13 13:45:52.873846 test begin: paddle.argsort(Tensor([5, 456340276],"int64"), axis=1, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([5, 456340276],"int64"), axis=1, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-13 13:46:56.798613 test begin: paddle.argsort(Tensor([570425345, 4],"int64"), axis=1, stable=True, )
+
+[paddle error] paddle.argsort(Tensor([570425345, 4],"int64"), axis=1, stable=True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-14 18:37:16.201517 test begin: paddle.bitwise_left_shift(Tensor([1],"int16"), Tensor([4294967297],"int16"), )
+
+[paddle error] paddle.bitwise_left_shift(Tensor([1],"int16"), Tensor([4294967297],"int16"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-14 18:37:34.013464 test begin: paddle.bitwise_left_shift(Tensor([1],"uint8"), Tensor([4294967297],"uint8"), )
+
+[paddle error] paddle.bitwise_left_shift(Tensor([1],"uint8"), Tensor([4294967297],"uint8"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-14 19:12:14.140471 test begin: paddle.bitwise_left_shift(Tensor([4294967297],"int16"), Tensor([1],"int16"), )
+
+[paddle error] paddle.bitwise_left_shift(Tensor([4294967297],"int16"), Tensor([1],"int16"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-14 19:16:08.106456 test begin: paddle.bitwise_left_shift(Tensor([4294967297],"uint8"), Tensor([1],"uint8"), )
+
+[paddle error] paddle.bitwise_left_shift(Tensor([4294967297],"uint8"), Tensor([1],"uint8"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-15 00:26:58.432847 test begin: paddle.bitwise_right_shift(Tensor([1],"int8"), Tensor([4294967297],"int8"), )
+
+[paddle error] paddle.bitwise_right_shift(Tensor([1],"int8"), Tensor([4294967297],"int8"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-15 00:27:05.135745 test begin: paddle.bitwise_right_shift(Tensor([1],"uint8"), Tensor([4294967297],"uint8"), )
+
+[paddle error] paddle.bitwise_right_shift(Tensor([1],"uint8"), Tensor([4294967297],"uint8"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-15 00:59:57.122740 test begin: paddle.bitwise_right_shift(Tensor([4294967297],"int8"), Tensor([1],"int8"), )
+
+[paddle error] paddle.bitwise_right_shift(Tensor([4294967297],"int8"), Tensor([1],"int8"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-15 01:03:26.632500 test begin: paddle.bitwise_right_shift(Tensor([4294967297],"uint8"), Tensor([1],"uint8"), )
+
+[paddle error] paddle.bitwise_right_shift(Tensor([4294967297],"uint8"), Tensor([1],"uint8"), ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-15 16:34:53.862094 test begin: paddle.chunk(Tensor([1, 1, 1, 4294967297],"float16"), 2, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([1, 1, 1, 4294967297],"float16"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 1, 1, 4294967297], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 16:35:13.665339 test begin: paddle.chunk(Tensor([1, 1, 64, 67108865],"float16"), 2, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([1, 1, 64, 67108865],"float16"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 1, 64, 67108865], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 17:09:03.638635 test begin: paddle.chunk(Tensor([1, 11, 207427399],"float32"), chunks=2, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([1, 11, 207427399],"float32"), chunks=2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 11, 207427399], Attr(dim) = 2.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 17:12:32.525844 test begin: paddle.chunk(Tensor([1, 4, 20, 28521268],"float32"), 3, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([1, 4, 20, 28521268],"float32"), 3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [1, 4, 20, 28521268], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:12:30.486187 test begin: paddle.chunk(Tensor([13, 16, 10969719],"float32"), chunks=2, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([13, 16, 10969719],"float32"), chunks=2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [13, 16, 10969719], Attr(dim) = 2.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:12:54.943683 test begin: paddle.chunk(Tensor([13, 175515491, 1],"float32"), 4, axis=1, )
+
+[paddle error] paddle.chunk(Tensor([13, 175515491, 1],"float32"), 4, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [13, 175515491, 1], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:3 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:31:30.871155 test begin: paddle.chunk(Tensor([13, 4, 7, 6268411],"float32"), 3, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([13, 4, 7, 6268411],"float32"), 3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [13, 4, 7, 6268411], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:31:59.977557 test begin: paddle.chunk(Tensor([13, 5484860, 32],"float32"), 3, axis=1, )
+
+[paddle error] paddle.chunk(Tensor([13, 5484860, 32],"float32"), 3, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [13, 5484860, 32], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:32:20.409390 test begin: paddle.chunk(Tensor([13, 56, 3134206],"float32"), 3, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([13, 56, 3134206],"float32"), 3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [13, 56, 3134206], Attr(dim) = 2.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:39:41.421281 test begin: paddle.chunk(Tensor([16, 5593, 25500],"float32"), 2, axis=1, )
+
+[paddle error] paddle.chunk(Tensor([16, 5593, 25500],"float32"), 2, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [16, 5593, 25500], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 19:46:31.764098 test begin: paddle.chunk(Tensor([2048, 1114113],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([2048, 1114113],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [2048, 1114113], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 20:56:29.730908 test begin: paddle.chunk(Tensor([4, 139265, 64, 64],"float32"), 3, axis=1, )
+
+[paddle error] paddle.chunk(Tensor([4, 139265, 64, 64],"float32"), 3, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [4, 139265, 64, 64], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 21:34:29.849161 test begin: paddle.chunk(Tensor([4, 262145, 64, 64],"float16"), 3, axis=1, )
+
+[paddle error] paddle.chunk(Tensor([4, 262145, 64, 64],"float16"), 3, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [4, 262145, 64, 64], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 22:12:20.792680 test begin: paddle.chunk(Tensor([52, 4, 7, 1567103],"float32"), 3, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([52, 4, 7, 1567103],"float32"), 3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [52, 4, 7, 1567103], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 22:12:45.071887 test begin: paddle.chunk(Tensor([52, 5484860, 8],"float32"), 3, axis=1, )
+
+[paddle error] paddle.chunk(Tensor([52, 5484860, 8],"float32"), 3, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [52, 5484860, 8], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 22:46:39.713504 test begin: paddle.chunk(Tensor([8192, 278529],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.chunk(Tensor([8192, 278529],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [8192, 278529], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:19:53.135691 test begin: paddle.chunk(x=Tensor([1431655766, 3],"float16"), chunks=3, axis=0, )
+
+[paddle error] paddle.chunk(x=Tensor([1431655766, 3],"float16"), chunks=3, axis=0, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [1431655766, 3], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:20:20.476932 test begin: paddle.chunk(x=Tensor([2281701379],"bool"), chunks=3, axis=0, )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.chunk(x=Tensor([2281701379],"bool"), chunks=3, axis=0, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:20:25.230884 test begin: paddle.chunk(x=Tensor([3, 1431655766],"float16"), chunks=3, axis=-1, )
+
+[paddle error] paddle.chunk(x=Tensor([3, 1431655766],"float16"), chunks=3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [3, 1431655766], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:37:03.642772 test begin: paddle.chunk(x=Tensor([3, 760567127],"float32"), chunks=3, axis=-1, )
+
+[paddle error] paddle.chunk(x=Tensor([3, 760567127],"float32"), chunks=3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [3, 760567127], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:40:24.634339 test begin: paddle.chunk(x=Tensor([3, 760567127],"int32"), chunks=3, axis=-1, )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.chunk(x=Tensor([3, 760567127],"int32"), chunks=3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [3, 760567127], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:42:37.698904 test begin: paddle.chunk(x=Tensor([3, 760567127],"int64"), chunks=3, axis=-1, )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.chunk(x=Tensor([3, 760567127],"int64"), chunks=3, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [3, 760567127], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:49:53.174279 test begin: paddle.chunk(x=Tensor([760567127, 3],"float32"), chunks=3, axis=0, )
+
+[paddle error] paddle.chunk(x=Tensor([760567127, 3],"float32"), chunks=3, axis=0, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [760567127, 3], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:52:29.697822 test begin: paddle.chunk(x=Tensor([760567127, 3],"int32"), chunks=3, axis=0, )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.chunk(x=Tensor([760567127, 3],"int32"), chunks=3, axis=0, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [760567127, 3], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 23:56:10.940702 test begin: paddle.chunk(x=Tensor([760567127, 3],"int64"), chunks=3, axis=0, )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.chunk(x=Tensor([760567127, 3],"int64"), chunks=3, axis=0, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 3, input(X)'s shape = [760567127, 3], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-16 18:31:45.583944 test begin: paddle.equal(Tensor([1],"float32"), Tensor([2281701379],"float32"), )
+
+[paddle error] paddle.equal(Tensor([1],"float32"), Tensor([2281701379],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:31:52.257449 test begin: paddle.equal(Tensor([1],"int32"), Tensor([2281701379],"int32"), )
+
+[paddle error] paddle.equal(Tensor([1],"int32"), Tensor([2281701379],"int32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:32:01.171261 test begin: paddle.equal(Tensor([1],"int64"), Tensor([2281701379],"int64"), )
+
+[paddle error] paddle.equal(Tensor([1],"int64"), Tensor([2281701379],"int64"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:44:29.195150 test begin: paddle.equal(Tensor([2, 1],"int64"), Tensor([2281701379],"int64"), )
+
+[paddle error] paddle.equal(Tensor([2, 1],"int64"), Tensor([2281701379],"int64"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:44:45.663717 test begin: paddle.equal(Tensor([2, 2147483649],"float16"), 0, )
+
+[paddle error] paddle.equal(Tensor([2, 2147483649],"float16"), 0, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:46:05.545834 test begin: paddle.equal(Tensor([2281701379, 1],"int64"), Tensor([1],"int64"), )
+
+[paddle error] paddle.equal(Tensor([2281701379, 1],"int64"), Tensor([1],"int64"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:46:17.022020 test begin: paddle.equal(Tensor([2281701379],"float32"), Tensor([1],"float32"), )
+
+[paddle error] paddle.equal(Tensor([2281701379],"float32"), Tensor([1],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:47:06.833173 test begin: paddle.equal(Tensor([2281701379],"int32"), 0, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int32"), 0, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:47:14.994866 test begin: paddle.equal(Tensor([2281701379],"int32"), Tensor([1],"int32"), )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int32"), Tensor([1],"int32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:48:02.876219 test begin: paddle.equal(Tensor([2281701379],"int64"), 0, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), 0, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:48:17.471872 test begin: paddle.equal(Tensor([2281701379],"int64"), 1, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), 1, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:48:28.217834 test begin: paddle.equal(Tensor([2281701379],"int64"), 1.0, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), 1.0, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:48:37.663019 test begin: paddle.equal(Tensor([2281701379],"int64"), 10, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), 10, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:48:48.726463 test begin: paddle.equal(Tensor([2281701379],"int64"), 2, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), 2, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:48:59.320307 test begin: paddle.equal(Tensor([2281701379],"int64"), Tensor([1],"int64"), )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), Tensor([1],"int64"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:49:57.668073 test begin: paddle.equal(Tensor([2281701379],"int64"), True, )
+
+[paddle error] paddle.equal(Tensor([2281701379],"int64"), True, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-19 23:13:46.046400 test begin: paddle.var(Tensor([2281701379],"float32"), )                        
+
+W0319 23:15:07.951284 112273 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0319 23:15:07.952374 112273 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.var(Tensor([2281701379],"float32"), )                         
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-19 23:45:26.718769 test begin: paddle.var(x=Tensor([2, 2147483649],"float16"), )                        
+
+[paddle error] paddle.var(x=Tensor([2, 2147483649],"float16"), )                         
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-11 18:50:24.150909 test begin: paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), "fro", )
+
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [2, 126761188, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), "fro", ) 
+ (PreconditionNotMet) For batch [228319665]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 18:50:50.300633 test begin: paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), "nuc", )
+
+[paddle error] paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), "nuc", ) 
+ (PreconditionNotMet) For batch [228319665]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 18:52:52.483928 test begin: paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), -1, )
+
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [2, 126761188, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), -1, ) 
+ (PreconditionNotMet) For batch [228319665]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:04:04.401857 test begin: paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), -math.inf, )
+
+W0311 19:05:28.314529 135708 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0311 19:05:28.316038 135708 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [2, 126761188, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), -math.inf, ) 
+ (PreconditionNotMet) For batch [28986439]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:05:43.711083 test begin: paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), 1, )
+
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [2, 126761188, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), 1, ) 
+ (PreconditionNotMet) For batch [28986439]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:10:26.105103 test begin: paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), math.inf, )
+
+W0311 19:11:39.906383 143890 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0311 19:11:39.907594 143890 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [2, 126761188, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([2, 126761188, 3, 3],"float32"), math.inf, ) 
+ (PreconditionNotMet) For batch [73694293]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:25:37.870010 test begin: paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), "fro", )
+
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [63380594, 4, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), "fro", ) 
+ (PreconditionNotMet) For batch [10397233]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:27:41.386020 test begin: paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), -1, )
+
+W0311 19:28:59.799141 153776 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0311 19:28:59.800411 153776 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [63380594, 4, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), -1, ) 
+ (PreconditionNotMet) For batch [180325560]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:30:52.422185 test begin: paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), -math.inf, )
+
+W0311 19:32:04.985879 155626 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0311 19:32:04.986995 155626 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [63380594, 4, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), -math.inf, ) 
+ (PreconditionNotMet) For batch [19076826]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:32:19.885044 test begin: paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), 1, )
+
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [63380594, 4, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), 1, ) 
+ (PreconditionNotMet) For batch [19076826]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:36:57.234468 test begin: paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), math.inf, )
+
+W0311 19:38:09.766438 158627 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0311 19:38:09.767673 158627 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [63380594, 4, 3, 3]], which is output 0 of LinalgInvExBackward0, is at version 1; expected version 0 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[paddle error] paddle.linalg.cond(Tensor([63380594, 4, 3, 3],"float32"), math.inf, ) 
+ (PreconditionNotMet) For batch [18355313]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:45:26.073036 test begin: paddle.linalg.det(Tensor([253522376, 3, 3],"float32"), )
+
+W0311 19:47:32.795486 163009 backward.cc:437] While running Node (DetGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.linalg.det(Tensor([253522376, 3, 3],"float32"), ) 
+ (PreconditionNotMet) For batch [18355313]: U(3, 3) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:3 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:47:43.839123 test begin: paddle.linalg.det(Tensor([3, 30422686, 5, 5],"float32"), )
+
+W0311 19:49:02.713855   707 backward.cc:437] While running Node (DetGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.linalg.det(Tensor([3, 30422686, 5, 5],"float32"), ) 
+ (PreconditionNotMet) For batch [31751346]: U(5, 5) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:5 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-11 19:49:07.127726 test begin: paddle.linalg.det(Tensor([30422686, 3, 5, 5],"float32"), )
+
+W0311 19:50:22.768607  1605 backward.cc:437] While running Node (DetGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.linalg.det(Tensor([30422686, 3, 5, 5],"float32"), ) 
+ (PreconditionNotMet) For batch [31751346]: U(5, 5) is zero, singular U. Please check the matrix value and change it to a non-singular matrix
+  [Hint: Expected info[i] == 0, but received info[i]:5 != 0:0.] (at ../paddle/phi/kernels/funcs/matrix_inverse.cu:125)
+
+2025-03-14 23:37:12.933431 test begin: paddle.fmin(Tensor([1],"int64"), Tensor([2281701379],"int64"), )
+
+[paddle error] paddle.fmin(Tensor([1],"int64"), Tensor([2281701379],"int64"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-14 23:37:41.319562 test begin: paddle.fmin(Tensor([2281701379],"int64"), Tensor([1],"int64"), )
+
+[paddle error] paddle.fmin(Tensor([2281701379],"int64"), Tensor([1],"int64"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-15 01:08:29.239715 test begin: paddle.frac(Tensor([1431655766, 3],"float16"), )
+
+W0315 01:10:08.441741 146999 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0315 01:10:08.442973 146999 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.frac(Tensor([1431655766, 3],"float16"), ) 
+ The data type of input must be one of ['int32', 'int64', 'float32', 'float64'], but got paddle.float16
+2025-03-15 01:13:45.814202 test begin: paddle.frac(Tensor([2, 2147483649],"float16"), )
+
+W0315 01:15:23.954999 147187 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0315 01:15:23.956151 147187 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.frac(Tensor([2, 2147483649],"float16"), ) 
+ The data type of input must be one of ['int32', 'int64', 'float32', 'float64'], but got paddle.float16
+2025-03-16 01:38:45.459673 test begin: paddle.gcd(Tensor([2281701379],"int32"), Tensor([1],"int32"), )
+
+[paddle error] paddle.gcd(Tensor([2281701379],"int32"), Tensor([1],"int32"), ) 
+ (InvalidArgument) The [0] th of Inputs(X) and Inputs(Y) should be same. But received X's shape is [1], Y's shape is [2281701379]
+  [Hint: Expected x_dims[i] == y_dims[i], but received x_dims[i]:1 != y_dims[i]:2281701379.] (at ../paddle/phi/infermeta/multiary.cc:5628)
+
+2025-03-16 01:39:12.997768 test begin: paddle.gcd(Tensor([2281701379],"int64"), Tensor([1],"int64"), )
+
+[paddle error] paddle.gcd(Tensor([2281701379],"int64"), Tensor([1],"int64"), ) 
+ (InvalidArgument) The [0] th of Inputs(X) and Inputs(Y) should be same. But received X's shape is [1], Y's shape is [2281701379]
+  [Hint: Expected x_dims[i] == y_dims[i], but received x_dims[i]:1 != y_dims[i]:2281701379.] (at ../paddle/phi/infermeta/multiary.cc:5628)
+
+2025-03-16 01:42:27.100476 test begin: paddle.gcd(x=Tensor([2281701379],"int32"), y=Tensor([1],"int32"), )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.gcd(x=Tensor([2281701379],"int32"), y=Tensor([1],"int32"), ) 
+ (InvalidArgument) The [0] th of Inputs(X) and Inputs(Y) should be same. But received X's shape is [1], Y's shape is [2281701379]
+  [Hint: Expected x_dims[i] == y_dims[i], but received x_dims[i]:1 != y_dims[i]:2281701379.] (at ../paddle/phi/infermeta/multiary.cc:5628)
+
+2025-03-16 16:51:13.033467 test begin: paddle.hypot(Tensor([1],"float32"), Tensor([2281701379],"float32"), )
+
+[paddle error] paddle.hypot(Tensor([1],"float32"), Tensor([2281701379],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 16:51:40.299612 test begin: paddle.hypot(Tensor([2281701379],"float32"), Tensor([1],"float32"), )
+
+[paddle error] paddle.hypot(Tensor([2281701379],"float32"), Tensor([1],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-17 01:12:07.746509 test begin: paddle.lerp(Tensor([1, 3, 3],"float32"), Tensor([1, 3, 3],"float32"), Tensor([253522376, 3, 3],"float32"), )
+
+W0317 01:13:55.551931  4502 backward.cc:437] While running Node (LerpGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.lerp(Tensor([1, 3, 3],"float32"), Tensor([1, 3, 3],"float32"), Tensor([253522376, 3, 3],"float32"), ) 
+ (InvalidArgument) numel is expected to be greater than or equal 0, but received -2013265912.
+  [Hint: Expected numel >= 0, but received numel:-2013265912 < 0:0.] (at ../paddle/phi/backends/gpu/gpu_launch_config.h:115)
+
+2025-03-17 01:14:01.195887 test begin: paddle.lerp(Tensor([1, 3, 3],"float32"), Tensor([253522376, 3, 3],"float32"), Tensor([1, 3, 3],"float32"), )
+
+W0317 01:15:55.390022  6609 backward.cc:437] While running Node (LerpGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.lerp(Tensor([1, 3, 3],"float32"), Tensor([253522376, 3, 3],"float32"), Tensor([1, 3, 3],"float32"), ) 
+ (InvalidArgument) numel is expected to be greater than or equal 0, but received -2013265912.
+  [Hint: Expected numel >= 0, but received numel:-2013265912 < 0:0.] (at ../paddle/phi/backends/gpu/gpu_launch_config.h:115)
+
+2025-03-17 02:33:50.690585 test begin: paddle.lerp(Tensor([1],"float32"), Tensor([1],"float32"), Tensor([2281701379],"float32"), )
+
+W0317 02:36:35.215456 97382 backward.cc:437] While running Node (LerpGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.lerp(Tensor([1],"float32"), Tensor([1],"float32"), Tensor([2281701379],"float32"), ) 
+ (InvalidArgument) numel is expected to be greater than or equal 0, but received -2013265917.
+  [Hint: Expected numel >= 0, but received numel:-2013265917 < 0:0.] (at ../paddle/phi/backends/gpu/gpu_launch_config.h:115)
+
+2025-03-17 02:58:02.310493 test begin: paddle.lerp(Tensor([2, 1],"float32"), Tensor([2, 1140850690],"float32"), Tensor([2, 1],"float32"), )
+
+W0317 02:59:44.075698 124444 backward.cc:437] While running Node (LerpGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.lerp(Tensor([2, 1],"float32"), Tensor([2, 1140850690],"float32"), Tensor([2, 1],"float32"), ) 
+ (InvalidArgument) numel is expected to be greater than or equal 0, but received -2013265916.
+  [Hint: Expected numel >= 0, but received numel:-2013265916 < 0:0.] (at ../paddle/phi/backends/gpu/gpu_launch_config.h:115)
+
+2025-03-17 02:59:45.013802 test begin: paddle.lerp(Tensor([2, 1],"float32"), Tensor([2, 1],"float32"), Tensor([2, 1140850690],"float32"), )
+
+W0317 03:01:30.050539 126394 backward.cc:437] While running Node (LerpGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.lerp(Tensor([2, 1],"float32"), Tensor([2, 1],"float32"), Tensor([2, 1140850690],"float32"), ) 
+ (InvalidArgument) numel is expected to be greater than or equal 0, but received -2013265916.
+  [Hint: Expected numel >= 0, but received numel:-2013265916 < 0:0.] (at ../paddle/phi/backends/gpu/gpu_launch_config.h:115)
+
+2025-03-16 13:09:12.177859 test begin: paddle.nn.functional.normalize(Tensor([1, 2281701379],"float32"), axis=1, )
+
+W0316 13:10:51.316584 160162 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0316 13:10:51.317767 160162 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.normalize(Tensor([1, 2281701379],"float32"), axis=1, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 14:51:21.083283 test begin: paddle.nn.functional.normalize(Tensor([2, 2147483649],"float16"), p=2, axis=-1, )
+
+W0316 14:53:09.389818 161635 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0316 14:53:09.391039 161635 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.normalize(Tensor([2, 2147483649],"float16"), p=2, axis=-1, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 15:04:05.049731 test begin: paddle.nn.functional.normalize(Tensor([2281701379],"float32"), axis=0, )
+
+W0316 15:05:31.274627 161925 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0316 15:05:31.275844 161925 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.normalize(Tensor([2281701379],"float32"), axis=0, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 15:05:32.437120 test begin: paddle.nn.functional.normalize(Tensor([2281701379],"float32"), axis=0, epsilon=1e-10, )
+
+[paddle error] paddle.nn.functional.normalize(Tensor([2281701379],"float32"), axis=0, epsilon=1e-10, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 15:05:53.180441 test begin: paddle.nn.functional.normalize(Tensor([2281701379],"float32"), axis=0, epsilon=1e-12, )
+
+[paddle error] paddle.nn.functional.normalize(Tensor([2281701379],"float32"), axis=0, epsilon=1e-12, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 17:01:17.781188 test begin: paddle.nn.functional.normalize(x=Tensor([1, 2281701379],"float32"), axis=-1, )
+
+W0316 17:02:50.193709   573 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0316 17:02:50.194880   573 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.normalize(x=Tensor([1, 2281701379],"float32"), axis=-1, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 17:34:31.412487 test begin: paddle.nn.functional.normalize(x=Tensor([2, 2147483649],"float16"), )
+
+W0316 17:36:10.664855  1035 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0316 17:36:10.666067  1035 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.normalize(x=Tensor([2, 2147483649],"float16"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 18:08:32.040428 test begin: paddle.nn.functional.normalize(x=Tensor([2147483649, 2],"float16"), p=1.2, )
+
+W0316 18:10:17.405480 13164 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0316 18:10:17.406916 13164 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.normalize(x=Tensor([2147483649, 2],"float16"), p=1.2, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 21:46:50.149002 test begin: paddle.nn.functional.normalize(x=Tensor([4294967297],"float16"), axis=0, )
+
+[paddle error] paddle.nn.functional.normalize(x=Tensor([4294967297],"float16"), axis=0, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-16 23:30:12.267959 test begin: paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), -math.inf, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), -math.inf, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:32:16.896415 test begin: paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), 0, 1e-06, False, None, )
+
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), 0, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:32:24.607821 test begin: paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), 1, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), 1, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:32:47.725150 test begin: paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), 2, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), 2, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:33:09.804761 test begin: paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), math.inf, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2, 2147483649],"float16"), Tensor([2, 2147483649],"float16"), math.inf, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:34:20.642926 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:34:41.161212 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -1, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -1, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:35:04.913616 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -1, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -1, 1e-06, True, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:35:29.422423 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -math.inf, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -math.inf, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:35:53.352999 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -math.inf, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), -math.inf, 1e-06, True, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:36:16.076439 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 0, 1e-06, False, None, )
+
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 0, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:36:24.669016 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 0, 1e-06, True, None, )
+
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 0, 1e-06, True, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:36:36.293838 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 1, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 1, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:37:00.731508 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 1, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 1, 1e-06, True, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:37:22.138807 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 2, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 2, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:37:46.482594 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 2, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), 2, 1e-06, True, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:38:08.647589 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), math.inf, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), math.inf, 1e-06, False, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-16 23:38:32.159787 test begin: paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), math.inf, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), math.inf, 1e-06, True, None, ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-17 00:08:24.324955 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -1, 1e-06, False, None, )
+
+W0317 00:10:18.956300 96221 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0317 00:10:18.957494 96221 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -1, 1e-06, False, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:10:20.348324 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -1, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -1, 1e-06, True, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:10:45.446811 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -math.inf, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -math.inf, 1e-06, False, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:11:12.064859 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -math.inf, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), -math.inf, 1e-06, True, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:11:37.048431 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 0, 1e-06, False, None, )
+
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 0, 1e-06, False, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:11:47.083023 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 0, 1e-06, True, None, )
+
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 0, 1e-06, True, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:11:58.228589 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 1, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 1, 1e-06, False, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:12:21.545901 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 1, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 1, 1e-06, True, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:12:44.652795 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 2, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 2, 1e-06, False, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:13:08.466495 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 2, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), 2, 1e-06, True, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:13:35.631308 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), math.inf, 1e-06, False, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), math.inf, 1e-06, False, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-17 00:14:02.475245 test begin: paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), math.inf, 1e-06, True, None, )
+
+[paddle error] paddle.nn.functional.pairwise_distance(Tensor([4294967297],"float16"), Tensor([4294967297],"float16"), math.inf, 1e-06, True, None, ) 
+ (InvalidArgument) The 0-th dimension of input tensor is expected to be equal with the 0-th dimension of output tensor 1 or 1, but received 4294967297.
+  [Hint: Expected in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1 == true, but received in_dim[in_idx] == out_dims[in_idx] || in_dim[in_idx] == 1:0 != true:1.] (at ../paddle/phi/kernels/funcs/dims_simplifier.h:144)
+
+2025-03-18 12:10:13.775293 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 15],"float32"),Tensor([15],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 15],"float32"),Tensor([15],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [150, 15], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:165 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:19.380821 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [30, 0], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:30 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:25.172263 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([16, 8],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),Tensor([16, 16],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([16, 8],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),Tensor([16, 16],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [128, 256, 16, 16, 256, 256, 16, 16], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:960 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:29.536608 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([2, 2],"float32"),Tensor([2],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([2, 2],"float32"),Tensor([2],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [4, 2], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:6 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:33.510879 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4, 4],"float32"),Tensor([3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4, 4],"float32"),Tensor([3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [384, 3], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:387 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:38.897564 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4],"float32"),Tensor([3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4],"float32"),Tensor([3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [96, 3], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:99 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:43.964042 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4],"float32"),Tensor([3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4],"float32"),Tensor([3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [24, 3], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:27 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:48.672641 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([48, 8],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),Tensor([48, 16],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([48, 8],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),Tensor([48, 16],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [384, 768, 48, 48, 768, 768, 48, 48], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:2880 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 12:10:53.418676 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([64, 8],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),Tensor([64, 16],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([64, 8],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),Tensor([64, 16],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [512, 1024, 64, 64, 1024, 1024, 64, 64], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:3840 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 14:08:37.781346 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=False, reduction="mean", name=None, )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=False, reduction="mean", name=None, ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 14:20:58.126819 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=False, reduction="none", name=None, )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=False, reduction="none", name=None, ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 14:33:18.504646 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=False, reduction="sum", name=None, )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=False, reduction="sum", name=None, ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 14:45:38.186101 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=True, reduction="mean", name=None, )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), Tensor([5, 858993460],"float16"), margin=0.3, swap=True, reduction="mean", name=None, ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 15:06:51.490764 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([858993460, 5],"float16"), Tensor([858993460, 5],"float16"), Tensor([858993460, 5],"float16"), margin=0.3, swap=False, reduction="sum", name=None, )
+
+W0318 15:09:38.000716 39833 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0318 15:09:38.002909 39833 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(Tensor([858993460, 5],"float16"), Tensor([858993460, 5],"float16"), Tensor([858993460, 5],"float16"), margin=0.3, swap=False, reduction="sum", name=None, ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 15:13:34.010268 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=False, reduction="mean", )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=False, reduction="mean", ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 15:26:00.569926 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=False, reduction="none", )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=False, reduction="none", ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 15:38:25.261927 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=False, reduction="sum", )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=False, reduction="sum", ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 15:50:47.107958 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=True, reduction="mean", )
+
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([5, 858993460],"float16"), positive=Tensor([5, 858993460],"float16"), negative=Tensor([5, 858993460],"float16"), distance_function=None, margin=0.3, swap=True, reduction="mean", ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 16:10:55.422532 test begin: paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([858993460, 5],"float16"), positive=Tensor([858993460, 5],"float16"), negative=Tensor([858993460, 5],"float16"), distance_function=None, margin=0.3, swap=False, reduction="sum", )
+
+W0318 16:12:54.888128 143623 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0318 16:12:54.890297 143623 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.nn.functional.triplet_margin_with_distance_loss(input=Tensor([858993460, 5],"float16"), positive=Tensor([858993460, 5],"float16"), negative=Tensor([858993460, 5],"float16"), distance_function=None, margin=0.3, swap=False, reduction="sum", ) 
+ The positive distance or negative distance should be greater than 0, The distance functions should be checked.
+2025-03-18 18:19:23.040659 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 15],"float32"),Tensor([15],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 15],"float32"),Tensor([15],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [150, 15], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:165 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:27.195544 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([10, 3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [30, 0], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:30 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:31.720901 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([16, 8],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),Tensor([16, 16],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([16, 8],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),Tensor([16, 16],"float32"),Tensor([16, 16],"float32"),Tensor([16],"float32"),Tensor([16],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [128, 256, 16, 16, 256, 256, 16, 16], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:960 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:36.411003 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([2, 2],"float32"),Tensor([2],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([2, 2],"float32"),Tensor([2],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [4, 2], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:6 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:41.074097 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4, 4],"float32"),Tensor([3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4, 4],"float32"),Tensor([3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [384, 3], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:387 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:45.398877 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4],"float32"),Tensor([3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4, 4],"float32"),Tensor([3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [96, 3], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:99 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:50.037395 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4],"float32"),Tensor([3],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([3, 2, 4],"float32"),Tensor([3],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [24, 3], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:27 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:54.402803 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([48, 8],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),Tensor([48, 16],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([48, 8],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),Tensor([48, 16],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [384, 768, 48, 48, 768, 768, 48, 48], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:2880 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 18:19:59.056618 test begin: paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([64, 8],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),Tensor([64, 16],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),], )
+
+[paddle error] paddle.nn.utils.vector_to_parameters(Tensor([2281701379],"float32"), list[Tensor([64, 8],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),Tensor([64, 16],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),], ) 
+ (InvalidArgument) Sum of Attr(num_or_sections) must be equal to the input's size along the split dimension. But received Attr(num_or_sections) = [512, 1024, 64, 64, 1024, 1024, 64, 64], input(X)'s shape = [2281701379], Attr(dim) = 0.
+  [Hint: Expected sum_of_section == input_axis_dim, but received sum_of_section:3840 != input_axis_dim:2281701379.] (at ../paddle/phi/infermeta/unary.cc:4438)
+
+2025-03-18 21:33:53.582118 test begin: paddle.outer(Tensor([2281701379],"float32"), Tensor([1],"float32"), )
+
+[paddle error] paddle.outer(Tensor([2281701379],"float32"), Tensor([1],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-11 20:07:35.234880 test begin: paddle.Tensor.chunk(Tensor([1, 1, 1, 2281701379],"float32"), 4, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 1, 1, 2281701379],"float32"), 4, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [1, 1, 1, 2281701379], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:3 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 20:07:55.422552 test begin: paddle.Tensor.chunk(Tensor([1, 1, 10164, 224489],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 1, 10164, 224489],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 1, 10164, 224489], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 20:14:00.746844 test begin: paddle.Tensor.chunk(Tensor([1, 1, 2281701379],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 1, 2281701379],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 1, 2281701379], Attr(dim) = 2.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 20:17:13.533764 test begin: paddle.Tensor.chunk(Tensor([1, 10, 1, 228170138],"float32"), 4, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 10, 1, 228170138],"float32"), 4, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [1, 10, 1, 228170138], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 20:36:10.987546 test begin: paddle.Tensor.chunk(Tensor([1, 2281701379],"float32"), 2, axis=1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 2281701379],"float32"), 2, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 2281701379], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 21:23:00.516633 test begin: paddle.Tensor.chunk(Tensor([13, 5484860, 32],"float32"), 8, axis=1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([13, 5484860, 32],"float32"), 8, axis=1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 8, input(X)'s shape = [13, 5484860, 32], Attr(dim) = 1.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:4 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 22:02:50.026891 test begin: paddle.Tensor.chunk(Tensor([1901418, 300, 4],"float32"), 4, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1901418, 300, 4],"float32"), 4, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [1901418, 300, 4], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 22:34:38.434768 test begin: paddle.Tensor.chunk(Tensor([475355, 300, 16],"float32"), 2, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([475355, 300, 16],"float32"), 2, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [475355, 300, 16], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 22:46:50.334096 test begin: paddle.Tensor.chunk(Tensor([5704254, 100, 4],"float32"), 4, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([5704254, 100, 4],"float32"), 4, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [5704254, 100, 4], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 22:50:45.600100 test begin: paddle.Tensor.chunk(Tensor([75304, 300, 101],"float32"), 16, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([75304, 300, 101],"float32"), 16, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 16, input(X)'s shape = [75304, 300, 101], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:8 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-11 23:06:14.641250 test begin: paddle.Tensor.chunk(Tensor([950709, 300, 8],"float32"), 8, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([950709, 300, 8],"float32"), 8, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 8, input(X)'s shape = [950709, 300, 8], Attr(dim) = 0.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:5 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-13 10:56:25.535340 test begin: paddle.std(Tensor([2281701379],"float32"), )
+
+[paddle error] paddle.std(Tensor([2281701379],"float32"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-13 11:18:50.035567 test begin: paddle.std(x=Tensor([2, 2147483649],"float16"), )
+
+[paddle error] paddle.std(x=Tensor([2, 2147483649],"float16"), ) 
+ (PreconditionNotMet) The meta data must be valid when call the mutable data function.
+  [Hint: Expected valid() == true, but received valid():0 != true:1.] (at ../paddle/phi/core/dense_tensor.cc:117)
+
+2025-03-13 13:54:07.441507 test begin: paddle.sum(Tensor([1, 2281701379],"int32"), )
+
+[paddle error] paddle.sum(Tensor([1, 2281701379],"int32"), ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 16:38:27.958832 test begin: paddle.sum(Tensor([190141782, 3, 4, 1, 1, 1],"int64"), )
+
+[paddle error] paddle.sum(Tensor([190141782, 3, 4, 1, 1, 1],"int64"), ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, its dim should be <= 5. (at ../paddle/phi/kernels/kps/reduce_kernel.cu:301)
+
+2025-03-14 16:38:44.256750 test begin: paddle.sum(Tensor([190141782, 3, 4],"int32"), axis=0, )
+
+[paddle error] paddle.sum(Tensor([190141782, 3, 4],"int32"), axis=0, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 16:39:38.376635 test begin: paddle.sum(Tensor([190141782, 3, 4],"int32"), axis=tuple(0,1,), )
+
+[paddle error] paddle.sum(Tensor([190141782, 3, 4],"int32"), axis=tuple(0,1,), ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 16:39:44.794894 test begin: paddle.sum(Tensor([190141782, 3, 4],"int32"), axis=tuple(0,1,2,), )
+
+[paddle error] paddle.sum(Tensor([190141782, 3, 4],"int32"), axis=tuple(0,1,2,), ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:01:22.568086 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=-1, keepdim=False, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=-1, keepdim=False, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:02:31.628500 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=0, keepdim=True, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=0, keepdim=True, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:02:44.712252 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=1, keepdim=False, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=1, keepdim=False, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:02:47.314161 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=None, keepdim=False, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=None, keepdim=False, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:02:50.417951 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=None, keepdim=True, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=None, keepdim=True, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:02:53.384724 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=list[-1,], keepdim=False, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=list[-1,], keepdim=False, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:02:56.658547 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=list[0,], keepdim=True, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=list[0,], keepdim=True, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:03:06.322059 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=list[1,], keepdim=False, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=list[1,], keepdim=False, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:03:08.845408 test begin: paddle.sum(Tensor([2, 1140850690],"bool"), axis=tuple(0,1,), keepdim=False, )
+
+[paddle error] paddle.sum(Tensor([2, 1140850690],"bool"), axis=tuple(0,1,), keepdim=False, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:56:38.493662 test begin: paddle.sum(Tensor([2, 285212673, 4],"int32"), axis=0, )
+
+W0314 17:57:51.613270 139276 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0314 17:57:51.614264 139276 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[paddle error] paddle.sum(Tensor([2, 285212673, 4],"int32"), axis=0, ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:57:52.415423 test begin: paddle.sum(Tensor([2, 285212673, 4],"int32"), axis=tuple(0,1,), )
+
+[paddle error] paddle.sum(Tensor([2, 285212673, 4],"int32"), axis=tuple(0,1,), ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-14 17:57:57.911541 test begin: paddle.sum(Tensor([2, 285212673, 4],"int32"), axis=tuple(0,1,2,), )
+
+[paddle error] paddle.sum(Tensor([2, 285212673, 4],"int32"), axis=tuple(0,1,2,), ) 
+ (Fatal) If Input.numel() > INT32_MAX, reduce_sum kernel uses EigenTensor sum for reduce_sum function. As a result, input dtype should be the same as out dtype (at ../paddle/phi/kernels/kps/reduce_kernel.cu:263)
+
+2025-03-12 11:34:26.543003 test begin: paddle.Tensor.chunk(Tensor([1, 1, 11109, 205393],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 1, 11109, 205393],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 1, 11109, 205393], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-12 11:34:52.608482 test begin: paddle.Tensor.chunk(Tensor([1, 1, 12096, 188633],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 1, 12096, 188633],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 1, 12096, 188633], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-12 11:41:47.491582 test begin: paddle.Tensor.chunk(Tensor([1, 101, 1, 22591103],"float32"), 4, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 101, 1, 22591103],"float32"), 4, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [1, 101, 1, 22591103], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:3 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-12 11:42:11.758828 test begin: paddle.Tensor.chunk(Tensor([1, 101, 22591103],"float32"), 2, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 101, 22591103],"float32"), 2, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 2, input(X)'s shape = [1, 101, 22591103], Attr(dim) = 2.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-12 11:46:06.740943 test begin: paddle.Tensor.chunk(Tensor([1, 102, 1, 22369622],"float32"), 4, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 102, 1, 22369622],"float32"), 4, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [1, 102, 1, 22369622], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:2 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-12 11:55:47.034128 test begin: paddle.Tensor.chunk(Tensor([1, 103, 1, 22152441],"float32"), 4, axis=-1, )
+
+[paddle error] paddle.Tensor.chunk(Tensor([1, 103, 1, 22152441],"float32"), 4, axis=-1, ) 
+ (InvalidArgument) The input's size along the split dimension must be evenly divisible by Attr(num_or_sections). But received Attr(num_or_sections) = 4, input(X)'s shape = [1, 103, 1, 22152441], Attr(dim) = 3.
+  [Hint: Expected input_axis_dim % num == 0, but received input_axis_dim % num:1 != 0:0.] (at ../paddle/phi/infermeta/unary.cc:4490)
+
+2025-03-15 04:50:19.936796 test begin: paddle.Tensor.expand_as(Tensor([1, 1],"int32"), Tensor([2281701379, 1],"int64"), )
+
+[paddle error] paddle.Tensor.expand_as(Tensor([1, 1],"int32"), Tensor([2281701379, 1],"int64"), ) 
+ (InvalidArgument) When the value in shape is negative for expand_as_v2 op, only -1 is supported, but the value received is -2013265917.
+  [Hint: Expected target_shape[i] == -1, but received target_shape[i]:-2013265917 != -1:-1.] (at ../paddle/phi/kernels/gpu/expand_as_kernel.cu:76)
+
+2025-03-15 05:05:44.262183 test begin: paddle.Tensor.expand_as(Tensor([2281701379, 1],"int32"), Tensor([2281701379, 1],"int64"), )
+
+[paddle error] paddle.Tensor.expand_as(Tensor([2281701379, 1],"int32"), Tensor([2281701379, 1],"int64"), ) 
+ (InvalidArgument) When the value in shape is negative for expand_as_v2 op, only -1 is supported, but the value received is -2013265917.
+  [Hint: Expected target_shape[i] == -1, but received target_shape[i]:-2013265917 != -1:-1.] (at ../paddle/phi/kernels/gpu/expand_as_kernel.cu:76)
+
+2025-03-15 09:30:11.345312 test begin: paddle.Tensor.flatten(Tensor([1, 1, 12, 190141782],"float32"), start_axis=2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 12, 190141782],"float32"), start_axis=2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, 1, -2013265912], shape[2] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:30:34.439735 test begin: paddle.Tensor.flatten(Tensor([1, 1, 16, 142606337],"float32"), start_axis=2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 16, 142606337],"float32"), start_axis=2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, 1, -2013265904], shape[2] = -2013265904.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265904 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:36:22.879379 test begin: paddle.Tensor.flatten(Tensor([1, 1, 20, 114085069],"float32"), start_axis=2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 20, 114085069],"float32"), start_axis=2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, 1, -2013265916], shape[2] = -2013265916.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265916 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:36:45.905572 test begin: paddle.Tensor.flatten(Tensor([1, 1, 2281701379],"float32"), stop_axis=-2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 2281701379],"float32"), stop_axis=-2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265917], shape[1] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:37:06.565193 test begin: paddle.Tensor.flatten(Tensor([1, 1, 2281701379],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 2281701379],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:37:20.005088 test begin: paddle.Tensor.flatten(Tensor([1, 1, 2281701379],"int64"), stop_axis=-2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 2281701379],"int64"), stop_axis=-2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265917], shape[1] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:37:45.303744 test begin: paddle.Tensor.flatten(Tensor([1, 1, 35651585, 64],"float32"), start_axis=2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 35651585, 64],"float32"), start_axis=2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, 1, -2013265856], shape[2] = -2013265856.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265856 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:55:22.176103 test begin: paddle.Tensor.flatten(Tensor([1, 1, 6, 380283564],"float32"), start_axis=2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 6, 380283564],"float32"), start_axis=2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, 1, -2013265912], shape[2] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 09:55:48.737703 test begin: paddle.Tensor.flatten(Tensor([1, 1, 8, 285212673],"float32"), start_axis=2, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 1, 8, 285212673],"float32"), start_axis=2, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, 1, -2013265912], shape[2] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:27:44.230989 test begin: paddle.Tensor.flatten(Tensor([1, 10, 228170138],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 10, 228170138],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265916], shape[1] = -2013265916.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265916 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:28:10.996862 test begin: paddle.Tensor.flatten(Tensor([1, 10, 228170138],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 10, 228170138],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265916], shape[0] = -2013265916.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265916 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:37:50.296366 test begin: paddle.Tensor.flatten(Tensor([1, 101, 22591103],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 101, 22591103],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265893], shape[0] = -2013265893.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265893 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:38:04.645550 test begin: paddle.Tensor.flatten(Tensor([1, 102, 22369622],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 102, 22369622],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265852], shape[0] = -2013265852.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265852 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:38:15.864608 test begin: paddle.Tensor.flatten(Tensor([1, 103, 22152441],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 103, 22152441],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265873], shape[0] = -2013265873.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265873 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:50:55.071632 test begin: paddle.Tensor.flatten(Tensor([1, 11408507, 200],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 11408507, 200],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265896], shape[1] = -2013265896.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265896 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 10:54:59.524068 test begin: paddle.Tensor.flatten(Tensor([1, 12, 190141782],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 12, 190141782],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265912], shape[1] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 11:15:56.511990 test begin: paddle.Tensor.flatten(Tensor([1, 142606337, 4, 4],"float32"), start_axis=1, stop_axis=3, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 142606337, 4, 4],"float32"), start_axis=1, stop_axis=3, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265904], shape[1] = -2013265904.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265904 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 11:19:55.125776 test begin: paddle.Tensor.flatten(Tensor([1, 144, 15845149],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 144, 15845149],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265840], shape[1] = -2013265840.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265840 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 11:26:43.425403 test begin: paddle.Tensor.flatten(Tensor([1, 15845149, 144],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 15845149, 144],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265840], shape[1] = -2013265840.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265840 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 11:35:51.824237 test begin: paddle.Tensor.flatten(Tensor([1, 18, 126761188],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 18, 126761188],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265912], shape[1] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 11:53:40.115829 test begin: paddle.Tensor.flatten(Tensor([1, 192, 11883862],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 192, 11883862],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265792], shape[1] = -2013265792.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265792 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 12:37:13.242684 test begin: paddle.Tensor.flatten(Tensor([1, 2281701379, 1],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 2281701379, 1],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 12:37:27.027064 test begin: paddle.Tensor.flatten(Tensor([1, 2281701379],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 2281701379],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265917], shape[1] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 12:37:48.147223 test begin: paddle.Tensor.flatten(Tensor([1, 2281701379],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 2281701379],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 12:38:01.046887 test begin: paddle.Tensor.flatten(Tensor([1, 2281701379],"int64"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 2281701379],"int64"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 12:48:07.311645 test begin: paddle.Tensor.flatten(Tensor([1, 253522376, 9],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 253522376, 9],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265912], shape[1] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 12:55:13.476047 test begin: paddle.Tensor.flatten(Tensor([1, 268435457, 4, 4],"float16"), start_axis=1, stop_axis=3, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 268435457, 4, 4],"float16"), start_axis=1, stop_axis=3, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [1, 268435457, 4, 4], X's size = 4294967312, 'shape' is [1, 16], the capacity of 'shape' is 16.
+  [Hint: Expected capacity == in_size, but received capacity:16 != in_size:4294967312.] (at ../paddle/phi/infermeta/unary.cc:2258)
+
+2025-03-15 12:59:33.655903 test begin: paddle.Tensor.flatten(Tensor([1, 285212673, 8],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 285212673, 8],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265912], shape[1] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 14:01:15.039291 test begin: paddle.Tensor.flatten(Tensor([1, 6, 178956971, 4],"float16"), start_axis=1, stop_axis=3, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 6, 178956971, 4],"float16"), start_axis=1, stop_axis=3, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [1, 6, 178956971, 4], X's size = 4294967304, 'shape' is [1, 8], the capacity of 'shape' is 8.
+  [Hint: Expected capacity == in_size, but received capacity:8 != in_size:4294967304.] (at ../paddle/phi/infermeta/unary.cc:2258)
+
+2025-03-15 14:01:37.312353 test begin: paddle.Tensor.flatten(Tensor([1, 6, 4, 178956971],"float16"), start_axis=1, stop_axis=3, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 6, 4, 178956971],"float16"), start_axis=1, stop_axis=3, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [1, 6, 4, 178956971], X's size = 4294967304, 'shape' is [1, 8], the capacity of 'shape' is 8.
+  [Hint: Expected capacity == in_size, but received capacity:8 != in_size:4294967304.] (at ../paddle/phi/infermeta/unary.cc:2258)
+
+2025-03-15 14:01:56.387524 test begin: paddle.Tensor.flatten(Tensor([1, 6, 4, 95070891],"float32"), start_axis=1, stop_axis=3, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 6, 4, 95070891],"float32"), start_axis=1, stop_axis=3, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265912], shape[1] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 14:02:19.332807 test begin: paddle.Tensor.flatten(Tensor([1, 6, 95070891, 4],"float32"), start_axis=1, stop_axis=3, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 6, 95070891, 4],"float32"), start_axis=1, stop_axis=3, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265912], shape[1] = -2013265912.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265912 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:01:10.504646 test begin: paddle.Tensor.flatten(Tensor([1, 91268056, 25],"float32"), 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([1, 91268056, 25],"float32"), 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [1, -2013265896], shape[1] = -2013265896.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265896 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:01:38.288986 test begin: paddle.Tensor.flatten(Tensor([10, 228170138],"float32"), 0, 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([10, 228170138],"float32"), 0, 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265916], shape[0] = -2013265916.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265916 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:01:59.956696 test begin: paddle.Tensor.flatten(Tensor([100, 22817014],"float32"), 0, 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([100, 22817014],"float32"), 0, 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265896], shape[0] = -2013265896.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265896 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:19:18.601841 test begin: paddle.Tensor.flatten(Tensor([12, 18397, 76, 136],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 18397, 76, 136],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013150592], shape[0] = -2013150592.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013150592 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:19:41.291262 test begin: paddle.Tensor.flatten(Tensor([12, 19, 10007463, 1],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 19, 10007463, 1],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265732], shape[0] = -2013265732.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265732 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:20:00.538358 test begin: paddle.Tensor.flatten(Tensor([12, 19, 34, 294338],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 19, 34, 294338],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013259120], shape[0] = -2013259120.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013259120 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:20:21.204183 test begin: paddle.Tensor.flatten(Tensor([12, 2796203, 68, 1],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 2796203, 68, 1],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265648], shape[0] = -2013265648.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265648 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:20:38.534742 test begin: paddle.Tensor.flatten(Tensor([12, 294338, 19, 34],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 294338, 19, 34],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013259120], shape[0] = -2013259120.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013259120 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:20:57.906953 test begin: paddle.Tensor.flatten(Tensor([12, 38, 5003732, 1],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 38, 5003732, 1],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265504], shape[0] = -2013265504.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265504 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:21:17.061325 test begin: paddle.Tensor.flatten(Tensor([12, 38, 68, 73585],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 38, 68, 73585],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013243616], shape[0] = -2013243616.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013243616 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:21:38.555694 test begin: paddle.Tensor.flatten(Tensor([12, 4, 1398102, 34],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 4, 1398102, 34],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013264832], shape[0] = -2013264832.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013264832 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:21:59.696179 test begin: paddle.Tensor.flatten(Tensor([12, 4, 19, 2501866],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 4, 19, 2501866],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265504], shape[0] = -2013265504.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265504 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:22:17.819655 test begin: paddle.Tensor.flatten(Tensor([12, 4, 349526, 136],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 4, 349526, 136],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013261568], shape[0] = -2013261568.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013261568 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:22:36.549078 test begin: paddle.Tensor.flatten(Tensor([12, 4, 38, 1250933],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 4, 38, 1250933],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265504], shape[0] = -2013265504.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265504 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:22:57.829000 test begin: paddle.Tensor.flatten(Tensor([12, 4, 699051, 68],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 4, 699051, 68],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013264832], shape[0] = -2013264832.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013264832 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:23:18.642383 test begin: paddle.Tensor.flatten(Tensor([12, 4, 76, 625467],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 4, 76, 625467],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013263680], shape[0] = -2013263680.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013263680 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:23:45.168669 test begin: paddle.Tensor.flatten(Tensor([12, 5592406, 34, 1],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 5592406, 34, 1],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265648], shape[0] = -2013265648.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265648 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 15:24:10.869809 test begin: paddle.Tensor.flatten(Tensor([12, 73585, 38, 68],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([12, 73585, 38, 68],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013243616], shape[0] = -2013243616.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013243616 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 19:08:49.691604 test begin: paddle.Tensor.flatten(Tensor([2, 3, 15845149, 6, 4],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2, 3, 15845149, 6, 4],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265840], shape[0] = -2013265840.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265840 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 19:09:15.063837 test begin: paddle.Tensor.flatten(Tensor([2, 3, 6, 15845149, 4],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2, 3, 6, 15845149, 4],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265840], shape[0] = -2013265840.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265840 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 19:09:36.329522 test begin: paddle.Tensor.flatten(Tensor([2, 3, 6, 6, 10563433],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2, 3, 6, 6, 10563433],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265768], shape[0] = -2013265768.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265768 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 20:13:02.545696 test begin: paddle.Tensor.flatten(Tensor([2, 7922575, 6, 6, 4],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2, 7922575, 6, 6, 4],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265696], shape[0] = -2013265696.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265696 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 20:42:52.116495 test begin: paddle.Tensor.flatten(Tensor([220753, 4, 38, 68],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([220753, 4, 38, 68],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013264288], shape[0] = -2013264288.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013264288 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 20:43:14.661487 test begin: paddle.Tensor.flatten(Tensor([22152441, 103, 1],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([22152441, 103, 1],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265873], shape[0] = -2013265873.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265873 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 20:56:38.066936 test begin: paddle.Tensor.flatten(Tensor([22369622, 102, 1],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([22369622, 102, 1],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265852], shape[0] = -2013265852.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265852 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:00:14.709173 test begin: paddle.Tensor.flatten(Tensor([22591103, 101, 1],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([22591103, 101, 1],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265893], shape[0] = -2013265893.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265893 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:00:27.672775 test begin: paddle.Tensor.flatten(Tensor([2277148, 1002],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2277148, 1002],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265000], shape[0] = -2013265000.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265000 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:00:38.703459 test begin: paddle.Tensor.flatten(Tensor([2277148, 1002],"int64"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2277148, 1002],"int64"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265000], shape[0] = -2013265000.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265000 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:01:04.659140 test begin: paddle.Tensor.flatten(Tensor([2279422, 1001],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2279422, 1001],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265874], shape[0] = -2013265874.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265874 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:01:17.524541 test begin: paddle.Tensor.flatten(Tensor([2279422, 1001],"int64"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2279422, 1001],"int64"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265874], shape[0] = -2013265874.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265874 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:01:38.533370 test begin: paddle.Tensor.flatten(Tensor([2281701379, 1, 1],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2281701379, 1, 1],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:01:49.091778 test begin: paddle.Tensor.flatten(Tensor([2281701379],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2281701379],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:02:12.612635 test begin: paddle.Tensor.flatten(Tensor([2281701379],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([2281701379],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265917], shape[0] = -2013265917.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265917 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:02:29.333978 test begin: paddle.Tensor.flatten(Tensor([228170138, 10, 1],"int32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([228170138, 10, 1],"int32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265916], shape[0] = -2013265916.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265916 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:02:40.494855 test begin: paddle.Tensor.flatten(Tensor([228170138, 10],"float32"), 0, 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([228170138, 10],"float32"), 0, 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265916], shape[0] = -2013265916.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265916 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 21:03:06.651680 test begin: paddle.Tensor.flatten(Tensor([22817014, 100],"float32"), 0, 1, )
+
+[paddle error] paddle.Tensor.flatten(Tensor([22817014, 100],"float32"), 0, 1, ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265896], shape[0] = -2013265896.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265896 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 22:12:13.601542 test begin: paddle.Tensor.flatten(Tensor([3532046, 19, 34, 1],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([3532046, 19, 34, 1],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265580], shape[0] = -2013265580.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265580 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-15 23:02:54.331415 test begin: paddle.Tensor.flatten(Tensor([4294967297],"bfloat16"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([4294967297],"bfloat16"), ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [4294967297], X's size = 4294967297, 'shape' is [1], the capacity of 'shape' is 1.
+  [Hint: Expected capacity == in_size, but received capacity:1 != in_size:4294967297.] (at ../paddle/phi/infermeta/unary.cc:2258)
+
+2025-03-16 00:01:40.547625 test begin: paddle.Tensor.flatten(Tensor([5281717, 3, 6, 6, 4],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([5281717, 3, 6, 6, 4],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013265552], shape[0] = -2013265552.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013265552 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-16 00:02:04.083583 test begin: paddle.Tensor.flatten(Tensor([55189, 4, 76, 136],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([55189, 4, 76, 136],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013233280], shape[0] = -2013233280.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013233280 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-16 01:34:06.174404 test begin: paddle.Tensor.flatten(Tensor([883012, 38, 68, 1],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([883012, 38, 68, 1],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013264288], shape[0] = -2013264288.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013264288 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-16 01:34:29.679454 test begin: paddle.Tensor.flatten(Tensor([883012, 4, 19, 34],"float32"), )
+
+[paddle error] paddle.Tensor.flatten(Tensor([883012, 4, 19, 34],"float32"), ) 
+ (InvalidArgument) Each dimension value of 'shape' in ReshapeOp must not be negative except one unknown dimension. But received  shape = [-2013264288], shape[0] = -2013264288.
+  [Hint: Expected shape[i] > 0, but received shape[i]:-2013264288 <= 0:0.] (at ../paddle/phi/infermeta/unary.cc:2199)
+
+2025-03-16 02:58:06.601704 test begin: paddle.Tensor.gcd(x=Tensor([2281701379],"int32"), y=Tensor([1],"int32"), )
+
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.Tensor.gcd(x=Tensor([2281701379],"int32"), y=Tensor([1],"int32"), ) 
+ (InvalidArgument) The [0] th of Inputs(X) and Inputs(Y) should be same. But received X's shape is [1], Y's shape is [2281701379]
+  [Hint: Expected x_dims[i] == y_dims[i], but received x_dims[i]:1 != y_dims[i]:2281701379.] (at ../paddle/phi/infermeta/multiary.cc:5628)
+
+2025-03-16 16:19:10.730530 test begin: paddle.Tensor.lu(Tensor([3, 760567127],"float32"), )
+
+=========================================================================================
+   WARNING batched routines are designed for small sizes. It might be better to use the
+   Native/Hybrid classical routines if you want good performance.
+=========================================================================================
+element 1 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.Tensor.lu(Tensor([3, 760567127],"float32"), ) 
+ (External) CUSOLVER error(3). 
+  [Hint: 'CUSOLVER_STATUS_INVALID_VALUE'. An unsupported value or parameter was passed to the function (a negative vector size, for example).To correct: ensure that all the parameters being passed have valid values.] (at ../paddle/phi/kernels/gpu/lu_kernel.cu:53)
+
+2025-03-16 16:20:32.551335 test begin: paddle.Tensor.lu(Tensor([760567127, 3],"float32"), )
+
+=========================================================================================
+   WARNING batched routines are designed for small sizes. It might be better to use the
+   Native/Hybrid classical routines if you want good performance.
+=========================================================================================
+element 1 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.Tensor.lu(Tensor([760567127, 3],"float32"), ) 
+ (External) CUSOLVER error(3). 
+  [Hint: 'CUSOLVER_STATUS_INVALID_VALUE'. An unsupported value or parameter was passed to the function (a negative vector size, for example).To correct: ensure that all the parameters being passed have valid values.] (at ../paddle/phi/kernels/gpu/lu_kernel.cu:77)
+
