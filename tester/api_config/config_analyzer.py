@@ -82,6 +82,8 @@ class TensorConfig:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
     def numel(self):
+        if self.shape == []:
+            return 0
         numel = 1
         for i in self.shape:
             numel = numel * i
@@ -145,7 +147,12 @@ class TensorConfig:
                 self.dtype = "int64"
 
             elif api_config.api_name in ["paddle.zeros"]:
-                self.numpy_tensor = (numpy.zeros(self.shape)).astype(self.dtype)
+                if self.numel() == 0:
+                    self.numpy_tensor = [0]
+                else:
+                    self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype("int64").reshape(self.shape)
+                self.dtype = "int64"
+           
             # u
             # v
             # w
