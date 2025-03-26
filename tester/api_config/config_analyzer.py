@@ -36,8 +36,6 @@ not_zero_apis = [
 class TensorConfig:
     def __init__(self, shape, dtype):
         self.shape = shape
-        if self.shape == [0]:
-            self.shape = []
         self.dtype = dtype
         self.numpy_tensor = None
         self.paddle_tensor = None
@@ -147,24 +145,31 @@ class TensorConfig:
                 self.dtype = "int64"
 
             elif api_config.api_name in ["paddle.zeros","paddle.eye"]:
-                self.numpy_tensor = (numpy.random.randint(0, 2048**(1./self.numel()), size=self.numel())).astype(self.dtype).reshape(self.shape)
+                self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
 
             elif api_config.api_name in ["paddle.full"]:
                 if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
-                    self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype(self.type).reshape(self.shape)
+                    if "int" in self.dtype:
+                        self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
+                    else:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
                 else:
-                    self.numpy_tensor = (numpy.random.randint(0, 2048**(1./self.numel()), size=self.numel())).astype("int64").reshape(self.shape)
+                    self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype("int64")
                     self.dtype = "int64"
             
             elif api_config.api_name in ["paddle.add_n","paddle.matmul"]:
-                if self.dtype in [numpy.float16, numpy.float32, "float16", "float32"]:
+                if self.dtype in [numpy.float16, numpy.float32, "float16", "float32", "bfloat16"]:
                     self.dtype = numpy.float64
-                elif self.dtype in [numpy.int8, numpy.int16, numpy.int32, numpy.uint8, numpy.uint16, "bfloat16", \
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
+                elif self.dtype in [numpy.int8, numpy.int16, numpy.int32, numpy.uint8, numpy.uint16, \
                                     "int8", "int16", "int32", "uint8", "uint16", ]:
                     self.dtype = numpy.int64
+                    self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
                 elif self.dtype in [numpy.complex64, "complex64"]:
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype("complex128") + ((numpy.random.random(self.shape) + 0.5) * j).astype("complex128")
                     self.dtype = numpy.complex128
-                self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype(self.dtype).reshape(self.shape)    
+
             # u
             # v
             # w
