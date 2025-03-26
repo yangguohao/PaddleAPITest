@@ -82,8 +82,6 @@ class TensorConfig:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
     def numel(self):
-        if self.shape == []:
-            return 0
         numel = 1
         for i in self.shape:
             numel = numel * i
@@ -147,12 +145,25 @@ class TensorConfig:
                 self.dtype = "int64"
 
             elif api_config.api_name in ["paddle.zeros"]:
-                if self.numel() == 0:
-                    self.numpy_tensor = [0]
-                else:
-                    self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype("int64").reshape(self.shape)
+                self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype("int64").reshape(self.shape)
                 self.dtype = "int64"
-           
+
+            elif api_config.api_name in ["paddle.eye"]:
+                self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype("int32").reshape(self.shape)
+                self.dtype = "int32"
+
+            elif api_config.api_name in ["paddle.full"]:
+                if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
+                    if len(api_config.args) > 2:
+                        self.dtype = api[config.args[2]]
+                    elif "dtype" in api_config.kwargs:
+                        self.dtype = api_config.kwargs["dtype"]
+                    else :
+                        self.dtype = "float32" 
+                    self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype(self.type).reshape(self.shape)
+                else:
+                    self.numpy_tensor = (numpy.random.randint(0, 2048**(1./self.numel()), size=self.numel())).astype("int64").reshape(self.shape)
+                    self.dtype = "int64"
             # u
             # v
             # w
