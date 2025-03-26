@@ -36,6 +36,8 @@ not_zero_apis = [
 class TensorConfig:
     def __init__(self, shape, dtype):
         self.shape = shape
+        if self.shape in [[],[0]]:
+            self.shape = [1]
         self.dtype = dtype
         self.numpy_tensor = None
         self.paddle_tensor = None
@@ -144,26 +146,25 @@ class TensorConfig:
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
 
-            elif api_config.api_name in ["paddle.zeros"]:
-                self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype("int64").reshape(self.shape)
-                self.dtype = "int64"
-
-            elif api_config.api_name in ["paddle.eye"]:
-                self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype("int32").reshape(self.shape)
-                self.dtype = "int32"
+            elif api_config.api_name in ["paddle.zeros","paddle.eye"]:
+                self.numpy_tensor = (numpy.random.randint(0, 2048**(1./self.numel()), size=self.numel())).astype(self.dtype).reshape(self.shape)
 
             elif api_config.api_name in ["paddle.full"]:
                 if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
-                    if len(api_config.args) > 2:
-                        self.dtype = api[config.args[2]]
-                    elif "dtype" in api_config.kwargs:
-                        self.dtype = api_config.kwargs["dtype"]
-                    else :
-                        self.dtype = "float32" 
                     self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype(self.type).reshape(self.shape)
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 2048**(1./self.numel()), size=self.numel())).astype("int64").reshape(self.shape)
                     self.dtype = "int64"
+            
+            elif api_config.api_name in ["paddle.add_n","paddle.matmul"]:
+                if self.dtype in [numpy.float16, numpy.float32, "float16", "float32"]:
+                    self.dtype = numpy.float64
+                elif self.dtype in [numpy.int8, numpy.int16, numpy.int32, numpy.uint8, numpy.uint16, "bfloat16", \
+                                    "int8", "int16", "int32", "uint8", "uint16", ]:
+                    self.dtype = numpy.int64
+                elif self.dtype in [numpy.complex64, "complex64"]:
+                    self.dtype = numpy.complex128
+                self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.numel())).astype(self.dtype).reshape(self.shape)    
             # u
             # v
             # w
@@ -298,18 +299,21 @@ class APIConfig:
     
     def convert_dtype_to_numpy_type(self, config):
 
-        config = config.replace("float32", "numpy.float32")
-        config = config.replace("float16", "numpy.float16")
-        config = config.replace("float64", "numpy.float64")
-        config = config.replace("int16", "numpy.int16")
-        config = config.replace("int8", "numpy.int8")
-        config = config.replace("bool", "numpy.bool_")
-        config = config.replace("bfloat16", "numpy.uint16")
-        config = config.replace("uint8", "numpy.uint8")
-        config = config.replace("int32", "numpy.int32")
-        config = config.replace("int64", "numpy.int64")
-        config = config.replace("complex64", "numpy.complex64")
-        config = config.replace("complex128", "numpy.complex128")
+        if("bfloat16" in config):
+            config = config.replace("bfloat16", "numpy.uint16")
+        else:
+            config = config.replace("float32", "numpy.float32")
+            config = config.replace("float16", "numpy.float16")
+            config = config.replace("float64", "numpy.float64")
+            config = config.replace("int16", "numpy.int16")
+            config = config.replace("int8", "numpy.int8")
+            config = config.replace("bool", "numpy.bool_")
+            config = config.replace("uint8", "numpy.uint8")
+            config = config.replace("uint16", "numpy.uint16")
+            config = config.replace("int32", "numpy.int32")
+            config = config.replace("int64", "numpy.int64")
+            config = config.replace("complex64", "numpy.complex64")
+            config = config.replace("complex128", "numpy.complex128")
         
         return config
 
