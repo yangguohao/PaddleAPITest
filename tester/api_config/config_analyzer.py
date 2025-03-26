@@ -36,8 +36,8 @@ not_zero_apis = [
 class TensorConfig:
     def __init__(self, shape, dtype):
         self.shape = shape
-        if self.shape in [[],[0]]:
-            self.shape = [1]
+        if self.shape == [0]:
+            self.shape = []
         self.dtype = dtype
         self.numpy_tensor = None
         self.paddle_tensor = None
