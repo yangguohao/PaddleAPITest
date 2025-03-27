@@ -21,8 +21,9 @@ api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_
 api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
 
 class APITestCINNVSDygraph(APITestBase):
-    def __init__(self, api_config):
+    def __init__(self, api_config, test_amp):
         self.api_config = api_config
+        self.test_amp = test_amp
     @func_set_timeout(600)
     def test(self):
         if self.need_skip():
@@ -54,9 +55,14 @@ class APITestCINNVSDygraph(APITestBase):
                 print("gen_paddle_input failed")
                 return
 
-            paddle_output = func(self.paddle_args, self.paddle_kwargs)
-            paddle_output_static = func_static(self.paddle_args, self.paddle_kwargs)
-
+            if self.test_amp:
+                with paddle.amp.auto_cast():
+                    paddle.device.set_device("gpu")
+                    paddle_output = func(self.paddle_args, self.paddle_kwargs)
+                    paddle_output_static = func_static(self.paddle_args, self.paddle_kwargs)
+            else:
+                paddle_output = func(self.paddle_args, self.paddle_kwargs)
+                paddle_output_static = func_static(self.paddle_args, self.paddle_kwargs)
             # if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
             #     inputs_list = self.get_paddle_input_list()
             #     result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)

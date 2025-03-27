@@ -148,14 +148,26 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
 
             elif api_config.api_name in ["paddle.full"]:
+                dtype = str(self.dtype)
                 if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
-                    if "int" in self.dtype:
+                    if "int" in dtype:
                         self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+                        self.dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.type)
+            
+            elif api_config.api_name in ["paddle.add_n","paddle.matmul"]:
+                dtype = str(self.dtype)
+                if "int" in dtype:
+                    self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
+                elif "float" in dtype: 
+                    self.dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
+                elif "complex" in dtype:
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype) \
+                                        + ((numpy.random.random(self.shape) + 0.5) * j).astype(self.dtype)          
             # u
             # v
             # w
