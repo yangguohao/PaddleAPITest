@@ -21,9 +21,9 @@ api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt
 
 class APITestPaddleOnly(APITestBase):
     def __init__(self, api_config, test_amp):
+        super().__init__(api_config)
         self.api_config = api_config
         self.test_amp = test_amp
-        self.outputs_grad_numpy = []
     
     @func_set_timeout(600)
     def test(self):

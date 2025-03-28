@@ -289,26 +289,6 @@ class APIConfig:
                 self.append_kwargs(key, value)
             else:
                 self.append_args(value)
-    
-    def convert_dtype_to_numpy_type(self, config):
-
-        if("bfloat16" in config):
-            config = config.replace("bfloat16", "numpy.uint16")
-        else:
-            config = config.replace("float32", "numpy.float32")
-            config = config.replace("float16", "numpy.float16")
-            config = config.replace("float64", "numpy.float64")
-            config = config.replace("int16", "numpy.int16")
-            config = config.replace("int8", "numpy.int8")
-            config = config.replace("bool", "numpy.bool_")
-            config = config.replace("uint8", "numpy.uint8")
-            config = config.replace("uint16", "numpy.uint16")
-            config = config.replace("int32", "numpy.int32")
-            config = config.replace("int64", "numpy.int64")
-            config = config.replace("complex64", "numpy.complex64")
-            config = config.replace("complex128", "numpy.complex128")
-        
-        return config
 
     def append_args(self, arg):
         self.args.append(arg)
@@ -440,14 +420,7 @@ class APIConfig:
     def get_tensor(self, config, offset):
         config = config[offset:]
         tensor_str = config[config.index("TensorConfig"):config.index(")")+1]
-        
-        try:
-            tensor  = eval(tensor_str)
-        except Exception as err:
-            tensor_str = self.convert_dtype_to_numpy_type(tensor_str)
-            tensor = eval(tensor_str)
-            offset-=5
-
+        tensor  = eval(tensor_str)
         return tensor, offset + len(tensor_str)
 
     def get_dtype(self, config, offset):
@@ -563,10 +536,7 @@ class APIConfig:
         elif tocken is None:
             return None, None
         else:
-            try:
-                value = eval(tocken)
-            except Exception as err:
-                value = tocken
+            value = eval(tocken)
         return value, offset
 
 
