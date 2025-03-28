@@ -68,7 +68,10 @@ def main():
         '--accuracy',
         default=False,
     )
-
+    parser.add_argument(
+        '--test_amp',
+        default=False,
+    )
     options = parser.parse_args()
 
     test_class = APITestAccuracy
@@ -87,7 +90,7 @@ def main():
             print("[config parse error]", options.api_config, str(err))
             return
 
-        case = test_class(api_config)
+        case = test_class(api_config, options.test_amp)
         case.test()
         case.clear_tensor()
         del case
@@ -117,7 +120,7 @@ def main():
                 print("[config parse error]", api_config_str, str(err))
                 continue
 
-            case = test_class(api_config)
+            case = test_class(api_config, options.test_amp)
             try:
                 case.test()
             except Exception as err:

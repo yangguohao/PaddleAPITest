@@ -144,6 +144,18 @@ class TensorConfig:
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
 
+            elif api_config.api_name in ["paddle.zeros","paddle.eye"]:
+                self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
+
+            elif api_config.api_name in ["paddle.full"]:
+                if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
+                    if "int" in dtype:
+                        self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
+                    else:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+                else:
+                    self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
             # u
             # v
             # w

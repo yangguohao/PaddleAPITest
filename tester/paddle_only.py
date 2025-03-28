@@ -20,8 +20,10 @@ api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_
 api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
 
 class APITestPaddleOnly(APITestBase):
-    def __init__(self, api_config):
+    def __init__(self, api_config, test_amp):
+        super().__init__(api_config)
         self.api_config = api_config
+        self.test_amp = test_amp
     
     @func_set_timeout(600)
     def test(self):
@@ -36,8 +38,12 @@ class APITestPaddleOnly(APITestBase):
         try:
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed")
-                return
-            paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                return  
+            if self.test_amp:
+                with paddle.amp.auto_cast():
+                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)      
+            else:
+                paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
             if self.need_check_grad():
                 inputs_list = self.get_paddle_input_list()
                 result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
