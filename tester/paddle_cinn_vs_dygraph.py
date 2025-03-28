@@ -57,7 +57,6 @@ class APITestCINNVSDygraph(APITestBase):
 
             if self.test_amp:
                 with paddle.amp.auto_cast():
-                    paddle.device.set_device("gpu")
                     paddle_output = func(self.paddle_args, self.paddle_kwargs)
                     paddle_output_static = func_static(self.paddle_args, self.paddle_kwargs)
             else:

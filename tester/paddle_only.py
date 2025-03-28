@@ -41,7 +41,6 @@ class APITestPaddleOnly(APITestBase):
                 return  
             if self.test_amp:
                 with paddle.amp.auto_cast():
-                    paddle.device.set_device("gpu")
                     paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)      
             else:
                 paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)

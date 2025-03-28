@@ -50,10 +50,18 @@ class APITestAccuracy(APITestBase):
                 args = []
                 if len(self.torch_args) > 1:
                     args = self.torch_args[1:]
-                torch_output = api(*tuple(args), **self.torch_kwargs)
+                if self.test_amp:
+                    with torch.autocast(device_type="cuda"):
+                        torch_output = api(*tuple(args), **self.torch_kwargs)
+                else:
+                    torch_output = api(*tuple(args), **self.torch_kwargs)
                 del args
             else:
-                torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+                if self.test_amp:
+                    with torch.autocast(device_type="cuda"):
+                        torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+                else:
+                    torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_output = self.torch_args[0] if len(self.torch_args) > 0 else next(iter(self.torch_kwargs.values()))
             paddle.base.core.eager._for_test_check_cuda_error()
@@ -146,14 +154,12 @@ class APITestAccuracy(APITestBase):
 
                 if self.test_amp:
                     with paddle.amp.auto_cast():
-                        paddle.device.set_device("gpu")
                         paddle_output = api(*tuple(args), **self.paddle_kwargs)
                 else:
                     paddle_output = api(*tuple(args), **self.paddle_kwargs)
             else:
                 if self.test_amp:
                     with paddle.amp.auto_cast():
-                        paddle.device.set_device("gpu")
                         paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
                 else:
                     paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
