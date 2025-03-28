@@ -418,8 +418,7 @@ class APIConfig:
     def get_tensor(self, config, offset):
         config = config[offset:]
         tensor_str = config[config.index("TensorConfig"):config.index(")")+1]
-        tensor  = eval(tensor_str)
-        return tensor, offset + len(tensor_str)
+        return eval(tensor_str), offset + len(tensor_str)
 
     def get_dtype(self, config, offset):
         tocken, offset = self.get_tocken(config, offset)
