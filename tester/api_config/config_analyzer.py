@@ -152,8 +152,7 @@ class TensorConfig:
                     if "int" in dtype:
                         self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if "bfloat16" in self.dtype else self.dtype
-                        print(dtype)
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
@@ -178,11 +177,10 @@ class TensorConfig:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = self.get_cached_numpy(dtype, self.shape)
                 else:
-                    dtype = str(self.dtype)
-                    if "int" in dtype:
+                    if "int" in self.dtype:
                         self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if "bfloat16" in dtype else self.dtype
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
 
