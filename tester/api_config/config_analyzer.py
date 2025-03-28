@@ -49,9 +49,9 @@ class TensorConfig:
         return result
 
     def __str__(self):
-        return "Tensor("+str(self.shape)+",\""+str(self.dtype)+"\")"
+        return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
     def __repr__(self):
-        return "Tensor("+str(self.shape)+",\""+str(self.dtype)+"\")"
+        return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
 
     def convert_dtype_to_torch_type(self, dtype):
         if dtype in ["float32", numpy.float32]:
