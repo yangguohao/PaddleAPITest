@@ -1,3 +1,4 @@
+import random
 import re
 import collections
 import paddle
@@ -101,6 +102,31 @@ class TensorConfig:
                 cached_numpy[dtype] = (numpy.random.random([4300000000]) - 0.5).astype(dtype)
                 tensor = cached_numpy[dtype][:numel].reshape(shape)
         return tensor
+    
+    def generate_random_reduce_axes(self, api_config):
+        if "x" in api_config.kwargs:
+            max_dim = len(api_config.kwargs["x"].shape)
+        else:
+            max_dim = len(api_config.args[0].shape)
+        shape_len = len(self.shape)
+        if shape_len == 0:
+            dim = 0 if random.choice([True, False]) else -1
+            return numpy.array(dim, dtype=self.dtype)
+        elif shape_len == 1:
+            all_dims = list(range(max_dim))
+            random_dims = random.sample(all_dims, self.shape[0])
+            final_dims = []
+            for dim in random_dims:
+                if random.choice([True, False]):
+                    dim -= max_dim
+                final_dims.append(dim)
+            return numpy.array(final_dims, dtype=self.dtype)
+        else:
+            raise ValueError(
+                f"Invalid shape for 'axis' Tensor in paddle.mean. "
+                f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
+            )
+    
 
     def get_numpy_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
@@ -118,7 +144,18 @@ class TensorConfig:
             # c
             # d
             # e
+            elif api_config.api_name in ["paddle.eye"]:
+                self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
             # f
+            elif api_config.api_name in ["paddle.full"]:
+                if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
+                    if "int" in dtype:
+                        self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
+                    else:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+                else:
+                    self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
             # g
             # h
             # i
@@ -126,12 +163,21 @@ class TensorConfig:
             # k
             # l
             # m
+            elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
+                if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
+                    self.numpy_tensor = self.generate_random_reduce_axes(api_config)
             # n
             # o
             # p
+            elif api_config.api_name in ["paddle.prod"]:
+                if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
+                    self.numpy_tensor = self.generate_random_reduce_axes(api_config)
             # q
             # r
             # s
+            elif api_config.api_name in ["paddle.sum"]:
+                if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
+                    self.numpy_tensor = self.generate_random_reduce_axes(api_config)
             # t
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or "indices" in api_config.kwargs:
@@ -143,25 +189,14 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
-
-            elif api_config.api_name in ["paddle.zeros","paddle.eye"]:
-                self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
-
-            elif api_config.api_name in ["paddle.full"]:
-                if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("fill_value" in api_config.kwargs and api_config.kwargs["fill_value"] == str(self)):
-                    if "int" in dtype:
-                        self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
-                    else:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
-                else:
-                    self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
             # u
             # v
             # w
             # x
             # y
             # z
+            elif api_config.api_name in ["paddle.zeros"]:
+                self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
             # _
             elif api_config.api_name in ["paddle.Tensor.__getitem__","paddle.Tensor.__setitem__"] and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
                 arr = None
@@ -172,7 +207,7 @@ class TensorConfig:
                 min_dim = min(arr.shape)
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
-            else:
+            if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = self.get_cached_numpy(dtype, self.shape)
@@ -200,6 +235,7 @@ class TensorConfig:
                     self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
                 self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
+    
     def get_torch_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
@@ -218,6 +254,7 @@ class TensorConfig:
             if self.dtype == "bfloat16":
                 self.torch_tensor = self.torch_tensor.to(dtype=torch.bfloat16)
         return self.torch_tensor
+    
     def clear_tensor(self):
         self.torch_tensor = None
         self.paddle_tensor = None
@@ -404,7 +441,7 @@ class APIConfig:
                 return True
             except Exception as err:
                 return False
-        pattern = r'\b[A-Za-z0-9+-._]+\b|-[A-Za-z0-9+-._]+\b'
+        pattern = r'\b[A-Za-z0-9._+-]+\b|-[A-Za-z0-9._+-]+\b'
         match = re.search(pattern, config[offset:])
         if match:
             if is_int(match.group()) and config[offset + match.start() + len(match.group())] == ".":
