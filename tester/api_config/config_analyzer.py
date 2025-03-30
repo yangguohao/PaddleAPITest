@@ -108,6 +108,7 @@ class TensorConfig:
             max_dim = len(api_config.kwargs["x"].shape)
         else:
             max_dim = len(api_config.args[0].shape)
+            
         shape_len = len(self.shape)
         if shape_len == 0:
             dim = 0 if random.choice([True, False]) else -1
@@ -123,7 +124,7 @@ class TensorConfig:
             return numpy.array(final_dims, dtype=self.dtype)
         else:
             raise ValueError(
-                f"Invalid shape for 'axis' Tensor in paddle.mean. "
+                f"Invalid shape for 'axis' Tensor in {api_config.api_name}. "
                 f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
             )
     
@@ -275,6 +276,9 @@ class TensorConfig:
         del self.torch_tensor
         self.torch_tensor = None
         torch.cuda.empty_cache()
+
+    def fill_numpy_tensor(self, full_value):
+        self.numpy_tensor = numpy.full(shape=self.shape, fill_value=full_value, dtype=self.dtype)
 
 
 class APIConfig:

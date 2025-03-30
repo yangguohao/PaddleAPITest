@@ -289,7 +289,8 @@ class APITestBase:
             raise ValueError("Input tensor shape is None")
     
         max_dim = len(input_shape)
-        is_scalar = max_dim == 0
+        if max_dim == 0: # scalar
+            max_dim = 1
 
         used_axes = set()
         tensor_config_count = 0
@@ -299,15 +300,13 @@ class APITestBase:
                 if item.shape not in [[], [1]] or item.dtype not in ["int32", "int64"]:
                     raise ValueError(f"Invalid TensorConfig for axis: shape {item.shape} or dtype {item.dtype}")
                 tensor_config_count += 1
-                tmp.append(item.get_paddle_tensor(self.api_config))
+                tmp.append(0) # placeholder
             elif isinstance(item, int):
                 if not (-max_dim <= item < max_dim):
                     raise ValueError(f"Axis value {item} out of range [-{max_dim}, {max_dim})")
-                if is_scalar and item not in [0, -1]:
-                    raise ValueError(f"Axis value {item} out of range [-1, 0]")
                 positive_axis = item
                 if positive_axis < 0:
-                    positive_axis += max_dim if not is_scalar else 1
+                    positive_axis += max_dim
                 if positive_axis in used_axes:
                     raise ValueError(f"Duplicate axis value: {item}")
                 used_axes.add(positive_axis)
@@ -316,7 +315,7 @@ class APITestBase:
                 raise ValueError(f"Invalid item type for axis: {type(item)}")
 
         if tensor_config_count > 0:
-            all_dims = set(range(max_dim)) if not is_scalar else {0}
+            all_dims = set(range(max_dim))
             available_dims = all_dims - used_axes
                 
             if len(available_dims) < tensor_config_count:
@@ -327,13 +326,14 @@ class APITestBase:
             final_dims = []
             for dim in random_dims:
                 if random.choice([True, False]):
-                    dim -= max_dim if not is_scalar else 1
+                    dim -= max_dim
                 final_dims.append(dim)
 
             tensor_idx = 0
             for i in range(len(tmp)):
                 if isinstance(config_items[i], TensorConfig):
-                    tmp[i] = paddle.full_like(tmp[i], final_dims[tensor_idx])
+                    config_items[i].fill_numpy_tensor(final_dims[tensor_idx])
+                    tmp[i] = config_items[i].get_paddle_tensor(self.api_config)
                     tensor_idx += 1
 
         return tuple(tmp) if is_tuple else tmp
