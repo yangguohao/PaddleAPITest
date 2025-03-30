@@ -108,10 +108,15 @@ class TensorConfig:
             max_dim = len(api_config.kwargs["x"].shape)
         else:
             max_dim = len(api_config.args[0].shape)
+        
+        if max_dim == 0:
+            max_dim = 1 # scalar
             
         shape_len = len(self.shape)
         if shape_len == 0:
-            dim = 0 if random.choice([True, False]) else -1
+            dim = random.randint(0, max_dim - 1)
+            if random.choice([True, False]):
+                dim -= max_dim
             return numpy.array(dim, dtype=self.dtype)
         elif shape_len == 1:
             all_dims = list(range(max_dim))
