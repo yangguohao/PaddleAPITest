@@ -103,7 +103,7 @@ class TensorConfig:
                 tensor = cached_numpy[dtype][:numel].reshape(shape)
         return tensor
     
-    def generate_random_reduce_axes(self, api_config):
+    def generate_random_axes(self, api_config):
         if "x" in api_config.kwargs:
             max_dim = len(api_config.kwargs["x"].shape)
         else:
@@ -171,19 +171,75 @@ class TensorConfig:
             # m
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
                 if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
-                    self.numpy_tensor = self.generate_random_reduce_axes(api_config)
+                    self.numpy_tensor = self.generate_random_axes(api_config)
             # n
             # o
             # p
             elif api_config.api_name in ["paddle.prod"]:
                 if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
-                    self.numpy_tensor = self.generate_random_reduce_axes(api_config)
+                    self.numpy_tensor = self.generate_random_axes(api_config)
             # q
             # r
             # s
-            elif api_config.api_name in ["paddle.sum"]:
+            elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:
                 if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
-                    self.numpy_tensor = self.generate_random_reduce_axes(api_config)
+                    self.numpy_tensor = self.generate_random_axes(api_config)
+            elif api_config.api_name in ["paddle.split"]:
+                if ((len(api_config.args) > 2 and str(api_config.args[2]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
+                    if "x" in api_config.kwargs:
+                        x_shape = api_config.kwargs["x"].shape
+                    else:
+                        x_shape = api_config.args[0].shape
+                    
+                    if "num_or_sections" in api_config.kwargs:
+                        num_or_sections = api_config.kwargs["num_or_sections"]
+                    else:
+                        num_or_sections = api_config.args[1]
+                    if isinstance(num_or_sections, (list, tuple)):
+                        neg_one_count = sum(1 for x in num_or_sections if x == -1)
+                        if neg_one_count > 1:
+                            raise ValueError(
+                                f"num_or_sections can contain at most one -1, but got {num_or_sections}"
+                            )
+                        num_splits = len(num_or_sections)
+                        known_size = sum(num_or_sections) + neg_one_count
+                    elif isinstance(num_or_sections, int):
+                        num_splits = num_or_sections
+                        known_size = None
+                    else:
+                        raise ValueError(
+                            f"num_or_sections must be an int, list, or tuple, but got {type(num_or_sections)}"
+                        )
+                    
+                    target_dim = None
+                    max_dim = len(x_shape)
+                    if max_dim == 0:
+                        target_dim = numpy.random.randint(-1, 0)
+                    else:
+                        for dim in range(max_dim):
+                            dim_size = x_shape[dim]
+                            if isinstance(num_or_sections, int) and dim_size % num_splits == 0:
+                                target_dim = dim
+                            elif isinstance(num_or_sections, (list, tuple)):
+                                if neg_one_count == 0 and dim_size == known_size:
+                                    target_dim = dim
+                                elif neg_one_count == 1 and dim_size > known_size:
+                                    target_dim = dim
+                    if target_dim is None:
+                        raise ValueError(
+                            f"No valid axis found for paddle.split with x.shape={x_shape} and num_or_sections={num_or_sections}"
+                        )
+                        
+                    shape_len = len(self.shape)
+                    if shape_len == 0:
+                        self.numpy_tensor = numpy.array(target_dim, dtype=self.dtype)
+                    elif shape_len == 1 and self.shape[0] == 1:
+                        self.numpy_tensor = numpy.array([target_dim], dtype=self.dtype)
+                    else:
+                        raise ValueError(
+                            f"Invalid shape for 'axis' Tensor in paddle.split. "
+                            f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
+                        )
             # t
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if (len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or "indices" in api_config.kwargs:
@@ -196,6 +252,34 @@ class TensorConfig:
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
             # u
+            elif api_config.api_name in ["paddle.unsqueeze"]:
+                if ((len(api_config.args) > 1 and str(api_config.args[1]) == str(self)) or ("axis" in api_config.kwargs and str(api_config.kwargs["axis"]) == str(self))):
+                    if "x" in api_config.kwargs:
+                        max_dim = len(api_config.kwargs["x"].shape)
+                    else:
+                        max_dim = len(api_config.args[0].shape)
+                    max_dim += 1
+                        
+                    shape_len = len(self.shape)
+                    if shape_len == 0:
+                        dim = random.randint(0, max_dim - 1)
+                        if random.choice([True, False]):
+                            dim -= max_dim
+                        self.numpy_tensor = numpy.array(dim, dtype=self.dtype)
+                    elif shape_len == 1:
+                        all_dims = list(range(max_dim))
+                        random_dims = random.sample(all_dims, self.shape[0])
+                        final_dims = []
+                        for dim in random_dims:
+                            if random.choice([True, False]):
+                                dim -= max_dim
+                            final_dims.append(dim)
+                        self.numpy_tensor = numpy.array(final_dims, dtype=self.dtype)
+                    else:
+                        raise ValueError(
+                            f"Invalid shape for 'axis' Tensor in paddle.unsqueeze. "
+                            f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
+                        )
             # v
             # w
             # x

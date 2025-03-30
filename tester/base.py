@@ -136,10 +136,10 @@ int_too_big_fail_api = [
     "paddle.Tensor.pow",
     "paddle.lcm",
     "paddle.Tensor.lcm",
-    "paddle.Tensor.prod"
+    "paddle.Tensor.prod",
 ]
 
-need_reduce_api = [
+handle_axes_api = [
     "paddle.mean",
     "paddle.max",
     "paddle.min",
@@ -343,7 +343,7 @@ class APITestBase:
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
 
-        need_axis_handling = self.api_config.api_name in need_reduce_api
+        need_axis_handling = self.api_config.api_name in handle_axes_api
 
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
