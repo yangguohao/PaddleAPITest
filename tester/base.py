@@ -1,7 +1,7 @@
 import random
 from .paddle_to_torch.paddle_to_torch import paddle_to_torch
 from .api_config import TensorConfig, APIConfig, analyse_configs, USE_CACHED_NUMPY, cached_numpy
-
+import copy
 import re
 import collections
 import paddle
@@ -442,6 +442,12 @@ class APITestBase:
             elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
                 result = result + list(value)
 
+        # if self.api_config.api_name=='paddle.atan2' and len(result[0].shape) and len(result[1].shape) and max(result[0].shape) ==0 and max(result[1].shape)==0:
+        #     if result[0].ndim>result[1].ndim:
+        #         result[1]=result[1].reshape([0,0,0])
+        #     elif result[0].ndim<result[1].ndim:
+        #         result[0]=result[0].reshape([0,0,0])
+        
         return result
 
     def get_torch_input_list(self):

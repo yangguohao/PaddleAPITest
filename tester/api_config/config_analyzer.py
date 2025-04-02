@@ -88,6 +88,7 @@ class TensorConfig:
             numel = numel * i
         return numel
     
+
     def get_cached_numpy(self, dtype, shape):
         numel = 1
         for i in shape:
@@ -154,6 +155,16 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
                 self.dtype = "int64"
+
+            elif api_config.api_name in ["paddle.Tensor.atan2", "paddle.atan2"]:
+                s1=api_config.args[0].shape
+                s2=api_config.args[1].shape
+                if numpy.all(s1 == 0) and numpy.all(s2 == 0):
+                    while len(s1)>len(s2):
+                        s2.append(0)
+                    while len(s2)>len(s1):
+                        s1.append(0)
+                self.numpy_tensor=numpy.random.random(s1)
             # b
             # c
             # d
@@ -301,6 +312,7 @@ class TensorConfig:
                     else:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+        
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config):
@@ -318,6 +330,7 @@ class TensorConfig:
                 if self.dtype == "bfloat16":
                     self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
                 self.paddle_tensor.stop_gradient = False
+        
         return self.paddle_tensor
     
     def get_torch_tensor(self, api_config):
@@ -326,7 +339,7 @@ class TensorConfig:
             return
 
         device = torch.device("cuda:0")
-        torch.set_default_device(device)
+        # torch.set_default_device(device)
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(
                 self.get_numpy_tensor(api_config),
