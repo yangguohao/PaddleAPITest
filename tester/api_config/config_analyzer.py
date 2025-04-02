@@ -147,6 +147,13 @@ class TensorConfig:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
             # a
+            elif api_config.api_name in ["paddle.Tensor.argmax", "paddle.argmax","paddle.Tensor.argmin","paddle.argmin"]:
+                if "axis" in api_config.kwargs and 'x' in api_config.kwargs:
+                    arr=api_config.kwargs['x']                    
+                min_dim = min(arr.shape)
+                indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
+                self.numpy_tensor = indices.reshape(self.shape)
+                self.dtype = "int64"
             # b
             # c
             # d
@@ -167,13 +174,6 @@ class TensorConfig:
             # h
             # i
             # j
-            elif api_config.api_name in ["paddle.Tensor.argmax", "paddle.argmax","paddle.Tensor.argmin","paddle.argmin"]:
-                if "axis" in api_config.kwargs and 'x' in api_config.kwargs:
-                    arr=api_config.kwargs['x']                    
-                min_dim = min(arr.shape)
-                indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
-                self.numpy_tensor = indices.reshape(self.shape)
-                self.dtype = "int64"
             # k
             # l
             elif api_config.api_name in ["paddle.logspace"]:
