@@ -1,3 +1,4 @@
+import random
 from .paddle_to_torch.paddle_to_torch import paddle_to_torch
 from .api_config import TensorConfig, APIConfig, analyse_configs, USE_CACHED_NUMPY, cached_numpy
 
@@ -127,6 +128,7 @@ rand_apis = ["paddle.rand",
     "paddle.nn.functional.feature_alpha_dropout",
 ]
 
+# Todo: check paddle.prod @cangtianhuang
 int_too_big_fail_api = [
     "paddle.cumprod",
     "paddle.Tensor.cumprod",
@@ -135,7 +137,14 @@ int_too_big_fail_api = [
     "paddle.lcm",
     "paddle.Tensor.lcm",
     "paddle.Tensor.prod",
-    "paddle.prod"
+]
+
+handle_axes_api = [
+    "paddle.mean",
+    "paddle.max",
+    "paddle.min",
+    "paddle.sum",
+    "paddle.prod",
 ]
 
 class APITestBase:
@@ -259,31 +268,96 @@ class APITestBase:
                 self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
 
         return True
+    
+    def _handle_list_or_tuple(self, config_items, is_tuple=False):
+        """处理 list 或 tuple """
+        tmp = []
+        for item in config_items:
+            if isinstance(item, TensorConfig):
+                tmp.append(item.get_paddle_tensor(self.api_config))
+            else:
+                tmp.append(item)
+        return tuple(tmp) if is_tuple else tmp
+        
+    def _handle_axis_param(self, config_items, is_tuple=False):
+        """处理 axis 参数"""
+        tmp = []
+        input_tensor = self.paddle_args[0]
+        input_shape = input_tensor.shape if hasattr(input_tensor, 'shape') else None
+
+        if input_shape is None:
+            raise ValueError("Input tensor shape is None")
+    
+        max_dim = len(input_shape)
+        if max_dim == 0: # scalar
+            max_dim = 1
+
+        used_axes = set()
+        tensor_config_count = 0
+
+        for item in config_items:
+            if isinstance(item, TensorConfig):
+                if item.shape not in [[], [1]] or item.dtype not in ["int32", "int64"]:
+                    raise ValueError(f"Invalid TensorConfig for axis: shape {item.shape} or dtype {item.dtype}")
+                tensor_config_count += 1
+                tmp.append(0) # placeholder
+            elif isinstance(item, int):
+                if not (-max_dim <= item < max_dim):
+                    raise ValueError(f"Axis value {item} out of range [-{max_dim}, {max_dim})")
+                positive_axis = item
+                if positive_axis < 0:
+                    positive_axis += max_dim
+                if positive_axis in used_axes:
+                    raise ValueError(f"Duplicate axis value: {item}")
+                used_axes.add(positive_axis)
+                tmp.append(item)
+            else:
+                raise ValueError(f"Invalid item type for axis: {type(item)}")
+
+        if tensor_config_count > 0:
+            all_dims = set(range(max_dim))
+            available_dims = all_dims - used_axes
+                
+            if len(available_dims) < tensor_config_count:
+                raise ValueError(f"Not enough available dimensions ({len(available_dims)}) for {tensor_config_count} TensorConfig items")
+
+            random_dims = random.sample(list(available_dims), tensor_config_count)
+
+            final_dims = []
+            for dim in random_dims:
+                if random.choice([True, False]):
+                    dim -= max_dim
+                final_dims.append(dim)
+
+            tensor_idx = 0
+            for i in range(len(tmp)):
+                if isinstance(config_items[i], TensorConfig):
+                    config_items[i].fill_numpy_tensor(final_dims[tensor_idx])
+                    tmp[i] = config_items[i].get_paddle_tensor(self.api_config)
+                    tensor_idx += 1
+
+        return tuple(tmp) if is_tuple else tmp
 
     def gen_paddle_input(self):
         self.paddle_args = []
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
 
+        need_axis_handling = self.api_config.api_name in handle_axes_api
+
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
                 self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config))
             elif isinstance(self.paddle_args_config[i], list):
-                tmp = []
-                for j in range(len(self.paddle_args_config[i])):
-                    if isinstance(self.paddle_args_config[i][j], TensorConfig):
-                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor(self.api_config))
-                    else:
-                        tmp.append(self.paddle_args_config[i][j])
-                self.paddle_args.append(tmp)
+                if need_axis_handling and i == 1:
+                    self.paddle_args.append(self._handle_axis_param(self.paddle_args_config[i]))
+                else:
+                    self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i]))
             elif isinstance(self.paddle_args_config[i], tuple):
-                tmp = []
-                for j in range(len(self.paddle_args_config[i])):
-                    if isinstance(self.paddle_args_config[i][j], TensorConfig):
-                        tmp.append(self.paddle_args_config[i][j].get_paddle_tensor(self.api_config))
-                    else:
-                        tmp.append(self.paddle_args_config[i][j])
-                self.paddle_args.append(tuple(tmp))
+                if need_axis_handling and i == 1:
+                    self.paddle_args.append(self._handle_axis_param(self.paddle_args_config[i], is_tuple=True))
+                else:
+                    self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True))
             else:
                 self.paddle_args.append(self.paddle_args_config[i])
 
@@ -291,21 +365,15 @@ class APITestBase:
             if isinstance(arg_config, TensorConfig):
                 self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config)
             elif isinstance(arg_config, list):
-                value = []
-                for i in range(len(arg_config)):
-                    if isinstance(arg_config[i], TensorConfig):
-                        value.append(arg_config[i].get_paddle_tensor(self.api_config))
-                    else:
-                        value.append(arg_config[i])
-                self.paddle_kwargs[key] = value
+                if need_axis_handling and key == "axis":
+                    self.paddle_kwargs[key] = self._handle_axis_param(arg_config)
+                else:
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config)
             elif isinstance(arg_config, tuple):
-                tmp = []
-                for i in range(len(arg_config)):
-                    if isinstance(arg_config[i], TensorConfig):
-                        tmp.append(arg_config[i].get_paddle_tensor(self.api_config))
-                    else:
-                        tmp.append(arg_config[i])
-                self.paddle_kwargs[key] = tuple(tmp)
+                if need_axis_handling and key == "axis":
+                    self.paddle_kwargs[key] = self._handle_axis_param(arg_config, is_tuple=True)
+                else:
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True)
             else:
                 self.paddle_kwargs[key] = arg_config
 
