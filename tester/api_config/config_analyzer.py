@@ -172,6 +172,68 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.logspace"]:
                 if self.check_arg(api_config, 2, "num"):
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape)
+            elif api_config.api_name in ["paddle.linalg.cholesky"]:
+                if self.check_arg(api_config, 0, "x"):
+                    if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
+                        raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
+                    batch_dims = self.shape[:-2]
+                    matrix_dim = self.shape[-1]
+                    A = numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
+                    if len(batch_dims) > 0:
+                        tensor = numpy.einsum('...ij,...kj->...ik', A, A)
+                    else:
+                        tensor = numpy.dot(A, A.T)
+                    tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                    print("cholesky tensor", tensor)
+                    self.numpy_tensor = tensor
+            elif api_config.api_name in ["paddle.linalg.cov"]:
+                if self.check_arg(api_config, 0, "x"):
+                    if len(self.shape) < 1 or len(self.shape) > 2:
+                        raise ValueError("Shape must have 1 or 2 dimensions for covariance input")
+                    tensor = numpy.random.random(self.shape).astype(self.dtype)
+                    tensor += numpy.random.random(self.shape).astype(self.dtype) * 1e-6
+                    self.numpy_tensor = tensor
+                elif self.check_arg(api_config, 3, "fweights"):
+                    x_shape = self.get_arg(api_config, 0, "x").shape
+                    rowvar = self.get_arg(api_config, 1, "rowvar")
+                    if rowvar is None:
+                        rowvar = True
+                    n_observations = (x_shape[1] if rowvar else x_shape[0]) if len(x_shape) > 1 else x_shape[0]
+                    self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
+                elif self.check_arg(api_config, 4, "aweights"):
+                    x_shape = self.get_arg(api_config, 0, "x").shape
+                    rowvar = self.get_arg(api_config, 1, "rowvar")
+                    if rowvar is None:
+                        rowvar = True
+                    n_observations = (x_shape[1] if rowvar else x_shape[0]) if len(x_shape) > 1 else x_shape[0]
+                    if self.dtype in ["float32", "float64"]:
+                        self.numpy_tensor = numpy.random.uniform(0.1, 1.0, size=(n_observations,)).astype(self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
+            elif api_config.api_name in ["paddle.linalg.eigh"]:
+                if self.check_arg(api_config, 0, "x"):
+                    if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
+                        raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
+                    batch_dims = self.shape[:-2]
+                    matrix_dim = self.shape[-1]
+                    A = numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
+                    if self.dtype in ['complex64', 'complex128']:
+                        A = A + 1j * numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
+                        tensor = A + A.swapaxes(-1, -2).conj()  # A + A^H
+                    else:
+                        if len(batch_dims) > 0:
+                            tensor = numpy.einsum('...ij,...kj->...ik', A, A)
+                        else:
+                            tensor = numpy.dot(A, A.T)
+                    tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                    self.numpy_tensor = tensor
+            elif api_config.api_name in ["paddle.linalg.lstsq"]:
+                if self.check_arg(api_config, 0, "x") or self.check_arg(api_config, 1, "y"):
+                    if len(self.shape) < 2:
+                        raise ValueError("Shape must have at least 2 dimensions for lstsq x")
+                    batch_dims = self.shape[:-2]
+                    M, N = self.shape[-2], self.shape[-1]
+                    self.numpy_tensor = numpy.random.random(batch_dims + [M, N]).astype(self.dtype)
             # m
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
                 if self.check_arg(api_config, 1, "axis"):
@@ -190,7 +252,7 @@ class TensorConfig:
                     self.numpy_tensor = self.generate_random_axes(api_config)
             elif api_config.api_name in ["paddle.split"]:
                 if self.check_arg(api_config, 2, "axis"):
-                    x_shape = self.get_arg(api_config, 0, "x")
+                    x_shape = self.get_arg(api_config, 0, "x").shape
                     num_or_sections = self.get_arg(api_config, 1, "num_or_sections")
                     if isinstance(num_or_sections, (list, tuple)):
                         neg_one_count = sum(1 for x in num_or_sections if x == -1)
@@ -358,15 +420,15 @@ class TensorConfig:
 
     def check_arg(self, api_config, arg_pos=None, arg_name=None):
         """Checks if the argument in api_config matches this instance"""
-        if arg_pos and len(api_config.args) > arg_pos:
+        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
             return str(api_config.args[arg_pos]) == str(self)
-        elif arg_name and arg_name in api_config.kwargs:
+        if arg_name and arg_name in api_config.kwargs:
             return str(api_config.kwargs[arg_name]) == str(self)
         return False
     
     def get_arg(self, api_config, arg_pos=None, arg_name=None):
         """Get the argument value from the api_config"""
-        if arg_pos and len(api_config.args) > arg_pos:
+        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
             return api_config.args[arg_pos]
         if arg_name and arg_name in api_config.kwargs:
             return api_config.kwargs[arg_name]
