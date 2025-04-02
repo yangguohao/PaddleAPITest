@@ -1,5 +1,5 @@
 from .api_config import TensorConfig, APIConfig, analyse_configs
-
+import copy
 import re
 import collections
 import paddle
@@ -47,6 +47,11 @@ class APITestPaddleOnly(APITestBase):
             if self.need_check_grad():
                 inputs_list = self.get_paddle_input_list()
                 result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
+                if self.api_config.api_name=='paddle.atan2' and len(inputs_list[0].shape) and len(inputs_list[1].shape) and max(inputs_list[0].shape) ==0 and max(inputs_list[1].shape)==0:
+                    if inputs_list[0].ndim>inputs_list[1].ndim:
+                        inputs_list[1]=copy.deepcopy(inputs_list[0])
+                    elif inputs_list[0].ndim<inputs_list[1].ndim:
+                        inputs_list[0]=copy.deepcopy(inputs_list[1])
                 if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
                     out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
         except Exception as err:
