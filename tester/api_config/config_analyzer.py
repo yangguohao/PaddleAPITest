@@ -204,6 +204,12 @@ class TensorConfig:
                             f"Invalid shape for 'axis' Tensor in paddle.chunk. "
                             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
                         )
+            elif api_config.api_name in ["paddle.cumsum"] and self.check_arg(api_config, 1, "axis"):
+                # special args[1] tensor init, for the rest reuse default initialization logic
+                x_tensor_config = self.get_arg(api_config, 0, "x")
+                len_shape = len(x_tensor_config.shape)
+                self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
+                return self.numpy_tensor
             # d
             # e
             elif api_config.api_name in ["paddle.eye"]:
