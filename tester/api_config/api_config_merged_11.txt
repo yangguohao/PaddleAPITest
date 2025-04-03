@@ -1,0 +1,1 @@
+paddle.diag(x=Tensor([2],"float64"), name="test name", )
