@@ -16,6 +16,7 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path
 
 api_config_paddle_to_torch_faild = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
 
+# Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.is_coalesced",
  "paddle.gather",
@@ -61,8 +62,7 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.bernoulli",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.geometric.sample_neighbors",
- "paddle.incubate.nn.functional.block_multihead_attention",
- "paddle.linalg.pca_lowrank"
+ "paddle.incubate.nn.functional.block_multihead_attention"
  ]
 
 rand_apis = ["paddle.rand",
