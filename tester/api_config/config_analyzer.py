@@ -340,7 +340,7 @@ class TensorConfig:
             return
 
         device = torch.device("cuda:0")
-        # torch.set_default_device(device)
+        torch.set_default_device(device)
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(
                 self.get_numpy_tensor(api_config),

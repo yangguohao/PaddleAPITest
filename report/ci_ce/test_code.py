@@ -3,7 +3,7 @@ import paddle
 import numpy
 
 device = torch.device("cuda:0")
-# torch.set_default_device(device)
+torch.set_default_device(device)
 
 def init_input(numpy_tensor):
     paddle_x = paddle.to_tensor(numpy_tensor)

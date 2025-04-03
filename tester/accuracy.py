@@ -40,7 +40,7 @@ class APITestAccuracy(APITestBase):
 
         try:
             device = torch.device("cuda:0")
-            # torch.set_default_device(device)
+            torch.set_default_device(device)
             if not self.gen_torch_input():
                 print("gen_torch_input failed")
                 return

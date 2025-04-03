@@ -1,7 +1,6 @@
 import random
 from .paddle_to_torch.paddle_to_torch import paddle_to_torch
 from .api_config import TensorConfig, APIConfig, analyse_configs, USE_CACHED_NUMPY, cached_numpy
-import copy
 import re
 import collections
 import paddle
