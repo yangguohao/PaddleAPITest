@@ -160,6 +160,9 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.atan2"]:
                 s1=self.get_arg(api_config,0)
                 s2=self.get_arg(api_config,1)
+                s1=s1.shape
+                s2=s2.shape
+                # print(s1.shape,s2.shape)
                 if numpy.all(s1 == 0) and numpy.all(s2 == 0):
                     while len(s1)>len(s2):
                         s2.append(0)
