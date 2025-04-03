@@ -170,6 +170,40 @@ class TensorConfig:
                 self.numpy_tensor=numpy.random.random(s1)
             # b
             # c
+            elif api_config.api_name in ["paddle.chunk"]:
+                if self.check_arg(api_config, 2, "axis"):
+                    x_tensor = None
+                    if "x" in api_config.kwargs:
+                        x_tensor = api_config.kwargs["x"]
+                    else:
+                        x_tensor = api_config.args[0]
+                    chunks = None
+                    if "chunks" in api_config.kwargs:
+                        chunks = api_config.kwargs["chunks"]
+                    else:
+                        chunks = api_config.args[1]
+                    valid_axes = []
+                    for i, dim_size in enumerate(x_tensor.shape):
+                        if dim_size % chunks == 0:
+                            valid_axes.append(i)
+                    if not valid_axes:
+                        valid_axes = [0]
+                    chosen_axis = random.choice(valid_axes)
+                    if len(self.shape) == 0:  
+                        self.numpy_tensor = numpy.array(chosen_axis, dtype=self.dtype)
+                    elif len(self.shape) == 1:  
+                        if self.shape[0] == 1:
+                            self.numpy_tensor = numpy.array([chosen_axis], dtype=self.dtype)
+                        else:
+                            raise ValueError(
+                                f"Invalid shape for 'axis' Tensor in paddle.chunk. "
+                                f"Expected a 0-D or 1-D Tensor with 1 element, but got shape {self.shape}."
+                            )
+                    else:
+                        raise ValueError(
+                            f"Invalid shape for 'axis' Tensor in paddle.chunk. "
+                            f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
+                        )
             # d
             # e
             elif api_config.api_name in ["paddle.eye"]:
@@ -261,6 +295,11 @@ class TensorConfig:
                     self.numpy_tensor = self.generate_random_axes(api_config)
             # n
             # o
+            elif api_config.api_name in ["paddle.ones"]:
+                if api_config.api_name == "paddle.ones" and len(self.shape) == 0:
+                    self.numpy_tensor = numpy.array(random.randint(1, 2048), dtype=self.dtype)
+                else:
+                    self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
             # p
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
@@ -748,6 +787,8 @@ class APIConfig:
     def get_numpy_type(self, config, offset):
         config = config[offset:]
         numpy_type_str = config[config.index("(")+1:config.index(")")]
+        if numpy_type_str == "numpy.bool":
+            return numpy.bool_, offset+len(numpy_type_str)+2
         return eval(numpy_type_str), offset+len(numpy_type_str)+2
 
     def get_one_arg(self, tocken, config, offset):
