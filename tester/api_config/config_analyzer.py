@@ -88,6 +88,7 @@ class TensorConfig:
             numel = numel * i
         return numel
     
+
     def get_cached_numpy(self, dtype, shape):
         numel = 1
         for i in shape:
@@ -147,6 +148,26 @@ class TensorConfig:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
             # a
+            elif api_config.api_name in ["paddle.argmax","paddle.argmin"]:  
+                if  self.check_arg(api_config, 1, "axis"):
+                    arr=self.get_arg(api_config,0,'x')                
+                    min_dim = min(arr.shape)
+                    indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
+                    self.numpy_tensor = indices.reshape(self.shape)
+                    self.dtype = "int64"
+                
+
+            elif api_config.api_name in ["paddle.atan2"]:
+                s1=self.get_arg(api_config,0)
+                s2=self.get_arg(api_config,1)
+                s1=s1.shape
+                s2=s2.shape
+                if numpy.all(s1 == 0) and numpy.all(s2 == 0):
+                    while len(s1)>len(s2):
+                        s2.append(0)
+                    while len(s2)>len(s1):
+                        s1.append(0)
+                self.numpy_tensor=numpy.random.random(s1)
             # b
             # c
             elif api_config.api_name in ["paddle.chunk"]:
@@ -395,6 +416,7 @@ class TensorConfig:
                     else:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config):
@@ -412,6 +434,7 @@ class TensorConfig:
                 if self.dtype == "bfloat16":
                     self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
                 self.paddle_tensor.stop_gradient = False
+        
         return self.paddle_tensor
     
     def get_torch_tensor(self, api_config):
@@ -630,20 +653,44 @@ class APIConfig:
         result = result + ")"
         return result
 
-    def get_tocken(self, config, offset):
-        def is_int(tocken):
+    # def get_tocken(self, config, offset):
+    #     def is_int(tocken):
+    #         try:
+    #             int(tocken)
+    #             return True
+    #         except Exception as err:
+    #             return False
+    #     pattern = r'\b[A-Za-z0-9._+-]+\b|-[A-Za-z0-9._+-]+\b'
+    #     match = re.search(pattern, config[offset:])
+    #     if match:
+    #         if is_int(match.group()) and config[offset + match.start() + len(match.group())] == ".":
+    #             return match.group()+".", offset + match.start() + len(match.group()) + 1
+    #         return match.group(), offset + match.start() + len(match.group())
+    #     return None, None
+
+    def get_tocken(self,config, offset):
+        def is_int(token):
             try:
-                int(tocken)
+                int(token)
                 return True
             except Exception as err:
                 return False
-        pattern = r'\b[A-Za-z0-9._+-]+\b|-[A-Za-z0-9._+-]+\b'
+
+        # Modified pattern to handle decimal numbers starting with dot
+        pattern = r'\b[A-Za-z0-9._+-]+\b|-[A-Za-z0-9._+-]+\b|\.[0-9]+'
         match = re.search(pattern, config[offset:])
         if match:
-            if is_int(match.group()) and config[offset + match.start() + len(match.group())] == ".":
-                return match.group()+".", offset + match.start() + len(match.group()) + 1
-            return match.group(), offset + match.start() + len(match.group())
+            token = match.group()
+            # Handle the case where token starts with dot followed by digits
+            if token.startswith('.') and token[1:].isdigit():
+                return token, offset + match.start() + len(token)
+
+            if is_int(token) and offset + match.start() + len(token) < len(config) and config[
+                offset + match.start() + len(token)] == ".":
+                return token + ".", offset + match.start() + len(token) + 1
+            return token, offset + match.start() + len(token)
         return None, None
+
 
     def get_api(self, config):
         return config[0:config.index("(")], len(config[0:config.index("(")])
@@ -768,6 +815,8 @@ class APIConfig:
         elif tocken is None:
             return None, None
         else:
+            if tocken[0]=='.':
+                tocken='0'+tocken
             value = eval(tocken)
         return value, offset
 
