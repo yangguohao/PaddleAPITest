@@ -518,22 +518,25 @@ class APITestBase:
         if len(self.outputs_grad_numpy) == 0:
             for output in result_outputs:
                 dtype = str(output.dtype)[7:]
-                numpy_dtype = "float32" if dtype == "bfloat16" else dtype
                 if USE_CACHED_NUMPY:
-                    numpy_tensor = self.get_cached_numpy(numpy_dtype, output.shape)
+                    dtype = "float32" if dtype == "bfloat16" else dtype
+                    numpy_tensor = self.get_cached_numpy(dtype, output.shape)
                 else:
                     if "int" in dtype:
-                        numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(numpy_dtype)
-                    elif self.api_config.api_name in ["paddle.linalg.pca_lowrank"]:
-                        numpy_tensor = numpy.random.randn(*output.shape).astype(numpy_dtype)
+                        numpy_tensor = (numpy.random.randint(-65535, 65535, size=output.shape)).astype(dtype)
                     else:
-                        numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(numpy_dtype)
+                        dtype = "float32" if dtype == "bfloat16" else dtype
+                        numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
                 self.outputs_grad_numpy.append(numpy_tensor)
         for numpy_tensor in self.outputs_grad_numpy:
+            dtype = str(numpy_tensor.dtype)
             result_output_grad = paddle.to_tensor(
-                numpy_tensor
-            ).astype(dtype)
+                numpy_tensor,
+                dtype=dtype if dtype != 'bfloat16' else "float32",
+            )
             result_output_grad.stop_gradient = False
+            if dtype == "bfloat16":
+                result_output_grad = paddle.cast(result_output_grad, dtype="uint16")
             result_outputs_grads.append(result_output_grad)
 
         return result_outputs, result_outputs_grads
