@@ -350,6 +350,7 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.quantile"]:
                 if index==1:
                     self.numpy_tensor = numpy.random.rand(1).astype(self.dtype)
+                    
             # r                
             # s
             elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:
