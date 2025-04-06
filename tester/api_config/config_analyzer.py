@@ -136,7 +136,7 @@ class TensorConfig:
             )
     
 
-    def get_numpy_tensor(self, api_config,index=None):
+    def get_numpy_tensor(self, api_config,index=0):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -237,23 +237,6 @@ class TensorConfig:
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
             # g
-            elif api_config.api_name in ["paddle.gather"]:
-                if index==1:
-                    if 'x' in api_config.kwargs:
-                        s=self.get_arg(api_config,arg_name='x')
-                    else:
-                        s=self.get_arg(api_config,0)
-
-                    if 'axis' in api_config.kwargs:
-                        tmp=self.get_arg(api_config,arg_name='axis')
-                        if isinstance(tmp,TensorConfig):
-                            tmp=tmp.shape
-                            tmp=tmp[0]
-                    else:
-                        tmp=0
-                    self.numpy_tensor = (numpy.random.randint(0,s.shape[tmp], size=self.shape)).astype(self.dtype)
-                elif index==2:
-                    self.numpy_tensor = (numpy.random.randint(0,2, size=self.shape)).astype(self.dtype)
             # h
             # i
             # j
@@ -350,7 +333,7 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.quantile"]:
                 if index==1:
                     self.numpy_tensor = numpy.random.rand(1).astype(self.dtype)
-                    
+
             # r                
             # s
             elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:
@@ -429,10 +412,23 @@ class TensorConfig:
                     else:
                         self.numpy_tensor = numpy.array(s[index-1])
 
-            elif api_config.api_name in ["paddle.Tensor.gather"]:
+            elif api_config.api_name in ['paddle.Tensor.gather',"paddle.gather"]:
                 if index==1:
-                    s=self.get_arg(api_config,0)
-                    self.numpy_tensor = (numpy.random.randint(0,numpy.max(s.shape), size=self.shape)).astype(self.dtype)
+                    if 'x' in api_config.kwargs:
+                        s=self.get_arg(api_config,arg_name='x')
+                    else:
+                        s=self.get_arg(api_config,0)
+
+                    if 'axis' in api_config.kwargs:
+                        tmp=self.get_arg(api_config,arg_name='axis')
+                        if isinstance(tmp,TensorConfig):
+                            tmp=tmp.shape
+                            tmp=tmp[0]
+                    else:
+                        tmp=0
+                    self.numpy_tensor = (numpy.random.randint(0,s.shape[tmp], size=self.shape)).astype(self.dtype)
+                elif index==2:
+                    self.numpy_tensor = (numpy.random.randint(0,2, size=self.shape)).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.Tensor.gather_nd","paddle.gather_nd"]:
                 if index==1:
@@ -504,7 +500,7 @@ class TensorConfig:
         # print(self.numpy_tensor,index)
         return self.numpy_tensor
 
-    def get_paddle_tensor(self, api_config,index=None):
+    def get_paddle_tensor(self, api_config,index=0):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return

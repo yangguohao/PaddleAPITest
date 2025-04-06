@@ -268,7 +268,7 @@ class APITestBase:
 
         return True
     
-    def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0,cnt=0):
+    def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
         """处理 list 或 tuple """
         tmp = []
         for item in config_items:
