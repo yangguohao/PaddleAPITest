@@ -42,7 +42,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.vision.ops.roi_align",
  "paddle.vision.ops.roi_pool",
  "paddle.nn.functional.binary_cross_entropy",
- "paddle.multinomial",
  "paddle.nn.functional.embedding",
  "paddle.nn.functional.hsigmoid_loss",
  "paddle.nn.functional.nll_loss",
@@ -52,9 +51,9 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.nn.functional.softmax_with_cross_entropy",
  "paddle.put_along_axis",
  "paddle.Tensor.put_along_axis",
- "paddle.scatter",
- "paddle.scatter_nd",
- "paddle.scatter_nd_add",
+#  "paddle.scatter",
+#  "paddle.scatter_nd",
+#  "paddle.scatter_nd_add",
  "paddle.bernoulli",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.geometric.sample_neighbors",
@@ -70,7 +69,6 @@ rand_apis = ["paddle.rand",
     "paddle.standard_gamma",
     "paddle.log_normal",
     "paddle.log_normal_",
-    "paddle.multinomial",
     "paddle.uniform_random_batch_size_like",
     "paddle.gaussian",
     "paddle.gaussian_",
@@ -270,8 +268,8 @@ class APITestBase:
     
     def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
         """处理 list 或 tuple """
-        tmp = []
         cnt=0
+        tmp=[]
         for item in config_items:
             if isinstance(item, TensorConfig):
                 data=item.get_paddle_tensor(self.api_config,cnt+index)
@@ -349,10 +347,16 @@ class APITestBase:
 
         need_axis_handling = self.api_config.api_name in handle_axes_api
 
+        future_data=None
         cnt=0
+        if self.api_config.api_name=='paddle.scatter_nd':
+            for i in range(len(self.paddle_args_config)):
+                if isinstance(self.paddle_args_config[i], list):
+                    future_data=self._handle_list_or_tuple(self.paddle_args_config[i])
+
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config, i))
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config,i,future_data=future_data))
             elif isinstance(self.paddle_args_config[i], list):
                 if need_axis_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i]))
@@ -365,6 +369,7 @@ class APITestBase:
                     self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True,index=i))
             else:
                 self.paddle_args.append(self.paddle_args_config[i])
+
 
         cnt=len(self.paddle_args_config)
         for key, arg_config in self.paddle_kwargs_config.items():

@@ -9,6 +9,7 @@ import paddle
 import inspect
 import torch
 import copy
+from scipy.sparse import coo_matrix
 
 USE_CACHED_NUMPY = False
 cached_numpy = {}
@@ -134,7 +135,7 @@ class TensorConfig:
                 f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
             )
 
-    def get_numpy_tensor(self, api_config,index=0):
+    def get_numpy_tensor(self, api_config,index=0,future_data=None):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -350,11 +351,27 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
 
+            elif api_config.api_name in ["paddle.multinomial"]:
+                if index==0:
+                    self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
+                if "num_samples" in api_config.kwargs and index==1:
+                    if 'replacement' not in api_config.kwargs:
+                        inputs=self.get_arg(api_config,0)
+                        inputs=inputs.numpy_tensor
+                        max_allow=(inputs > 0).sum().item()
+                        self.numpy_tensor=numpy.random.randint(0,max_allow+1, size=self.shape).astype(self.dtype)
+                    
+
             elif api_config.api_name in ["paddle.multiplex"]:
                 if 'inputs' in api_config.kwargs:
                     s=self.get_arg(api_config,arg_name='inputs')
                     if index==len(s):
                         self.numpy_tensor = (numpy.random.randint(0,len(s), size=self.shape)).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.multiply"]:
+                if self.dtype=='bfloat16':
+                    self.dtype='float32'    
+                self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             # n
             # o
@@ -374,6 +391,41 @@ class TensorConfig:
 
             # r                
             # s
+            elif api_config.api_name in ["paddle.scatter"]:
+                if index==1:
+                    if 'x' in api_config.kwargs:
+                        d=self.get_arg(api_config,arg_name='x')
+                    else:
+                        d=self.get_arg(api_config,0)
+                    s=d.shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.scatter_nd"]:
+                if index==0 and future_data and len(future_data):
+                    self.numpy_tensor=numpy.zeros(self.shape)
+                    s=self.shape
+                    for ii in range(len(future_data)):  
+                        if ii>=s[-1]:
+                            break
+                        self.numpy_tensor[...,ii] = numpy.random.randint(-future_data[ii], future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.scatter_nd_add"]:
+                if index==1:
+                    if 'x' in api_config.kwargs:
+                        org=self.get_arg(api_config,arg_name='x')
+                    else:
+                        org=self.get_arg(api_config,0)
+                    org=org.shape
+                    self.numpy_tensor=numpy.zeros(self.shape)
+                    if 'index' in api_config.kwargs:
+                        ind=self.get_arg(api_config,arg_name='index')
+                    else:
+                        ind=self.get_arg(api_config,1)
+                    s=ind.shape
+                    for ii in range(s[-1]):  
+                        self.numpy_tensor[...,ii] = numpy.random.randint(-org[ii], org[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
+
+
             elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
@@ -440,7 +492,12 @@ class TensorConfig:
                 if index==2:
                     pre=self.get_arg(api_config,1)
                     self.numpy_tensor=numpy.clip(self.numpy_tensor,pre.numpy_tensor,None)
-                     
+            
+            elif api_config.api_name in ["paddle.Tensor.coalesce"]:
+                tmp=numpy.random.random(self.shape).astype(self.dtype)
+                self.numpy_tensor=tmp
+ 
+
             elif api_config.api_name in ["paddle.Tensor.expand"]:
                 if index>0:
                     d=self.get_arg(api_config,0)
@@ -535,14 +592,14 @@ class TensorConfig:
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
 
-    def get_paddle_tensor(self, api_config,index=0):
+    def get_paddle_tensor(self, api_config,index=0,future_data=None):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(api_config, index),
+                self.get_numpy_tensor(api_config,index,future_data),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
             self.paddle_tensor.stop_gradient = True
