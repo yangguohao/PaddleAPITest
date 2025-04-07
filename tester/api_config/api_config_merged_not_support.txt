@@ -46,7 +46,6 @@ paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=Tensor([1
 paddle.clip(x=Tensor([3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
 paddle.cross(Tensor([0, 3],"float32"), Tensor([0, 3],"float32"), axis=1, )
 paddle.einsum("...ab,...ba,...ab,...ab", Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), )
-paddle.floor_divide(x=Tensor([3, 1],"int32"), y=Tensor([3, 1],"int32"), name="", )
 paddle.gammainc(Tensor([2, 3, 4, 5],"float32"), Tensor([2, 3, 4, 5],"float32"), )
 paddle.gammainc(Tensor([2, 3, 4, 5],"float64"), Tensor([2, 3, 4, 5],"float64"), )
 paddle.gammainc(Tensor([3, 40],"float32"), y=Tensor([3, 40],"float32"), )
