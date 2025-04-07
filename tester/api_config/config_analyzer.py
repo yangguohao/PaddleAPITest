@@ -1,4 +1,3 @@
-import random
 import re
 import collections
 import paddle
@@ -106,34 +105,44 @@ class TensorConfig:
         return tensor
 
     def generate_random_axes(self, api_config):
-        if "x" in api_config.kwargs:
-            max_dim = len(api_config.kwargs["x"].shape)
-        else:
-            max_dim = len(api_config.args[0].shape)
+        x_shape = self.get_arg(api_config, 0, "x").shape
+        max_dim = max(len(x_shape), 1) # scalar
 
-        if max_dim == 0:
-            max_dim = 1 # scalar
-
-        shape_len = len(self.shape)
-        if shape_len == 0:
-            dim = random.randint(0, max_dim - 1)
-            if random.choice([True, False]):
+        if len(self.shape) == 0:
+            dim = numpy.random.randint(0, max_dim)
+            if numpy.random.rand() > 0.5:
                 dim -= max_dim
             return numpy.array(dim, dtype=self.dtype)
-        elif shape_len == 1:
-            all_dims = list(range(max_dim))
-            random_dims = random.sample(all_dims, self.shape[0])
-            final_dims = []
-            for dim in random_dims:
-                if random.choice([True, False]):
-                    dim -= max_dim
-                final_dims.append(dim)
+
+        if len(self.shape) == 1:
+            dims = numpy.random.choice(max_dim, size=self.shape[0], replace=False)
+            mask = numpy.random.rand(self.shape[0]) > 0.5
+            dims = numpy.where(mask, dims - max_dim, dims)
             return numpy.array(final_dims, dtype=self.dtype)
+
+        raise ValueError(
+            f"Invalid shape for 'axis' Tensor in {api_config.api_name}. "
+            f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
+        )
+
+    def generate_random_index(self, api_config, allow_none=False):
+        axis = self.get_arg(api_config, 2, "axis")
+        if axis is None and not allow_none:
+            raise ValueError("Axis is None")
         else:
-            raise ValueError(
-                f"Invalid shape for 'axis' Tensor in {api_config.api_name}. "
-                f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
-            )
+            axis = 0
+        x_shape = self.get_arg(api_config, 0, "x").shape
+        axis = axis if axis >= 0 else axis + len(x_shape)
+        if not (0 <= axis < len(x_shape)):
+            raise ValueError(f"Invalid axis {axis} for shape {x_shape}")
+
+        if len(self.shape) >= 1:
+            return numpy.random.randint(-x_shape[axis], x_shape[axis], size=self.shape, dtype=self.dtype)
+
+        raise ValueError(
+            f"Invalid shape for 'index' Tensor in {api_config.api_name}. "
+            f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
+        )
 
     def get_numpy_tensor(self, api_config,index=0):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
@@ -264,6 +273,16 @@ class TensorConfig:
                     self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(dtype)
             # h
             # i
+            elif api_config.api_name in ["paddle.index_add", "paddle.index_fill"]:
+                if self.check_arg(api_config, 1, "index"):
+                    self.numpy_tensor = self.generate_random_index(api_config)
+            elif api_config.api_name in ["paddle.index_sample"]:
+                if self.check_arg(api_config, 1, "index"):
+                    x_dim = self.get_arg(api_config, 0, "x").shape[1]
+                    self.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=self.shape)
+            elif api_config.api_name in ["paddle.index_select"]:
+                if self.check_arg(api_config, 1, "index"):
+                    self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
             # j
             # k
             # l
