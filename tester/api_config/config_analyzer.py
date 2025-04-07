@@ -493,11 +493,6 @@ class TensorConfig:
                     pre=self.get_arg(api_config,1)
                     self.numpy_tensor=numpy.clip(self.numpy_tensor,pre.numpy_tensor,None)
             
-            elif api_config.api_name in ["paddle.Tensor.coalesce"]:
-                tmp=numpy.random.random(self.shape).astype(self.dtype)
-                self.numpy_tensor=tmp
- 
-
             elif api_config.api_name in ["paddle.Tensor.expand"]:
                 if index>0:
                     d=self.get_arg(api_config,0)
