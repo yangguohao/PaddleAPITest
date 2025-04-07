@@ -389,6 +389,12 @@ class APITestBase:
         if len(self.paddle_args) == 0 and "paddle.Tensor." in self.api_config.api_name:
             self.paddle_args.append(self.paddle_kwargs.popitem(last=False)[1])
 
+        if self.api_config.api_name == "paddle.linalg.lstsq" and 'gpu' in paddle.device.get_device():
+            if len(self.paddle_args) > 3:
+                self.paddle_args[3] = "gels"
+            elif "driver" in self.paddle_kwargs:
+                self.paddle_kwargs["driver"] = "gels"
+
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 self.paddle_args, self.paddle_kwargs = self.copy_paddle_input()
