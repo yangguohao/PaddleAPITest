@@ -296,6 +296,8 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "pivot"):
                     M = self.get_arg(api_config, 0, "x").shape[-2]
                     self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
+            elif api_config.api_name in ["paddle.linalg.pca_lowrank"]:
+                self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
             # m
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
                 if self.check_arg(api_config, 1, "axis"):
@@ -430,13 +432,10 @@ class TensorConfig:
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(api_config),
-                dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
-            )
+                self.get_numpy_tensor(api_config)
+            ).astype(self.dtype)
             self.paddle_tensor.stop_gradient = True
             if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
-                if self.dtype == "bfloat16":
-                    self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
                 self.paddle_tensor.stop_gradient = False
 
         return self.paddle_tensor
@@ -451,13 +450,9 @@ class TensorConfig:
         if self.torch_tensor is None:
             self.torch_tensor = torch.tensor(
                 self.get_numpy_tensor(api_config),
-                dtype=self.convert_dtype_to_torch_type(self.dtype)
-                if self.dtype != 'bfloat16'
-                else torch.float32,
+                dtype=self.convert_dtype_to_torch_type(self.dtype),
                 requires_grad=True if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16'] else False,
             )
-            if self.dtype == "bfloat16":
-                self.torch_tensor = self.torch_tensor.to(dtype=torch.bfloat16)
         return self.torch_tensor
 
     def clear_tensor(self):
@@ -816,7 +811,7 @@ class APIConfig:
             value = float('nan')
         elif tocken is not None and config[offset - len(tocken) - 1] == '\"':
             # fix tocken is not correct in str with spaces
-            next_quote_idx  = config.index("\"", offset + 1)
+            next_quote_idx  = config.index("\"", offset)
             value = config[offset - len(tocken):next_quote_idx]
             offset = next_quote_idx
         elif tocken is None:
