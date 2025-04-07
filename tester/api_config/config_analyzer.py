@@ -898,9 +898,9 @@ class APIConfig:
             value, offset = self.get_numpy_type(config, offset)
         elif tocken == "nan":
             value = float('nan')
-        elif tocken is not None and config[offset - len(tocken) - 1] == '\"':
+        elif tocken is not None and config[offset - len(tocken) - 1] == "\"":
             # fix tocken is not correct in str with spaces
-            next_quote_idx  = config.index("\"", offset + 1)
+            next_quote_idx  = config.index("\"", offset)
             value = config[offset - len(tocken):next_quote_idx]
             offset = next_quote_idx
         elif tocken is None:
