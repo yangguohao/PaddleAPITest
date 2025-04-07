@@ -346,13 +346,13 @@ class APITestBase:
         need_indices_handling = self.api_config.api_name == "paddle.index_put"
 
         cnt=0
-        if self.api_config.api_name=='paddle.scatter_nd':
-            future_data=None
-            for i in range(len(self.paddle_args_config)):
-                if isinstance(self.paddle_args_config[i], list):
-                    future_data=self._handle_list_or_tuple(self.paddle_args_config[i])
-            if not hasattr(self.api_config, "future_data"):
-                self.api_config.future_data = future_data
+        # if self.api_config.api_name=='paddle.scatter_nd':
+        #     future_data=None
+        #     for i in range(len(self.paddle_args_config)):
+        #         if isinstance(self.paddle_args_config[i], list):
+        #             future_data=self._handle_list_or_tuple(self.paddle_args_config[i])
+        #     if not hasattr(self.api_config, "future_data"):
+        #         self.api_config.future_data = future_data
 
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):

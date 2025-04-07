@@ -420,13 +420,14 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd"]:
-                if index==0 and api_config.future_data and len(api_config.future_data):
+                future_data=self.get_arg(api_config,2)     
+                if index==0 and future_data and len(future_data):
                     self.numpy_tensor=numpy.zeros(self.shape)
                     s=self.shape
-                    for ii in range(len(api_config.future_data)):  
+                    for ii in range(len(future_data)):  
                         if ii>=s[-1]:
                             break
-                        self.numpy_tensor[...,ii] = numpy.random.randint(-api_config.future_data[ii], api_config.future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
+                        self.numpy_tensor[...,ii] = numpy.random.randint(-future_data[ii], future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd_add"]:
                 if index==1:
