@@ -51,9 +51,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.nn.functional.softmax_with_cross_entropy",
  "paddle.put_along_axis",
  "paddle.Tensor.put_along_axis",
-#  "paddle.scatter",
-#  "paddle.scatter_nd",
-#  "paddle.scatter_nd_add",
  "paddle.bernoulli",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.geometric.sample_neighbors",
@@ -279,6 +276,7 @@ class APITestBase:
                     item=paddle.to_tensor(item,dtype="int64",)
                 tmp.append(item)
             cnt+=1
+
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
