@@ -272,9 +272,16 @@ class TensorConfig:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(dtype)
             elif api_config.api_name.startswith("paddle.geometric.segment_"):
-                batch_size = self.get_arg(api_config, 0, "x").shape[0]
-                max_segments = numpy.random.randint(1, batch_size + 1)
-                self.numpy_tensor = numpy.sort(numpy.random.randint(0, max_segments, size=batch_size))
+                if self.check_arg(api_config, 1, "segment_ids"):
+                    batch_size = self.get_arg(api_config, 0, "x").shape[0]
+                    max_segments = numpy.random.randint(1, batch_size + 1)
+                    self.numpy_tensor = numpy.sort(
+                        numpy.random.randint(0, max_segments, size=self.shape).astype(self.dtype)
+                    )
+            elif api_config.api_name.startswith("paddle.geometric.send_u"):
+                if self.check_arg(api_config, 1, "src_index") or self.check_arg(api_config, 2, "dst_index"):
+                    num_nodes = self.get_arg(api_config, 0, "x").shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
             # h
             # i
             elif api_config.api_name in ["paddle.index_add", "paddle.index_fill"]:
