@@ -316,7 +316,7 @@ class APITestBase:
                     tensor_idx += 1
         return tuple(tmp) if is_tuple else tmp
 
-    def handle_indices_api(self, config_items, is_tuple=False):
+    def _handle_indices_api(self, config_items, is_tuple=False):
         x = self.paddle_args_config[0] if len(self.paddle_args_config) > 0 else self.paddle_kwargs_config["x"]
         value = self.paddle_args_config[2] if len(self.paddle_args_config) > 2 else self.paddle_kwargs_config["value"]
         x_shape = x.shape
@@ -366,7 +366,7 @@ class APITestBase:
                 if need_axes_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i], is_tuple=True))
                 if need_indices_handling and i == 1:
-                    self.paddle_args.append(self.handle_indices_api(self.paddle_args_config[i], is_tuple=True))
+                    self.paddle_args.append(self._handle_indices_api(self.paddle_args_config[i], is_tuple=True))
                 else:
                     self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True,index=i))
             else:
@@ -386,7 +386,7 @@ class APITestBase:
                 if need_axes_handling and key == "axis":
                     self.paddle_kwargs[key] = self._handle_axis_arg(arg_config, is_tuple=True)
                 if need_indices_handling and key == "indices":
-                    self.paddle_args.append(self.handle_indices_api(self.paddle_args_config[i], is_tuple=True))
+                    self.paddle_args.append(self._handle_indices_api(self.paddle_args_config[i], is_tuple=True))
                 else:
                     self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True,index=cnt)
             else:
