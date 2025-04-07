@@ -137,9 +137,6 @@ handle_axes_api = [
     "paddle.prod",
 ]
 
-handle_indices_api = [
-    "paddle.index_put",
-]
 
 class APITestBase:
     def __init__(self, api_config):
@@ -351,7 +348,7 @@ class APITestBase:
         self.paddle_merged_kwargs = collections.OrderedDict()
 
         need_axes_handling = self.api_config.api_name in handle_axes_api
-        need_indices_handling = self.api_config.api_name in handle_indices_api
+        need_indices_handling = self.api_config.api_name == "paddle.index_put"
 
         cnt=0
         for i in range(len(self.paddle_args_config)):

@@ -124,10 +124,12 @@ class TensorConfig:
             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
         )
 
-    def generate_random_index(self, api_config):
+    def generate_random_index(self, api_config, allow_none=False):
         axis = self.get_arg(api_config, 2, "axis")
-        if axis is None:
+        if axis is None and not allow_none:
             raise ValueError("Axis is None")
+        else:
+            axis = 0
         x_shape = self.get_arg(api_config, 0, "x").shape
         axis = axis if axis >= 0 else axis + len(x_shape)
         if not (0 <= axis < len(x_shape)):
@@ -272,18 +274,14 @@ class TensorConfig:
             # i
             elif api_config.api_name in ["paddle.index_add", "paddle.index_fill"]:
                 if self.check_arg(api_config, 1, "index"):
-                    return self.generate_random_index(api_config)
+                    self.numpy_tensor = self.generate_random_index(api_config)
             elif api_config.api_name in ["paddle.index_sample"]:
                 if self.check_arg(api_config, 1, "index"):
                     x_dim = self.get_arg(api_config, 0, "x").shape[1]
-                    return numpy.random.randint(0, x_dim, size=self.shape)
+                    self.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=self.shape)
             elif api_config.api_name in ["paddle.index_select"]:
                 if self.check_arg(api_config, 1, "index"):
-                    axis = self.get_arg(api_config, 2, "axis")
-                    if axis is None:
-                        axis = 0
-                    x_dim = self.get_arg(api_config, 0, "x").shape[axis]
-                    return numpy.random.randint(0, x_dim, size=self.shape)
+                    self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
             # j
             # k
             # l
