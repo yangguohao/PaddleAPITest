@@ -45,7 +45,7 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.vision.ops.roi_align",
  "paddle.vision.ops.roi_pool",
  "paddle.nn.functional.binary_cross_entropy",
- "paddle.multinomial",
+#  "paddle.multinomial",
  "paddle.nn.functional.embedding",
  "paddle.nn.functional.hsigmoid_loss",
  "paddle.nn.functional.nll_loss",
@@ -73,7 +73,7 @@ rand_apis = ["paddle.rand",
     "paddle.standard_gamma",
     "paddle.log_normal",
     "paddle.log_normal_",
-    "paddle.multinomial",
+    # "paddle.multinomial",
     "paddle.uniform_random_batch_size_like",
     "paddle.gaussian",
     "paddle.gaussian_",
@@ -271,6 +271,7 @@ class APITestBase:
     def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
         """处理 list 或 tuple """
         tmp = []
+        cnt=0
         for item in config_items:
             if isinstance(item, TensorConfig):
                 data=item.get_paddle_tensor(self.api_config,cnt+index)
