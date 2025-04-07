@@ -265,7 +265,7 @@ class APITestBase:
     
     def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
         """处理 list 或 tuple """
-        tmp=[]
+        tmp = []
         cnt=0
         for item in config_items:
             if isinstance(item, TensorConfig):
