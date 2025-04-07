@@ -106,7 +106,7 @@ rand_apis = ["paddle.rand",
     "paddle.linalg.eigvalsh",
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
-    "paddle.nn.functional.alpha_dropout",
+    # "paddle.nn.functional.alpha_dropout",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
@@ -384,6 +384,7 @@ class APITestBase:
             else:
                 self.paddle_kwargs[key] = arg_config
             cnt+=1
+
 
         if len(self.paddle_args) == 0 and "paddle.Tensor." in self.api_config.api_name:
             self.paddle_args.append(self.paddle_kwargs.popitem(last=False)[1])
