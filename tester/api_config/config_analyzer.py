@@ -314,6 +314,8 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "pivot"):
                     M = self.get_arg(api_config, 0, "x").shape[-2]
                     self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
+            elif api.config.api_name in ["paddle.linalg.pca_lowrank"]:
+                self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
             # m
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
                 if self.check_arg(api_config, 1, "axis"):
@@ -898,7 +900,7 @@ class APIConfig:
             value = float('nan')
         elif tocken is not None and config[offset - len(tocken) - 1] == "\"":
             # fix tocken is not correct in str with spaces
-            next_quote_idx  = config.index("\"", offset + 1)
+            next_quote_idx  = config.index("\"", offset)
             value = config[offset - len(tocken):next_quote_idx]
             offset = next_quote_idx
         elif tocken is None:
