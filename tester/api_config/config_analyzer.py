@@ -314,7 +314,7 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "pivot"):
                     M = self.get_arg(api_config, 0, "x").shape[-2]
                     self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
-            elif api.config.api_name in ["paddle.linalg.pca_lowrank"]:
+            elif api_config.api_name in ["paddle.linalg.pca_lowrank"]:
                 self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
             # m
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
