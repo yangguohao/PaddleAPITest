@@ -276,7 +276,6 @@ class APITestBase:
                     item=paddle.to_tensor(item,dtype="int64",)
                 tmp.append(item)
             cnt+=1
-
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
@@ -356,7 +355,7 @@ class APITestBase:
 
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config,i))
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config, i))
             elif isinstance(self.paddle_args_config[i], list):
                 if need_axis_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i]))
@@ -369,7 +368,6 @@ class APITestBase:
                     self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True,index=i))
             else:
                 self.paddle_args.append(self.paddle_args_config[i])
-
 
         cnt=len(self.paddle_args_config)
         for key, arg_config in self.paddle_kwargs_config.items():

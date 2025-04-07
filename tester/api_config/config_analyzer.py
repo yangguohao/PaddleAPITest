@@ -594,7 +594,7 @@ class TensorConfig:
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(api_config,index),
+                self.get_numpy_tensor(api_config, index),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
             self.paddle_tensor.stop_gradient = True
