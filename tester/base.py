@@ -352,8 +352,7 @@ class APITestBase:
         cnt=0
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                tmp=self.paddle_args_config[i].get_paddle_tensor(self.api_config,i)
-                self.paddle_args.append(tmp)
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config, i))
             elif isinstance(self.paddle_args_config[i], list):
                 if need_axis_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i]))
