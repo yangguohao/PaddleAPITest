@@ -9,7 +9,7 @@ import paddle
 import inspect
 import torch
 import copy
-from scipy.sparse import coo_matrix
+
 
 USE_CACHED_NUMPY = False
 cached_numpy = {}

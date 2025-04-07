@@ -265,8 +265,8 @@ class APITestBase:
     
     def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
         """处理 list 或 tuple """
-        cnt=0
         tmp=[]
+        cnt=0
         for item in config_items:
             if isinstance(item, TensorConfig):
                 data=item.get_paddle_tensor(self.api_config,cnt+index)
