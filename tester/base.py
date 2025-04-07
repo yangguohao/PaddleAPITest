@@ -268,13 +268,13 @@ class APITestBase:
 
         return True
     
-    def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
+    def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0,key="null"):
         """处理 list 或 tuple """
         tmp = []
         cnt=0
         for item in config_items:
             if isinstance(item, TensorConfig):
-                data=item.get_paddle_tensor(self.api_config,cnt+index)
+                data=item.get_paddle_tensor(self.api_config,cnt+index,key)
                 tmp.append(data)
             else:
                 if self.api_config.api_name=='paddle.Tensor.expand' or self.api_config.api_name=='paddle.expand':
@@ -369,18 +369,18 @@ class APITestBase:
         cnt=len(self.paddle_args_config)
         for key, arg_config in self.paddle_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config,cnt)
+                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config,cnt,key=key)
             elif isinstance(arg_config, list):
                 if need_axis_handling and key == "axis":
                     self.paddle_kwargs[key] = self._handle_axis_arg(arg_config)
                 else:
-                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config,index=cnt)
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config,index=cnt,key=key)
                     cnt+=len(self.paddle_kwargs[key])-1
             elif isinstance(arg_config, tuple):
                 if need_axis_handling and key == "axis":
                     self.paddle_kwargs[key] = self._handle_axis_arg(arg_config, is_tuple=True)
                 else:
-                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True,index=cnt)
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True,index=cnt,key=key)
             else:
                 self.paddle_kwargs[key] = arg_config
             cnt+=1
