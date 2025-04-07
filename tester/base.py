@@ -19,16 +19,12 @@ api_config_paddle_to_torch_faild = open(DIR_PATH+"/tester/api_config/test_log/ap
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.is_coalesced",
- "paddle.gather",
- "paddle.Tensor.gather",
  "paddle.index_select",
  "paddle.Tensor.index_select",
  "paddle.Tensor.index_put",
  "paddle.Tensor.index_sample",
  "paddle.index_put",
  "paddle.index_sample",
- "paddle.gather_nd",
- "paddle.Tensor.gather_nd",
  "paddle.incubate.segment_max",
  "paddle.incubate.segment_mean",
  "paddle.incubate.segment_min",
@@ -272,14 +268,19 @@ class APITestBase:
 
         return True
     
-    def _handle_list_or_tuple(self, config_items, is_tuple=False):
+    def _handle_list_or_tuple(self, config_items, is_tuple=False,index=0):
         """处理 list 或 tuple """
         tmp = []
+        cnt=0
         for item in config_items:
             if isinstance(item, TensorConfig):
-                tmp.append(item.get_paddle_tensor(self.api_config))
+                data=item.get_paddle_tensor(self.api_config,cnt+index)
+                tmp.append(data)
             else:
+                if self.api_config.api_name=='paddle.Tensor.expand' or self.api_config.api_name=='paddle.expand':
+                    item=paddle.to_tensor(item,dtype="int64",)
                 tmp.append(item)
+            cnt+=1
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
@@ -348,37 +349,42 @@ class APITestBase:
 
         need_axis_handling = self.api_config.api_name in handle_axes_api
 
+        cnt=0
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config))
+                tmp=self.paddle_args_config[i].get_paddle_tensor(self.api_config,i)
+                self.paddle_args.append(tmp)
             elif isinstance(self.paddle_args_config[i], list):
                 if need_axis_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i]))
                 else:
-                    self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i]))
+                    self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i],index=i))
             elif isinstance(self.paddle_args_config[i], tuple):
                 if need_axis_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i], is_tuple=True))
                 else:
-                    self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True))
+                    self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True,index=i))
             else:
                 self.paddle_args.append(self.paddle_args_config[i])
 
+        cnt=len(self.paddle_args_config)
         for key, arg_config in self.paddle_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config)
+                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config,cnt)
             elif isinstance(arg_config, list):
                 if need_axis_handling and key == "axis":
                     self.paddle_kwargs[key] = self._handle_axis_arg(arg_config)
                 else:
-                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config)
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config,index=cnt)
+                    cnt+=len(self.paddle_kwargs[key])-1
             elif isinstance(arg_config, tuple):
                 if need_axis_handling and key == "axis":
                     self.paddle_kwargs[key] = self._handle_axis_arg(arg_config, is_tuple=True)
                 else:
-                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True)
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True,index=cnt)
             else:
                 self.paddle_kwargs[key] = arg_config
+            cnt+=1
 
         if len(self.paddle_args) == 0 and "paddle.Tensor." in self.api_config.api_name:
             self.paddle_args.append(self.paddle_kwargs.popitem(last=False)[1])
