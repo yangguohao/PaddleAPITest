@@ -212,6 +212,31 @@ class TensorConfig:
                 return self.numpy_tensor
             # d
             # e
+            elif api_config.api_name in ["paddle.empty"]:
+                is_shape_param = False
+                if len(api_config.args) > 0:
+                    if self.check_arg(api_config, 0, "shape"):
+                        is_shape_param = True
+                    elif isinstance(api_config.args[0], list):
+                        for item in api_config.args[0]:
+                            if str(item) == str(self):
+                                is_shape_param = True
+                                break
+                if "shape" in api_config.kwargs:
+                    if str(api_config.kwargs["shape"]) == str(self):
+                        is_shape_param = True
+                    elif isinstance(api_config.kwargs["shape"], list):
+                        for item in api_config.kwargs["shape"]:
+                            if str(item) == str(self):
+                                is_shape_param = True
+                                break
+                if is_shape_param:
+                    if "int" in self.dtype:
+                        self.numpy_tensor = numpy.random.randint(1, 10, size=self.shape).astype(self.dtype)
+                    else:
+                        dtype = "int32"
+                        self.numpy_tensor = numpy.random.randint(1, 10, size=self.shape).astype(dtype)
+                        self.dtype = dtype 
             elif api_config.api_name in ["paddle.eye"]:
                 self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
 
@@ -230,8 +255,6 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.expand_as"]:
                 if self.dtype=='float16':
                     self.dtype='float32'
-                    
-
             # f
             elif api_config.api_name in ["paddle.full"]:
                 if self.check_arg(api_config, 1, "fill_value"):
@@ -243,6 +266,12 @@ class TensorConfig:
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
             # g
+            elif api_config.api_name in ["paddle.gammainc", "paddle.gammaincc"]:
+                if "int" in self.dtype:
+                    self.numpy_tensor = numpy.random.randint(0, 65535, size=self.shape).astype(self.dtype)
+                else:
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(dtype)
             # h
             # i
             # j
