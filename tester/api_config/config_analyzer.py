@@ -415,8 +415,6 @@ class TensorConfig:
                 if index==1:
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
 
-
-
             # o   
             elif api_config.api_name in ["paddle.ones"]:
                 if api_config.api_name == "paddle.ones" and len(self.shape) == 0:
