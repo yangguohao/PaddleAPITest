@@ -135,7 +135,7 @@ class TensorConfig:
                 f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
             )
 
-    def get_numpy_tensor(self, api_config,index=0,future_data=None):
+    def get_numpy_tensor(self, api_config,index=0):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -401,13 +401,13 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd"]:
-                if index==0 and future_data and len(future_data):
+                if index==0 and api_config.future_data and len(api_config.future_data):
                     self.numpy_tensor=numpy.zeros(self.shape)
                     s=self.shape
-                    for ii in range(len(future_data)):  
+                    for ii in range(len(api_config.future_data)):  
                         if ii>=s[-1]:
                             break
-                        self.numpy_tensor[...,ii] = numpy.random.randint(-future_data[ii], future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
+                        self.numpy_tensor[...,ii] = numpy.random.randint(-api_config.future_data[ii], api_config.future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd_add"]:
                 if index==1:
@@ -587,14 +587,14 @@ class TensorConfig:
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
 
-    def get_paddle_tensor(self, api_config,index=0,future_data=None):
+    def get_paddle_tensor(self, api_config,index=0):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(api_config,index,future_data),
+                self.get_numpy_tensor(api_config,index),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
             self.paddle_tensor.stop_gradient = True

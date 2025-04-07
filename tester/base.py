@@ -345,16 +345,18 @@ class APITestBase:
 
         need_axis_handling = self.api_config.api_name in handle_axes_api
 
-        future_data=None
         cnt=0
         if self.api_config.api_name=='paddle.scatter_nd':
+            future_data=None
             for i in range(len(self.paddle_args_config)):
                 if isinstance(self.paddle_args_config[i], list):
                     future_data=self._handle_list_or_tuple(self.paddle_args_config[i])
+            if not hasattr(self.api_config, "future_data"):
+                self.api_config.future_data = future_data
 
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
-                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config,i,future_data=future_data))
+                self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config,i))
             elif isinstance(self.paddle_args_config[i], list):
                 if need_axis_handling and i == 1:
                     self.paddle_args.append(self._handle_axis_arg(self.paddle_args_config[i]))
