@@ -209,6 +209,17 @@ class TensorConfig:
                 len_shape = len(x_tensor_config.shape)
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
+            elif api_config.api_name in ["paddle.clip"] and self.get_initialized_value(api_config, 1, "min") is not None:
+                # if min tensor is initialized, init max tensor which satisfies max >= min
+                min = self.get_initialized_value(api_config, 1, "min")
+                if "int" in self.dtype:
+                    max = min + (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
+                else:
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    max = min + (numpy.random.random(self.shape) * (numpy.finfo(numpy.float32).max - min)).astype(dtype)
+                        
+                self.numpy_tensor = max
+                return self.numpy_tensor
             # d
             # e
             elif api_config.api_name in ["paddle.empty"]:
@@ -697,6 +708,35 @@ class TensorConfig:
             return api_config.kwargs[arg_name]
         return None
 
+    def get_initialized_value(self, api_config, arg_pos=None, arg_name=None):
+        """Get the initialized numpy_tensor value from the api_config instead of the TensorConfig"""    
+        # for uninitialized numpy_tensor, return None implicitly as numpy_tensor is None 
+        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
+            if type(api_config.args[arg_pos]) == TensorConfig:
+                return api_config.args[arg_pos].numpy_tensor
+            else:
+                return api_config.args[arg_pos]
+        if arg_name and arg_name in api_config.kwargs:
+            if type(api_config.kwargs[arg_name]) == TensorConfig:
+                return api_config.kwargs[arg_name].numpy_tensor
+            else:
+                return api_config.kwargs[arg_name]
+        # for args that does not appear in api_config
+        if arg_pos >= len(api_config.args) or arg_name not in api_config.kwargs:
+            return None
+        # error case 
+        if arg_pos is None and arg_name is None:
+            raise ValueError("either arg_pos or arg_name must be provided.")
+        elif arg_pos:
+            if arg_pos < 0:
+                raise IndexError(f"argument position {arg_pos} is out of range for api_config with {len(api_config.args)} arguments.")
+            else: 
+                # case type(api_config.args[arg_pos]) != TensorConfig:
+                raise TypeError(f"argument at position {arg_pos} is not of type TensorConfig.")
+        else:
+            # case type(api_config.kwargs[arg_name]) != TensorConfig:
+            raise TypeError(f"argument '{arg_name}' is not of type TensorConfig.")
+            
 class APIConfig:
     def __deepcopy__(self, memo):
         cls = self.__class__
