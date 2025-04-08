@@ -9,6 +9,7 @@ import inspect
 import torch
 import copy
 
+
 USE_CACHED_NUMPY = False
 cached_numpy = {}
 
@@ -292,6 +293,17 @@ class TensorConfig:
                 else:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(dtype)
+            elif api_config.api_name.startswith("paddle.geometric.segment_"):
+                if self.check_arg(api_config, 1, "segment_ids"):
+                    batch_size = self.get_arg(api_config, 0, "x").shape[0]
+                    max_segments = numpy.random.randint(1, batch_size + 1)
+                    self.numpy_tensor = numpy.sort(
+                        numpy.random.randint(0, max_segments, size=self.shape).astype(self.dtype)
+                    )
+            elif api_config.api_name.startswith("paddle.geometric.send_u"):
+                if self.check_arg(api_config, 1, "src_index") or self.check_arg(api_config, 2, "dst_index"):
+                    num_nodes = self.get_arg(api_config, 0, "x").shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
             # h
             # i
             elif api_config.api_name in ["paddle.index_add", "paddle.index_fill"]:
@@ -310,92 +322,109 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.logspace"]:
                 if self.check_arg(api_config, 2, "num"):
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape)
-            elif api_config.api_name in ["paddle.linalg.cholesky"]:
-                if self.check_arg(api_config, 0, "x"):
-                    if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
-                        raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
-                    batch_dims = self.shape[:-2]
-                    matrix_dim = self.shape[-1]
-                    A = numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
-                    if len(batch_dims) > 0:
-                        tensor = numpy.einsum('...ij,...kj->...ik', A, A)
-                    else:
-                        tensor = numpy.dot(A, A.T)
-                    tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
-                    print("cholesky tensor", tensor)
-                    self.numpy_tensor = tensor
-            elif api_config.api_name in ["paddle.linalg.cov"]:
-                if self.check_arg(api_config, 0, "x"):
-                    if len(self.shape) < 1 or len(self.shape) > 2:
-                        raise ValueError("Shape must have 1 or 2 dimensions for covariance input")
-                    tensor = numpy.random.random(self.shape).astype(self.dtype)
-                    tensor += numpy.random.random(self.shape).astype(self.dtype) * 1e-6
-                    self.numpy_tensor = tensor
-                elif self.check_arg(api_config, 3, "fweights"):
-                    x_shape = self.get_arg(api_config, 0, "x").shape
-                    rowvar = self.get_arg(api_config, 1, "rowvar")
-                    if rowvar is None:
-                        rowvar = True
-                    n_observations = (x_shape[1] if rowvar else x_shape[0]) if len(x_shape) > 1 else x_shape[0]
-                    self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
-                elif self.check_arg(api_config, 4, "aweights"):
-                    x_shape = self.get_arg(api_config, 0, "x").shape
-                    rowvar = self.get_arg(api_config, 1, "rowvar")
-                    if rowvar is None:
-                        rowvar = True
-                    n_observations = (x_shape[1] if rowvar else x_shape[0]) if len(x_shape) > 1 else x_shape[0]
-                    if self.dtype in ["float32", "float64"]:
-                        self.numpy_tensor = numpy.random.uniform(0.1, 1.0, size=(n_observations,)).astype(self.dtype)
-                    else:
-                        self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
-            elif api_config.api_name in ["paddle.linalg.eigh"]:
-                if self.check_arg(api_config, 0, "x"):
-                    if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
-                        raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
-                    batch_dims = self.shape[:-2]
-                    matrix_dim = self.shape[-1]
-                    A = numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
-                    if self.dtype in ['complex64', 'complex128']:
-                        A = A + 1j * numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
-                        tensor = A + A.swapaxes(-1, -2).conj()  # A + A^H
-                    else:
+            elif api_config.api_name.startswith("paddle.linalg."):
+                if api_config.api_name.endswith("cholesky"):
+                    if self.check_arg(api_config, 0, "x"):
+                        if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
+                            raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
+                        batch_dims = self.shape[:-2]
+                        matrix_dim = self.shape[-1]
+                        A = numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
                         if len(batch_dims) > 0:
                             tensor = numpy.einsum('...ij,...kj->...ik', A, A)
                         else:
                             tensor = numpy.dot(A, A.T)
-                    tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
-                    self.numpy_tensor = tensor
-            elif api_config.api_name in ["paddle.linalg.lstsq"]:
-                if self.check_arg(api_config, 0, "x") or self.check_arg(api_config, 1, "y"):
-                    if len(self.shape) < 2:
-                        raise ValueError("Shape must have at least 2 dimensions for lstsq x")
-                    batch_dims = self.shape[:-2]
-                    M, N = self.shape[-2], self.shape[-1]
-                    self.numpy_tensor = numpy.random.random(batch_dims + [M, N]).astype(self.dtype)
-            elif api_config.api_name in ["paddle.linalg.lu_unpack"]:
-                if self.check_arg(api_config, 0, "x"):
-                    if len(self.shape) < 2:
-                        raise ValueError("Shape must have at least 2 dimensions for LU matrix")
-                    batch_dims = self.shape[:-2]
-                    LU_tensor = numpy.random.random(self.shape).astype(self.dtype)
-                    K = min(self.shape[-2], self.shape[-1])
-                    LU_tensor[..., range(K), range(K)] += 1e-6
-                    self.numpy_tensor = LU_tensor
-                if self.check_arg(api_config, 1, "pivot"):
-                    M = self.get_arg(api_config, 0, "x").shape[-2]
-                    self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
-            elif api_config.api_name in ["paddle.linalg.pca_lowrank"]:
-                self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
+                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                        print("cholesky tensor", tensor)
+                        self.numpy_tensor = tensor
+                elif api_config.api_name.endswith("cov"):
+                    if self.check_arg(api_config, 0, "x"):
+                        if len(self.shape) < 1 or len(self.shape) > 2:
+                            raise ValueError("Shape must have 1 or 2 dimensions for covariance input")
+                        tensor = numpy.random.random(self.shape).astype(self.dtype)
+                        tensor += numpy.random.random(self.shape).astype(self.dtype) * 1e-6
+                        self.numpy_tensor = tensor
+                    elif self.check_arg(api_config, 3, "fweights"):
+                        x_shape = self.get_arg(api_config, 0, "x").shape
+                        rowvar = self.get_arg(api_config, 1, "rowvar")
+                        if rowvar is None:
+                            rowvar = True
+                        n_observations = (x_shape[1] if rowvar else x_shape[0]) if len(x_shape) > 1 else x_shape[0]
+                        self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
+                    elif self.check_arg(api_config, 4, "aweights"):
+                        x_shape = self.get_arg(api_config, 0, "x").shape
+                        rowvar = self.get_arg(api_config, 1, "rowvar")
+                        if rowvar is None:
+                            rowvar = True
+                        n_observations = (x_shape[1] if rowvar else x_shape[0]) if len(x_shape) > 1 else x_shape[0]
+                        if self.dtype in ["float32", "float64"]:
+                            self.numpy_tensor = numpy.random.uniform(0.1, 1.0, size=(n_observations,)).astype(self.dtype)
+                        else:
+                            self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
+                elif api_config.api_name.endswith("eigh"):
+                    if self.check_arg(api_config, 0, "x"):
+                        if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
+                            raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
+                        batch_dims = self.shape[:-2]
+                        matrix_dim = self.shape[-1]
+                        A = numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
+                        if self.dtype in ['complex64', 'complex128']:
+                            A = A + 1j * numpy.random.random(batch_dims + [matrix_dim, matrix_dim]).astype(self.dtype)
+                            tensor = A + A.swapaxes(-1, -2).conj()  # A + A^H
+                        else:
+                            if len(batch_dims) > 0:
+                                tensor = numpy.einsum('...ij,...kj->...ik', A, A)
+                            else:
+                                tensor = numpy.dot(A, A.T)
+                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                        self.numpy_tensor = tensor
+                elif api_config.api_name.endswith("lstsq"):
+                    if self.check_arg(api_config, 0, "x") or self.check_arg(api_config, 1, "y"):
+                        if len(self.shape) < 2:
+                            raise ValueError("Shape must have at least 2 dimensions for lstsq x")
+                        batch_dims = self.shape[:-2]
+                        M, N = self.shape[-2], self.shape[-1]
+                        self.numpy_tensor = numpy.random.random(batch_dims + [M, N]).astype(self.dtype)
+                elif api_config.api_name.endswith("lu_unpack"):
+                    if self.check_arg(api_config, 0, "x"):
+                        if len(self.shape) < 2:
+                            raise ValueError("Shape must have at least 2 dimensions for LU matrix")
+                        batch_dims = self.shape[:-2]
+                        LU_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                        K = min(self.shape[-2], self.shape[-1])
+                        LU_tensor[..., range(K), range(K)] += 1e-6
+                        self.numpy_tensor = LU_tensor
+                    if self.check_arg(api_config, 1, "pivot"):
+                        M = self.get_arg(api_config, 0, "x").shape[-2]
+                        self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
+                elif api_config.api_name.endswith("pca_lowrank"):
+                    self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
             # m
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
+
+            elif api_config.api_name in ["paddle.multinomial"]:
+                if index==0:
+                    self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
+                if "num_samples" in api_config.kwargs and index==1:
+                    if 'replacement' not in api_config.kwargs:
+                        inputs=self.get_arg(api_config,0)
+                        inputs=inputs.numpy_tensor
+                        max_allow=(inputs > 0).sum().item()
+                        self.numpy_tensor=numpy.random.randint(0,max_allow+1, size=self.shape).astype(self.dtype)
+                    
 
             elif api_config.api_name in ["paddle.multiplex"]:
                 if 'inputs' in api_config.kwargs:
                     s=self.get_arg(api_config,arg_name='inputs')
                     if index==len(s):
                         self.numpy_tensor = (numpy.random.randint(0,len(s), size=self.shape)).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.multiply"]:
+                if self.dtype=='bfloat16':
+                    self.dtype='float32'    
+                self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             # n
             # o
@@ -470,6 +499,42 @@ class TensorConfig:
 
                 
             # s
+            elif api_config.api_name in ["paddle.scatter"]:
+                if index==1:
+                    if 'x' in api_config.kwargs:
+                        d=self.get_arg(api_config,arg_name='x')
+                    else:
+                        d=self.get_arg(api_config,0)
+                    s=d.shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.scatter_nd"]:
+                future_data=self.get_arg(api_config,2)     
+                if index==0 and future_data and len(future_data):
+                    self.numpy_tensor=numpy.zeros(self.shape)
+                    s=self.shape
+                    for ii in range(len(future_data)):  
+                        if ii>=s[-1]:
+                            break
+                        self.numpy_tensor[...,ii] = numpy.random.randint(-future_data[ii], future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.scatter_nd_add"]:
+                if index==1:
+                    if 'x' in api_config.kwargs:
+                        org=self.get_arg(api_config,arg_name='x')
+                    else:
+                        org=self.get_arg(api_config,0)
+                    org=org.shape
+                    self.numpy_tensor=numpy.zeros(self.shape)
+                    if 'index' in api_config.kwargs:
+                        ind=self.get_arg(api_config,arg_name='index')
+                    else:
+                        ind=self.get_arg(api_config,1)
+                    s=ind.shape
+                    for ii in range(s[-1]):  
+                        self.numpy_tensor[...,ii] = numpy.random.randint(-org[ii], org[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
+
+
             elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
@@ -536,7 +601,7 @@ class TensorConfig:
                 if index==2:
                     pre=self.get_arg(api_config,1)
                     self.numpy_tensor=numpy.clip(self.numpy_tensor,pre.numpy_tensor,None)
-                     
+            
             elif api_config.api_name in ["paddle.Tensor.expand"]:
                 if index>0:
                     d=self.get_arg(api_config,0)
