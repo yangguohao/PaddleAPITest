@@ -431,7 +431,7 @@ class TensorConfig:
             # o   
             elif api_config.api_name in ["paddle.ones"]:
                 if api_config.api_name == "paddle.ones" and len(self.shape) == 0:
-                    self.numpy_tensor = numpy.array(numpy.random.randint(1, 2048), dtype=self.dtype)
+                    self.numpy_tensor = numpy.array(random.randint(1, 2048), dtype=self.dtype)
                 else:
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
             # p
@@ -640,7 +640,6 @@ class TensorConfig:
                     else:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
-        print(self.numpy_tensor,index)
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config,index=0):
