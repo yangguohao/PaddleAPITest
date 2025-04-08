@@ -10,7 +10,6 @@ import torch
 import copy
 
 
-
 USE_CACHED_NUMPY = False
 cached_numpy = {}
 
@@ -406,7 +405,7 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             # n
-            
+
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
                 if index==1:
                     s=self.get_arg(api_config,0)
@@ -426,13 +425,13 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.interpolate']:
-                if index==1:
+                if index>=1:
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
 
             # o   
             elif api_config.api_name in ["paddle.ones"]:
                 if api_config.api_name == "paddle.ones" and len(self.shape) == 0:
-                    self.numpy_tensor = numpy.array(random.randint(1, 2048), dtype=self.dtype)
+                    self.numpy_tensor = numpy.array(numpy.random.randint(1, 2048), dtype=self.dtype)
                 else:
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
             # p

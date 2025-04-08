@@ -256,6 +256,8 @@ class APITestBase:
             item.get_paddle_tensor(self.api_config, i + index) if isinstance(item, TensorConfig) else item
             for i, item in enumerate(config_items)
         ]
+        if self.api_config.api_name in ["paddle.expand","paddle.Tensor.expand"] and isinstance(tmp[0], paddle.Tensor):
+            tmp[0]=int(tmp[0])
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
@@ -375,7 +377,6 @@ class APITestBase:
             else:
                 self.paddle_kwargs[key] = arg_config
             cnt+=1
-
 
         if len(self.paddle_args) == 0 and "paddle.Tensor." in self.api_config.api_name:
             self.paddle_args.append(self.paddle_kwargs.popitem(last=False)[1])
