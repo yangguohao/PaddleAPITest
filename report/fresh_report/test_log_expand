@@ -1,8 +1,0 @@
-paddle.expand(x=Tensor([2, 2],"int64"), shape=Tensor([3],"int32"), )
-aistudio@jupyter-3165291-8843119:~/PaddleAPITest$ python engine.py --paddle_only=True --api_config='paddle.expand(x=Tensor([2, 2],"int64"), shape=Tensor([3],"int32"), )'
-test begin: paddle.expand(x=Tensor([2, 2],"int64"), shape=Tensor([3],"int32"), )
-W0408 07:29:09.126283 46182 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 7.0, Driver API Version: 12.0, Runtime API Version: 11.8
-W0408 07:29:09.127291 46182 gpu_resources.cc:164] device: 0, cuDNN Version: 8.9.
-[paddle error] paddle.expand(x=Tensor([2, 2],"int64"), shape=Tensor([3],"int32"), ) 
- (InvalidArgument) The number of elements (1) of 'shape' for expand_v2 op must be greater than or equal to the rank (2) of the input.
-  [Hint: Expected expand_shape.size() >= static_cast<size_t>(x_dims.size()), but received expand_shape.size():1 < static_cast<size_t>(x_dims.size()):2.] (at ../paddle/phi/infermeta/unary.cc:1311)

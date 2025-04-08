@@ -270,7 +270,15 @@ class TensorConfig:
                     if len(s)==0 or s[index-1]==1:
                         self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
                     else:
-                        self.numpy_tensor = numpy.array(s[index-1])
+                        if len(self.shape)==0 or self.shape[0]==1:
+                            self.numpy_tensor = numpy.array(s[index-1])
+                        else:
+                            self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
+                            dis=self.shape[0]-len(s)
+                            for i in range(self.shape[0]):
+                                if i>=dis and s[i-dis]!=1:
+                                    self.numpy_tensor[i]=s[i-dis]
+
 
             elif api_config.api_name in ["paddle.expand_as"]:
                 if self.dtype=='float16':
