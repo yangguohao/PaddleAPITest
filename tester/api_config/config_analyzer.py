@@ -8,7 +8,7 @@ import paddle
 import inspect
 import torch
 import copy
-from scipy.sparse import coo_matrix
+
 
 
 USE_CACHED_NUMPY = False
@@ -145,7 +145,7 @@ class TensorConfig:
             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
         )
 
-    def get_numpy_tensor(self, api_config,index=0,future_data=None):
+    def get_numpy_tensor(self, api_config,index=0):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -406,6 +406,7 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             # n
+            
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
                 if index==1:
                     s=self.get_arg(api_config,0)

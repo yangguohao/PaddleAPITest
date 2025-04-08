@@ -98,7 +98,6 @@ rand_apis = ["paddle.rand",
     "paddle.linalg.eigvalsh",
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
-    # "paddle.nn.functional.alpha_dropout",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
@@ -253,12 +252,10 @@ class APITestBase:
     
     def _handle_list_or_tuple(self, config_items, is_tuple=False, index=0):
         """处理 list 或 tuple """
-
         tmp = [
             item.get_paddle_tensor(self.api_config, i + index) if isinstance(item, TensorConfig) else item
             for i, item in enumerate(config_items)
         ]
-
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
@@ -339,13 +336,7 @@ class APITestBase:
         need_axes_handling = self.api_config.api_name in handle_axes_api
         need_indices_handling = self.api_config.api_name == "paddle.index_put"
 
-        future_data=None
         cnt=0
-        if self.api_config.api_name=='paddle.scatter_nd':
-            for i in range(len(self.paddle_args_config)):
-                if isinstance(self.paddle_args_config[i], list):
-                    future_data=self._handle_list_or_tuple(self.paddle_args_config[i])
-
         for i in range(len(self.paddle_args_config)):
             if isinstance(self.paddle_args_config[i], TensorConfig):
                 self.paddle_args.append(self.paddle_args_config[i].get_paddle_tensor(self.api_config, i))
@@ -363,7 +354,6 @@ class APITestBase:
                     self.paddle_args.append(self._handle_list_or_tuple(self.paddle_args_config[i], is_tuple=True,index=i))
             else:
                 self.paddle_args.append(self.paddle_args_config[i])
-
 
         cnt=len(self.paddle_args_config)
         for key, arg_config in self.paddle_kwargs_config.items():
