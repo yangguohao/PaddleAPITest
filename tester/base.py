@@ -26,7 +26,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.vision.ops.roi_align",
  "paddle.vision.ops.roi_pool",
  "paddle.nn.functional.binary_cross_entropy",
- "paddle.nn.functional.embedding",
  "paddle.nn.functional.hsigmoid_loss",
  "paddle.nn.functional.nll_loss",
  "paddle.nn.functional.gather_tree",
@@ -95,7 +94,6 @@ rand_apis = ["paddle.rand",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
-    "paddle.nn.functional.feature_alpha_dropout",
 ]
 
 # Todo: check paddle.prod @cangtianhuang
