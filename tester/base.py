@@ -21,10 +21,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.index_select",
  "paddle.Tensor.index_put",
  "paddle.Tensor.index_sample",
- "paddle.incubate.segment_max",
- "paddle.incubate.segment_mean",
- "paddle.incubate.segment_min",
- "paddle.incubate.segment_sum",
  "paddle.nn.functional.one_hot",
  "paddle.nn.functional.upsample",
  "paddle.vision.ops.roi_align",
@@ -47,7 +43,6 @@ not_support_api = ["paddle.Tensor.coalesce",
 rand_apis = ["paddle.rand",
     "paddle.bernoulli",
     "paddle.bernoulli_",
-    "paddle.binomial",
     "paddle.poisson",
     "paddle.standard_gamma",
     "paddle.log_normal",
@@ -97,7 +92,6 @@ rand_apis = ["paddle.rand",
     "paddle.linalg.eigvalsh",
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
-    "paddle.nn.functional.alpha_dropout",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
@@ -250,12 +244,14 @@ class APITestBase:
 
         return True
     
-    def _handle_list_or_tuple(self, config_items, is_tuple=False, index=0):
+    def _handle_list_or_tuple(self, config_items, is_tuple=False, index=0, key="null"):
         """处理 list 或 tuple """
         tmp = [
-            item.get_paddle_tensor(self.api_config, i + index) if isinstance(item, TensorConfig) else item
+            item.get_paddle_tensor(self.api_config, i + index, key) if isinstance(item, TensorConfig) else item
             for i, item in enumerate(config_items)
         ]
+        if self.api_config.api_name in ["paddle.expand","paddle.Tensor.expand"] and isinstance(tmp[0], paddle.Tensor):
+            tmp[0]=int(tmp[0])
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
@@ -358,12 +354,12 @@ class APITestBase:
         cnt=len(self.paddle_args_config)
         for key, arg_config in self.paddle_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
-                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config,cnt)
+                self.paddle_kwargs[key] = arg_config.get_paddle_tensor(self.api_config,cnt,key=key)
             elif isinstance(arg_config, list):
                 if need_axes_handling and key == "axis":
                     self.paddle_kwargs[key] = self._handle_axis_arg(arg_config)
                 else:
-                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config,index=cnt)
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config,index=cnt,key=key)
                     cnt+=len(self.paddle_kwargs[key])-1
             elif isinstance(arg_config, tuple):
                 if need_axes_handling and key == "axis":
@@ -371,7 +367,7 @@ class APITestBase:
                 if need_indices_handling and key == "indices":
                     self.paddle_args.append(self._handle_indices_api(self.paddle_args_config[i], is_tuple=True))
                 else:
-                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True,index=cnt)
+                    self.paddle_kwargs[key] = self._handle_list_or_tuple(arg_config, is_tuple=True,index=cnt,key=key)
             else:
                 self.paddle_kwargs[key] = arg_config
             cnt+=1
@@ -434,18 +430,18 @@ class APITestBase:
         for i in range(len(self.paddle_args)):
             if isinstance(self.paddle_args[i], paddle.Tensor):
                 result.append(self.paddle_args[i])
-            elif isinstance(self.paddle_args[i], list) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                result = result + self.paddle_args[i]
-            elif isinstance(self.paddle_args[i], tuple) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                result = result + list(self.paddle_args[i])
+            elif isinstance(self.paddle_args[i], tuple) or isinstance(self.paddle_args[i], list):
+                for item in self.paddle_args[i]:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
 
         for key, value in self.paddle_kwargs.items():
             if isinstance(value, paddle.Tensor):
                 result.append(value)
-            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
-                result = result + value
-            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
-                result = result + list(value)
+            elif isinstance(value, tuple) or isinstance(value, list):
+                for item in value:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
         
         return result
 
@@ -455,18 +451,18 @@ class APITestBase:
         for i in range(len(self.torch_args)):
             if isinstance(self.torch_args[i], torch.Tensor):
                 result.append(self.torch_args[i])
-            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
-                result = result + self.torch_args[i]
-            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
-                result = result + list(self.torch_args[i])
+            elif isinstance(self.torch_args[i], tuple) or isinstance(self.torch_args[i], list):
+                for item in self.paddle_args[i]:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
 
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 result.append(value)
-            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], torch.Tensor):
-                result = result + value
-            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], torch.Tensor):
-                result = result + list(value)
+            elif isinstance(value, tuple) or isinstance(value, list):
+                for item in value:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
 
         return result
 
