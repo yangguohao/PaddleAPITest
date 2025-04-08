@@ -786,7 +786,6 @@ class TensorConfig:
                     else:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
-        # print(self.numpy_tensor,index)
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config,index=0,key="null"):
