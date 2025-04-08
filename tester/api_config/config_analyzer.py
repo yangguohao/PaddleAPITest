@@ -486,6 +486,10 @@ class TensorConfig:
                         self.numpy_tensor = numpy.random.randint(0,128, size=self.shape).astype(self.dtype)
                 if index==2 and 'scale_factor' in api_config.kwargs and self.get_arg(api_config,arg_name='scale_factor'):
                     self.numpy_tensor = 0.5*numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
+            
+            elif api_config.api_name in ['paddle.nn.functional.binary_cross_entropy']:
+                self.numpy_tensor = numpy.random.rand(*self.shape).astype(self.dtype)
+
  
 
             # o
@@ -648,6 +652,11 @@ class TensorConfig:
                             f"Invalid shape for 'axis' Tensor in paddle.split. "
                             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
                         )
+            
+            elif api_config.api_name in ["paddle.standard_normal"]: 
+                self.numpy_tensor =numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)
+  
+
             # t
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
@@ -720,6 +729,10 @@ class TensorConfig:
                     inputs=self.get_arg(api_config,0)
                     self.numpy_tensor = numpy.random.randint(0,inputs.shape[axis], size=self.shape).astype(self.dtype)
 
+            elif api_config.api_name in ["paddle.Tensor.tile"]:
+                if index>=1:
+                    self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
+
             # u
             elif api_config.api_name in ["paddle.unsqueeze"]:
                 if self.check_arg(api_config, 1, "axis"):
@@ -767,6 +780,7 @@ class TensorConfig:
                     else:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+        # print(self.numpy_tensor,index)
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config,index=0,key="null"):
