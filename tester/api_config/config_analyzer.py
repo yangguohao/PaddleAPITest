@@ -414,22 +414,53 @@ class TensorConfig:
                     self.dtype='float32'    
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
-            elif api_config.api_name in ["paddle.nn.functional.max_unpool1d"] and index == 0:
+            elif api_config.api_name in ["paddle.nn.functional.max_unpool1d", "paddle.nn.functional.max_unpool2d", "paddle.nn.functional.max_unpool3d"] and index == 0:
                 # use max_pool to generate legal max_unpool input
                 kernel_size = self.get_initialized_value(api_config, 2, "kernel_size")
                 stride = self.get_initialized_value(api_config, 3, "stride")
                 padding = self.get_initialized_value(api_config, 4, "padding")
                 padding = 0 if padding is None else padding
+                stride = kernel_size if stride is None else stride
                 unpool_output_size = self.get_initialized_value(api_config, 5, "output_size")
                 pool_input_size = unpool_output_size
                 
+                ndim = 1
+                if "max_unpool2d" in api_config.api_name:
+                    ndim = 2
+                elif "max_unpool3d" in api_config.api_name:
+                    ndim = 3
+                if isinstance(kernel_size, int): 
+                    kernel_size = [kernel_size] * ndim
+                if isinstance(stride, int):
+                    stride = [stride] * ndim
+                if isinstance(padding, int):
+                    padding = [padding] * ndim
+                    
                 # if max_unpool output_size (max_pool input_size) is not set, calculate manually
-                if unpool_output_size is None:
-                    unpool_input_size = self.get_arg(api_config, 0, "x").shape
-                    pool_output_size = unpool_input_size
-                    last_input_dim = (pool_output_size[-1] - 1) * stride + kernel_size - 2 * padding
-                    pool_input_size = [*pool_output_size[:-1], last_input_dim]
-                
+                unpool_input_size = self.get_arg(api_config, 0, "x").shape
+                pool_output_size = unpool_input_size
+                if pool_input_size is None:
+                    if ndim == 1:
+                        w_in = pool_output_size[-1]
+                        w_out = (w_in - 1) * stride[0] - 2 * padding[0] + kernel_size[0]
+                        pool_input_size = [*pool_output_size[:-1], w_out]
+                    elif ndim == 2:
+                        h_in, w_in = pool_output_size[-2], pool_output_size[-1]
+                        h_out = (h_in - 1) * stride[0] - 2 * padding[0] + kernel_size[0]
+                        w_out = (w_in - 1) * stride[1] - 2 * padding[1] + kernel_size[1]
+                        pool_input_size = [*pool_output_size[:-2], h_out, w_out]
+                    else:
+                        d_in, h_in, w_in = pool_output_size[-3], pool_output_size[-2], pool_output_size[-1]
+                        d_out = (d_in - 1) * stride[0] - 2 * padding[0] + kernel_size[0]
+                        h_out = (h_in - 1) * stride[1] - 2 * padding[1] + kernel_size[1]
+                        w_out = (w_in - 1) * stride[2] - 2 * padding[2] + kernel_size[2]
+                        pool_input_size = [*pool_output_size[:-3], d_out, h_out, w_out]
+                elif len(pool_input_size) == ndim:
+                    # fill the lost dimensions since unpool_output_size has only last ndim dims
+                    pool_input_size = [*pool_output_size[:-ndim], *pool_input_size[-ndim:]]
+                elif len(pool_input_size) != len(pool_output_size):
+                    raise ValueError(f"invalid argument output_size {pool_input_size} for {api_config.api_name}, len(output_size) should be {ndim} or {len(pool_output_size)} or output_size == None, got len(output_size)={len(pool_input_size)} and output_size={unpool_output_size}")
+                    
                 x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=self.dtype))
                 max_poolxd_func = eval(api_config.api_name.replace("max_unpool", "max_pool"))
                 x, indices = max_poolxd_func(x, kernel_size, stride, padding, return_mask=True)
