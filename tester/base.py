@@ -456,9 +456,7 @@ class APITestBase:
         for i in range(len(self.torch_args)):
             if isinstance(self.torch_args[i], torch.Tensor):
                 result.append(self.torch_args[i])
-            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
-                result = result + self.torch_args[i]
-            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0:
+            elif isinstance(self.torch_args[i], tuple) or isinstance(self.torch_args[i], list):
                 for item in self.paddle_args[i]:
                     if isinstance(item, paddle.Tensor):
                         result.append(item)
@@ -466,9 +464,7 @@ class APITestBase:
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 result.append(value)
-            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], torch.Tensor):
-                result = result + value
-            elif isinstance(value, tuple) and len(value) > 0:
+            elif isinstance(value, tuple) or isinstance(value, list):
                 for item in value:
                     if isinstance(item, paddle.Tensor):
                         result.append(item)
