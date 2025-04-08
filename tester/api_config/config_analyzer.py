@@ -145,6 +145,11 @@ class TensorConfig:
         )
 
     def get_numpy_tensor(self, api_config, index=None, key=None, **kwargs):
+        if index is not None:
+            self.index = index
+        if key is not None:
+            self.key = key
+
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -770,6 +775,11 @@ class TensorConfig:
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config, index=None, key=None, **kwargs):
+        if index is not None:
+            self.index = index
+        if key is not None:
+            self.key = key
+
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -831,10 +841,9 @@ class TensorConfig:
 
     def check_arg(self, api_config, arg_pos=None, arg_name=None):
         """Checks if the argument in api_config matches this instance"""
-        nonlocal index, key
         return (
-            (arg_pos is not None and self.index == arg_pos)
-            or (arg_name is not None and self.key == arg_name)
+            (arg_pos is not None and hasattr(self, "index") and self.index == arg_pos)
+            or (arg_name is not None and hasattr(self, "key") and self.key == arg_name)
         )
 
     def get_arg(self, api_config, arg_pos=None, arg_name=None):
