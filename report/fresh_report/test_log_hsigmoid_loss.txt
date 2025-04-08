@@ -1,0 +1,2 @@
+paddle.nn.functional.hsigmoid_loss(Tensor([4, 8],"float64"), Tensor([4],"int64"), 6, Tensor([5, 8],"float64"), Tensor([5, 1],"float64"), Tensor([4, 5],"int64"), Tensor([4, 5],"int64"), True, )
+ 
