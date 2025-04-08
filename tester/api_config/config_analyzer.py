@@ -144,7 +144,7 @@ class TensorConfig:
             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
         )
 
-    def get_numpy_tensor(self, api_config,index=0,key="null"):
+    def get_numpy_tensor(self, api_config, index=None, key=None, **kwargs):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -769,14 +769,14 @@ class TensorConfig:
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
 
-    def get_paddle_tensor(self, api_config,index=0,key="null"):
+    def get_paddle_tensor(self, api_config, index=None, key=None, **kwargs):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(api_config, index, key),
+                self.get_numpy_tensor(api_config, index, key, **kwargs),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
             )
             self.paddle_tensor.stop_gradient = True
@@ -831,11 +831,11 @@ class TensorConfig:
 
     def check_arg(self, api_config, arg_pos=None, arg_name=None):
         """Checks if the argument in api_config matches this instance"""
-        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
-            return str(api_config.args[arg_pos]) == str(self)    
-        if arg_name and arg_name in api_config.kwargs:
-            return str(api_config.kwargs[arg_name]) == str(self)
-        return False
+        nonlocal index, key
+        return (
+            (arg_pos is not None and self.index == arg_pos)
+            or (arg_name is not None and self.key == arg_name)
+        )
 
     def get_arg(self, api_config, arg_pos=None, arg_name=None):
         """Get the argument value from the api_config"""
