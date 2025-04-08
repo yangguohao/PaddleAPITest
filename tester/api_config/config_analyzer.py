@@ -137,7 +137,7 @@ class TensorConfig:
             raise ValueError(f"Invalid axis {axis} for shape {x_shape}")
 
         if len(self.shape) >= 1:
-            return numpy.random.randint(-x_shape[axis], x_shape[axis], size=self.shape, dtype=self.dtype)
+            return numpy.random.randint(0, x_shape[axis], size=self.shape, dtype=self.dtype)
 
         raise ValueError(
             f"Invalid shape for 'index' Tensor in {api_config.api_name}. "
@@ -320,7 +320,7 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.index_sample"]:
                 if self.check_arg(api_config, 1, "index"):
                     x_dim = self.get_arg(api_config, 0, "x").shape[1]
-                    self.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=self.shape)
+                    self.numpy_tensor = numpy.random.randint(0, x_dim, size=self.shape)
             elif api_config.api_name in ["paddle.index_select"]:
                 if self.check_arg(api_config, 1, "index"):
                     self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
@@ -490,7 +490,13 @@ class TensorConfig:
             elif api_config.api_name in ['paddle.nn.functional.binary_cross_entropy']:
                 self.numpy_tensor = numpy.random.rand(*self.shape).astype(self.dtype)
 
- 
+            elif api_config.api_name in ['paddle.nn.functional.margin_cross_entropy','paddle.nn.functional.multi_margin_loss']:
+                if index==1:
+                    if 'input' in api_config.kwargs:
+                        s=self.get_arg(api_config,arg_name='input')
+                    else:
+                        s=self.get_arg(api_config,0)
+                    self.numpy_tensor = numpy.random.randint(0,s.shape[1], size=self.shape).astype(self.dtype)
 
             # o
             elif api_config.api_name in ["paddle.ones"]:
