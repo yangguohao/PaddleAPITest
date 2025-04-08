@@ -316,6 +316,13 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.index_select"]:
                 if self.check_arg(api_config, 1, "index"):
                     self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
+            elif api_config.api_name.startswith("paddle.incubate.segment_"):
+                if self.check_arg(api_config, 1, "segment_ids"):
+                    batch_size = self.get_arg(api_config, 0, "x").shape[0]
+                    max_segments = numpy.random.randint(1, batch_size + 1)
+                    self.numpy_tensor = numpy.sort(
+                        numpy.random.randint(0, max_segments, size=self.shape).astype(self.dtype)
+                    )
             # j
             # k
             # l
