@@ -403,7 +403,6 @@ class TensorConfig:
                         max_allow=(inputs > 0).sum().item()
                         self.numpy_tensor=numpy.random.randint(0,max_allow+1, size=self.shape).astype(self.dtype)
                     
-
             elif api_config.api_name in ["paddle.multiplex"]:
                 if 'inputs' in api_config.kwargs:
                     s=self.get_arg(api_config,arg_name='inputs')
@@ -415,6 +414,29 @@ class TensorConfig:
                     self.dtype='float32'    
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
+            elif api_config.api_name in ["paddle.nn.functional.max_unpool1d"] and index == 0:
+                # use max_pool to generate legal max_unpool input
+                kernel_size = self.get_initialized_value(api_config, 2, "kernel_size")
+                stride = self.get_initialized_value(api_config, 3, "stride")
+                padding = self.get_initialized_value(api_config, 4, "padding")
+                padding = 0 if padding is None else padding
+                unpool_output_size = self.get_initialized_value(api_config, 5, "output_size")
+                pool_input_size = unpool_output_size
+                
+                # if max_unpool output_size (max_pool input_size) is not set, calculate manually
+                if unpool_output_size is None:
+                    unpool_input_size = self.get_arg(api_config, 0, "x").shape
+                    pool_output_size = unpool_input_size
+                    last_input_dim = (pool_output_size[-1] - 1) * stride + kernel_size - 2 * padding
+                    pool_input_size = [*pool_output_size[:-1], last_input_dim]
+                
+                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=self.dtype))
+                max_poolxd_func = eval(api_config.api_name.replace("max_unpool", "max_pool"))
+                x, indices = max_poolxd_func(x, kernel_size, stride, padding, return_mask=True)
+                self.numpy_tensor = x.numpy()
+                self.set_tensor_arg_value(api_config, 1, "indices", indices)
+                return self.numpy_tensor
+                
             # n
             # o
             elif api_config.api_name in ["paddle.ones"]:
@@ -712,12 +734,12 @@ class TensorConfig:
         """Get the initialized numpy_tensor value from the api_config instead of the TensorConfig"""    
         # for uninitialized numpy_tensor, return None implicitly as numpy_tensor is None 
         if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
-            if type(api_config.args[arg_pos]) == TensorConfig:
+            if isinstance(api_config.args[arg_pos], TensorConfig):
                 return api_config.args[arg_pos].numpy_tensor
             else:
                 return api_config.args[arg_pos]
         if arg_name and arg_name in api_config.kwargs:
-            if type(api_config.kwargs[arg_name]) == TensorConfig:
+            if isinstance(api_config.kwargs[arg_name], TensorConfig):
                 return api_config.kwargs[arg_name].numpy_tensor
             else:
                 return api_config.kwargs[arg_name]
@@ -736,7 +758,28 @@ class TensorConfig:
         else:
             # case type(api_config.kwargs[arg_name]) != TensorConfig:
             raise TypeError(f"argument '{arg_name}' is not of type TensorConfig.")
-            
+    
+    def set_tensor_arg_value(self, api_config, arg_pos=None, arg_name=None, value=None):
+        if arg_pos is not None and 0 <= arg_pos < len(api_config.args) and isinstance(api_config.args[arg_pos], TensorConfig):
+            api_config.args[arg_pos].numpy_tensor = value
+        elif arg_name and arg_name in api_config.kwargs and isinstance(api_config.kwargs[arg_name], TensorConfig):
+            api_config.kwargs[arg_name].numpy_tensor = value
+        else:
+            raise ValueError(f"argument at position {arg_pos} or name '{arg_name}' is not of type TensorConfig.")
+        
+    def get_random_numpy_tensor(self, shape=None, data_type=None):
+        # extract default init logic 
+        if USE_CACHED_NUMPY:
+            dtype = "float32" if data_type == "bfloat16" else data_type
+            numpy_tensor = self.get_cached_numpy(dtype, shape)
+        else:
+            if "int" in data_type:
+                numpy_tensor = (numpy.random.randint(-65535, 65535, size=shape)).astype(data_type)
+            else:
+                dtype = "float32" if data_type == "bfloat16" else data_type
+                numpy_tensor = (numpy.random.random(shape) - 0.5).astype(dtype)
+        return numpy_tensor
+
 class APIConfig:
     def __deepcopy__(self, memo):
         cls = self.__class__
