@@ -284,6 +284,7 @@ class TensorConfig:
                         self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
+
             # g
             elif api_config.api_name in ["paddle.gammainc", "paddle.gammaincc"]:
                 if "int" in self.dtype:
@@ -448,28 +449,25 @@ class TensorConfig:
                 else:
                     self.dtype = "int32"
                     if self.shape != [] and self.shape != [1]:
-                        self.numpy_tensor = numpy.zeros(self.shape)
+                        self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
                         for i in range(self.shape[0]):
                             if i < self.shape[0]-1:
                                 self.numpy_tensor[i] = numpy.random.randint(1, api_config.maxvalue+1)
                                 while api_config.maxvalue % self.numpy_tensor[i]:
-                                    self.numpy_tensor[i] = numpy.random.randint(1, api_config.maxvalue+1)      
+                                    self.numpy_tensor[i] = numpy.random.randint(1, api_config.maxvalue+1)
                                 api_config.maxvalue = api_config.maxvalue // self.numpy_tensor[i] 
                             else:
                                 self.numpy_tensor[i] = api_config.maxvalue
                     else:
                         if api_config.tensornum == 1:
-                            if self.shape == []:
-                                self.numpy_tensor = api_config.maxvalue
-                            elif self.shape == [1]:
-                                self.numpy_tensor = numpy.zeros(self.shape)
-                                self.numpy_tensor[0] = api_config.maxvalue
+                            self.numpy_tensor = numpy.random.randint(api_config.maxvalue, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
                         else:
                             api_config.tensornum -= 1
-                            self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape)
+                            self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
                             while api_config.maxvalue % self.numpy_tensor:
-                                self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape)
+                                self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
                             api_config.maxvalue = api_config.maxvalue // self.numpy_tensor
+
                 
             # s
             elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:

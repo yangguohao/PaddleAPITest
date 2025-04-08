@@ -264,10 +264,10 @@ class APITestBase:
 
         return True
     
-    def _handle_list_or_tuple(self, config_items, is_tuple=False, index=0):
+    def _handle_list_or_tuple(self, config_items, is_tuple=False, index=0, key="null"):
         """处理 list 或 tuple """
         tmp = [
-            item.get_paddle_tensor(self.api_config, i + index) if isinstance(item, TensorConfig) else item
+            item.get_paddle_tensor(self.api_config, i + index, key) if isinstance(item, TensorConfig) else item
             for i, item in enumerate(config_items)
         ]
         return tuple(tmp) if is_tuple else tmp
@@ -448,18 +448,18 @@ class APITestBase:
         for i in range(len(self.paddle_args)):
             if isinstance(self.paddle_args[i], paddle.Tensor):
                 result.append(self.paddle_args[i])
-            elif isinstance(self.paddle_args[i], list) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                result = result + self.paddle_args[i]
-            elif isinstance(self.paddle_args[i], tuple) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                result = result + list(self.paddle_args[i])
+            elif isinstance(self.paddle_args[i], tuple) or isinstance(self.paddle_args[i], list):
+                for item in self.paddle_args[i]:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
 
         for key, value in self.paddle_kwargs.items():
             if isinstance(value, paddle.Tensor):
                 result.append(value)
-            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
-                result = result + value
-            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], paddle.Tensor):
-                result = result + list(value)
+            elif isinstance(value, tuple) or isinstance(value, list):
+                for item in value:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
         
         return result
 
@@ -471,16 +471,20 @@ class APITestBase:
                 result.append(self.torch_args[i])
             elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
                 result = result + self.torch_args[i]
-            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
-                result = result + list(self.torch_args[i])
+            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0:
+                for item in self.paddle_args[i]:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
 
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 result.append(value)
             elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], torch.Tensor):
                 result = result + value
-            elif isinstance(value, tuple) and len(value) > 0 and isinstance(value[0], torch.Tensor):
-                result = result + list(value)
+            elif isinstance(value, tuple) and len(value) > 0:
+                for item in value:
+                    if isinstance(item, paddle.Tensor):
+                        result.append(item)
 
         return result
 
