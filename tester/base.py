@@ -98,7 +98,6 @@ rand_apis = ["paddle.rand",
     "paddle.linalg.eigvalsh",
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
-    "paddle.nn.functional.alpha_dropout",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
@@ -257,6 +256,8 @@ class APITestBase:
             item.get_paddle_tensor(self.api_config, i + index, key) if isinstance(item, TensorConfig) else item
             for i, item in enumerate(config_items)
         ]
+        if self.api_config.api_name in ["paddle.expand","paddle.Tensor.expand"] and isinstance(tmp[0], paddle.Tensor):
+            tmp[0]=int(tmp[0])
         return tuple(tmp) if is_tuple else tmp
         
     def _handle_axis_arg(self, config_items, is_tuple=False):
