@@ -1,3 +1,4 @@
+import random
 import re
 import collections
 import paddle
@@ -118,7 +119,7 @@ class TensorConfig:
             dims = numpy.random.choice(max_dim, size=self.shape[0], replace=False)
             mask = numpy.random.rand(self.shape[0]) > 0.5
             dims = numpy.where(mask, dims - max_dim, dims)
-            return numpy.array(final_dims, dtype=self.dtype)
+            return numpy.array(dims, dtype=self.dtype)
 
         raise ValueError(
             f"Invalid shape for 'axis' Tensor in {api_config.api_name}. "
@@ -266,11 +267,8 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
 
             elif api_config.api_name in ["paddle.expand"]:
-                if index>0:
-                    if 'x' in api_config.kwargs:
-                        d=self.get_arg(api_config,arg_name='x')
-                    else:   
-                        d=self.get_arg(api_config,0)
+                if not (key == "x" or index == 0):
+                    d=self.get_arg(api_config, 0, "x")
                     s=d.shape
                     if len(s)==0 or s[index-1]==1:
                         self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
@@ -425,9 +423,9 @@ class TensorConfig:
                     self.numpy_tensor = self.generate_random_axes(api_config)
 
             elif api_config.api_name in ["paddle.multinomial"]:
-                if index==0:
+                if key == "x" or index == 0:
                     self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
-                if "num_samples" in api_config.kwargs and index==1:
+                if key == "num_samples" or index == 1:
                     if 'replacement' not in api_config.kwargs:
                         inputs=self.get_arg(api_config,0)
                         inputs=inputs.numpy_tensor
@@ -436,10 +434,9 @@ class TensorConfig:
                     
 
             elif api_config.api_name in ["paddle.multiplex"]:
-                if 'inputs' in api_config.kwargs:
-                    s=self.get_arg(api_config,arg_name='inputs')
-                    if index==len(s):
-                        self.numpy_tensor = (numpy.random.randint(0,len(s), size=self.shape)).astype(self.dtype)
+                s = self.get_arg(api_config, 0, 'inputs')
+                if key == "index" or index == 1:
+                    self.numpy_tensor = (numpy.random.randint(0,len(s), size=self.shape)).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.multiply"]:
                 if self.dtype=='bfloat16':
@@ -449,25 +446,26 @@ class TensorConfig:
             # n
 
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
-                if index==1:
-                    s=self.get_arg(api_config,0)
+                if key == "output_size" or index == 1:
+                    s = self.get_arg(api_config, 0, "x")
                     s=s.shape
                     self.numpy_tensor = numpy.random.randint(1,2*max(s), size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.affine_grid']:
-                s=self.get_arg(api_config,0)
-                s=s.shape
-                if index==1:
+                if key == "out_shape" or index == 1:
+                    s = self.get_arg(api_config, 0, "theta")
+                    s = s.shape
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
                     self.numpy_tensor[0]=s[0]
             
             elif api_config.api_name in ['paddle.nn.functional.alpha_dropout']:
-                if index==0 and self.dtype=='bfloat16':
-                    self.dtype='float32'
+                if key == "x" or index == 0:
+                    if self.dtype=='bfloat16':
+                        self.dtype='float32'
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.interpolate']:
-                if index>=1:
+                if not (key == "x" or index == 0):
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.grid_sample']:
@@ -476,26 +474,25 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.hsigmoid_loss']:
-                nclass=self.get_arg(api_config,2)
-                weight=self.get_arg(api_config,3)
-                if index==1:
+                nclass = self.get_arg(api_config, 2, "num_classes")
+                weight = self.get_arg(api_config, 3, "weight")
+                if key == "label" or index == 1:
                     self.numpy_tensor = numpy.random.randint(0,nclass, size=self.shape).astype(self.dtype)
-                elif index==5:
+                elif key == "path_table" or index == 5:
                     self.numpy_tensor = numpy.random.randint(0,weight.shape[0], size=self.shape).astype(self.dtype)
-                elif index==6:
+                elif key == "path_code" or index == 6:
                     self.numpy_tensor = numpy.random.randint(0,2, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.upsample']:
-                if 'size' in api_config.kwargs:
-                    if self.get_arg(api_config,arg_name='size') and index>=1:
-                        self.numpy_tensor = numpy.random.randint(0,128, size=self.shape).astype(self.dtype)
-                if index==2 and 'scale_factor' in api_config.kwargs and self.get_arg(api_config,arg_name='scale_factor'):
+                if self.get_arg(api_config, 1, 'size') and (key != "x" or index >= 1):
+                    self.numpy_tensor = numpy.random.randint(0,128, size=self.shape).astype(self.dtype)
+                if key == "scale_factor" or index == 2:
                     self.numpy_tensor = 0.5*numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
  
 
             # o
             elif api_config.api_name in ["paddle.ones"]:
-                if api_config.api_name == "paddle.ones" and len(self.shape) == 0:
+                if len(self.shape) == 0:
                     self.numpy_tensor = numpy.array(random.randint(1, 2048), dtype=self.dtype)
                 else:
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
@@ -505,7 +502,7 @@ class TensorConfig:
                     self.numpy_tensor = self.generate_random_axes(api_config)
             # q
             elif api_config.api_name in ["paddle.quantile"]:
-                if index==1:
+                if not (key == "x" or index == 0):
                     self.numpy_tensor = numpy.random.rand(1).astype(self.dtype)
 
             # r                
@@ -566,17 +563,14 @@ class TensorConfig:
                 
             # s
             elif api_config.api_name in ["paddle.scatter"]:
-                if index==1:
-                    if 'x' in api_config.kwargs:
-                        d=self.get_arg(api_config,arg_name='x')
-                    else:
-                        d=self.get_arg(api_config,0)
+                if key == "index" or index == 1:
+                    d=self.get_arg(api_config, 0, "x")
                     s=d.shape[0]
                     self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd"]:
-                future_data=self.get_arg(api_config,2)     
-                if index==0 and future_data and len(future_data):
+                future_data=self.get_arg(api_config, 2, "shape")     
+                if (key == "index" or index == 0) and future_data and len(future_data):
                     self.numpy_tensor=numpy.zeros(self.shape)
                     s=self.shape
                     for ii in range(len(future_data)):  
@@ -585,17 +579,11 @@ class TensorConfig:
                         self.numpy_tensor[...,ii] = numpy.random.randint(-future_data[ii], future_data[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd_add"]:
-                if index==1:
-                    if 'x' in api_config.kwargs:
-                        org=self.get_arg(api_config,arg_name='x')
-                    else:
-                        org=self.get_arg(api_config,0)
+                if key == "index" or index == 1:
+                    org=self.get_arg(api_config, 0, "x")
                     org=org.shape
                     self.numpy_tensor=numpy.zeros(self.shape)
-                    if 'index' in api_config.kwargs:
-                        ind=self.get_arg(api_config,arg_name='index')
-                    else:
-                        ind=self.get_arg(api_config,1)
+                    ind=self.get_arg(api_config, 1, "index")
                     s=ind.shape
                     for ii in range(s[-1]):  
                         self.numpy_tensor[...,ii] = numpy.random.randint(-org[ii], org[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
@@ -664,13 +652,13 @@ class TensorConfig:
                     
             elif api_config.api_name in ["paddle.Tensor.clip"]:
                 self.numpy_tensor=numpy.random.random()-0.5
-                if index==2:
-                    pre=self.get_arg(api_config,1)
+                if key == "max" or index == 2:
+                    pre=self.get_arg(api_config, 1, "min")
                     self.numpy_tensor=numpy.clip(self.numpy_tensor,pre.numpy_tensor,None)
             
             elif api_config.api_name in ["paddle.Tensor.expand"]:
-                if index>0:
-                    d=self.get_arg(api_config,0)
+                if not (key == "x" or index == 0):
+                    d=self.get_arg(api_config, 0, "shape")
                     s=d.shape
                     if len(s)==0 or s[index-1]==1:
                         self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
@@ -678,11 +666,8 @@ class TensorConfig:
                         self.numpy_tensor = numpy.array(s[index-1])
 
             elif api_config.api_name in ['paddle.Tensor.gather',"paddle.gather"]:
-                if index==1:
-                    if 'x' in api_config.kwargs:
-                        s=self.get_arg(api_config,arg_name='x')
-                    else:
-                        s=self.get_arg(api_config,0)
+                if key == "index" or index == 1:
+                    s=self.get_arg(api_config, 0, "x")
 
                     if 'axis' in api_config.kwargs:
                         tmp=self.get_arg(api_config,arg_name='axis')
@@ -692,11 +677,11 @@ class TensorConfig:
                     else:
                         tmp=0
                     self.numpy_tensor = (numpy.random.randint(0,s.shape[tmp], size=self.shape)).astype(self.dtype)
-                elif index==2:
+                elif key == "axis" or index == 2:
                     self.numpy_tensor = (numpy.random.randint(0,2, size=self.shape)).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.Tensor.gather_nd","paddle.gather_nd"]:
-                if index==1:
+                if key == "index" or index == 1:
                     if 'x' in api_config.kwargs:
                         org=self.get_arg(api_config,arg_name='x')
                     else:
@@ -718,32 +703,27 @@ class TensorConfig:
                 else:
                     tarindex=1
                 if index==tarindex:
-                    if 'axis' in api_config.kwargs:
-                        axis=self.get_arg(api_config,arg_name='axis')
-                    else:
+                    axis=self.get_arg(api_config, 2, 'axis')
+                    if axis is None:
                         axis=0
-                    inputs=self.get_arg(api_config,0)
+                    inputs=self.get_arg(api_config, 0, "x")
                     self.numpy_tensor = numpy.random.randint(0,inputs.shape[axis], size=self.shape).astype(self.dtype)
 
             # u
             elif api_config.api_name in ["paddle.unsqueeze"]:
                 if self.check_arg(api_config, 1, "axis"):
-                    max_dim = len(self.get_arg(api_config, 0, "x").shape) + 1
-                    shape_len = len(self.shape)
-                    if shape_len == 0:
-                        dim = random.randint(0, max_dim - 1)
-                        if random.choice([True, False]):
+                    x_shape = self.get_arg(api_config, 0, "x").shape
+                    max_dim = len(x_shape) + 1
+                    if len(self.shape) == 0:
+                        dim = numpy.random.randint(0, max_dim)
+                        if numpy.random.rand() > 0.5:
                             dim -= max_dim
                         self.numpy_tensor = numpy.array(dim, dtype=self.dtype)
-                    elif shape_len == 1:
-                        all_dims = list(range(max_dim))
-                        random_dims = random.sample(all_dims, self.shape[0])
-                        final_dims = []
-                        for dim in random_dims:
-                            if random.choice([True, False]):
-                                dim -= max_dim
-                            final_dims.append(dim)
-                        self.numpy_tensor = numpy.array(final_dims, dtype=self.dtype)
+                    elif len(self.shape) == 1:
+                        dims = numpy.random.choice(max_dim, size=self.shape[0], replace=False)
+                        mask = numpy.random.rand(self.shape[0]) > 0.5
+                        dims = numpy.where(mask, dims - max_dim, dims)
+                        self.numpy_tensor = numpy.array(dims, dtype=self.dtype)
                     else:
                         raise ValueError(
                             f"Invalid shape for 'axis' Tensor in paddle.unsqueeze. "
