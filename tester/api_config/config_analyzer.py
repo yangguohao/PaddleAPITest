@@ -144,7 +144,7 @@ class TensorConfig:
             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
         )
 
-    def get_numpy_tensor(self, api_config,index=0,key="null"):
+    def get_numpy_tensor(self, api_config, index=0, key="null"):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
@@ -230,16 +230,39 @@ class TensorConfig:
                 len_shape = len(x_tensor_config.shape)
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
-            elif api_config.api_name in ["paddle.clip"] and self.get_initialized_value(api_config, 1, "min") is not None:
-                # if min tensor is initialized, init max tensor which satisfies max >= min
-                min = self.get_initialized_value(api_config, 1, "min")
-                if "int" in self.dtype:
-                    max = min + (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
-                else:
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    max = min + (numpy.random.random(self.shape) * (numpy.finfo(numpy.float32).max - min)).astype(dtype)
-                        
-                self.numpy_tensor = max
+            elif api_config.api_name in ["paddle.clip"] and index == 0:
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tennor)
+                self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
+                
+                # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
+                min_config = self.get_arg(api_config, 1, "min")
+                max_config = self.get_arg(api_config, 2, "max")
+                if (isinstance(min_config, TensorConfig) and isinstance(max_config, TensorConfig)):
+                    min_shape = min_config.shape
+                    min_dtype = min_config.dtype
+                    min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype)
+
+                    max_shape = max_config.shape
+                    max_dtype = max_config.dtype
+                    max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
+                    
+                    self.set_tensor_arg_value(api_config, 1, "min", min)
+                    self.set_tensor_arg_value(api_config, 2, "max", max)
+                elif min_config is not None and max_config is not None:
+                    # min and max args are specified but at least one of them is scalar (not a TensorConfig)
+                    # according to API DOC, min and max is float|int|Tensor
+                    if isinstance(min_config, TensorConfig) and (isinstance(max_config, int) or isinstance(max_config, float)):
+                        min_shape = min_config.shape
+                        min_dtype = min_config.dtype
+                        min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
+                        self.set_tensor_arg_value(api_config, 1, "min", min)
+                    elif (isinstance(max_config, TensorConfig) and (isinstance(min_config, int) or isinstance(min_config, float))):
+                        max_shape = max_config.shape
+                        max_dtype = max_config.dtype
+                        max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
+                        self.set_tensor_arg_value(api_config, 2, "max", max)
+                    # for both min and max are scalar, there is no need to init numpy tensor
+
                 return self.numpy_tensor
             # d
             # e
@@ -946,17 +969,22 @@ class TensorConfig:
         else:
             raise ValueError(f"argument at position {arg_pos} or name '{arg_name}' is not of type TensorConfig.")
         
-    def get_random_numpy_tensor(self, shape=None, data_type=None):
+    def get_random_numpy_tensor(self, shape=None, data_type=None, min=None, max=None):
         # extract default init logic 
         if USE_CACHED_NUMPY:
             dtype = "float32" if data_type == "bfloat16" else data_type
             numpy_tensor = self.get_cached_numpy(dtype, shape)
         else:
             if "int" in data_type:
-                numpy_tensor = (numpy.random.randint(-65535, 65535, size=shape)).astype(data_type)
+                min = min if min is not None else -65535
+                max = max if max is not None else 65535
+                numpy_tensor = (numpy.random.randint(min, max, size=shape)).astype(data_type)
             else:
+                # TO DO: check boundary and cached numpy
                 dtype = "float32" if data_type == "bfloat16" else data_type
-                numpy_tensor = (numpy.random.random(shape) - 0.5).astype(dtype)
+                min = min if min is not None else numpy.finfo(dtype).min / 2
+                max = max if max is not None else numpy.finfo(dtype).max / 2
+                numpy_tensor = (numpy.random.uniform(min, max, size=shape)).astype(dtype)
         return numpy_tensor
 
 class APIConfig:
