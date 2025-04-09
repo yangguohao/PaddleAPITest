@@ -186,7 +186,7 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.argmax","paddle.argmin"]:  
                 if  self.check_arg(api_config, 1, "axis"):
                     arr=self.get_arg(api_config,0,'x')                
-                    min_dim = min(arr.shape)
+                    min_dim = numpy.min(arr.shape)
                     indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
                     self.numpy_tensor = indices.reshape(self.shape)
                     self.dtype = "int64"
@@ -196,7 +196,7 @@ class TensorConfig:
                 s2=self.get_arg(api_config,1)
                 s1=s1.shape
                 s2=s2.shape
-                if max(s1) == 0 and max(s2) == 0:
+                if numpy.max(s1) == 0 and max(s2) == 0:
                     while len(s1)>len(s2):
                         s2.append(0)
                     while len(s2)>len(s1):
@@ -574,7 +574,7 @@ class TensorConfig:
                 if key == "output_size" or index == 1:
                     s = self.get_arg(api_config, 0, "x")
                     s=s.shape
-                    self.numpy_tensor = numpy.random.randint(1,2*max(s), size=self.shape).astype(self.dtype)
+                    self.numpy_tensor = numpy.random.randint(1,2*numpy.max(s), size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.affine_grid']:
                 if key == "out_shape" or index == 1:
@@ -609,10 +609,10 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.randint(0,2, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.upsample']:
-                if self.get_arg(api_config, 1, 'size') and not (key == "x" or index == 0):
+                if self.get_arg(api_config, 1, 'size'):
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
-                if key == "scale_factor" or index == 2:
-                    self.numpy_tensor = 0.5*numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
+                if self.get_arg(api_config, 2, 'scale_factor'):
+                    self.numpy_tensor = numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
             
             elif api_config.api_name in ['paddle.nn.functional.binary_cross_entropy']:
                 if index==0 or key=='input':
@@ -834,7 +834,30 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.standard_normal"]:
                 if index==0 or key=='shape': 
                     self.numpy_tensor =numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)
-  
+
+
+            elif api_config.api_name in ["paddle.strided_slice"]:
+                s=self.get_arg(api_config,0,'x')
+                if self.check_arg(api_config,1,'axes'):
+                    self.numpy_tensor =numpy.random.randint(0,len(s.shape), size=self.shape).astype(self.dtype)
+                elif index:
+                    axes=self.get_arg(api_config,1,'axes')
+                    for i in range(len(axes)):
+                        if isinstance(axes[i],TensorConfig):
+                            axes[i]=int(axes[i].numpy_tensor)
+                    if self.check_arg(api_config,2,'starts'):
+                        axes=self.get_arg(api_config,1,'axes')
+                        if not isinstance(axes,list):
+                            axes=axes.numpy_tensor
+                        ind=kwargs['list_index'][0]
+                        self.numpy_tensor =numpy.random.randint(0,s.shape[axes[ind]]-1, size=self.shape).astype(self.dtype)
+                    elif self.check_arg(api_config,3,'ends'):
+                        ind=kwargs['list_index'][0]
+                        pre=self.get_arg(api_config,2,'starts')
+                        self.numpy_tensor =numpy.random.randint(pre[ind].numpy_tensor+1,s.shape[axes[ind]], size=self.shape).astype(self.dtype)
+                    elif self.check_arg(api_config,4,'strides'):
+                        ind=kwargs['list_index'][0]
+                        self.numpy_tensor =numpy.random.randint(1,s.shape[axes[ind]], size=self.shape).astype(self.dtype)
 
             # t
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
