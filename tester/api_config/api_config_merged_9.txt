@@ -134,6 +134,7 @@ paddle.expand(Tensor([64, 1, 512],"float32"), shape=list[Tensor([],"int64"),26,5
 paddle.expand(Tensor([8, 1, 512],"float32"), shape=list[Tensor([],"int64"),26,512,], )
 paddle.expand(x=Tensor([1],"float64"), shape=Tensor([2],"int32"), )
 paddle.expand(x=Tensor([1],"int64"), shape=Tensor([2],"int32"), )
+paddle.expand(x=Tensor([2, 2],"int64"), shape=Tensor([3],"int32"), )
 paddle.expand_as(Tensor([10, 2, 30, 30],"float16"), Tensor([10, 2, 30, 30],"float16"), )
 paddle.Tensor.expand(Tensor([],"float32"), tuple(Tensor([],"int64"),), )
 paddle.Tensor.expand(Tensor([1, 1, 1, 2048],"bool"), list[1,1,Tensor([],"int64"),2048,], )
