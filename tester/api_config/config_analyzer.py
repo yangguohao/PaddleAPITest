@@ -237,7 +237,7 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
             elif api_config.api_name in ["paddle.clip"] and self.check_arg(api_config, 0, "x"):
-                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tennor)
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
                 self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
                 
                 # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
@@ -345,9 +345,41 @@ class TensorConfig:
                     self.numpy_tensor = numpy.sort(
                         numpy.random.randint(0, max_segments, size=self.shape).astype(self.dtype)
                     )
-            elif api_config.api_name.startswith("paddle.geometric.send_u"):
-                if self.check_arg(api_config, 1, "src_index") or self.check_arg(api_config, 2, "dst_index"):
+            elif api_config.api_name in ["paddle.geometric.sample_neighbors"]:
+                if self.check_arg(api_config, 0, "row"):
+                    colptr_shape = self.get_arg(api_config, 1, "colptr").shape
+                    num_nodes = colptr_shape[0] - 1
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape, dtype=self.dtype)
+                elif self.check_arg(api_config, 1, "colptr"):
+                    num_edges = self.get_arg(api_config, 0, "row").shape[0]
+                    num_nodes = self.shape[0] - 1
+                    colptr = numpy.zeros(self.shape, dtype=self.dtype)
+                    if num_nodes > 0 and num_edges > 0 :
+                        splits = numpy.random.choice(numpy.arange(num_edges + 1), num_nodes - 1, replace=True)
+                        splits.sort()
+                        colptr[1:num_nodes] = splits
+                        colptr[num_nodes] = num_edges
+                    self.numpy_tensor = colptr
+                elif self.check_arg(api_config, 2, "input_nodes"):
+                    num_nodes = self.shape[0] - 1
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape, dtype=self.dtype)
+                elif self.check_arg(api_config, 4, "eids"):
+                    num_edges = self.get_arg(api_config, 0, "row").shape[0]
+                    self.numpy_tensor = numpy.arange(num_edges, dtype=self.dtype).reshape(self.shape)
+                elif self.check_arg(api_config, 6, "perm_buffer"):
+                    num_edges = self.get_arg(api_config, 0, "row").shape[0]
+                    self.numpy_tensor = numpy.arange(num_edges, dtype=self.dtype).reshape(self.shape)
+
+            elif api_config.api_name.startswith("paddle.geometric.send_"):
+                if api_config.api_name.endswith("u_recv"):
+                    if self.check_arg(api_config, 1, "src_index") or self.check_arg(api_config, 2, "dst_index"):
+                        num_nodes = self.get_arg(api_config, 0, "x").shape[0]
+                        self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "src_index"):
                     num_nodes = self.get_arg(api_config, 0, "x").shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 3, "dst_index"):
+                    num_nodes = self.get_arg(api_config, 1, "y").shape[0]
                     self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
             # h
             # i
@@ -531,12 +563,11 @@ class TensorConfig:
                 return self.numpy_tensor
                 
             # n
-            elif api_config.api_name.startswith("paddle.nn.functional."):
-                if api_config.api_name.endswith("adaptive_avg_pool2d") or api_config.api_name.endswith('adaptive_avg_pool3d'):
-                    if index==1:
-                        s=self.get_arg(api_config,0)
-                        s=s.shape
-                        self.numpy_tensor = numpy.random.randint(1,2*max(s), size=self.shape).astype(self.dtype)
+            elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d", "paddle.nn.functional.adaptive_avg_pool3d"]:
+                if index==1:
+                    s=self.get_arg(api_config,0)
+                    s=s.shape
+                    self.numpy_tensor = numpy.random.randint(1,2*max(s), size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
                 if key == "output_size" or index == 1:
@@ -582,6 +613,46 @@ class TensorConfig:
                 if key == "scale_factor" or index == 2:
                     self.numpy_tensor = 0.5*numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
  
+            elif api_config.api_name in ["paddle.nn.functional.cross_entropy"]:
+                if self.check_arg(api_config, 1, "label"):
+                    num_classes = self.get_arg(api_config, 0, "input").shape[-1]
+                    soft_label = self.get_arg(api_config, 5, "soft_label")
+                    if soft_label is None:
+                        soft_label = False
+                    if soft_label:
+                        soft_labels = numpy.random.randn(*self.shape)
+                        soft_labels = soft_labels / soft_labels.sum(axis=1, keepdims=True)
+                        self.numpy_tensor = soft_labels.astype(self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.nn.functional.ctc_loss"]:
+                if self.check_arg(api_config, 1, "labels"):
+                    num_classes = self.get_arg(api_config, 0, "log_probs").shape[2] - 1
+                    blank = self.get_arg(api_config, 4, "blank")
+                    if blank is None:
+                        blank = 0
+                    valid_label_indices = [i for i in range(num_classes + 1) if i != blank]
+                    if not valid_label_indices:
+                        self.numpy_tensor = numpy.zeros(self.shape, dtype=self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.choice(valid_label_indices, size=self.shape, replace=True).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "input_lengths"):
+                    max_logit_length = self.get_arg(api_config, 0, "log_probs").shape[0]
+                    self.numpy_tensor = numpy.random.randint(1, max_logit_length + 1, size=self.shape, dtype=self.dtype)
+                elif self.check_arg(api_config, 3, "label_lengths"):
+                    max_label_length = self.get_arg(api_config, 1, "labels").shape[1]
+                    max_logit_length = self.get_arg(api_config, 0, "log_probs").shape[0]
+                    cand_label_lengths = numpy.random.randint(1, max_label_length + 1, size=self.shape, dtype=self.dtype)
+                    compatible_input_lengths = numpy.random.randint(1, max_logit_length + 1, size=self.shape, dtype=self.dtype)
+                    final_label_lengths = numpy.minimum(cand_label_lengths, compatible_input_lengths)
+                    final_label_lengths = numpy.maximum(final_label_lengths, 1)
+                    self.numpy_tensor = final_label_lengths
+
+            elif api_config.api_name in ["paddle.nn.functional.dice_loss"]:
+                if self.check_arg(api_config, 1, "label"):
+                    num_classes = self.get_arg(api_config, 0, "input").shape[-1]
+                    self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape, dtype=self.dtype)
 
             # o
             elif api_config.api_name in ["paddle.ones"]:
