@@ -28,16 +28,12 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.nn.functional.nll_loss",
  "paddle.nn.functional.gather_tree",
  "paddle.nn.functional.softmax_with_cross_entropy",
- "paddle.put_along_axis",
- "paddle.Tensor.put_along_axis",
- "paddle.bernoulli",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.incubate.nn.functional.block_multihead_attention",
  "paddle.linalg.pca_lowrank"
  ]
 
 rand_apis = ["paddle.rand",
-    "paddle.bernoulli",
     "paddle.bernoulli_",
     "paddle.poisson",
     "paddle.standard_gamma",
