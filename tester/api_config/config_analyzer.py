@@ -484,7 +484,7 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.randint(0,2, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.upsample']:
-                if self.get_arg(api_config, 1, 'size') and (key != "x" or index >= 1):
+                if self.get_arg(api_config, 1, 'size') and not (key == "x" or index == 0):
                     self.numpy_tensor = numpy.random.randint(0,128, size=self.shape).astype(self.dtype)
                 if key == "scale_factor" or index == 2:
                     self.numpy_tensor = 0.5*numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
