@@ -770,15 +770,6 @@ class TensorConfig:
                     pre=self.get_arg(api_config, 1, "min")
                     self.numpy_tensor=numpy.clip(self.numpy_tensor,pre.numpy_tensor,None)
             
-            # elif api_config.api_name in ["paddle.Tensor.expand"]:
-            #     if not (key == "x" or index == 0):
-            #         d=self.get_arg(api_config, 0, "shape")
-            #         s=d.shape
-            #         if len(s)==0 or s[index-1]==1:
-            #             self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
-            #         else:
-            #             self.numpy_tensor = numpy.array(s[index-1])
-
             elif api_config.api_name in ['paddle.Tensor.gather',"paddle.gather"]:
                 if key == "index" or index == 1:
                     s=self.get_arg(api_config, 0, "x")
