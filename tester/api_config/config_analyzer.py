@@ -838,6 +838,14 @@ class TensorConfig:
             # z
             elif api_config.api_name in ["paddle.zeros"]:
                 self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
+                
+            elif api_config.api_name in ["paddle.nn.functional.zeropad2d"]:
+                if self.check_arg(api_config, 0, "x"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype)
+                elif self.check_arg(api_config, 1, "padding"):
+                    # padding value should not be too large 
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=10)
+                    
             # _
             elif api_config.api_name in ["paddle.Tensor.__getitem__","paddle.Tensor.__setitem__"] and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
                 arr = self.get_arg(api_config, 0, "arr")
