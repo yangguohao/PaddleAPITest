@@ -236,7 +236,7 @@ class TensorConfig:
                 len_shape = len(x_tensor_config.shape)
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
-            elif api_config.api_name in ["paddle.clip"] and index == 0:
+            elif api_config.api_name in ["paddle.clip"] and self.check_arg(api_config, 0, "x"):
                 # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tennor)
                 self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
                 
@@ -476,7 +476,7 @@ class TensorConfig:
                     self.dtype='float32'    
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
-            elif api_config.api_name in ["paddle.nn.functional.max_unpool1d", "paddle.nn.functional.max_unpool2d", "paddle.nn.functional.max_unpool3d"] and index == 0:
+            elif api_config.api_name in ["paddle.nn.functional.max_unpool1d", "paddle.nn.functional.max_unpool2d", "paddle.nn.functional.max_unpool3d"] and self.check_arg(api_config, 0, "x"):
                 # use max_pool to generate legal max_unpool input
                 kernel_size = self.get_initialized_value(api_config, 2, "kernel_size")
                 stride = self.get_initialized_value(api_config, 3, "stride")
