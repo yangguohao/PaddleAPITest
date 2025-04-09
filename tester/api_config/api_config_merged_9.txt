@@ -276,3 +276,4 @@ paddle.nn.functional.multi_margin_loss(input=Tensor([5, 2],"float64"), label=Ten
 paddle.nn.functional.multi_margin_loss(input=Tensor([5, 2],"float64"), label=Tensor([5],"int64"), p=2, margin=1.0, weight=None, reduction="mean", )
 paddle.nn.functional.multi_margin_loss(Tensor([5, 2],"float64"), Tensor([5],"int64"), p=1, margin=1.0, weight=Tensor([2],"float64"), reduction="mean", name=None, )
 paddle.nn.functional.multi_margin_loss(Tensor([5, 2],"float64"), Tensor([5],"int64"), p=2, margin=1.0, weight=None, reduction="mean", name=None, )
+paddle.strided_slice(Tensor([5, 5, 5],"float32"), list[1,2,], list[Tensor([],"int32"),Tensor([],"int32"),], list[Tensor([],"int32"),Tensor([],"int32"),], list[Tensor([],"int32"),Tensor([],"int32"),], )
