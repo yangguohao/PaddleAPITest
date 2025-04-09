@@ -675,7 +675,6 @@ class TensorConfig:
                     for ii in range(s[-1]):  
                         self.numpy_tensor[...,ii] = numpy.random.randint(-org[ii], org[ii], size=self.numpy_tensor[...,ii].shape).astype(self.dtype)
 
-
             elif api_config.api_name in ["paddle.sum", "paddle.squeeze"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
@@ -728,6 +727,22 @@ class TensorConfig:
                             f"Invalid shape for 'axis' Tensor in paddle.split. "
                             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
                         )
+
+            elif api_config.api_name in ["paddle.nn.functional.softmax"]:
+                # for TensorConfig axis
+                x_tensor_config = self.get_arg(api_config, 0, "x")
+                axis_config = self.get_arg(api_config, 1, "axis")
+                
+                if self.check_arg(api_config, 0, "x"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype)
+                elif self.check_arg(api_config, 1, "axis"):
+                    len_shape_x = len(x_tensor_config.shape)
+                    # specify if axis is a scalar tensor, else is a int according to doc
+                    if isinstance(axis_config, TensorConfig):
+                        axis = self.get_random_numpy_tensor(axis_config.shape, axis_config.dtype, min=-len_shape_x, max=len_shape_x)
+                        self.numpy_tensor = axis
+                
+                return self.numpy_tensor
             # t
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
