@@ -39,3 +39,5 @@ paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), list[2,2,2,2,],
 paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), list[2,2,4,1,], )
 paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), Tensor([4],"int32"), )
 paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), tuple(1,2,3,4,), )
+paddle.nn.functional.softmax(Tensor([1, 2, 2048, 2048],"bfloat16"), )
+paddle.nn.functional.softmax(Tensor([2, 2],"float32"), axis=Tensor([],"int64"), )
