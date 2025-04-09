@@ -236,6 +236,40 @@ class TensorConfig:
                 len_shape = len(x_tensor_config.shape)
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
+            elif api_config.api_name in ["paddle.clip"] and self.check_arg(api_config, 0, "x"):
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tennor)
+                self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
+                
+                # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
+                min_config = self.get_arg(api_config, 1, "min")
+                max_config = self.get_arg(api_config, 2, "max")
+                if (isinstance(min_config, TensorConfig) and isinstance(max_config, TensorConfig)):
+                    min_shape = min_config.shape
+                    min_dtype = min_config.dtype
+                    min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype)
+
+                    max_shape = max_config.shape
+                    max_dtype = max_config.dtype
+                    max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
+                    
+                    self.set_tensor_arg_value(api_config, 1, "min", min)
+                    self.set_tensor_arg_value(api_config, 2, "max", max)
+                elif min_config is not None and max_config is not None:
+                    # min and max args are specified but at least one of them is scalar (not a TensorConfig)
+                    # according to API DOC, min and max is float|int|Tensor
+                    if isinstance(min_config, TensorConfig) and (isinstance(max_config, int) or isinstance(max_config, float)):
+                        min_shape = min_config.shape
+                        min_dtype = min_config.dtype
+                        min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
+                        self.set_tensor_arg_value(api_config, 1, "min", min)
+                    elif (isinstance(max_config, TensorConfig) and (isinstance(min_config, int) or isinstance(min_config, float))):
+                        max_shape = max_config.shape
+                        max_dtype = max_config.dtype
+                        max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
+                        self.set_tensor_arg_value(api_config, 2, "max", max)
+                    # for both min and max are scalar, there is no need to init numpy tensor
+
+                return self.numpy_tensor
             # d
             # e
             elif api_config.api_name in ["paddle.empty"]:
@@ -432,7 +466,6 @@ class TensorConfig:
                         max_allow=(inputs > 0).sum().item()
                         self.numpy_tensor=numpy.random.randint(0,max_allow+1, size=self.shape).astype(self.dtype)
                     
-
             elif api_config.api_name in ["paddle.multiplex"]:
                 s = self.get_arg(api_config, 0, 'inputs')
                 if key == "index" or index == 1:
@@ -443,6 +476,60 @@ class TensorConfig:
                     self.dtype='float32'    
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
+            elif api_config.api_name in ["paddle.nn.functional.max_unpool1d", "paddle.nn.functional.max_unpool2d", "paddle.nn.functional.max_unpool3d"] and self.check_arg(api_config, 0, "x"):
+                # use max_pool to generate legal max_unpool input
+                kernel_size = self.get_initialized_value(api_config, 2, "kernel_size")
+                stride = self.get_initialized_value(api_config, 3, "stride")
+                padding = self.get_initialized_value(api_config, 4, "padding")
+                padding = 0 if padding is None else padding
+                stride = kernel_size if stride is None else stride
+                unpool_output_size = self.get_initialized_value(api_config, 5, "output_size")
+                pool_input_size = unpool_output_size
+                
+                ndim = 1
+                if "max_unpool2d" in api_config.api_name:
+                    ndim = 2
+                elif "max_unpool3d" in api_config.api_name:
+                    ndim = 3
+                if isinstance(kernel_size, int): 
+                    kernel_size = [kernel_size] * ndim
+                if isinstance(stride, int):
+                    stride = [stride] * ndim
+                if isinstance(padding, int):
+                    padding = [padding] * ndim
+                    
+                # if max_unpool output_size (max_pool input_size) is not set, calculate manually
+                unpool_input_size = self.get_arg(api_config, 0, "x").shape
+                pool_output_size = unpool_input_size
+                if pool_input_size is None:
+                    if ndim == 1:
+                        w_in = pool_output_size[-1]
+                        w_out = (w_in - 1) * stride[0] - 2 * padding[0] + kernel_size[0]
+                        pool_input_size = [*pool_output_size[:-1], w_out]
+                    elif ndim == 2:
+                        h_in, w_in = pool_output_size[-2], pool_output_size[-1]
+                        h_out = (h_in - 1) * stride[0] - 2 * padding[0] + kernel_size[0]
+                        w_out = (w_in - 1) * stride[1] - 2 * padding[1] + kernel_size[1]
+                        pool_input_size = [*pool_output_size[:-2], h_out, w_out]
+                    else:
+                        d_in, h_in, w_in = pool_output_size[-3], pool_output_size[-2], pool_output_size[-1]
+                        d_out = (d_in - 1) * stride[0] - 2 * padding[0] + kernel_size[0]
+                        h_out = (h_in - 1) * stride[1] - 2 * padding[1] + kernel_size[1]
+                        w_out = (w_in - 1) * stride[2] - 2 * padding[2] + kernel_size[2]
+                        pool_input_size = [*pool_output_size[:-3], d_out, h_out, w_out]
+                elif len(pool_input_size) == ndim:
+                    # fill the lost dimensions since unpool_output_size has only last ndim dims
+                    pool_input_size = [*pool_output_size[:-ndim], *pool_input_size[-ndim:]]
+                elif len(pool_input_size) != len(pool_output_size):
+                    raise ValueError(f"invalid argument output_size {pool_input_size} for {api_config.api_name}, len(output_size) should be {ndim} or {len(pool_output_size)} or output_size == None, got len(output_size)={len(pool_input_size)} and output_size={unpool_output_size}")
+                    
+                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=self.dtype))
+                max_poolxd_func = eval(api_config.api_name.replace("max_unpool", "max_pool"))
+                x, indices = max_poolxd_func(x, kernel_size, stride, padding, return_mask=True)
+                self.numpy_tensor = x.numpy()
+                self.set_tensor_arg_value(api_config, 1, "indices", indices)
+                return self.numpy_tensor
+                
             # n
 
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
@@ -833,6 +920,61 @@ class TensorConfig:
         if arg_name and arg_name in api_config.kwargs:
             return api_config.kwargs[arg_name]
         return None
+
+    def get_initialized_value(self, api_config, arg_pos=None, arg_name=None):
+        """Get the initialized numpy_tensor value from the api_config instead of the TensorConfig"""    
+        # for uninitialized numpy_tensor, return None implicitly as numpy_tensor is None 
+        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
+            if isinstance(api_config.args[arg_pos], TensorConfig):
+                return api_config.args[arg_pos].numpy_tensor
+            else:
+                return api_config.args[arg_pos]
+        if arg_name and arg_name in api_config.kwargs:
+            if isinstance(api_config.kwargs[arg_name], TensorConfig):
+                return api_config.kwargs[arg_name].numpy_tensor
+            else:
+                return api_config.kwargs[arg_name]
+        # for args that does not appear in api_config
+        if arg_pos >= len(api_config.args) or arg_name not in api_config.kwargs:
+            return None
+        # error case 
+        if arg_pos is None and arg_name is None:
+            raise ValueError("either arg_pos or arg_name must be provided.")
+        elif arg_pos:
+            if arg_pos < 0:
+                raise IndexError(f"argument position {arg_pos} is out of range for api_config with {len(api_config.args)} arguments.")
+            else: 
+                # case type(api_config.args[arg_pos]) != TensorConfig:
+                raise TypeError(f"argument at position {arg_pos} is not of type TensorConfig.")
+        else:
+            # case type(api_config.kwargs[arg_name]) != TensorConfig:
+            raise TypeError(f"argument '{arg_name}' is not of type TensorConfig.")
+    
+    def set_tensor_arg_value(self, api_config, arg_pos=None, arg_name=None, value=None):
+        if arg_pos is not None and 0 <= arg_pos < len(api_config.args) and isinstance(api_config.args[arg_pos], TensorConfig):
+            api_config.args[arg_pos].numpy_tensor = value
+        elif arg_name and arg_name in api_config.kwargs and isinstance(api_config.kwargs[arg_name], TensorConfig):
+            api_config.kwargs[arg_name].numpy_tensor = value
+        else:
+            raise ValueError(f"argument at position {arg_pos} or name '{arg_name}' is not of type TensorConfig.")
+        
+    def get_random_numpy_tensor(self, shape=None, data_type=None, min=None, max=None):
+        # extract default init logic 
+        if USE_CACHED_NUMPY:
+            dtype = "float32" if data_type == "bfloat16" else data_type
+            numpy_tensor = self.get_cached_numpy(dtype, shape)
+        else:
+            if "int" in data_type:
+                min = min if min is not None else -65535
+                max = max if max is not None else 65535
+                numpy_tensor = (numpy.random.randint(min, max, size=shape)).astype(data_type)
+            else:
+                # TO DO: check boundary and cached numpy
+                dtype = "float32" if data_type == "bfloat16" else data_type
+                min = min if min is not None else numpy.finfo(dtype).min / 2
+                max = max if max is not None else numpy.finfo(dtype).max / 2
+                numpy_tensor = (numpy.random.uniform(min, max, size=shape)).astype(dtype)
+        return numpy_tensor
 
 class APIConfig:
     def __deepcopy__(self, memo):
