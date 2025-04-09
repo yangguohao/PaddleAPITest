@@ -487,7 +487,6 @@ class TensorConfig:
                         else:
                             dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                             self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
-
             elif api_config.api_name in ["paddle.mean", "paddle.max", "paddle.min"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
@@ -641,7 +640,6 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
-
             elif api_config.api_name in ["paddle.put_along_axis", "paddle.Tensor.put_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
                     x_tensor = self.get_arg(api_config, 0, "x")
@@ -836,6 +834,7 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.standard_normal"]:
                 if index==0 or key=='shape': 
                     self.numpy_tensor =numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)
+
 
             elif api_config.api_name in ["paddle.strided_slice"]:
                 s=self.get_arg(api_config,0,'x')
