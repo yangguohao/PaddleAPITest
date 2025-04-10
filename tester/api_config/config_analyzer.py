@@ -579,11 +579,13 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "label"):
                     cutoffs = self.get_arg(api_config, 4, "cutoffs")
                     if isinstance(cutoffs, list) and cutoffs:
-                        n_classes = cutoffs[-1] 
+                        n_classes = cutoffs[-1]
                     else:
-                        n_classes = numpy.random.randint(1, 2048) 
+                        n_classes = numpy.random.randint(5, 20)
                     if "int" not in self.dtype:
-                        self.dtype = "int64" 
+                        self.dtype = "int64"  
+                    if len(self.shape) == 0:
+                        self.shape = [1]
                     self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)
             elif api_config.api_name in ['paddle.nn.functional.affine_grid']:
                 if key == "out_shape" or index == 1:
@@ -591,7 +593,6 @@ class TensorConfig:
                     s = s.shape
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
                     self.numpy_tensor[0]=s[0]
-            
             elif api_config.api_name in ['paddle.nn.functional.alpha_dropout']:
                 if key == "x" or index == 0:
                     if self.dtype=='bfloat16':
