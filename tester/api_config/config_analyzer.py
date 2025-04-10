@@ -263,27 +263,27 @@ class TensorConfig:
                 if (isinstance(min_config, TensorConfig) and isinstance(max_config, TensorConfig)):
                     min_shape = min_config.shape
                     min_dtype = min_config.dtype
-                    min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype)
+                    min_numpy_tensor = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype)
 
                     max_shape = max_config.shape
                     max_dtype = max_config.dtype
-                    max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
+                    max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
                     
-                    self.set_tensor_arg_value(api_config, 1, "min", min)
-                    self.set_tensor_arg_value(api_config, 2, "max", max)
+                    self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
+                    self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
                 elif min_config is not None and max_config is not None:
                     # min and max args are specified but at least one of them is scalar (not a TensorConfig)
                     # according to API DOC, min and max is float|int|Tensor
                     if isinstance(min_config, TensorConfig) and (isinstance(max_config, int) or isinstance(max_config, float)):
                         min_shape = min_config.shape
                         min_dtype = min_config.dtype
-                        min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
-                        self.set_tensor_arg_value(api_config, 1, "min", min)
+                        min_numpy_tensor = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
+                        self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
                     elif (isinstance(max_config, TensorConfig) and (isinstance(min_config, int) or isinstance(min_config, float))):
                         max_shape = max_config.shape
                         max_dtype = max_config.dtype
-                        max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
-                        self.set_tensor_arg_value(api_config, 2, "max", max)
+                        max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
+                        self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
                     # for both min and max are scalar, there is no need to init numpy tensor
 
                 return self.numpy_tensor
@@ -637,6 +637,15 @@ class TensorConfig:
                 else:
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
             # p
+            elif api_config.api_name in ["paddle.nn.functional.pad"]:
+                if self.check_arg(api_config, 1, "pad"):
+                    mode = self.get_arg(api_config, 2, "mode")
+                    # if mode == "reflect":
+                    x_shape = self.get_arg(api_config, 0, "x").shape
+                    min_dim_len = min(x_shape)
+                    self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, \
+                        min=0, max=min_dim_len)
+                    
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
