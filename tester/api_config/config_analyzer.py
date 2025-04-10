@@ -320,7 +320,6 @@ class TensorConfig:
                     self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
                     self.numpy_tensor[0] = numpy.random.randint(last[0],last[0]+s[0])
                     self.numpy_tensor[1] = numpy.random.randint(last[1],last[1]+s[1])
-                    print(self.numpy_tensor)
                     return self.numpy_tensor
                 
             elif api_config.api_name in ["paddle.cumsum"] and self.check_arg(api_config, 1, "axis"):
