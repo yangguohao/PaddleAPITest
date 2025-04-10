@@ -2,6 +2,7 @@ paddle.einsum("...ab,...ba,...ab,...ab", Tensor([4, 3, 1, 4],"float64"), Tensor(
 paddle.matmul(Tensor([1, 2, 2048, 2048],"bfloat16"), Tensor([1, 2, 2048, 128],"bfloat16"), )
 paddle.matmul(x=Tensor([1, 2, 2048, 128],"bfloat16"), y=Tensor([1, 2, 2048, 128],"bfloat16"), transpose_x=False, transpose_y=True, )
 paddle.matmul(x=Tensor([3, 2, 2, 5],"float64"), y=Tensor([5],"float64"), transpose_x=False, transpose_y=True, )
+paddle.Tensor.matmul(Tensor([125, 1],"float32"), Tensor([1, 0],"float32"), )
 paddle.vision.ops.deform_conv2d(x=Tensor([12, 512, 10, 10],"float16"), offset=Tensor([12, 18, 10, 10],"float16"), weight=Tensor([512, 512, 3, 3],"float16"), bias=None, stride=list[1,1,], padding=list[1,1,], dilation=list[1,1,], deformable_groups=1, groups=1, mask=Tensor([12, 9, 10, 10],"float16"), )
 paddle.vision.ops.deform_conv2d(x=Tensor([12, 512, 20, 20],"float16"), offset=Tensor([12, 18, 10, 10],"float16"), weight=Tensor([512, 512, 3, 3],"float16"), bias=None, stride=list[2,2,], padding=list[1,1,], dilation=list[1,1,], deformable_groups=1, groups=1, mask=Tensor([12, 9, 10, 10],"float16"), )
 paddle.vision.ops.deform_conv2d(x=Tensor([20, 128, 76, 136],"float16"), offset=Tensor([20, 18, 76, 136],"float16"), weight=Tensor([64, 128, 3, 3],"float16"), bias=Tensor([64],"float16"), stride=list[1,1,], padding=list[1,1,], dilation=list[1,1,], deformable_groups=1, groups=1, mask=Tensor([20, 9, 76, 136],"float16"), )
