@@ -483,17 +483,16 @@ class APITestBase:
             result_outputs = outputs
         elif isinstance(outputs, paddle.autograd.autograd.Hessian):
             result_outputs.append(outputs[:])
-        elif isinstance(outputs, tuple) and len(outputs) > 0:
-            if isinstance(outputs[0], paddle.autograd.autograd.Hessian):
-                result_outputs = [outputs[i][:] for i in range(len(outputs))]
-            else:
-                # is tuple of tuple of Hessian
-                 result_outputs = [outputs[i][j][:] for i in range(len(outputs)) \
-                    for j in range(len(outputs[i]))]
         elif isinstance(outputs, tuple):
             for output in outputs:
                 if isinstance(output, paddle.Tensor):
                     result_outputs.append(output)
+                elif isinstance(output, paddle.autograd.autograd.Hessian):
+                    result_outputs.extend(output[:])
+                elif isinstance(output, tuple) and len(output) > 0 and isinstance(output[0], \
+                    paddle.autograd.autograd.Hessian):
+                    for hessian in output:
+                        result_outputs.append(hessian[:])
                 else:
                     raise ValueError("outputs format not support")
                 # elif isinstance(output, list) and len(output) > 0 and isinstance(output[0], paddle.Tensor):
