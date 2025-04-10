@@ -62,7 +62,7 @@ rand_apis = [
     "paddle.Tensor.uniform_",
 ]
 
-stochastic_bahavior_apis =[
+stochastic_behavior_apis =[
     "paddle.Tensor.top_p_sampling", 
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
