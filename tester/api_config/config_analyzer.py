@@ -601,12 +601,6 @@ class TensorConfig:
                 return self.numpy_tensor
                 
             # n
-            elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d", "paddle.nn.functional.adaptive_avg_pool3d"]:
-                if index==1:
-                    s=self.get_arg(api_config,0)
-                    s=s.shape
-                    self.numpy_tensor = numpy.random.randint(1,2*max(s), size=self.shape).astype(self.dtype)
-
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
                 if key == "output_size" or index == 1:
                     s = self.get_arg(api_config, 0, "x")
@@ -669,12 +663,13 @@ class TensorConfig:
  
             elif api_config.api_name in ["paddle.nn.functional.cross_entropy"]:
                 if self.check_arg(api_config, 1, "label"):
-                    num_classes = self.get_arg(api_config, 0, "input").shape[-1]
-                    soft_label = self.get_arg(api_config, 5, "soft_label")
-                    if soft_label is None:
-                        soft_label = False
-                    if soft_label:
-                        soft_labels = numpy.random.randn(*self.shape)
+                    input_shape = self.get_arg(api_config, 0, "input").shape
+                    axis = self.get_arg(api_config, 7, "axis", -1)
+                    num_classes = self.get_arg(api_config, 0, "input").shape[axis]
+                    soft_label = self.get_arg(api_config, 5, "soft_label", False)
+                    label_smoothing = self.get_arg(api_config, 6, "label_smoothing", 0.0)
+                    if (label_smoothing > 0 and self.shape == input_shape) or (label_smoothing == 0 and soft_label):
+                        soft_labels = numpy.random.random(size=self.shape)
                         soft_labels = soft_labels / soft_labels.sum(axis=1, keepdims=True)
                         self.numpy_tensor = soft_labels.astype(self.dtype)
                     else:
@@ -683,9 +678,7 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.nn.functional.ctc_loss"]:
                 if self.check_arg(api_config, 1, "labels"):
                     num_classes = self.get_arg(api_config, 0, "log_probs").shape[2] - 1
-                    blank = self.get_arg(api_config, 4, "blank")
-                    if blank is None:
-                        blank = 0
+                    blank = self.get_arg(api_config, 4, "blank", 0)
                     valid_label_indices = [i for i in range(num_classes + 1) if i != blank]
                     if not valid_label_indices:
                         self.numpy_tensor = numpy.zeros(self.shape, dtype=self.dtype)
@@ -1238,20 +1231,47 @@ class TensorConfig:
     def fill_numpy_tensor(self, full_value):
         self.numpy_tensor = numpy.full(shape=self.shape, fill_value=full_value, dtype=self.dtype)
 
-    def check_arg(self, api_config, arg_pos=None, arg_name=None):
-        """Checks if the argument in api_config matches this instance"""
+    def check_arg(self, api_config, arg_pos, arg_name):
+            """
+            检查api_config中的参数是否与当前实例匹配。
+            必须同时提供参数位置与参数名称，具体请查看API文档。
+
+            Args:
+                api_config (ApiConfig): API配置对象，包含args和kwargs。
+                arg_pos (int): 参数的位置索引。
+                arg_name (str): 参数的名称。
+
+            Returns:
+                bool: 如果参数匹配当前实例，则返回 True；否则返回 False。
+
+            """
         return (
-            (arg_pos is not None and hasattr(self, "index") and self.index == arg_pos)
-            or (arg_name is not None and hasattr(self, "key") and self.key == arg_name)
+            (hasattr(self, "index") and self.index == arg_pos)
+            or (hasattr(self, "key") and self.key == arg_name)
         )
 
-    def get_arg(self, api_config, arg_pos=None, arg_name=None):
-        """Get the argument value from the api_config"""
-        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
+    def get_arg(self, api_config, arg_pos, arg_name, default=None):
+            """
+            从api_config中获取参数值。
+            必须同时提供参数位置与参数名称，具体请查看API文档。
+
+            Args:
+                api_config (ApiConfig): API配置对象，包含args和kwargs。
+                arg_pos (int): 参数的位置索引。
+                arg_name (str): 参数的名称。
+                default (Any, optional): 参数的默认值。默认为None。
+
+            Returns:
+                Any: 参数的值。如果参数位置索引有效，则返回args列表中对应位置的值；
+                     如果参数名称在kwargs字典中存在，则返回对应名称的值；
+                     否则返回默认值。
+
+            """
+        if 0 <= arg_pos < len(api_config.args):
             return api_config.args[arg_pos]
-        if arg_name and arg_name in api_config.kwargs:
+        if arg_name in api_config.kwargs:
             return api_config.kwargs[arg_name]
-        return None
+        return default
 
     def get_initialized_value(self, api_config, arg_pos=None, arg_name=None):
         """Get the initialized numpy_tensor value from the api_config instead of the TensorConfig"""    
