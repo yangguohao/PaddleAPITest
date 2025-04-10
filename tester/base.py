@@ -481,6 +481,15 @@ class APITestBase:
             result_outputs.append(outputs)
         elif isinstance(outputs, list) and len(outputs) > 0 and isinstance(outputs[0], paddle.Tensor):
             result_outputs = outputs
+        elif isinstance(outputs, paddle.autograd.autograd.Hessian):
+            result_outputs.append(outputs[:])
+        elif isinstance(outputs, tuple) and len(outputs) > 0:
+            if isinstance(outputs[0], paddle.autograd.autograd.Hessian):
+                result_outputs = [outputs[i][:] for i in range(len(outputs))]
+            else:
+                # is tuple of tuple of Hessian
+                 result_outputs = [outputs[i][j][:] for i in range(len(outputs)) \
+                    for j in range(len(outputs[i]))]
         elif isinstance(outputs, tuple):
             for output in outputs:
                 if isinstance(output, paddle.Tensor):
