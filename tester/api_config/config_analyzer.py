@@ -916,11 +916,26 @@ class TensorConfig:
                             f"Invalid shape for 'axis' Tensor in paddle.split. "
                             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
                         )
+
+            elif api_config.api_name in ["paddle.nn.functional.softmax"]:
+                # for TensorConfig axis
+                x_tensor_config = self.get_arg(api_config, 0, "x")
+                axis_config = self.get_arg(api_config, 1, "axis")
+                
+                if self.check_arg(api_config, 0, "x"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype)
+                elif self.check_arg(api_config, 1, "axis"):
+                    len_shape_x = len(x_tensor_config.shape)
+                    # specify if axis is a scalar tensor, else is a int according to doc
+                    if isinstance(axis_config, TensorConfig):
+                        axis = self.get_random_numpy_tensor(axis_config.shape, axis_config.dtype, min=-len_shape_x, max=len_shape_x)
+                        self.numpy_tensor = axis
+                
+                return self.numpy_tensor
             
             elif api_config.api_name in ["paddle.standard_normal"]:
                 if index==0 or key=='shape': 
                     self.numpy_tensor =numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)
-
 
             elif api_config.api_name in ["paddle.strided_slice"]:
                 s=self.get_arg(api_config,0,'x')
@@ -1077,6 +1092,14 @@ class TensorConfig:
             # z
             elif api_config.api_name in ["paddle.zeros"]:
                 self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
+                
+            elif api_config.api_name in ["paddle.nn.functional.zeropad2d"]:
+                if self.check_arg(api_config, 0, "x"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype)
+                elif self.check_arg(api_config, 1, "padding"):
+                    # padding value should not be too large 
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=10)
+                    
             # _
             elif api_config.api_name in ["paddle.Tensor.__getitem__","paddle.Tensor.__setitem__"] and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
                 arr = self.get_arg(api_config, 0, "arr")
