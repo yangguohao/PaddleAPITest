@@ -639,8 +639,6 @@ class TensorConfig:
             # p
             elif api_config.api_name in ["paddle.nn.functional.pad"]:
                 if self.check_arg(api_config, 1, "pad"):
-                    mode = self.get_arg(api_config, 2, "mode")
-                    # if mode == "reflect":
                     x_shape = self.get_arg(api_config, 0, "x").shape
                     min_dim_len = min(x_shape)
                     self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, \
