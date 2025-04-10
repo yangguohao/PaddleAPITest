@@ -1,0 +1,10 @@
+paddle.einsum("...ab,...ba,...ab,...ab", Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), )
+
+
+test begin: paddle.einsum("...ab,...ba,...ab,...ab", Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), )
+W0409 09:20:47.088035  8284 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0409 09:20:47.089812  8284 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+W0409 09:20:47.494894  8284 backward.cc:437] While running Node (EinsumGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.einsum("...ab,...ba,...ab,...ab", Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), Tensor([4, 3, 1, 4],"float64"), ) 
+ (PreconditionNotMet) Tensor's dimension is out of bound.Tensor's dimension must be equal or less than the size of its memory.But received Tensor's dimension is 1536, memory's size is 512.
+  [Hint: Expected numel() * SizeOf(dtype()) <= memory_size(), but received numel() * SizeOf(dtype()):1536 > memory_size():512.] (at ../paddle/phi/core/dense_tensor_impl.cc:48)
