@@ -66,6 +66,7 @@ stochastic_behavior_apis =[
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
     "paddle.incubate.nn.functional.moe_dispatch",
+    "paddle.nn.functional.alpha_dropout", 
     "paddle.nn.functional.fused_feedforward",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
