@@ -480,6 +480,14 @@ class APITestBase:
                             result_outputs.append(item)
                     else:
                         raise ValueError("outputs format not support")
+                elif isinstance(output, paddle.autograd.autograd.Hessian) or \
+                        isinstance(output, paddle.autograd.autograd.Jacobian):
+                    result_outputs.extend(output[:])
+                elif isinstance(output, tuple) and len(output) > 0 and \
+                        (isinstance(output[0], paddle.autograd.autograd.Hessian) or \
+                        isinstance(output[0], paddle.autograd.autograd.Jacobian)):
+                    for lazy_obj in output:
+                        result_outputs.append(lazy_obj[:])
                 else:
                     raise ValueError("outputs format not support")
                 # elif isinstance(output, list) and len(output) > 0 and isinstance(output[0], paddle.Tensor):
