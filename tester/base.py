@@ -474,6 +474,12 @@ class APITestBase:
             for output in outputs:
                 if isinstance(output, paddle.Tensor):
                     result_outputs.append(output)
+                elif isinstance(output, list):
+                    for item in output:
+                        if isinstance(item, paddle.Tensor):
+                            result_outputs.append(item)
+                    else:
+                        raise ValueError("outputs format not support")
                 elif isinstance(output, paddle.autograd.autograd.Hessian) or \
                         isinstance(output, paddle.autograd.autograd.Jacobian):
                     result_outputs.extend(output[:])
@@ -514,7 +520,6 @@ class APITestBase:
             if dtype == "bfloat16":
                 result_output_grad = paddle.cast(result_output_grad, dtype="uint16")
             result_outputs_grads.append(result_output_grad)
-
         return result_outputs, result_outputs_grads
 
     def convert_dtype_to_torch_type(self, dtype):
