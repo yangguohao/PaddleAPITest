@@ -456,6 +456,83 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.index_select"]:
                 if self.check_arg(api_config, 1, "index"):
                     self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
+            elif api_config.api_name in ["paddle.incubate.nn.functional.fused_rotary_position_embedding"]:
+                q_shape = None
+                k_shape = None
+                v_shape = None
+                q_config = self.get_arg(api_config, 0, "q")
+                if isinstance(q_config, TensorConfig):
+                    q_shape = q_config.shape
+                k_config = self.get_arg(api_config, 1, "k")
+                if isinstance(k_config, TensorConfig):
+                    k_shape = k_config.shape
+                elif k_config is None:
+                    if q_shape:
+                        k_shape = q_shape.copy()
+                        if len(k_shape) >= 3:
+                            k_shape[-2] = 2 
+                    else:
+                        k_shape = [2, 8, 2, 8] 
+                    new_k = TensorConfig(k_shape, "float32")
+                    if len(api_config.args) > 1:
+                        api_config.args[1] = new_k
+                    elif "k" in api_config.kwargs:
+                        api_config.kwargs["k"] = new_k
+                v_config = self.get_arg(api_config, 2, "v")
+                if isinstance(v_config, TensorConfig):
+                    v_shape = v_config.shape
+                elif v_config is None:
+                    if k_shape:
+                        v_shape = k_shape.copy() 
+                    elif q_shape:
+                        v_shape = q_shape.copy() 
+                        if len(v_shape) >= 3:
+                            v_shape[-2] = 2 
+                    else:
+                        v_shape = [2, 8, 2, 8]  
+                    new_v = TensorConfig(v_shape, "float32")
+                    if len(api_config.args) > 2:
+                        api_config.args[2] = new_v
+                    elif "v" in api_config.kwargs:
+                        api_config.kwargs["v"] = new_v
+                cos_config = self.get_arg(api_config, 3, "cos_embed")
+                sin_config = self.get_arg(api_config, 4, "sin_embed")
+                cos_shape = cos_config.shape if isinstance(cos_config, TensorConfig) else None
+                sin_shape = sin_config.shape if isinstance(sin_config, TensorConfig) else None
+                if self.check_arg(api_config, 0, "q"):
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 1, "k"):
+                    if v_shape and len(v_shape) > 1:
+                        self.shape[1] = v_shape[1]
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "v"):
+                    if k_shape and len(k_shape) > 1:
+                        self.shape = k_shape.copy()
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 3, "cos_embed") or self.check_arg(api_config, 4, "sin_embed"):
+                    batch_size = 1
+                    num_heads = 8
+                    head_dim = 8
+                    if q_shape and len(q_shape) >= 4:
+                        batch_size = q_shape[0]
+                        num_heads = q_shape[1]
+                        head_dim = q_shape[3]
+                    embed_shape = [batch_size, num_heads, 1, head_dim]
+                    if self.shape is None or len(self.shape) != 4:
+                        self.shape = embed_shape
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 5, "position_ids"):
+                    batch_size = 1
+                    seq_len = 8
+                    if q_shape and len(q_shape) >= 3:
+                        batch_size = q_shape[0]
+                        seq_len = q_shape[2]
+                    if self.shape is None or len(self.shape) != 2:
+                        self.shape = [batch_size, seq_len]
+                    positions = numpy.zeros(self.shape, dtype=numpy.int64)
+                    for i in range(self.shape[0]):
+                        positions[i] = numpy.arange(self.shape[1])
+                    self.numpy_tensor = positions.astype(self.dtype)
             elif api_config.api_name.startswith("paddle.incubate.segment_"):
                 if self.check_arg(api_config, 1, "segment_ids"):
                     batch_size = self.get_arg(api_config, 0, "x").shape[0]
@@ -656,9 +733,7 @@ class TensorConfig:
                     if isinstance(cutoffs, list) and cutoffs:
                         n_classes = cutoffs[-1]
                     else:
-                        n_classes = numpy.random.randint(5, 20)
-                    if "int" not in self.dtype:
-                        self.dtype = "int64"  
+                        n_classes = numpy.random.randint(5, 20)  
                     if len(self.shape) == 0:
                         self.shape = [1]
                     self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)
@@ -673,7 +748,7 @@ class TensorConfig:
                     if self.dtype=='bfloat16':
                         self.dtype='float32'
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
-
+            
             elif api_config.api_name in ['paddle.nn.functional.interpolate']:
                 if key == "size" or index == 1 or key == "scale_factor" or index == 2:
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
@@ -724,6 +799,19 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.rand(*self.shape).astype(self.dtype)
                 elif index==1 or key=='label':
                     self.numpy_tensor = numpy.random.randint(0,2,size=self.shape).astype(self.dtype)
+            
+            elif api_config.api_name in ["paddle.nn.functional.embedding"]:
+                if self.check_arg(api_config, 0, "x") or self.check_arg(api_config, 0, "ids"):
+                    weight_config = self.get_arg(api_config, 1, "weight")
+                    if not weight_config:
+                        weight_config = self.get_arg(api_config, None, "weight")
+                    vocab_size = numpy.random.randint(10, 1000)
+                    if isinstance(weight_config, TensorConfig) and weight_config.shape:
+                        vocab_size = weight_config.shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, vocab_size, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 1, "weight"):
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
 
             elif api_config.api_name in ['paddle.nn.functional.margin_cross_entropy']:
                 if index==1 or key=='label':
@@ -734,6 +822,60 @@ class TensorConfig:
                 if index==1 or key=='label':
                     s=self.get_arg(api_config,0,'input')
                     self.numpy_tensor = numpy.random.randint(0,s.shape[1], size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.nn.functional.nll_loss"]:
+                if self.check_arg(api_config, 1, "label"):
+                    input_config = self.get_arg(api_config, 0, "input")
+                    n_classes = numpy.random.randint(5, 50) if not isinstance(input_config, TensorConfig) else input_config.shape[1]
+                    self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)
+            
+            elif api_config.api_name in ["paddle.nn.functional.rnnt_loss"]:
+                if self.check_arg(api_config, 0, "logits"):
+                    if len(self.shape) != 4: self.shape = [3, 4, 3, 5]
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 1, "labels"):
+                    logits_config = self.get_arg(api_config, 0, "logits")
+                    vocab_size, batch_size, target_len = 5, 3, 2
+                    if isinstance(logits_config, TensorConfig) and len(logits_config.shape) == 4:
+                        batch_size, target_len, vocab_size = logits_config.shape[0], logits_config.shape[2] - 1, logits_config.shape[3]
+                    if self.shape != [batch_size, target_len]: self.shape = [batch_size, target_len]
+                    blank = self.get_arg(api_config, None, "blank") or 0
+                    self.numpy_tensor = numpy.random.randint(1, vocab_size, size=self.shape).astype(self.dtype)
+                    self.numpy_tensor = numpy.where(self.numpy_tensor == blank, (blank + 1) % vocab_size, self.numpy_tensor)
+                elif self.check_arg(api_config, 2, "input_lengths") or self.check_arg(api_config, 3, "label_lengths"):
+                    logits_config = self.get_arg(api_config, 0, "logits")
+                    batch_size, input_max_len, target_max_len = 3, 4, 2
+                    if isinstance(logits_config, TensorConfig) and len(logits_config.shape) == 4:
+                        batch_size = logits_config.shape[0]
+                        input_max_len = logits_config.shape[1]
+                        target_max_len = logits_config.shape[2] - 1
+                    if self.shape != [batch_size]: self.shape = [batch_size]
+                    min_len = 1
+                    if self.check_arg(api_config, 2, "input_lengths"):
+                        min_len = input_max_len // 2 if input_max_len > 1 else 1
+                        max_len = input_max_len
+                    else:
+                        min_len = target_max_len // 2 if target_max_len > 1 else 1
+                        max_len = target_max_len
+                    self.numpy_tensor = numpy.random.randint(min_len, max_len + 1, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.nn.functional.softmax_with_cross_entropy"]:
+                if self.check_arg(api_config, 1, "label"):
+                    logits = None
+                    if len(api_config.args) > 0 and isinstance(api_config.args[0], TensorConfig):
+                        logits = api_config.args[0]
+                    elif "logits" in api_config.kwargs and isinstance(api_config.kwargs["logits"], TensorConfig):
+                        logits = api_config.kwargs["logits"]
+                    num_classes = 10  
+                    if logits is not None:
+                        axis = api_config.kwargs.get("axis", -1) 
+                        axis = axis if axis >= 0 else len(logits.shape) + axis
+                        if 0 <= axis < len(logits.shape):
+                            num_classes = logits.shape[axis]
+                    else:
+                        num_classes = numpy.random.randint(5, 20)
+                    self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
+
             # o
             elif api_config.api_name in ["paddle.ones"]:
                 if len(self.shape) == 0:
