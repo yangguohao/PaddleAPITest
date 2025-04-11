@@ -20,7 +20,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.is_coalesced",
  "paddle.Tensor.index_put",
  "paddle.Tensor.index_sample",
- "paddle.nn.functional.cross_entropy",
  "paddle.nn.functional.one_hot",
  "paddle.vision.ops.roi_align",
  "paddle.vision.ops.roi_pool",
@@ -30,55 +29,43 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.linalg.pca_lowrank"
  ]
 
-rand_apis = ["paddle.rand",
+rand_apis = [
+    "paddle.bernoulli",
     "paddle.bernoulli_",
-    "paddle.poisson",
-    "paddle.standard_gamma",
+    "paddle.binomial"
+    "paddle.cauchy_",
+    "paddle.geometric_",
     "paddle.log_normal",
     "paddle.log_normal_",
-    "paddle.uniform_random_batch_size_like",
-    "paddle.gaussian",
-    "paddle.gaussian_",
-    "paddle.randn",
+    "paddle.multinomial"
     "paddle.normal",
     "paddle.normal_",
-    "paddle.uniform",
-    "paddle.uniform_",
+    "paddle.poisson",
+    "paddle.rand",
+    "paddle.randn",
     "paddle.randint",
     "paddle.randint_like",
     "paddle.randperm",
-    "paddle.rand",
-    "paddle.exponential_",
-    "paddle.Tensor.bernoulli",
+    "paddle.standard_gamma",
+    "paddle.standard_normal", 
+    "paddle.uniform",
     "paddle.Tensor.bernoulli_",
-    "paddle.Tensor.binomial",
-    "paddle.Tensor.poisson",
-    "paddle.Tensor.standard_gamma",
-    "paddle.Tensor.log_normal",
-    "paddle.Tensor.multinomial",
-    "paddle.Tensor.uniform_random_batch_size_like",
-    "paddle.Tensor.gaussian",
-    "paddle.Tensor.gaussian_",
-    "paddle.Tensor.standard_normal",
-    "paddle.Tensor.randn",
-    "paddle.Tensor.normal",
-    "paddle.Tensor.normal_",
-    "paddle.Tensor.uniform",
-    "paddle.Tensor.uniform_",
-    "paddle.Tensor.randint",
-    "paddle.Tensor.randint_like",
-    "paddle.Tensor.randperm",
-    "paddle.Tensor.rand",
-    "paddle.Tensor.exponential_",
     "paddle.Tensor.cauchy_",
+    "paddle.Tensor.exponential_",
     "paddle.Tensor.geometric_",
-    "paddle.cauchy_",
-    "paddle.geometric_",
-    "paddle.empty_like",
-    "paddle.linalg.eigvals",
-    "paddle.linalg.eigvalsh",
+    "paddle.Tensor.log_normal_",
+    "paddle.Tensor.multinomial",
+    "paddle.Tensor.normal_",
+    "paddle.Tensor.uniform_",
+]
+
+stochastic_behavior_apis =[
+    "paddle.Tensor.top_p_sampling", 
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
+    "paddle.incubate.nn.functional.moe_dispatch",
+    "paddle.nn.functional.alpha_dropout", 
+    "paddle.nn.functional.fused_feedforward",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
@@ -478,10 +465,21 @@ class APITestBase:
             result_outputs.append(outputs)
         elif isinstance(outputs, list) and len(outputs) > 0 and isinstance(outputs[0], paddle.Tensor):
             result_outputs = outputs
+        elif isinstance(outputs, paddle.autograd.autograd.Hessian) or \
+                isinstance(outputs, paddle.autograd.autograd.Jacobian):
+            result_outputs.append(outputs[:])
         elif isinstance(outputs, tuple):
             for output in outputs:
                 if isinstance(output, paddle.Tensor):
                     result_outputs.append(output)
+                elif isinstance(output, paddle.autograd.autograd.Hessian) or \
+                        isinstance(output, paddle.autograd.autograd.Jacobian):
+                    result_outputs.extend(output[:])
+                elif isinstance(output, tuple) and len(output) > 0 and \
+                        (isinstance(output[0], paddle.autograd.autograd.Hessian) or \
+                        isinstance(output[0], paddle.autograd.autograd.Jacobian)):
+                    for lazy_obj in output:
+                        result_outputs.append(lazy_obj[:])
                 else:
                     raise ValueError("outputs format not support")
                 # elif isinstance(output, list) and len(output) > 0 and isinstance(output[0], paddle.Tensor):

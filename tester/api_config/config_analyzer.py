@@ -329,7 +329,7 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
             elif api_config.api_name in ["paddle.clip"] and self.check_arg(api_config, 0, "x"):
-                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tennor)
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
                 self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
                 
                 # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
@@ -338,27 +338,27 @@ class TensorConfig:
                 if (isinstance(min_config, TensorConfig) and isinstance(max_config, TensorConfig)):
                     min_shape = min_config.shape
                     min_dtype = min_config.dtype
-                    min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype)
+                    min_numpy_tensor = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype)
 
                     max_shape = max_config.shape
                     max_dtype = max_config.dtype
-                    max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
+                    max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
                     
-                    self.set_tensor_arg_value(api_config, 1, "min", min)
-                    self.set_tensor_arg_value(api_config, 2, "max", max)
+                    self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
+                    self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
                 elif min_config is not None and max_config is not None:
                     # min and max args are specified but at least one of them is scalar (not a TensorConfig)
                     # according to API DOC, min and max is float|int|Tensor
                     if isinstance(min_config, TensorConfig) and (isinstance(max_config, int) or isinstance(max_config, float)):
                         min_shape = min_config.shape
                         min_dtype = min_config.dtype
-                        min = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
-                        self.set_tensor_arg_value(api_config, 1, "min", min)
+                        min_numpy_tensor = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
+                        self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
                     elif (isinstance(max_config, TensorConfig) and (isinstance(min_config, int) or isinstance(min_config, float))):
                         max_shape = max_config.shape
                         max_dtype = max_config.dtype
-                        max = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
-                        self.set_tensor_arg_value(api_config, 2, "max", max)
+                        max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
+                        self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
                     # for both min and max are scalar, there is no need to init numpy tensor
 
                 return self.numpy_tensor
@@ -440,9 +440,41 @@ class TensorConfig:
                     self.numpy_tensor = numpy.sort(
                         numpy.random.randint(0, max_segments, size=self.shape).astype(self.dtype)
                     )
-            elif api_config.api_name.startswith("paddle.geometric.send_u"):
-                if self.check_arg(api_config, 1, "src_index") or self.check_arg(api_config, 2, "dst_index"):
+            elif api_config.api_name in ["paddle.geometric.sample_neighbors"]:
+                if self.check_arg(api_config, 0, "row"):
+                    colptr_shape = self.get_arg(api_config, 1, "colptr").shape
+                    num_nodes = colptr_shape[0] - 1
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape, dtype=self.dtype)
+                elif self.check_arg(api_config, 1, "colptr"):
+                    num_edges = self.get_arg(api_config, 0, "row").shape[0]
+                    num_nodes = self.shape[0] - 1
+                    colptr = numpy.zeros(self.shape, dtype=self.dtype)
+                    if num_nodes > 0 and num_edges > 0 :
+                        splits = numpy.random.choice(numpy.arange(num_edges + 1), num_nodes - 1, replace=True)
+                        splits.sort()
+                        colptr[1:num_nodes] = splits
+                        colptr[num_nodes] = num_edges
+                    self.numpy_tensor = colptr
+                elif self.check_arg(api_config, 2, "input_nodes"):
+                    num_nodes = self.shape[0] - 1
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape, dtype=self.dtype)
+                elif self.check_arg(api_config, 4, "eids"):
+                    num_edges = self.get_arg(api_config, 0, "row").shape[0]
+                    self.numpy_tensor = numpy.arange(num_edges, dtype=self.dtype).reshape(self.shape)
+                elif self.check_arg(api_config, 6, "perm_buffer"):
+                    num_edges = self.get_arg(api_config, 0, "row").shape[0]
+                    self.numpy_tensor = numpy.arange(num_edges, dtype=self.dtype).reshape(self.shape)
+
+            elif api_config.api_name.startswith("paddle.geometric.send_"):
+                if api_config.api_name.endswith("u_recv"):
+                    if self.check_arg(api_config, 1, "src_index") or self.check_arg(api_config, 2, "dst_index"):
+                        num_nodes = self.get_arg(api_config, 0, "x").shape[0]
+                        self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "src_index"):
                     num_nodes = self.get_arg(api_config, 0, "x").shape[0]
+                    self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 3, "dst_index"):
+                    num_nodes = self.get_arg(api_config, 1, "y").shape[0]
                     self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
             # h
             # i
@@ -721,7 +753,6 @@ class TensorConfig:
                 return self.numpy_tensor
                 
             # n
-
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
                 if key == "output_size" or index == 1:
                     s = self.get_arg(api_config, 0, "x")
@@ -822,6 +853,47 @@ class TensorConfig:
                 if index==1 or key=='label':
                     s=self.get_arg(api_config,0,'input')
                     self.numpy_tensor = numpy.random.randint(0,s.shape[1], size=self.shape).astype(self.dtype)
+ 
+            elif api_config.api_name in ["paddle.nn.functional.cross_entropy"]:
+                if self.check_arg(api_config, 1, "label"):
+                    input_shape = self.get_arg(api_config, 0, "input").shape
+                    axis = self.get_arg(api_config, 7, "axis", -1)
+                    num_classes = self.get_arg(api_config, 0, "input").shape[axis]
+                    soft_label = self.get_arg(api_config, 5, "soft_label", False)
+                    label_smoothing = self.get_arg(api_config, 6, "label_smoothing", 0.0)
+                    if (label_smoothing > 0 and self.shape == input_shape) or (label_smoothing == 0 and soft_label):
+                        soft_labels = numpy.random.random(size=self.shape)
+                        soft_labels = soft_labels / soft_labels.sum(axis=1, keepdims=True)
+                        self.numpy_tensor = soft_labels.astype(self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.nn.functional.ctc_loss"]:
+                if self.check_arg(api_config, 1, "labels"):
+                    num_classes = self.get_arg(api_config, 0, "log_probs").shape[2] - 1
+                    blank = self.get_arg(api_config, 4, "blank", 0)
+                    valid_label_indices = [i for i in range(num_classes + 1) if i != blank]
+                    if not valid_label_indices:
+                        self.numpy_tensor = numpy.zeros(self.shape, dtype=self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.choice(valid_label_indices, size=self.shape, replace=True).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "input_lengths"):
+                    max_logit_length = self.get_arg(api_config, 0, "log_probs").shape[0]
+                    self.numpy_tensor = numpy.random.randint(1, max_logit_length + 1, size=self.shape, dtype=self.dtype)
+                elif self.check_arg(api_config, 3, "label_lengths"):
+                    max_label_length = self.get_arg(api_config, 1, "labels").shape[1]
+                    max_logit_length = self.get_arg(api_config, 0, "log_probs").shape[0]
+                    cand_label_lengths = numpy.random.randint(1, max_label_length + 1, size=self.shape, dtype=self.dtype)
+                    compatible_input_lengths = numpy.random.randint(1, max_logit_length + 1, size=self.shape, dtype=self.dtype)
+                    final_label_lengths = numpy.minimum(cand_label_lengths, compatible_input_lengths)
+                    final_label_lengths = numpy.maximum(final_label_lengths, 1)
+                    self.numpy_tensor = final_label_lengths
+
+            elif api_config.api_name in ["paddle.nn.functional.dice_loss"]:
+                if self.check_arg(api_config, 1, "label"):
+                    num_classes = self.get_arg(api_config, 0, "input").shape[-1]
+                    self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape, dtype=self.dtype)
+
 
             elif api_config.api_name in ["paddle.nn.functional.nll_loss"]:
                 if self.check_arg(api_config, 1, "label"):
@@ -883,6 +955,13 @@ class TensorConfig:
                 else:
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
             # p
+            elif api_config.api_name in ["paddle.nn.functional.pad"]:
+                if self.check_arg(api_config, 1, "pad"):
+                    x_shape = self.get_arg(api_config, 0, "x").shape
+                    min_dim_len = min(x_shape)
+                    self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, \
+                        min=0, max=min_dim_len)
+                    
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
@@ -1432,20 +1511,47 @@ class TensorConfig:
     def fill_numpy_tensor(self, full_value):
         self.numpy_tensor = numpy.full(shape=self.shape, fill_value=full_value, dtype=self.dtype)
 
-    def check_arg(self, api_config, arg_pos=None, arg_name=None):
-        """Checks if the argument in api_config matches this instance"""
+    def check_arg(self, api_config, arg_pos, arg_name):
+        """
+        检查api_config中的参数是否与当前实例匹配。
+        必须同时提供参数位置与参数名称, 具体请查看API文档。
+
+        Args:
+            api_config (ApiConfig): API配置对象, 包含args和kwargs。
+            arg_pos (int): 参数的位置索引。
+            arg_name (str): 参数的名称。
+
+        Returns:
+            bool: 如果参数匹配当前实例，则返回 True; 否则返回 False。
+
+        """
         return (
-            (arg_pos is not None and hasattr(self, "index") and self.index == arg_pos)
-            or (arg_name is not None and hasattr(self, "key") and self.key == arg_name)
+            (hasattr(self, "index") and self.index == arg_pos)
+            or (hasattr(self, "key") and self.key == arg_name)
         )
 
-    def get_arg(self, api_config, arg_pos=None, arg_name=None):
-        """Get the argument value from the api_config"""
-        if arg_pos is not None and 0 <= arg_pos < len(api_config.args):
+    def get_arg(self, api_config, arg_pos, arg_name, default=None):
+        """
+        从api_config中获取参数值。
+        必须同时提供参数位置与参数名称, 具体请查看API文档。
+
+        Args:
+            api_config (ApiConfig): API配置对象, 包含args和kwargs。
+            arg_pos (int): 参数的位置索引。
+            arg_name (str): 参数的名称。
+            default (Any, optional): 参数的默认值。默认为None。
+
+        Returns:
+            Any: 参数的值。如果参数位置索引有效, 则返回args列表中对应位置的值;
+                    如果参数名称在kwargs字典中存在, 则返回对应名称的值;
+                    否则返回默认值。
+
+        """
+        if 0 <= arg_pos < len(api_config.args):
             return api_config.args[arg_pos]
-        if arg_name and arg_name in api_config.kwargs:
+        if arg_name in api_config.kwargs:
             return api_config.kwargs[arg_name]
-        return None
+        return default
 
     def get_initialized_value(self, api_config, arg_pos=None, arg_name=None):
         """Get the initialized numpy_tensor value from the api_config instead of the TensorConfig"""    
