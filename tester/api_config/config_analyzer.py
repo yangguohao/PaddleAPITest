@@ -894,42 +894,34 @@ class TensorConfig:
                     num_classes = self.get_arg(api_config, 0, "input").shape[-1]
                     self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape, dtype=self.dtype)
 
-
             elif api_config.api_name in ["paddle.nn.functional.nll_loss"]:
                 if self.check_arg(api_config, 1, "label"):
                     input_config = self.get_arg(api_config, 0, "input")
                     n_classes = numpy.random.randint(5, 50) if not isinstance(input_config, TensorConfig) else input_config.shape[1]
-                    self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)
+                    self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)  
             
             elif api_config.api_name in ["paddle.nn.functional.rnnt_loss"]:
                 if self.check_arg(api_config, 0, "logits"):
-                    if len(self.shape) != 4: self.shape = [3, 4, 3, 5]
+                    if len(self.shape) != 4:
+                        self.shape = [3, 4, 3, 5]  
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
                 elif self.check_arg(api_config, 1, "labels"):
-                    logits_config = self.get_arg(api_config, 0, "logits")
-                    vocab_size, batch_size, target_len = 5, 3, 2
-                    if isinstance(logits_config, TensorConfig) and len(logits_config.shape) == 4:
-                        batch_size, target_len, vocab_size = logits_config.shape[0], logits_config.shape[2] - 1, logits_config.shape[3]
-                    if self.shape != [batch_size, target_len]: self.shape = [batch_size, target_len]
-                    blank = self.get_arg(api_config, None, "blank") or 0
-                    self.numpy_tensor = numpy.random.randint(1, vocab_size, size=self.shape).astype(self.dtype)
-                    self.numpy_tensor = numpy.where(self.numpy_tensor == blank, (blank + 1) % vocab_size, self.numpy_tensor)
+                    batch_size = 3
+                    max_label_len = 2
+                    if len(self.shape) != 2:
+                        self.shape = [batch_size, max_label_len]
+                    vocab_size = 5
+                    self.numpy_tensor = numpy.random.randint(1, vocab_size-1, size=self.shape).astype(self.dtype)
                 elif self.check_arg(api_config, 2, "input_lengths") or self.check_arg(api_config, 3, "label_lengths"):
-                    logits_config = self.get_arg(api_config, 0, "logits")
-                    batch_size, input_max_len, target_max_len = 3, 4, 2
-                    if isinstance(logits_config, TensorConfig) and len(logits_config.shape) == 4:
-                        batch_size = logits_config.shape[0]
-                        input_max_len = logits_config.shape[1]
-                        target_max_len = logits_config.shape[2] - 1
-                    if self.shape != [batch_size]: self.shape = [batch_size]
-                    min_len = 1
+                    batch_size = 3
+                    if len(self.shape) != 1:
+                        self.shape = [batch_size]
                     if self.check_arg(api_config, 2, "input_lengths"):
-                        min_len = input_max_len // 2 if input_max_len > 1 else 1
-                        max_len = input_max_len
-                    else:
-                        min_len = target_max_len // 2 if target_max_len > 1 else 1
-                        max_len = target_max_len
-                    self.numpy_tensor = numpy.random.randint(min_len, max_len + 1, size=self.shape).astype(self.dtype)
+                        max_possible_length = 4 
+                        self.numpy_tensor = numpy.ones(self.shape, dtype=self.dtype) * max_possible_length
+                    else:  
+                        max_possible_length = 2  
+                        self.numpy_tensor = numpy.ones(self.shape, dtype=self.dtype) * max_possible_length
 
             elif api_config.api_name in ["paddle.nn.functional.softmax_with_cross_entropy"]:
                 if self.check_arg(api_config, 1, "label"):
