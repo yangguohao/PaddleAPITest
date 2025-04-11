@@ -329,7 +329,7 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
             elif api_config.api_name in ["paddle.clip"] and self.check_arg(api_config, 0, "x"):
-                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tennor)
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
                 self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
                 
                 # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
@@ -363,6 +363,12 @@ class TensorConfig:
 
                 return self.numpy_tensor
             # d
+            elif api_config.api_name in ["paddle.vision.ops.distribute_fpn_proposals"]:
+                if "int" in self.dtype:
+                    self.numpy_tensor = (numpy.random.randint(1, 128, size=self.shape)).astype(self.dtype)
+                else:
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
             # e
             elif api_config.api_name in ["paddle.empty"]:
                 is_shape_param = False
@@ -1069,6 +1075,56 @@ class TensorConfig:
                         self.numpy_tensor =numpy.random.randint(1,s.shape[axes[ind]], size=self.shape).astype(self.dtype)
 
             # t
+            elif api_config.api_name in ["paddle.tensordot"]:
+                if index == 0 or key == "x":
+                    if not hasattr(api_config, "shape1"):
+                        api_config.shape1 = self.shape
+                elif index == 1 or key == "y":
+                    if not hasattr(api_config, "shape2"):
+                        api_config.shape2 = self.shape
+                else:
+                    item = self.get_arg(api_config, 2, "axes")
+                    num = len(api_config.shape1)                 
+                    used = []       
+                    if isinstance(item,list) or isinstance(item,tuple):
+                        if not hasattr(api_config, "tensor1"):
+                            self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                            for i in range(self.numel()):
+                                self.numpy_tensor[i] = numpy.random.randint(0, num)
+                                while not api_config.shape1[self.numpy_tensor[i]] in api_config.shape2 or self.numpy_tensor[i] in used:
+                                    self.numpy_tensor[i] = numpy.random.randint(0, num)
+                                used.append(self.numpy_tensor[i])
+                            api_config.tensor1 = self.numpy_tensor
+                        else:
+                            self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                            for i in range(self.numel()):
+                                self.numpy_tensor[i] = numpy.random.randint(0, num)
+                                while not api_config.shape2[self.numpy_tensor[i]] == api_config.shape1[api_config.tensor1[i]] or self.numpy_tensor[i] in used:
+                                    self.numpy_tensor[i] = numpy.random.randint(0, num)
+                                used.append(self.numpy_tensor[i])
+                        print(api_config.tensor1)
+                        print(self.numpy_tensor)
+                    elif isinstance(item,TensorConfig):
+                        self.tensor = numpy.random.randint(0, 2, size=self.shape).astype(self.dtype)
+                        if self.numel() == 1:
+                            self.numpy_tensor = numpy.random.randint(0,num,self.shape).astype(self.dtype)
+                            while api_config.shape2[self.numpy_tensor[0]] != \
+                                  api_config.shape1[self.numpy_tensor[0]]:
+                                self.numpy_tensor = numpy.random.randint(0,num,self.shape).astype(self.dtype)
+                        else:
+                            used1 = []
+                            used2 = []
+                            self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                            for i in range(self.shape[0]):
+                                self.numpy_tensor[0][i] = numpy.random.randint(0,num)
+                                self.numpy_tensor[1][i] = numpy.random.randint(0,num)
+                                while api_config.shape1[self.numpy_tensor[0][i]] != api_config.shape2[self.numpy_tensor[1][i]] \
+                                        or self.numpy_tensor[0][i] in used1 or self.numpy_tensor[1][i] in used2:
+                                    self.numpy_tensor[0][i] = numpy.random.randint(0,num)
+                                    self.numpy_tensor[1][i] = numpy.random.randint(0,num)
+                                used1.append(self.numpy_tensor[0][i])
+                                used2.append(self.numpy_tensor[1][i])
+
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
                     arr = self.get_arg(api_config, 0, "arr")
