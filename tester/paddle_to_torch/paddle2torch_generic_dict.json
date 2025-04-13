@@ -2,12 +2,13 @@
     "a": "API started with 'a' should be placed here",
 
     "paddle.add": {
+        "paddle_arg_list": ["x", "y"],
         "torch_api": "torch.add",
-        "min_input_args": 2,
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
         },
+        "min_input_args": 2,
         "torch_args": [],
         "torch_kwargs": {
             "alpha": 1
@@ -15,19 +16,20 @@
     },
 
     "paddle.add_n": {
+        "paddle_arg_list": ["inputs"],
         "min_input_args": 1,
         "composite_steps": [
             {
                 "torch_api": "torch.stack",
-                "args": ["inputs"],
-                "kwargs": {
+                "torch_args": ["{inputs}"],
+                "torch_kwargs": {
                     "dim": 0
                 }
             },
             {
                 "torch_api": "torch.sum",
-                "args": ["{0}"],
-                "kwargs": {
+                "torch_args": ["{0}"],
+                "torch_kwargs": {
                     "dim": 0
                 }
             }

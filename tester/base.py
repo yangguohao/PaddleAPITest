@@ -190,7 +190,6 @@ class APITestBase:
         return True
 
     def ana_torch_api_info(self):
-        self.torch_api_str, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
         if paddle_to_torch_args_map is None:
             print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
             api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")

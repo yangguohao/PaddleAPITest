@@ -30,10 +30,9 @@ class ConvertResult:
     Methods:
         success(code, output_vars): 创建成功转换结果
         error(message): 创建失败转换结果
-
     """
     code: Optional[List[str]] = None  # ["torch.add(x, y)", "torch.mul({0}, z)"]
-    output_vars: Optional[Dict[str, str]] = None  # {"result": "_tmp_0"}
+    output_vars: Optional[Dict[str, str]] = None  # {"result": "{1}"}
 
     is_supported: bool = True
     error_message: Optional[str] = None
@@ -52,18 +51,18 @@ class BaseRule(ABC):
         pass
 
     @abstractmethod
-    def apply(self, paddle_args: List, paddle_kwargs: Dict) -> ConvertResult:
+    def apply(self, paddle_api: str, paddle_args: List, paddle_kwargs: Dict) -> ConvertResult:
         """
         将 Paddle API 调用转换为 PyTorch 等效代码形式
         code 中可包含中间变量占位符(如 {0}、{1}), 这些变量将在后续处理时被自动替换
 
         Args:
+            paddle_api (str): Paddle API 名称
             paddle_args (List): Paddle API 调用的位置参数列表
             paddle_kwargs (Dict): Paddle API 调用的关键字参数字典
 
         Returns:
             ConvertResult: 包含代码和输出变量的 ConvertResult 对象, 或错误信息
-
         """
         pass
 
@@ -77,21 +76,45 @@ class BaseRule(ABC):
 
         Returns:
             str: 格式化后的调用字符串
-
         """
         args_str = ", ".join(str(arg) for arg in args)
         kwargs_str = ", ".join(f"{k}={v}" for k, v in kwargs.items())
         return f"{args_str}{', ' if args_str and kwargs_str else ''}{kwargs_str}"
+    
+    def _preprocess(self, mapping: Dict):
+        self.direct_mapping = "composite_steps" not in mapping or not mapping["composite_steps"]
+        self.paddle_arg_list = mapping.get("paddle_arg_list", [])
+        self.min_input_args = mapping.get("min_input_args", 0)
+        if self.direct_mapping:
+            self.torch_api = mapping.get("torch_api")
+            self.args_map = mapping.get("paddle_torch_args_map", {})
+            self.torch_args = mapping.get("torch_args", [])
+            self.torch_kwargs = mapping.get("torch_kwargs", {})
+        else:
+            pass # decode
 
-    def _post_process(self, code: List[str], output_vars: Optional[Dict[str, str]]) -> tuple[List[str], Dict[str, str]]:
-        """Process code to assign intermediate variables and resolve {0}, {1}, etc."""
+
+    def _postprocess(self, code: List[str], output_vars: Optional[Dict[str, str]]) -> tuple[List[str], Dict[str, str]]:
+        """
+        对代码块进行后处理, 分配中间变量, 替换占位符
+
+        Args:
+            code (List[str]): 需要处理的代码行列表
+            output_vars (Optional[Dict[str, str]]): 输出变量名及其对应内部变量名的字典
+
+        Returns:
+            tuple[List[str], Dict[str, str]]: 处理后的代码行列表和输出变量字典
+
+        Raises:
+            ValueError: 若占位符未定义、输出变量字典的内部变量未找到，则抛出异常
+        """
         if not code:
             return [], {}
 
         # Detects "var = expr" or "a, b = expr" or "(a, b) = expr"
-        ASSIGNMENT_PATTERN = re.compile(r'^\s*(?:\((.*?)\)|([^=]+?))\s*=\s*(.+)$')
+        ASSIGNMENT_PATTERN: re.Pattern = re.compile(r'^\s*(?:\((.*?)\)|([^=]+?))\s*=\s*(.+)$')
         # Detects "{num}"
-        PLACEHOLDER_PATTERN = re.compile(r'\{(\d+)\}')
+        PLACEHOLDER_PATTERN: re.Pattern = re.compile(r'\{(\d+)\}')
 
         final_code = []
         intermediate_vars = []

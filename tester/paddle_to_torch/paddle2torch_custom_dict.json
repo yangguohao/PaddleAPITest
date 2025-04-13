@@ -3,7 +3,10 @@
 
     "b": "API started with 'b' should be placed here",
 
-    "paddle.broadcast_tensors": "BroadcastTensorsRule",
+    "paddle.broadcast_tensors": {
+        "paddle_arg_list": ["input"],
+        "Rule": "BroadcastTensorsRule"
+    },
 
     "c": "API started with 'c' should be placed here",
 

@@ -39,4 +39,12 @@ class GenericRule(BaseRule):
                 call = f"{step["api"]}({self._format_args(step.get("args", []), step.get("kwargs", {}))})"
                 code.append(call)
             return ConvertResult.success(code)
-        
+
+
+class ErrorRule(BaseRule):
+    def __init__(self, message: str):
+        super().__init__()
+        self.message = message
+
+    def apply(self, paddle_api: str, paddle_args: List, paddle_kwargs: Dict) -> ConvertResult:
+        return ConvertResult.error(self.message)
