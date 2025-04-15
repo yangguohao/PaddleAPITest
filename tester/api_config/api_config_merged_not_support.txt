@@ -143,8 +143,6 @@ paddle.nn.functional.nll_loss(Tensor([5, 3, 5, 5],"float64"), Tensor([5, 5, 5],"
 paddle.nn.functional.nll_loss(Tensor([5, 3, 5, 5],"float64"), Tensor([5, 5, 5],"int64"), weight=Tensor([3],"float64"), ignore_index=-100, reduction="mean", name=None, )
 paddle.nn.functional.nll_loss(Tensor([5, 3, 5, 5],"float64"), Tensor([5, 5, 5],"int64"), weight=Tensor([3],"float64"), ignore_index=-100, reduction="sum", name=None, )
 paddle.nn.functional.nll_loss(Tensor([5, 3],"float32"), Tensor([5],"int64"), )
-paddle.nn.functional.poisson_nll_loss(Tensor([10, 2],"bfloat16"), Tensor([10, 2],"bfloat16"), log_input=True, full=False, epsilon=1e-08, reduction="mean", )
-paddle.nn.functional.poisson_nll_loss(Tensor([10, 2],"bfloat16"), Tensor([10, 2],"bfloat16"), log_input=True, full=False, epsilon=1e-08, reduction="mean", name=None, )
 paddle.nn.functional.rnnt_loss(Tensor([3, 4, 3, 3],"float32"), Tensor([3, 2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), blank=0, fastemit_lambda=0.0, reduction="none", name=None, )
 paddle.nn.functional.rnnt_loss(Tensor([3, 4, 3, 3],"float32"), Tensor([3, 2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), blank=0, reduction="mean", fastemit_lambda=0.0, )
 paddle.nn.functional.rnnt_loss(Tensor([3, 4, 3, 3],"float32"), Tensor([3, 2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), blank=0, reduction="sum", fastemit_lambda=0.0, )
