@@ -906,6 +906,20 @@ class TensorConfig:
                     n_classes = numpy.random.randint(5, 50) if not isinstance(input_config, TensorConfig) else input_config.shape[1]
                     self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)  
             
+            elif api_config.api_name in ["paddle.nn.functional.one_hot"]:
+                num_classes_config = self.get_arg(api_config, 1, "num_classes")
+                determined_num_classes = None
+                default_random_num_classes = numpy.random.randint(1, 65535)
+                if isinstance(num_classes_config, int):
+                    determined_num_classes = num_classes_config
+                elif isinstance(num_classes_config, TensorConfig):
+                    if num_classes_config.numpy_tensor is None:
+                        if num_classes_config.numel() == 0 or num_classes_config.numel() == 1:
+                            num_classes_config.numpy_tensor = numpy.array([default_random_num_classes], dtype="int64")
+                    determined_num_classes = num_classes_config.numpy_tensor.item()
+                if self.check_arg(api_config, 0, "x"):
+                    self.numpy_tensor = numpy.random.randint(0, determined_num_classes, size=self.shape, dtype=self.dtype)
+
             elif api_config.api_name in ["paddle.nn.functional.rnnt_loss"]:
                 if self.check_arg(api_config, 0, "logits"):
                     if len(self.shape) != 4:
@@ -928,6 +942,22 @@ class TensorConfig:
                     else:  
                         max_possible_length = 2  
                         self.numpy_tensor = numpy.ones(self.shape, dtype=self.dtype) * max_possible_length
+            
+            elif api_config.api_name in ["paddle.nn.functional.sequence_mask"]:
+                if self.check_arg(api_config, 0, "x"): 
+                    maxlen_config = self.get_arg(api_config, 1, "maxlen")
+                    provided_maxlen = None
+                    if isinstance(maxlen_config, int):
+                        provided_maxlen = max(1, maxlen_config)
+                    if provided_maxlen is not None:
+                        self.numpy_tensor = numpy.random.randint(0, provided_maxlen + 1, size=self.shape).astype(self.dtype)
+                    else:
+                        high_val = numpy.random.randint(1, 2048)
+                        self.numpy_tensor = numpy.random.randint(0, high_val, size=self.shape).astype(self.dtype)
+                        if self.numpy_tensor.size > 0 and numpy.max(self.numpy_tensor) == 0:
+                            fix_value = numpy.random.randint(1, max(2, high_val)) 
+                            first_element_index = numpy.unravel_index(0, self.shape)
+                            self.numpy_tensor[first_element_index] = fix_value
 
             elif api_config.api_name in ["paddle.nn.functional.softmax_with_cross_entropy"]:
                 if self.check_arg(api_config, 1, "label"):
@@ -1072,7 +1102,19 @@ class TensorConfig:
                             while api_config.maxvalue % self.numpy_tensor:
                                 self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
                             api_config.maxvalue = api_config.maxvalue // self.numpy_tensor
-            
+            elif api_config.api_name in ["paddle.repeat_interleave"]:
+                if self.check_arg(api_config, 0, "x"):
+                    if self.dtype=='bfloat16':
+                        self.dtype='float32'
+                elif self.check_arg(api_config, 1, "repeats"):
+                    self.numpy_tensor = numpy.random.randint(1, 2048, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "axis"):
+                    x_tensor = self.get_arg(api_config, 0, "x")
+                    input_dims = len(x_tensor.shape)
+                    if len(self.shape) == 0:  
+                        self.numpy_tensor = numpy.array(numpy.random.randint(-input_dims, input_dims), dtype=self.dtype)
+                    else: 
+                        self.numpy_tensor = numpy.random.randint(-input_dims, input_dims, size=self.shape).astype(self.dtype)
             # s
             elif api_config.api_name in ["paddle.slice"]:
                 # if not hasattr(api_config, "element1"):
@@ -1340,12 +1382,31 @@ class TensorConfig:
 
             elif api_config.api_name in ["paddle.Tensor.take_along_axis", "paddle.take_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
-                    arr = self.get_arg(api_config, 0, "arr")
-                    min_dim = min(arr.shape)
-                    indices = (numpy.random.randint(0, min_dim-1, size=self.numel())).astype("int64")
+                    arr_config = self.get_arg(api_config, 0, "arr")
+                    axis = self.get_arg(api_config, 2, "axis")
+                    arr_shape = arr_config.shape
+                    arr_rank = len(arr_shape)
+                    axis_val = axis if axis >= 0 else axis + arr_rank
+                    dim_size = arr_shape[axis_val]
+                    if self.dtype not in ["int32", "int64"]:
+                        self.dtype = "int64" 
+                    num_elements = self.numel()
+                    if num_elements == 0:
+                         indices = numpy.array([], dtype=self.dtype)
+                    elif dim_size == 1:
+                         indices = numpy.zeros(num_elements, dtype=self.dtype)
+                    elif num_elements == 1:
+                         indices = numpy.array([0], dtype=self.dtype)
+                    else:
+                         indices = numpy.random.randint(0, dim_size, size=num_elements).astype(self.dtype)
+                         positions_to_replace = numpy.random.choice(num_elements, size=2, replace=False)
+                         flat_indices = indices.flatten()
+                         flat_indices[positions_to_replace[0]] = 0
+                         flat_indices[positions_to_replace[1]] = dim_size - 1
+                         indices = flat_indices
                     self.numpy_tensor = indices.reshape(self.shape)
-                    self.dtype = "int64"
-                    
+
+
             elif api_config.api_name in ["paddle.Tensor.clip"]:
                 if index>0 and key!='x':
                     self.numpy_tensor=numpy.random.random()-0.5
@@ -1395,6 +1456,24 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.Tensor.tile"]:
                 if index==1 or key=='repeat_times':
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
+            
+            elif api_config.api_name in ["paddle.tile"]:
+                if self.check_arg(api_config, 1, "repeat_times"):
+                    self.numpy_tensor = numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name in ["paddle.topk"]:
+                if self.check_arg(api_config, 1, "k"):
+                    x_config = self.get_arg(api_config, 0, "x")
+                    max_k_value = 1
+                    if isinstance(x_config, TensorConfig) and x_config.shape:
+                        if len(x_config.shape) > 0:
+                            max_k_value = x_config.shape[-1]
+                        else:
+                            max_k_value = 1
+                    if not self.shape:
+                        self.numpy_tensor = numpy.array(numpy.random.randint(1, max_k_value + 1), dtype=self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.randint(1, max_k_value + 1, size=self.shape).astype(self.dtype)
             # u
             elif api_config.api_name in ["paddle.Tensor.unflatten","paddle.unflatten"]:
                 if key == "x" or index == 0:
