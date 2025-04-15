@@ -89,7 +89,7 @@ class Paddle2TorchConverter:
         if paddle_api in paddle2torch_wrong_config or paddle_api not in self.rules:
             return ConvertResult.error(paddle_api, f"{paddle_api} is not supported")
         rule = self.rules[paddle_api]
-        rule.preprocess(self.mapping[paddle_api])
+        rule.read_mapping(self.mapping[paddle_api])
         if paddle_api not in rule.cached_results:
             rule.cached_results[paddle_api] = rule.apply(paddle_api)
         return rule.cached_results[paddle_api]
@@ -113,7 +113,10 @@ class Paddle2TorchConverter:
         exec_locals.update(zip(paddle_params, torch_args))
         exec_locals.update(torch_kwargs)
 
-        exec('\n'.join(convert_result.code), exec_globals, exec_locals)
+        try:
+            exec('\n'.join(convert_result.code), exec_globals, exec_locals)
+        except Exception as e:
+            raise RuntimeError(f"Error during execution of converted code: {str(e)}") from e
         if convert_result.output_var:
             result_var = convert_result.output_var
             if result_var not in exec_locals:

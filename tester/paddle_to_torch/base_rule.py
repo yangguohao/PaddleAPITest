@@ -110,10 +110,10 @@ class BaseRule(ABC):
                 kwargs[key] = value
 
         args_str = ", ".join(args)
-        kwargs_str = ", ".join(kwargs)
+        kwargs_str = ", ".join(f"{k}={v}" for k, v in kwargs.items())
         return ", ".join(filter(None, [args_str, kwargs_str]))
     
-    def preprocess(self, mapping: Dict):
+    def read_mapping(self, mapping: Dict):
         """
         预处理，根据传入的 json 配置初始化成员变量
 
