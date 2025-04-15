@@ -3,7 +3,6 @@ import json
 import os
 from collections import OrderedDict
 from typing import Any, Dict, List, Type
-from unittest import result
 
 import paddle
 import torch
@@ -86,31 +85,40 @@ class Paddle2TorchConverter:
                     self.rules[key] = GenericRule()
 
     def convert(self, paddle_api: str) -> ConvertResult:
-        if paddle_api in paddle2torch_wrong_config or paddle_api not in self.rules:
-            return ConvertResult.error(paddle_api, f"{paddle_api} is not supported")
+        if paddle_api in paddle2torch_wrong_config:
+            return ConvertResult.error(paddle_api, f"{paddle_api} is in the wrong config")
+        if paddle_api not in self.rules:
+            return ConvertResult.error(paddle_api, f"Rule for {paddle_api} is not implemented")
         rule = self.rules[paddle_api]
         rule.read_mapping(self.mapping[paddle_api])
         if paddle_api not in rule.cached_results:
             rule.cached_results[paddle_api] = rule.apply(paddle_api)
         return rule.cached_results[paddle_api]
     
-    def execute(self, convert_result: ConvertResult, paddle_api: str, torch_args: List, torch_kwargs: Dict) -> Any:
+    def execute(self, convert_result: ConvertResult, paddle_api: str, torch_args: List, torch_kwargs: OrderedDict) -> Any:
         if not convert_result.is_supported or not convert_result.code:
             return None
         exec_globals = {
             "__builtins__": __builtins__,
             "torch": torch
         }
-        exec_locals: Dict[str, Any] = {"result": None}
+        exec_locals: Dict[str, Any] = {
+            "result": None,
+            "args": torch_args,
+            "kwargs": torch_kwargs
+        }
 
-        # 将 torch tensors 映射至 paddle 同名参数
+        is_tensor_method = paddle_api.startswith("paddle.Tensor.")
+
+        # 将 args 中的 torch tensors 映射至 paddle 同名参数
         paddle_api_sig = inspect.signature(eval(paddle_api))
         paddle_params = list(paddle_api_sig.parameters.keys())
+        if is_tensor_method:
+            exec_locals["_tmp_tensor"] = torch_args[0]
+            exec_locals.update(zip(paddle_params, torch_args[1:]))
+        else:
+            exec_locals.update(zip(paddle_params, torch_args))
 
-        if len(torch_args) > len(paddle_params):
-            raise ValueError(f"Too many arguments for {paddle_api}")
-        
-        exec_locals.update(zip(paddle_params, torch_args))
         exec_locals.update(torch_kwargs)
 
         try:

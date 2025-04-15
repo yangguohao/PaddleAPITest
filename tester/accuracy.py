@@ -52,7 +52,11 @@ class APITestAccuracy(APITestBase):
                 return
         
             # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensor）
-            torch_output = self.converter.execute(convert_result, self.api_config.api_name, self.torch_args, self.torch_kwargs)
+            if self.test_amp:
+                with torch.autocast(device_type="cuda"):
+                    torch_output = self.converter.execute(convert_result, self.api_config.api_name, self.torch_args, self.torch_kwargs)
+            else:
+                torch_output = self.converter.execute(convert_result, self.api_config.api_name, self.torch_args, self.torch_kwargs)
 
             # if "paddle.Tensor." in self.api_config.api_name:
             #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])

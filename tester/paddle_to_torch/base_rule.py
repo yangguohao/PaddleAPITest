@@ -1,11 +1,8 @@
-import ast
 import re
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Dict, List, Optional
-
-from numpy import var
 
 
 @dataclass
@@ -73,7 +70,7 @@ class BaseRule(ABC):
         """
         pass
 
-    def _format_args(self, args: List, kwargs: Dict) -> str:
+    def _format_args(self, args: List, kwargs: OrderedDict) -> str:
         """
         将参数格式化为调用字符串的辅助方法
 
@@ -86,31 +83,29 @@ class BaseRule(ABC):
         """
         PLACEHOLDER_PATTERN: re.Pattern = re.compile(r'\{([^{}]+)\}')
 
+        def replace_placeholders(s: str) -> str:
+            placeholders = re.findall(PLACEHOLDER_PATTERN, s)
+            for placeholder in placeholders:
+                if placeholder.isdigit():
+                    s = s.replace(f"{{{placeholder}}}", f"_tmp_{placeholder}")
+                elif placeholder.replace('_', '').isalnum():
+                    s = s.replace(f"{{{placeholder}}}", placeholder)
+            return s
+
+        formatted_args = []
         for arg in args:
             if isinstance(arg, str):
-                placeholders = re.findall(PLACEHOLDER_PATTERN, arg)
-                for placeholder in placeholders:
-                    if placeholder.isdigit():
-                        idx = int(placeholder)
-                        var_name = f"_tmp_{idx}"
-                    else:
-                        var_name = placeholder
-                    arg = arg.replace(f"{{{placeholder}}}", var_name)
+                arg = replace_placeholders(arg)
+            formatted_args.append(str(arg))
 
+        formatted_kwargs = OrderedDict()
         for key, value in kwargs.items():
             if isinstance(value, str):
-                placeholders = re.findall(PLACEHOLDER_PATTERN, value)
-                for placeholder in placeholders:
-                    if placeholder.isdigit():
-                        idx = int(placeholder)
-                        var_name = f"_tmp_{idx}"
-                    else:
-                        var_name = placeholder
-                    value = value.replace(f"{{{placeholder}}}", var_name)
-                kwargs[key] = value
+                value = replace_placeholders(value)
+            formatted_kwargs[key] = str(value)
 
-        args_str = ", ".join(args)
-        kwargs_str = ", ".join(f"{k}={v}" for k, v in kwargs.items())
+        args_str = ", ".join(formatted_args)
+        kwargs_str = ", ".join(f"{k}={v}" for k, v in formatted_kwargs.items())
         return ", ".join(filter(None, [args_str, kwargs_str]))
     
     def read_mapping(self, mapping: Dict):
@@ -131,7 +126,7 @@ class BaseRule(ABC):
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
             self.torch_api: str = mapping.get("torch_api", "")
-            self.args_map: Dict = mapping.get("paddle_torch_args_map", {})
+            self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
         else:

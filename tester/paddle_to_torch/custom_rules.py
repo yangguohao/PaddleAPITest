@@ -6,7 +6,7 @@ from .base_rule import BaseRule, ConvertResult
 class BroadcastTensorsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = [
-            "result = torch.broadcast_tensors(', '.join(input))"
+            "result = torch.broadcast_tensors(*input)"
         ]
         return ConvertResult.success(paddle_api, code)
 

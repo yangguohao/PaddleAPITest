@@ -19,7 +19,7 @@
         "composite_steps": [
             {
                 "torch_api": "torch.stack",
-                "torch_args": ["inputs"],
+                "torch_args": ["({inputs}, )"],
                 "torch_kwargs": {
                     "dim": 0
                 }
@@ -72,6 +72,16 @@
     "s": "API started with 's' should be placed here",
 
     "t": "API started with 't' should be placed here",
+
+    "paddle.Tensor.set_": {
+        "torch_api": "torch.Tensor.set_",
+        "paddle_torch_args_map": {
+            "source": "source",
+            "shape": "size",
+            "stride": "stride",
+            "offset": "storage_offset"
+        }
+    },
 
     "u": "API started with 'u' should be placed here",
 
