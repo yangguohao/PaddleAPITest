@@ -1,0 +1,57 @@
+2025-04-15 08:46:15.591126 test begin: paddle.roll(Tensor([0, 3],"float32"), shifts=1, )
+
+W0415 08:46:28.698395 85498 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0415 08:46:28.700455 85498 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   egr::Grad(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+1   egr::RunBackward(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+2   RollGradNode::operator()(paddle::small_vector<std::vector<paddle::Tensor, std::allocator<paddle::Tensor> >, 15u>&, bool, bool)
+3   paddle::experimental::roll_grad(paddle::Tensor const&, paddle::Tensor const&, paddle::experimental::IntArrayBase<paddle::Tensor> const&, std::vector<long, std::allocator<long> > const&, paddle::Tensor*)
+4   void phi::RollGradKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, paddle::experimental::IntArrayBase<phi::DenseTensor> const&, std::vector<long, std::allocator<long> > const&, phi::DenseTensor*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Erroneous arithmetic operation` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1744706797 (unix time) try "date -d @1744706797" if you are using GNU date ***]
+  [SignalInfo: *** SIGFPE (@0x7f765a369c43) received by PID 85276 (TID 0x7f7504da9700) from PID 1513528387 ***]
+
+2025-04-15 08:47:13.955593 test begin: paddle.roll(Tensor([0, 3],"float32"), shifts=1, axis=0, )
+
+W0415 08:47:16.992153 86439 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0415 08:47:16.994056 86439 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[cuda error] paddle.roll(Tensor([0, 3],"float32"), shifts=1, axis=0, ) 
+ (External) CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+2025-04-15 08:47:22.379466 test begin: paddle.roll(Tensor([4, 0, 3],"float32"), shifts=1, )
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   egr::Grad(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+1   egr::RunBackward(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+2   RollGradNode::operator()(paddle::small_vector<std::vector<paddle::Tensor, std::allocator<paddle::Tensor> >, 15u>&, bool, bool)
+3   paddle::experimental::roll_grad(paddle::Tensor const&, paddle::Tensor const&, paddle::experimental::IntArrayBase<paddle::Tensor> const&, std::vector<long, std::allocator<long> > const&, paddle::Tensor*)
+4   void phi::RollGradKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, paddle::experimental::IntArrayBase<phi::DenseTensor> const&, std::vector<long, std::allocator<long> > const&, phi::DenseTensor*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Erroneous arithmetic operation` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1744706935 (unix time) try "date -d @1744706935" if you are using GNU date ***]
+  [SignalInfo: *** SIGFPE (@0x7f18986fcc43) received by PID 86248 (TID 0x7f1744007700) from PID 18446744071972047939 ***]
+
+2025-04-15 08:50:22.854329 test begin: paddle.roll(Tensor([4, 0, 3],"float32"), shifts=1, axis=0, )
+
+W0415 08:50:28.393705 88927 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0415 08:50:28.396595 88927 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[cuda error] paddle.roll(Tensor([4, 0, 3],"float32"), shifts=1, axis=0, ) 
+ (External) CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
