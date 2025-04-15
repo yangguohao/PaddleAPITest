@@ -1,17 +1,10 @@
-from tester import TensorConfig, APIConfig, analyse_configs
-from tester import APITestAccuracy, APITestPaddleOnly, APITestCINNVSDygraph
-import re
-import collections
-import paddle
-import numpy
-import math
-import json
-import paddle
-import inspect
 import argparse
-import subprocess
 import os
 from datetime import datetime
+
+from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                    APITestPaddleOnly)
+from tester.paddle_to_torch.paddle_to_torch import Paddle2TorchConverter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -82,6 +75,8 @@ def main():
     elif options.accuracy:
         test_class = APITestAccuracy
 
+    converter = Paddle2TorchConverter()
+
     if options.api_config != "":
         print("test begin:", options.api_config, flush=True)
         try:
@@ -89,8 +84,11 @@ def main():
         except Exception as err:
             print("[config parse error]", options.api_config, str(err))
             return
-
-        case = test_class(api_config, options.test_amp)
+        
+        if test_class == APITestAccuracy:
+            case = test_class(api_config, options.test_amp, converter)
+        else:
+            case = test_class(api_config, options.test_amp)
         case.test()
         case.clear_tensor()
         del case
@@ -120,7 +118,10 @@ def main():
                 print("[config parse error]", api_config_str, str(err))
                 continue
 
-            case = test_class(api_config, options.test_amp)
+            if test_class == APITestAccuracy:
+                case = test_class(api_config, options.test_amp, converter)
+            else:
+                case = test_class(api_config, options.test_amp)
             try:
                 case.test()
             except Exception as err:

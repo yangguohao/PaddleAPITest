@@ -1,9 +1,9 @@
-from .base import APITestBase
-from .accuracy import APITestAccuracy
-from .paddle_only import APITestPaddleOnly
-from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
 from . import paddle_to_torch
-from . import api_config
-from .api_config import TensorConfig, APIConfig, analyse_configs, USE_CACHED_NUMPY, cached_numpy
+from .accuracy import APITestAccuracy
+from .api_config import (USE_CACHED_NUMPY, APIConfig, TensorConfig,
+                         analyse_configs, cached_numpy)
+from .base import APITestBase
+from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
+from .paddle_only import APITestPaddleOnly
 
 __all__ = ['APITestBase', 'APITestAccuracy', 'APITestPaddleOnly', 'APITestCINNVSDygraph', 'paddle_to_torch','TensorConfig', 'APIConfig', 'analyse_configs', 'USE_CACHED_NUMPY', 'cached_numpy']

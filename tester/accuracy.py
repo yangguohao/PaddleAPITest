@@ -1,32 +1,25 @@
-from .api_config import TensorConfig, APIConfig, analyse_configs
-
-import re
-import collections
-import paddle
-import numpy
-import math
-import json
-import torch
-import paddle
-import inspect
-from .base import APITestBase
-import os
-import time
-from func_timeout import func_set_timeout
 import gc
+import os
+
+import paddle
+import torch
+from func_timeout import func_set_timeout
+
+from .base import APITestBase
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
 api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
 api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error.txt", "a")
+api_config_paddle_to_torch_faild = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
 api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
 api_config_torch_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_torch_error.txt", "a")
 
 class APITestAccuracy(APITestBase):
-    def __init__(self, api_config, test_amp):
+    def __init__(self, api_config, test_amp, converter):
         super().__init__(api_config)
-        self.api_config = api_config
         self.test_amp = test_amp
+        self.converter = converter
     
     @func_set_timeout(600)
     def test(self):
@@ -39,31 +32,47 @@ class APITestAccuracy(APITestBase):
             return
 
         try:
+            convert_result = self.converter.convert(self.api_config.api_name)
+        except Exception as e:
+            print(f"[paddle_to_torch] Convertion failed for {self.api_config.config}: {str(e)}")
+            api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
+            api_config_paddle_to_torch_faild.flush()
+            return
+        if not convert_result.is_supported:
+            print(f"[paddle_to_torch] Unsupported API {self.api_config.api_name}: {convert_result.error_message}")
+            api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
+            api_config_paddle_to_torch_faild.flush()
+            return
+
+        try:
             device = torch.device("cuda:0")
             torch.set_default_device(device)
             if not self.gen_torch_input():
                 print("gen_torch_input failed")
                 return
+        
+            # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensor）
+            torch_output = self.converter.execute(convert_result, self.api_config.api_name, self.torch_args, self.torch_kwargs)
 
-            if "paddle.Tensor." in self.api_config.api_name:
-                api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])
-                args = []
-                if len(self.torch_args) > 1:
-                    args = self.torch_args[1:]
-                if self.test_amp:
-                    with torch.autocast(device_type="cuda"):
-                        torch_output = api(*tuple(args), **self.torch_kwargs)
-                else:
-                    torch_output = api(*tuple(args), **self.torch_kwargs)
-                del args
-            else:
-                if self.test_amp:
-                    with torch.autocast(device_type="cuda"):
-                        torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
-                else:
-                    torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
-            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
-                torch_output = self.torch_args[0] if len(self.torch_args) > 0 else next(iter(self.torch_kwargs.values()))
+            # if "paddle.Tensor." in self.api_config.api_name:
+            #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])
+            #     args = []
+            #     if len(self.torch_args) > 1:
+            #         args = self.torch_args[1:]
+            #     if self.test_amp:
+            #         with torch.autocast(device_type="cuda"):
+            #             torch_output = api(*tuple(args), **self.torch_kwargs)
+            #     else:
+            #         torch_output = api(*tuple(args), **self.torch_kwargs)
+            #     del args
+            # else:
+            #     if self.test_amp:
+            #         with torch.autocast(device_type="cuda"):
+            #             torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+            #     else:
+            #         torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
+            # if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+            #     torch_output = self.torch_args[0] if len(self.torch_args) > 0 else next(iter(self.torch_kwargs.values()))
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[torch error]", self.api_config.config, "\n", str(err))
