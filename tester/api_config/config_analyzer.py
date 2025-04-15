@@ -1159,7 +1159,6 @@ class TensorConfig:
                             while api_config.maxvalue % self.numpy_tensor:
                                 self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
                             api_config.maxvalue = api_config.maxvalue // self.numpy_tensor
-<<<<<<< HEAD
                             
             elif api_config.api_name in ["paddle.vision.ops.roi_align", "paddle.version.ops.roi_pool"]:
                 if (index is not None and index == 0)or key == "x":
@@ -1180,7 +1179,6 @@ class TensorConfig:
                     self.numpy_tensor[0] = api_config.boxes[0]
                 
             
-=======
             elif api_config.api_name in ["paddle.repeat_interleave"]:
                 if self.check_arg(api_config, 0, "x"):
                     if self.dtype=='bfloat16':
@@ -1194,7 +1192,6 @@ class TensorConfig:
                         self.numpy_tensor = numpy.array(numpy.random.randint(-input_dims, input_dims), dtype=self.dtype)
                     else: 
                         self.numpy_tensor = numpy.random.randint(-input_dims, input_dims, size=self.shape).astype(self.dtype)
->>>>>>> e839254347d2099dacfaeb13d353ee3498bf07ed
             # s
             elif api_config.api_name in ["paddle.slice"]:
                 # if not hasattr(api_config, "element1"):
