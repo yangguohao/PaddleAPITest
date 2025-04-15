@@ -1,0 +1,27 @@
+paddle.vision.ops.decode_jpeg(Tensor([142887],"uint8"), )
+paddle.vision.ops.decode_jpeg(Tensor([142887],"uint8"), mode="gray", )
+paddle.vision.ops.decode_jpeg(Tensor([142887],"uint8"), mode="rgb", )
+
+
+ substring not found
+2025-04-10 10:20:49.010946 test begin: paddle.vision.ops.decode_jpeg(Tensor([142887],"uint8"), mode="gray", )
+
+W0410 10:20:53.703220  5976 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0410 10:20:53.704614  5976 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_decode_jpeg(_object*, _object*, _object*)
+1   decode_jpeg_ad_func(paddle::Tensor const&, std::string, phi::Place)
+2   paddle::experimental::decode_jpeg(paddle::Tensor const&, std::string const&, phi::Place const&)
+3   void phi::DecodeJpegKernel<unsigned char, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, std::string const&, phi::DenseTensor*)
+4   nvjpegGetImageInfo
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1744280453 (unix time) try "date -d @1744280453" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x7f5067400000) received by PID 5912 (TID 0x7f5160567700) from PID 1732247552 ***]

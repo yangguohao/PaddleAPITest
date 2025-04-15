@@ -1,0 +1,9 @@
+paddle.tensordot(Tensor([1, 5, 5, 5],"float32"), Tensor([0, 5, 5, 5],"float32"), list[list[],list[],], ) 
+
+
+
+2025-04-10 09:45:02.743302 test begin: paddle.tensordot(Tensor([1, 5, 5, 5],"float32"), Tensor([0, 5, 5, 5],"float32"), list[list[],list[],], )
+W0410 09:45:03.182219 26536 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.tensordot(Tensor([1, 5, 5, 5],"float32"), Tensor([0, 5, 5, 5],"float32"), list[list[],list[],], ) 
+ (External) CUBLAS error(7). 
+  [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
