@@ -1618,6 +1618,18 @@ class TensorConfig:
                             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
                         )
             # v
+            elif api_config.api_name in ["paddle.incubate.nn.functional.variable_length_memory_efficient_attention"]:
+                if self.check_arg(api_config, 3, "seq_lens"):
+                    q_seq_len = self.get_arg(api_config, 0, "query").shape[2]
+                    self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, min=1, max=q_seq_len)
+                elif self.check_arg(api_config, 4, "kv_seq_lens"):
+                    k_seq_len = self.get_arg(api_config, 1, "key").shape[2]
+                    v_seq_len = self.get_arg(api_config, 2, "value").shape[2]
+                    self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, min=1, max=min(k_seq_len, v_seq_len))
+                elif self.check_arg(api_config, 5, "mask"):
+                    # mask should between -inf and 0 (0 is included)
+                    eps = numpy.finfo(self.dtype).eps
+                    self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, max=0 + eps)
             # w
             # x
             # y
