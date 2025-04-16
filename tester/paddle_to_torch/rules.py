@@ -11,13 +11,9 @@ class ConvertResult:
 
     Attributes:
         paddle_api (str): Paddle API 名称
-
         is_supported (bool): 是否支持转换, 默认为 True
-
         code (Optional[List[str]]): 转换后的代码列表
-
         output_var (Optional[str]): 输出变量名，默认值 None 表示 result 保存最后的输出值
-
         error_message (Optional[str]): 错误信息, 仅当 is_supported = False 时有效
 
     Methods:
@@ -201,49 +197,72 @@ class BroadcastTensorsRule(BaseRule):
 
 # c
 
+
 # d
+
 
 # e
 
+
 # f
+
 
 # g
 
+
 # h
+
 
 # i
 
+
 # j
+
 
 # k
 
+
 # l
+
 
 # m
 
+
 # n
+
 
 # o
 
+
 # p
+
 
 # q
 
+
 # r
+
 
 # s
 
+
 # t
+
 
 # u
 
+
 # v
+
 
 # w
 
+
 # x
 
+
 # y
+
 
 # z
 

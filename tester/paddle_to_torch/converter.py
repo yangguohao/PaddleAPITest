@@ -1,11 +1,9 @@
-import inspect
 import json
 import threading
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Dict, List, Type
 
-import paddle
 import torch
 
 from . import rules
