@@ -4,7 +4,7 @@ from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
-from tester.paddle_to_torch.paddle_to_torch import Paddle2TorchConverter
+from tester.paddle_to_torch.converter import Paddle2TorchConverter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 

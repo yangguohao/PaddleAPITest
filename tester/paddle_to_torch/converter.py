@@ -7,9 +7,8 @@ from typing import Any, Dict, List, Type
 import paddle
 import torch
 
-from . import custom_rules
-from .base_rule import BaseRule, ConvertResult
-from .generic_rule import ErrorRule, GenericRule
+from . import rules
+from .rules import BaseRule, ConvertResult, ErrorRule, GenericRule
 
 paddle2torch_wrong_config = [
     "paddle.matmul",
@@ -53,8 +52,8 @@ class Paddle2TorchConverter:
             "GenericRule": GenericRule,
             "ErrorRule": ErrorRule,
         }
-        for rule_name in custom_rules.__all__:
-            rule_cls_map[rule_name] = getattr(custom_rules, rule_name)
+        for rule_name in rules.__all__:
+            rule_cls_map[rule_name] = getattr(rules, rule_name)
 
         with open(
             os.path.abspath(os.path.dirname(__file__))
@@ -123,8 +122,8 @@ class Paddle2TorchConverter:
             rule.cached_results[paddle_api] = rule.apply(paddle_api)
         return rule.cached_results[paddle_api]
 
+    @staticmethod
     def execute(
-        self,
         convert_result: ConvertResult,
         paddle_api: str,
         torch_args: List,

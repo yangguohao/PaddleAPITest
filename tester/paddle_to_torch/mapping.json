@@ -1,6 +1,40 @@
 {
     "a": "API started with 'a' should be placed here",
 
+    "paddle.add": {
+        "torch_api": "torch.add",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "min_input_args": 2,
+        "torch_args": [],
+        "torch_kwargs": {
+            "alpha": 1
+        }
+    },
+
+    "paddle.add_n": {
+        "min_input_args": 1,
+        "composite_steps": [
+            {
+                "torch_api": "torch.stack",
+                "torch_args": ["({inputs}, )"],
+                "torch_kwargs": {
+                    "dim": 0
+                }
+            },
+            {
+                "torch_api": "torch.sum",
+                "torch_args": ["{0}"],
+                "torch_kwargs": {
+                    "dim": 0
+                }
+            }
+        ],
+        "description": "torch.stack(inputs).sum(dim=0)"
+    },
+
     "b": "API started with 'b' should be placed here",
 
     "paddle.broadcast_tensors": {
@@ -42,6 +76,16 @@
     "s": "API started with 's' should be placed here",
 
     "t": "API started with 't' should be placed here",
+
+    "paddle.Tensor.set_": {
+        "torch_api": "torch.Tensor.set_",
+        "paddle_torch_args_map": {
+            "source": "source",
+            "shape": "size",
+            "stride": "stride",
+            "offset": "storage_offset"
+        }
+    },
 
     "u": "API started with 'u' should be placed here",
 
