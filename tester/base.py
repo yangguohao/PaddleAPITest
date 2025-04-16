@@ -20,8 +20,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.is_coalesced",
  "paddle.Tensor.index_put",
  "paddle.Tensor.index_sample",
- "paddle.vision.ops.roi_align",
- "paddle.vision.ops.roi_pool",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.incubate.nn.functional.block_multihead_attention",
  "paddle.linalg.pca_lowrank"
