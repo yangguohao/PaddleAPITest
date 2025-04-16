@@ -5,9 +5,8 @@ import paddle
 import torch
 from func_timeout import func_set_timeout
 
-from .paddle_to_torch import get_converter, clear_converter
-
 from .base import APITestBase
+from .paddle_to_torch import Paddle2TorchConverter, get_converter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -40,7 +39,7 @@ class APITestAccuracy(APITestBase):
             api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
             api_config_paddle_to_torch_faild.flush()
             return
-        if not convert_result.is_supported:
+        if not convert_result.is_supported or not convert_result.code:
             print(f"[paddle_to_torch] Unsupported API {self.api_config.api_name}: {convert_result.error_message}")
             api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
             api_config_paddle_to_torch_faild.flush()
@@ -53,12 +52,26 @@ class APITestAccuracy(APITestBase):
                 print("gen_torch_input failed")
                 return
         
-            # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensor）
+            # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensors）
+            # 以下代码等价于:
+            # torch_output = Paddle2TorchConverter.execute(convert_result, self.torch_args, self.torch_kwargs)
+            # 准备执行环境，将参数(torch tensors)直接映射至locals
+            exec_globals = {"torch": torch}
+            exec_locals = {
+                "args": self.torch_args,
+                "kwargs": self.torch_kwargs,
+                "result": None,
+            }
+            exec_locals.update(self.torch_kwargs)
+
             if self.test_amp:
                 with torch.autocast(device_type="cuda"):
-                    torch_output = self.converter.execute(convert_result, self.api_config.api_name, self.torch_args, self.torch_kwargs)
+                    exec("\n".join(convert_result.code), exec_globals, exec_locals)
             else:
-                torch_output = self.converter.execute(convert_result, self.api_config.api_name, self.torch_args, self.torch_kwargs)
+                exec("\n".join(convert_result.code), exec_globals, exec_locals)
+
+            output_var = convert_result.output_var or "result"
+            torch_output = exec_locals[output_var]
 
             # if "paddle.Tensor." in self.api_config.api_name:
             #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])

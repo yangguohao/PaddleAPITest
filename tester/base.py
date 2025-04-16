@@ -173,9 +173,9 @@ class APITestBase:
     
         api_sig = inspect.signature(self.paddle_api)
         api_args_list = list(api_sig.parameters.keys())
-        self.paddle_merged_kwargs_config = collections.OrderedDict(
-            (api_args_list[i], arg_config) for i, arg_config in enumerate(self.api_config.args)
-        )
+        self.paddle_merged_kwargs_config = collections.OrderedDict()
+        for i, arg_config in enumerate(self.api_config.args):
+             self.paddle_merged_kwargs_config[api_args_list[i]] = arg_config
         self.paddle_merged_kwargs_config.update(self.api_config.kwargs)
 
         self.torch_args_config = []

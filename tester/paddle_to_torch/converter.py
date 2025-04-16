@@ -110,7 +110,6 @@ class Paddle2TorchConverter:
     @staticmethod
     def execute(
         convert_result: ConvertResult,
-        paddle_api: str,
         torch_args: List,
         torch_kwargs: OrderedDict,
     ) -> Any:
@@ -119,7 +118,6 @@ class Paddle2TorchConverter:
 
         Args:
             convert_result (ConvertResult): 转换结果对象
-            paddle_api (str): Paddle API 名称
             torch_args (List): 传递给 Paddle API 的含有 Torch Tensors 的位置参数列表
             torch_kwargs (OrderedDict): 传递给 Paddle API 的含有 Torch Tensors 的关键字参数字典
 
@@ -133,23 +131,13 @@ class Paddle2TorchConverter:
         if not convert_result.is_supported or not convert_result.code:
             return None
 
-        exec_globals = {"__builtins__": __builtins__, "torch": torch}
-        exec_locals: Dict[str, Any] = {
-            "result": None,
+        # 准备执行环境，将参数(torch tensors)直接映射至locals
+        exec_globals = {"torch": torch}
+        exec_locals = {
             "args": torch_args,
             "kwargs": torch_kwargs,
+            "result": None,
         }
-
-        is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-
-        # 将 args 中的 torch tensors 映射至 paddle 同名参数
-        paddle_api_sig = inspect.signature(eval(paddle_api))
-        paddle_params = list(paddle_api_sig.parameters.keys())
-        if is_tensor_method:
-            exec_locals["_tmp_tensor"] = torch_args[0]
-            exec_locals.update(zip(paddle_params, torch_args[1:]))
-        else:
-            exec_locals.update(zip(paddle_params, torch_args))
         exec_locals.update(torch_kwargs)
 
         try:
@@ -158,14 +146,13 @@ class Paddle2TorchConverter:
             raise RuntimeError(
                 f"Error during execution of converted code: {str(e)}"
             ) from e
-        if convert_result.output_var:
-            result_var = convert_result.output_var
-            if result_var not in exec_locals:
-                raise ValueError(
-                    f"Variable {result_var} not found in the execution context"
-                )
-            return exec_locals.get(result_var)
-        return exec_locals.get("result")
+
+        output_var = convert_result.output_var or "result"
+        if output_var not in exec_locals:
+            raise ValueError(
+                f"Variable {output_var} not found in the execution context"
+            )
+        return exec_locals[output_var]
 
 
 # 模块级变量与实例管理
