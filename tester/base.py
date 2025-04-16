@@ -20,12 +20,8 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.is_coalesced",
  "paddle.Tensor.index_put",
  "paddle.Tensor.index_sample",
- "paddle.nn.functional.one_hot",
  "paddle.vision.ops.roi_align",
  "paddle.vision.ops.roi_pool",
- "paddle.nn.functional.embedding",
- "paddle.nn.functional.nll_loss",
- "paddle.nn.functional.softmax_with_cross_entropy",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
  "paddle.incubate.nn.functional.block_multihead_attention",
  "paddle.linalg.pca_lowrank"
@@ -66,6 +62,7 @@ stochastic_behavior_apis =[
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
     "paddle.incubate.nn.functional.moe_dispatch",
+    "paddle.nn.functional.alpha_dropout", 
     "paddle.nn.functional.fused_feedforward",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
@@ -473,6 +470,12 @@ class APITestBase:
             for output in outputs:
                 if isinstance(output, paddle.Tensor):
                     result_outputs.append(output)
+                elif isinstance(output, list):
+                    for item in output:
+                        if isinstance(item, paddle.Tensor):
+                            result_outputs.append(item)
+                    else:
+                        raise ValueError("outputs format not support")
                 elif isinstance(output, paddle.autograd.autograd.Hessian) or \
                         isinstance(output, paddle.autograd.autograd.Jacobian):
                     result_outputs.extend(output[:])
@@ -513,7 +516,6 @@ class APITestBase:
             if dtype == "bfloat16":
                 result_output_grad = paddle.cast(result_output_grad, dtype="uint16")
             result_outputs_grads.append(result_output_grad)
-
         return result_outputs, result_outputs_grads
 
     def convert_dtype_to_torch_type(self, dtype):

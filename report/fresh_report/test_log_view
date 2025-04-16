@@ -1,0 +1,50 @@
+paddle.view(Tensor([10, 10, 10, 20],"float32"), "uint8", )
+paddle.view(Tensor([10, 10, 10, 20],"float32"), Dtype(uint8), )
+
+
+
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-04-10 07:01:27.432060 test begin: paddle.view(Tensor([10, 10, 10, 20],"float32"), Dtype(uint8), )
+W0410 07:01:31.988243 10822 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0410 07:01:31.989670 10822 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   egr::Grad(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+1   egr::RunBackward(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+2   ViewDtypeGradNode::operator()(paddle::small_vector<std::vector<paddle::Tensor, std::allocator<paddle::Tensor> >, 15u>&, bool, bool)
+3   paddle::experimental::view_dtype_grad(paddle::Tensor const&, paddle::Tensor const&, phi::DataType, paddle::Tensor*)
+4   void phi::ViewDtypeKernel<phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DataType, phi::DenseTensor*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Erroneous arithmetic operation` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1744268491 (unix time) try "date -d @1744268491" if you are using GNU date ***]
+  [SignalInfo: *** SIGFPE (@0x7f569a688be9) received by PID 10755 (TID 0x7f561a5e6700) from PID 18446744072005127145 ***]
+
+
+
+2025-04-10 07:19:23.344214 test begin: paddle.view(Tensor([10, 10, 10, 20],"float32"), "uint8", )
+W0410 07:19:28.064433 15499 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0410 07:19:28.065543 15499 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   egr::Grad(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+1   egr::RunBackward(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+2   ViewDtypeGradNode::operator()(paddle::small_vector<std::vector<paddle::Tensor, std::allocator<paddle::Tensor> >, 15u>&, bool, bool)
+3   paddle::experimental::view_dtype_grad(paddle::Tensor const&, paddle::Tensor const&, phi::DataType, paddle::Tensor*)
+4   void phi::ViewDtypeKernel<phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DataType, phi::DenseTensor*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Erroneous arithmetic operation` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1744269568 (unix time) try "date -d @1744269568" if you are using GNU date ***]
+  [SignalInfo: *** SIGFPE (@0x7f1435ec0be9) received by PID 15424 (TID 0x7f13b03a9700) from PID 904661993 ***]
