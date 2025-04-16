@@ -424,7 +424,7 @@ class TensorConfig:
             # f
             elif api_config.api_name in ["paddle.full"]:
                 if self.check_arg(api_config, 1, "fill_value"):
-                    if "int" in dtype:
+                    if "int" in self.dtype:
                         self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                     else:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
@@ -439,6 +439,23 @@ class TensorConfig:
                 else:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(dtype)
+            elif api_config.api_name in ["paddle.vision.ops.generate_proposals"]:
+                if (index is not None and index == 0) or key == "scores":
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif (index is not None and index == 1)  or key == "bbox_deltas":
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                elif (index is not None and index == 2)  or key == "img_size":
+                    self.numpy_tensor = numpy.random.randint(0, 1024, size=self.shape).astype(self.dtype)
+                elif (index is not None and index == 3)  or key == "anchors":
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    w = self.shape[0]
+                    h = self.shape[1]
+                    for i in range(self.shape[0]):
+                        self.numpy_tensor[i][0] = numpy.random.random() * w
+                        self.numpy_tensor[i][1] = numpy.random.random() * h
+                        self.numpy_tensor[i][2] = numpy.random.random() * (w - self.numpy_tensor[i][0]+1) + self.numpy_tensor[i][0]+1
+                        self.numpy_tensor[i][3] = numpy.random.random() * (h- self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
+                    
             elif api_config.api_name.startswith("paddle.geometric.segment_"):
                 if self.check_arg(api_config, 1, "segment_ids"):
                     batch_size = self.get_arg(api_config, 0, "x").shape[0]
@@ -759,6 +776,19 @@ class TensorConfig:
                 return self.numpy_tensor
                 
             # n
+            elif api_config.api_name in ["paddle.vision.ops.nms"]:
+                if index == 0 or key == "boxes":
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    for i in range(self.shape[0]):
+                        self.numpy_tensor[i][0] = numpy.random.random() * 1023
+                        self.numpy_tensor[i][1] = numpy.random.random() * 1023
+                        self.numpy_tensor[i][2] = numpy.random.random() * (1024 - self.numpy_tensor[i][0]+1) + self.numpy_tensor[i][0]+1
+                        self.numpy_tensor[i][3] = numpy.random.random() * (1024 - self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
+                elif index == 3 or key == "scores":
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                else:
+                    self.numpy_tensor = numpy.random.randint(0,1024,self.shape).astype(self.dtype)    
+                              
             elif api_config.api_name in ["paddle.nn.functional.adaptive_avg_pool2d",'paddle.nn.functional.adaptive_avg_pool3d']:
                 if key == "output_size" or index == 1:
                     s = self.get_arg(api_config, 0, "x")
@@ -993,6 +1023,31 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
+                    
+            elif api_config.api_name in ["paddle.vision.ops.psroi_pool"]:
+                if (index is not None and index == 0) or key == "x":
+                    self.numpy_tensor = ((numpy.random.random(self.shape)) * 255).astype(self.dtype)
+                    if not hasattr(api_config, "x"):
+                        api_config.x = self.shape
+                    print(self.numpy_tensor)
+                elif index == 1 or key == "boxes":
+                    if not hasattr(api_config,"boxes"):
+                        api_config.boxes = self.shape
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    for i in range(self.shape[0]):
+                        self.numpy_tensor[i][0] = numpy.random.random() * (api_config.x[2]-2)
+                        self.numpy_tensor[i][1] = numpy.random.random() * (api_config.x[3]-2)
+                        self.numpy_tensor[i][2] = numpy.random.random() * (api_config.x[2]-1 - self.numpy_tensor[i][0]+1) + self.numpy_tensor[i][0]+1
+                        self.numpy_tensor[i][3] = numpy.random.random() * (api_config.x[3]-1 - self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
+                    print(self.numpy_tensor)
+    
+                elif index == 2 or key =="boxes_num":
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    self.numpy_tensor[0] = api_config.boxes[0]
+                    print(self.numpy_tensor)
+                else:
+                    self.numpy_tensor = numpy.random.randint(0,1024,self.shape).astype(self.dtype)
+                
             elif api_config.api_name in ["paddle.put_along_axis", "paddle.Tensor.put_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
                     x_tensor = self.get_arg(api_config, 0, "x")
@@ -1082,6 +1137,8 @@ class TensorConfig:
                                     api_config.tensornum += 1
                                 i += 1
                 else:
+                    if api_config.tensornum == 0:
+                        api_config.tensornum = 1
                     self.dtype = "int32"
                     if self.shape != [] and self.shape != [1]:
                         self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
@@ -1102,6 +1159,26 @@ class TensorConfig:
                             while api_config.maxvalue % self.numpy_tensor:
                                 self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
                             api_config.maxvalue = api_config.maxvalue // self.numpy_tensor
+                            
+            elif api_config.api_name in ["paddle.vision.ops.roi_align", "paddle.version.ops.roi_pool"]:
+                if (index is not None and index == 0)or key == "x":
+                    self.numpy_tensor = ((numpy.random.random(self.shape)) * 255).astype(self.dtype)
+                    if not hasattr(api_config, "x"):
+                        api_config.x = self.shape
+                elif (index is not None and index == 1)or key == "boxes":
+                    if not hasattr(api_config,"boxes"):
+                        api_config.boxes = self.shape
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    for i in range(self.shape[0]):
+                        self.numpy_tensor[i][0] = numpy.random.random() * (api_config.x[2]-2)
+                        self.numpy_tensor[i][1] = numpy.random.random() * (api_config.x[3]-2)
+                        self.numpy_tensor[i][2] = numpy.random.random() * (api_config.x[2]-1 - self.numpy_tensor[i][0]+1) + self.numpy_tensor[i][0]+1
+                        self.numpy_tensor[i][3] = numpy.random.random() * (api_config.x[3]-1 - self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
+                elif index == 2 or key =="boxes_num":
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    self.numpy_tensor[0] = api_config.boxes[0]
+                
+            
             elif api_config.api_name in ["paddle.repeat_interleave"]:
                 if self.check_arg(api_config, 0, "x"):
                     if self.dtype=='bfloat16':
