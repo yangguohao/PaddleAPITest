@@ -7,7 +7,6 @@
             "x": "input",
             "y": "other"
         },
-        "min_input_args": 2,
         "torch_args": [],
         "torch_kwargs": {
             "alpha": 1
@@ -15,7 +14,6 @@
     },
 
     "paddle.add_n": {
-        "min_input_args": 1,
         "composite_steps": [
             {
                 "torch_api": "torch.stack",

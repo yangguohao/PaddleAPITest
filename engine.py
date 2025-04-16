@@ -81,7 +81,7 @@ def main():
         except Exception as err:
             print("[config parse error]", options.api_config, str(err))
             return
-        
+
         case = test_class(api_config, options.test_amp)
         case.test()
         case.clear_tensor()

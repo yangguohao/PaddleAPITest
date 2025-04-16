@@ -47,9 +47,6 @@ class ConvertResult:
 class BaseRule(ABC):
     """转换规则的抽象基类"""
 
-    def __init__(self):
-        self.cached_results: Dict[str, ConvertResult] = {}
-
     @abstractmethod
     def apply(self, paddle_api: str) -> ConvertResult:
         """
