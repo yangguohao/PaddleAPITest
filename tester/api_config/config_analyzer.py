@@ -36,9 +36,10 @@ not_zero_apis = [
 ]
 
 class TensorConfig:
-    def __init__(self, shape, dtype):
+    def __init__(self, shape, dtype, place=None):
         self.shape = shape
         self.dtype = dtype
+        self.place = place
         self.numpy_tensor = None
         self.paddle_tensor = None
         self.torch_tensor = None
@@ -48,6 +49,7 @@ class TensorConfig:
         memo[id(self)] = result
         result.shape = copy.deepcopy(self.shape)
         result.dtype = copy.deepcopy(self.dtype)
+        result.place = copy.deepcopy(self.place)
         return result
 
     def __str__(self):
@@ -220,6 +222,64 @@ class TensorConfig:
                         dtype = "int64"
                         self.numpy_tensor = numpy.random.randint(0, 65535, size=self.shape).astype(dtype)
                         self.dtype = dtype
+            elif api_config.api_name in ["paddle.incubate.nn.functional.block_multihead_attention"]:
+                qkv_shape = self.get_arg(api_config, 0, "qkv").shape # [token_num, 3 * num_head * head_size].
+                bs = self.get_arg(api_config, 3, "seq_lens_encoder").shape[0]
+                seq_len = qkv_shape[0] // bs
+                
+                if self.check_arg(api_config, 1, "key_cache") or self.check_arg(api_config, 2, "value_cache") \
+                    or self.check_arg(api_config, 4, "seq_lens_decoder") or self.check_arg(api_config, 10, "block_tables"):
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 3, "seq_lens_encoder"):
+                    self.numpy_tensor = numpy.array([seq_len] * bs, dtype=self.dtype)
+                elif self.check_arg(api_config, 5, "seq_lens_this_time"):
+                    self.numpy_tensor = self.get_initialized_value(api_config, 3, "seq_lens_encoder")
+                elif self.check_arg(api_config, 6, "padding_offsets"):
+                    padding_offsets_dtype = self.get_arg(api_config, 6, "padding_offsets").dtype
+                    cum_offsets_dtype = self.get_arg(api_config, 7, "cum_offsets").dtype
+                    cu_seqlens_q_dtype = self.get_arg(api_config, 8, "cu_seqlens_q").dtype
+                    cu_seqlens_k_dtype = self.get_arg(api_config, 9, "cu_seqlens_k").dtype
+                    seq_lens_this_time = self.get_initialized_value(api_config, 5, "seq_lens_this_time")
+                    
+                    def get_padding_offset(bsz, max_seq_len, seq_lens_this_time):
+                        cum_offsets_now = numpy.cumsum(max_seq_len - seq_lens_this_time)
+                        cum_offsets = numpy.zeros(shape=(bsz + 1), dtype=cum_offsets_dtype)
+                        cum_offsets[1:] = cum_offsets_now
+                        token_num = numpy.sum(seq_lens_this_time)
+                        padding_offsets = numpy.zeros(shape=(token_num), dtype=padding_offsets_dtype)
+                        cu_seqlens_q = numpy.zeros(shape=(bsz + 1), dtype=cu_seqlens_q_dtype)
+                        cu_seqlens_k = numpy.zeros(shape=(bsz + 1), dtype=cu_seqlens_k_dtype)
+                        for i in range(bsz):
+                            seq_len_now = seq_lens_this_time[i]
+                            cum_offset = cum_offsets[i]
+                            for j in range(seq_len_now):
+                                padding_offsets[i * max_seq_len - cum_offset + j] = cum_offset
+                            cum_seq_len = (i + 1) * max_seq_len - cum_offsets[i + 1]
+                            cu_seqlens_q[i + 1] = cum_seq_len
+                            cu_seqlens_k[i + 1] = cum_seq_len
+                        return padding_offsets, cum_offsets[:-1], cu_seqlens_q, cu_seqlens_k
+                
+                    padding_offset, cum_offset, cu_seqlens_q, cu_seqlens_k = get_padding_offset(bs, seq_len, seq_lens_this_time)
+                    self.numpy_tensor = padding_offset
+                    self.set_tensor_arg_value(api_config, 7, "cum_offsets", cum_offset)
+                    self.set_tensor_arg_value(api_config, 8, "cu_seqlens_q", cu_seqlens_q)
+                    self.set_tensor_arg_value(api_config, 9, "cu_seqlens_k", cu_seqlens_k)
+                elif self.check_arg(api_config, 13, "cache_k_quant_scales") or self.check_arg(api_config, 14, "cache_v_quant_scales") \
+                        or self.check_arg(api_config, 15, "cache_k_dequant_scales") or self.check_arg(api_config, 16, "cache_v_dequant_scales") or \
+                        self.check_arg(api_config, 17, "qkv_out_scale") or self.check_arg(api_config, 20, "out_smooth"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0)
+                elif self.check_arg(api_config, 22, "max_dec_len_this_time") or self.check_arg(api_config, 21, "max_enc_len_this_time"):
+                    self.place = "cpu"
+                    if self.check_arg(api_config, 22, "max_dec_len_this_time"):
+                        self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    else: # 21, "max_enc_len_this_time"
+                        self.numpy_tensor = numpy.array([seq_len] * bs, dtype=self.dtype)
+                elif self.check_arg(api_config, 23, "rope_emb") and self.place == "cpu":
+                    self.place = "gpu"
+                elif self.check_arg(api_config, 24, "mask") or self.check_arg(api_config, 25, "tgt_mask"):
+                    eps = numpy.finfo(self.dtype).eps
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, max = 0 + eps)
+            
             # c
             elif api_config.api_name in ["paddle.chunk"]:
                 if self.check_arg(api_config, 2, "axis"):
@@ -1676,6 +1736,7 @@ class TensorConfig:
             self.paddle_tensor = paddle.to_tensor(
                 self.get_numpy_tensor(api_config, index, key, **kwargs),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
+                place=self.place
             )
             self.paddle_tensor.stop_gradient = True
             if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
