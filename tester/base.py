@@ -21,7 +21,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  "paddle.Tensor.index_put",
  "paddle.Tensor.index_sample",
  "paddle.incubate.nn.functional.fused_multi_head_attention",
- "paddle.incubate.nn.functional.block_multihead_attention",
  "paddle.linalg.pca_lowrank"
  ]
 
