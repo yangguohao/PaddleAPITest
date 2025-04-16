@@ -726,6 +726,17 @@ class TensorConfig:
                         self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
                 elif api_config.api_name.endswith("pca_lowrank"):
                     self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
+            # m
+            elif api_config.api_name in ["paddle.incubate.nn.functional.masked_multihead_attention"]:
+                if self.check_arg(api_config, 4, "sequence_lengths"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
+                elif self.check_arg(api_config, 5, "rotary_tensor"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=1000)
+                elif self.check_arg(api_config, 0, "x"):
+                    # squeeze to 2-D tensor
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype).reshape([-1, self.shape[-1]])
+                    self.shape = self.numpy_tensor.shape
+                    
             elif api_config.api_name in ["paddle.matrix_transpose"]:
                 if self.check_arg(api_config, 0, "x"):
                     if len(self.shape) < 2:
