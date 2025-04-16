@@ -1,7 +1,8 @@
 import inspect
 import json
-import os
+import threading
 from collections import OrderedDict
+from pathlib import Path
 from typing import Any, Dict, List, Type
 
 import paddle
@@ -43,11 +44,12 @@ paddle2torch_wrong_config = [
 
 class Paddle2TorchConverter:
     def __init__(self):
-        self.rules = {}
-        self.mapping = {}
-        self.load_dict_and_rules()
+        self.rules: Dict[str, Any] = {}
+        self.mapping: Dict[str, Any] = {}
+        self.cached_results: Dict[str, ConvertResult] = {}
+        self._load_mapping_and_rules()
 
-    def load_dict_and_rules(self):
+    def _load_mapping_and_rules(self):
         rule_cls_map: Dict[str, Type[BaseRule]] = {
             "GenericRule": GenericRule,
             "ErrorRule": ErrorRule,
@@ -55,47 +57,21 @@ class Paddle2TorchConverter:
         for rule_name in rules.__all__:
             rule_cls_map[rule_name] = getattr(rules, rule_name)
 
-        with open(
-            os.path.abspath(os.path.dirname(__file__))
-            + "/paddle2torch_custom_dict.json",
-            "r",
-        ) as f:
-            paddle2torch_custom_map = json.load(f, object_pairs_hook=OrderedDict)
-            for key, value in paddle2torch_custom_map.items():
-                if key.startswith("paddle.") and key not in self.rules:
-                    self.mapping[key] = value
-                    rule_name = value.get("Rule")
-                    if rule_name and rule_name in rule_cls_map:
-                        self.rules[key] = rule_cls_map[rule_name]()
-                    else:
-                        error_msg = (
-                            f"{key} doesn't have 'Rule' field"
-                            if not rule_name
-                            else f"{rule_name} for {key} is not implemented"
-                        )
-                        self.rules[key] = ErrorRule(error_msg)
-
-        with open(
-            os.path.abspath(os.path.dirname(__file__))
-            + "/paddle2torch_generic_dict.json",
-            "r",
-        ) as f:
-            paddle2torch_generic_map = json.load(f, object_pairs_hook=OrderedDict)
-            for key, value in paddle2torch_generic_map.items():
-                if key.startswith("paddle.") and key not in self.rules:
-                    self.mapping[key] = value
+        with open(Path(__file__).absolute().parent / "mapping.json", "r") as f:
+            paddle2torch_mapping = json.load(f, object_pairs_hook=OrderedDict)
+            for key, value in paddle2torch_mapping.items():
+                if not key.startswith("paddle.") or key in self.rules:
+                    continue
+                self.mapping[key] = value
+                rule_name = value.get("Rule")
+                if rule_name is None:
                     self.rules[key] = GenericRule()
-
-        with open(
-            os.path.abspath(os.path.dirname(__file__))
-            + "/paddle2torch_regular_dict.json",
-            "r",
-        ) as f:
-            paddle2torch_regular_map = json.load(f, object_pairs_hook=OrderedDict)
-            for key, value in paddle2torch_regular_map.items():
-                if key.startswith("paddle.") and key not in self.rules:
-                    self.mapping[key] = value
-                    self.rules[key] = GenericRule()
+                elif rule_name in rule_cls_map:
+                    self.rules[key] = rule_cls_map[rule_name]()
+                else:
+                    self.rules[key] = ErrorRule(
+                        f"{rule_name} for {key} is not implemented"
+                    )
 
     def convert(self, paddle_api: str) -> ConvertResult:
         """
@@ -108,19 +84,28 @@ class Paddle2TorchConverter:
             ConvertResult: 转换结果，包括转换后的 Torch API 代码、输出变量或错误信息
 
         """
+        if paddle_api in self.cached_results:
+            return self.cached_results[paddle_api]
+
         if paddle_api in paddle2torch_wrong_config:
-            return ConvertResult.error(
+            result = ConvertResult.error(
                 paddle_api, f"{paddle_api} is in the wrong config"
             )
+            self.cached_results[paddle_api] = result
+            return result
+
         if paddle_api not in self.rules:
-            return ConvertResult.error(
+            result = ConvertResult.error(
                 paddle_api, f"Rule for {paddle_api} is not implemented"
             )
+            self.cached_results[paddle_api] = result
+            return result
+
         rule = self.rules[paddle_api]
         rule.read_mapping(self.mapping[paddle_api])
-        if paddle_api not in rule.cached_results:
-            rule.cached_results[paddle_api] = rule.apply(paddle_api)
-        return rule.cached_results[paddle_api]
+        result = rule.apply(paddle_api)
+        self.cached_results[paddle_api] = result
+        return result
 
     @staticmethod
     def execute(
@@ -147,6 +132,7 @@ class Paddle2TorchConverter:
         """
         if not convert_result.is_supported or not convert_result.code:
             return None
+
         exec_globals = {"__builtins__": __builtins__, "torch": torch}
         exec_locals: Dict[str, Any] = {
             "result": None,
@@ -164,7 +150,6 @@ class Paddle2TorchConverter:
             exec_locals.update(zip(paddle_params, torch_args[1:]))
         else:
             exec_locals.update(zip(paddle_params, torch_args))
-
         exec_locals.update(torch_kwargs)
 
         try:
@@ -181,3 +166,22 @@ class Paddle2TorchConverter:
                 )
             return exec_locals.get(result_var)
         return exec_locals.get("result")
+
+
+# 模块级变量与实例管理
+_converter_instance = None
+_converter_lock = threading.Lock()
+
+
+def get_converter() -> Paddle2TorchConverter:
+    global _converter_instance
+    with _converter_lock:
+        if _converter_instance is None:
+            _converter_instance = Paddle2TorchConverter()
+        return _converter_instance
+
+
+def clear_converter():
+    global _converter_instance
+    with _converter_lock:
+        _converter_instance = None

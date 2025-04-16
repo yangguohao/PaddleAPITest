@@ -4,7 +4,6 @@ from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
-from tester.paddle_to_torch.converter import Paddle2TorchConverter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -75,8 +74,6 @@ def main():
     elif options.accuracy:
         test_class = APITestAccuracy
 
-    converter = Paddle2TorchConverter()
-
     if options.api_config != "":
         print("test begin:", options.api_config, flush=True)
         try:
@@ -85,10 +82,7 @@ def main():
             print("[config parse error]", options.api_config, str(err))
             return
         
-        if test_class == APITestAccuracy:
-            case = test_class(api_config, options.test_amp, converter)
-        else:
-            case = test_class(api_config, options.test_amp)
+        case = test_class(api_config, options.test_amp)
         case.test()
         case.clear_tensor()
         del case
@@ -118,10 +112,7 @@ def main():
                 print("[config parse error]", api_config_str, str(err))
                 continue
 
-            if test_class == APITestAccuracy:
-                case = test_class(api_config, options.test_amp, converter)
-            else:
-                case = test_class(api_config, options.test_amp)
+            case = test_class(api_config, options.test_amp)
             try:
                 case.test()
             except Exception as err:

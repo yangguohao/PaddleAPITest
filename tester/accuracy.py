@@ -5,6 +5,8 @@ import paddle
 import torch
 from func_timeout import func_set_timeout
 
+from .paddle_to_torch import get_converter, clear_converter
+
 from .base import APITestBase
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
@@ -16,10 +18,10 @@ api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt
 api_config_torch_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_torch_error.txt", "a")
 
 class APITestAccuracy(APITestBase):
-    def __init__(self, api_config, test_amp, converter):
+    def __init__(self, api_config, test_amp):
         super().__init__(api_config)
         self.test_amp = test_amp
-        self.converter = converter
+        self.converter = get_converter()
     
     @func_set_timeout(600)
     def test(self):
