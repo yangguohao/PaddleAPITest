@@ -1077,7 +1077,31 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
-                
+                    
+            elif api_config.api_name in ["paddle.vision.ops.psroi_pool"]:
+                if (index is not None and index == 0) or key == "x":
+                    self.numpy_tensor = ((numpy.random.random(self.shape)) * 255).astype(self.dtype)
+                    if not hasattr(api_config, "x"):
+                        api_config.x = self.shape
+                    print(self.numpy_tensor)
+                elif index == 1 or key == "boxes":
+                    if not hasattr(api_config,"boxes"):
+                        api_config.boxes = self.shape
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    for i in range(self.shape[0]):
+                        self.numpy_tensor[i][0] = numpy.random.random() * (api_config.x[2]-2)
+                        self.numpy_tensor[i][1] = numpy.random.random() * (api_config.x[3]-2)
+                        self.numpy_tensor[i][2] = numpy.random.random() * (api_config.x[2]-1 - self.numpy_tensor[i][0]+1) + self.numpy_tensor[i][0]+1
+                        self.numpy_tensor[i][3] = numpy.random.random() * (api_config.x[3]-1 - self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
+                    print(self.numpy_tensor)
+
+                elif index == 2 or key =="boxes_num":
+                    self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
+                    self.numpy_tensor[0] = api_config.boxes[0]
+                    print(self.numpy_tensor)
+                else:
+                    self.numpy_tensor = numpy.random.randint(0,1024,self.shape).astype(self.dtype)
+            
             elif api_config.api_name in ["paddle.put_along_axis", "paddle.Tensor.put_along_axis"]:
                 if self.check_arg(api_config, 1, "indices"):
                     x_tensor = self.get_arg(api_config, 0, "x")
