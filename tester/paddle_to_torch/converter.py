@@ -9,38 +9,42 @@ import torch
 from . import rules
 from .rules import BaseRule, ConvertResult, ErrorRule, GenericRule
 
-paddle2torch_wrong_config = [
-    "paddle.matmul",
-    "paddle.nn.functional.adaptive_avg_pool2d",
-    "paddle.nn.functional.adaptive_avg_pool3d",
-    "paddle.nn.functional.channel_shuffle",
-    "paddle.nn.functional.conv1d",
-    "paddle.nn.functional.conv1d_transpose",
-    "paddle.nn.functional.conv2d",
-    "paddle.nn.functional.conv2d_transpose",
-    "paddle.nn.functional.conv3d",
-    "paddle.nn.functional.conv3d_transpose",
-    "paddle.nn.functional.gaussian_nll_loss",
-    "paddle.nn.functional.group_norm",
-    "paddle.nn.functional.interpolate",
-    "paddle.nn.functional.local_response_norm",
-    "paddle.nn.functional.lp_pool1d",
-    "paddle.nn.functional.lp_pool2d",
-    "paddle.nn.functional.max_pool1d",
-    "paddle.nn.functional.max_pool2d",
-    "paddle.nn.functional.max_pool3d",
-    "paddle.nn.functional.max_unpool1d",
-    "paddle.nn.functional.max_unpool2d",
-    "paddle.nn.functional.max_unpool3d",
-    "paddle.nn.functional.pixel_shuffle",
-    "paddle.nn.functional.pixel_unshuffle",
-    "paddle.nn.functional.prelu",
-    "paddle.nn.functional.selu",
-    "paddle.as_strided",
-]
+PADDLE2TORCH_WRONG_CONFIG = frozenset(
+    [
+        "paddle.matmul",
+        "paddle.nn.functional.adaptive_avg_pool2d",
+        "paddle.nn.functional.adaptive_avg_pool3d",
+        "paddle.nn.functional.channel_shuffle",
+        "paddle.nn.functional.conv1d",
+        "paddle.nn.functional.conv1d_transpose",
+        "paddle.nn.functional.conv2d",
+        "paddle.nn.functional.conv2d_transpose",
+        "paddle.nn.functional.conv3d",
+        "paddle.nn.functional.conv3d_transpose",
+        "paddle.nn.functional.gaussian_nll_loss",
+        "paddle.nn.functional.group_norm",
+        "paddle.nn.functional.interpolate",
+        "paddle.nn.functional.local_response_norm",
+        "paddle.nn.functional.lp_pool1d",
+        "paddle.nn.functional.lp_pool2d",
+        "paddle.nn.functional.max_pool1d",
+        "paddle.nn.functional.max_pool2d",
+        "paddle.nn.functional.max_pool3d",
+        "paddle.nn.functional.max_unpool1d",
+        "paddle.nn.functional.max_unpool2d",
+        "paddle.nn.functional.max_unpool3d",
+        "paddle.nn.functional.pixel_shuffle",
+        "paddle.nn.functional.pixel_unshuffle",
+        "paddle.nn.functional.prelu",
+        "paddle.nn.functional.selu",
+        "paddle.as_strided",
+    ]
+)
 
 
 class Paddle2TorchConverter:
+    __slots__ = ("rules", "mapping", "cached_results")
+
     def __init__(self):
         self.rules: Dict[str, Any] = {}
         self.mapping: Dict[str, Any] = {}
@@ -55,7 +59,8 @@ class Paddle2TorchConverter:
         for rule_name in rules.__all__:
             rule_cls_map[rule_name] = getattr(rules, rule_name)
 
-        with open(Path(__file__).absolute().parent / "mapping.json", "r") as f:
+        mapping_file = Path(__file__).absolute().parent / "mapping.json"
+        with mapping_file.open("r") as f:
             paddle2torch_mapping = json.load(f, object_pairs_hook=OrderedDict)
             for key, value in paddle2torch_mapping.items():
                 if not key.startswith("paddle.") or key in self.rules:
@@ -82,26 +87,34 @@ class Paddle2TorchConverter:
             ConvertResult: 转换结果，包括转换后的 Torch API 代码、输出变量或错误信息
 
         """
-        if paddle_api in self.cached_results:
+        try:
             return self.cached_results[paddle_api]
+        except KeyError:
+            pass
 
-        if paddle_api in paddle2torch_wrong_config:
+        if paddle_api in PADDLE2TORCH_WRONG_CONFIG:
             result = ConvertResult.error(
                 paddle_api, f"{paddle_api} is in the wrong config"
             )
             self.cached_results[paddle_api] = result
             return result
 
-        if paddle_api not in self.rules:
+        try:
+            rule = self.rules[paddle_api]
+        except KeyError:
             result = ConvertResult.error(
                 paddle_api, f"Rule for {paddle_api} is not implemented"
             )
             self.cached_results[paddle_api] = result
             return result
 
-        rule = self.rules[paddle_api]
         rule.read_mapping(self.mapping[paddle_api])
         result = rule.apply(paddle_api)
+
+        if result.is_supported and result.code:
+            code_str = "\n".join(result.code)
+            result.compiled_code = compile(code_str, "<string>", "exec")
+
         self.cached_results[paddle_api] = result
         return result
 
@@ -135,8 +148,8 @@ class Paddle2TorchConverter:
             "args": torch_args,
             "kwargs": torch_kwargs,
             "result": None,
+            **torch_kwargs,
         }
-        exec_locals.update(torch_kwargs)
 
         try:
             exec("\n".join(convert_result.code), exec_globals, exec_locals)
@@ -146,11 +159,10 @@ class Paddle2TorchConverter:
             ) from e
 
         output_var = convert_result.output_var or "result"
-        if output_var not in exec_locals:
-            raise ValueError(
-                f"Variable {output_var} not found in the execution context"
-            )
-        return exec_locals[output_var]
+        try:
+            return exec_locals[output_var]
+        except KeyError:
+            raise ValueError(f"Variable {output_var} not found in execution context")
 
 
 # 模块级变量与实例管理
@@ -160,10 +172,11 @@ _converter_lock = threading.Lock()
 
 def get_converter() -> Paddle2TorchConverter:
     global _converter_instance
-    with _converter_lock:
-        if _converter_instance is None:
-            _converter_instance = Paddle2TorchConverter()
-        return _converter_instance
+    if _converter_instance is None:
+        with _converter_lock:
+            if _converter_instance is None:
+                _converter_instance = Paddle2TorchConverter()
+    return _converter_instance
 
 
 def clear_converter():

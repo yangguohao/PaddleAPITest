@@ -1,7 +1,8 @@
 import re
+import types
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 
@@ -13,6 +14,7 @@ class ConvertResult:
         paddle_api (str): Paddle API 名称
         is_supported (bool): 是否支持转换, 默认为 True
         code (Optional[List[str]]): 转换后的代码列表
+        compiled_code (Optional[types.CodeType]): 预编译后的代码对象
         output_var (Optional[str]): 输出变量名，默认值 None 表示 result 保存最后的输出值
         error_message (Optional[str]): 错误信息, 仅当 is_supported = False 时有效
 
@@ -26,6 +28,7 @@ class ConvertResult:
     code: Optional[List[str]] = (
         None  # ["_tmp_0 = torch.add(x, y)", "_tmp_1 = torch.mul(_tmp_0, z)"]
     )
+    compiled_code: Optional[types.CodeType] = field(default=None, repr=False)
     output_var: Optional[str] = None  # "_tmp_1"
     error_message: Optional[str] = None
 

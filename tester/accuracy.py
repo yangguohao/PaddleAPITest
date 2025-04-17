@@ -39,8 +39,13 @@ class APITestAccuracy(APITestBase):
             api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
             api_config_paddle_to_torch_faild.flush()
             return
-        if not convert_result.is_supported or not convert_result.code:
+        if not convert_result.is_supported:
             print(f"[paddle_to_torch] Unsupported API {self.api_config.api_name}: {convert_result.error_message}")
+            api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
+            api_config_paddle_to_torch_faild.flush()
+            return
+        if not convert_result.code or not convert_result.compiled_code:
+            print(f"[paddle_to_torch] No code generated for {self.api_config.api_name}")
             api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
             api_config_paddle_to_torch_faild.flush()
             return
@@ -61,14 +66,14 @@ class APITestAccuracy(APITestBase):
                 "args": self.torch_args,
                 "kwargs": self.torch_kwargs,
                 "result": None,
+                **self.torch_kwargs
             }
-            exec_locals.update(self.torch_kwargs)
 
             if self.test_amp:
                 with torch.autocast(device_type="cuda"):
-                    exec("\n".join(convert_result.code), exec_globals, exec_locals)
+                    exec(convert_result.compiled_code, exec_globals, exec_locals)
             else:
-                exec("\n".join(convert_result.code), exec_globals, exec_locals)
+                exec(convert_result.compiled_code, exec_globals, exec_locals)
 
             output_var = convert_result.output_var or "result"
             torch_output = exec_locals[output_var]
