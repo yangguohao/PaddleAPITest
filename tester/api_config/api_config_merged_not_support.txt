@@ -1,4 +1,3 @@
-paddle.nn.functional.feature_alpha_dropout(x=Tensor([40, 40],"bfloat16"), p=0.0, )
 paddle.nn.functional.linear(x=Tensor([1, 10],"float16"), weight=Tensor([10, 1],"float32"), bias=None, name=None, )
 paddle.nn.functional.linear(x=Tensor([1, 10],"float16"), weight=Tensor([10, 10],"float32"), bias=None, name=None, )
 paddle.nn.functional.linear(x=Tensor([1, 10],"float32"), weight=Tensor([10, 10],"float16"), bias=None, name=None, )
@@ -17,8 +16,6 @@ paddle.nn.functional.linear(x=Tensor([5, 5],"float32"), weight=Tensor([5, 5],"fl
 paddle.nn.functional.linear(x=Tensor([8, 2048],"float16"), weight=Tensor([2048, 102],"float32"), bias=Tensor([102],"float32"), name=None, )
 paddle.nn.functional.linear(x=Tensor([8, 4096],"float16"), weight=Tensor([4096, 4096],"float32"), bias=Tensor([4096],"float32"), name=None, )
 paddle.nn.functional.linear(x=tuple(Tensor([1, 10],"float32"),), weight=Tensor([10, 10],"float16"), bias=None, name=None, )
-paddle.normal(0.0, 1.0, list[Tensor([],"int32"),Tensor([],"int32"),Tensor([],"int32"),], )
-paddle.signal.istft(Tensor([257, 471],"complex128"), 512, None, None, Tensor([512],"float64"), True, False, True, None, False, )
 paddle.slice(Tensor([0, 2],"int64"), axes=list[1,], starts=list[0,], ends=list[1,], )
 paddle.slice(Tensor([0, 2],"int64"), axes=list[1,], starts=list[1,], ends=list[2,], )
 paddle.slice(Tensor([0],"float32"), axes=list[0,], starts=list[0,], ends=list[0,], )
