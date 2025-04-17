@@ -34,11 +34,11 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
 
 目前项目结构如下所示，主要分为report和tester文件夹，report用于储存内核报错的api信息，tester用于测试配置的正确性。
 
-在引擎补齐这一任务中，出现的内核报错均放置于fresh_report中。
+在引擎补齐这一任务中，出现的内核报错均放置于report/fresh_report中。
 
 tester/api_config中存放测试通过（merged*）/暂未通过（merged_not_support*）的配置。
 
-config_analyzer.py是引擎补齐任务的核心代码。
+tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
 
 ```
 ├── engine.py
@@ -46,101 +46,26 @@ config_analyzer.py是引擎补齐任务的核心代码。
 ├── README.md
 ├── report
 │   ├── 0size_tensor
-│   │   ├── compare_with_torch
-│   │   └── not_compare_with_torch
 │   ├── big_tensor
-│   │   ├── compare_with_torch
-│   │   └── not_compare_with_torch
 │   ├── ci_ce
-│   │   ├── error_api.txt
-│   │   ├── error_config.txt
-│   │   ├── error_log.log
-│   │   └── test_code.py
 │   └── fresh_report
-
 └── tester
     ├── accuracy.py
     ├── api_config
-    │   ├── 0sizetensor_accuracy.txt
-    │   ├── 0sizetensor_paddleonly.txt
-    │   ├── api_config_0_size_coredump.txt
-    │   ├── api_config_0_size.txt
-    │   ├── api_config_big_tensor.txt
-    │   ├── api_config_CE_Benchmark1.txt
-    │   ├── api_config_CE_Benchmark2.txt
-    │   ├── api_config_CE_PaddleMIX.txt
-    │   ├── api_config_CE_PaddleNLP_gpt3.txt
-    │   ├── api_config_CE_PaddleNLP_llm.txt
-    │   ├── api_config_CE_PaddleNLP_unittest.txt
-    │   ├── api_config_CE_PaddleX.txt
-    │   ├── api_config_CI_CE_Framework.txt
-    │   ├── api_config_CI_Coverage_cannot_test.txt
-    │   ├── api_config_CI_Coverage.txt
-    │   ├── api_config_CI_Distribute_stable.txt
-    │   ├── api_config_CI_py3.txt
-    │   ├── api_config_merged_10.txt
-    │   ├── api_config_merged_11.txt
-    │   ├── api_config_merged_12.txt
-    │   ├── api_config_merged_1.txt
-    │   ├── api_config_merged_2.txt
-    │   ├── api_config_merged_3.txt
-    │   ├── api_config_merged_4.txt
-    │   ├── api_config_merged_5.txt
-    │   ├── api_config_merged_6.txt
-    │   ├── api_config_merged_7.txt
-    │   ├── api_config_merged_8.txt
-    │   ├── api_config_merged_9.txt
-    │   ├── api_config_merged_amp.txt
-    │   ├── api_config_merged_getset_item_1.txt
-    │   ├── api_config_merged_getset_item_2.txt
-    │   ├── api_config_merged_getset_item_3.txt
-    │   ├── api_config_merged_getset_item_4.txt
-    │   ├── api_config_merged_getset_item_5.txt
-    │   ├── api_config_merged_getset_item_6.txt
-    │   ├── api_config_merged_not_support_sparse.txt
-    │   ├── api_config_merged_not_support.txt
-    │   ├── api_config_not_support_to_torch_1.txt
-    │   ├── api_config_support_to_torch_1.txt
-    │   ├── api.yaml
-    │   ├── bigtensor_accuracy.txt
-    │   ├── bigtensor_paddleonly.txt
-    │   ├── cinn_20250217
-    │   ├── config_analyzer.py
-    │   ├── __init__.py
-    │   ├── normalize_origin_api_config.py
-    │   ├── __pycache__
-    │   ├── test_0_size_20250120
-    │   ├── test_20250120
-    │   ├── test_big_tensor_20250213
-    │   ├── test_log
-    │   ├── test_log_0size_accuracy
-    │   ├── test_log_0size_paddleonly
-    │   ├── test_log_accuracy
-    │   ├── test_log_accuracy_20250227
-    │   ├── test_log_bigtensor_accuracy
-    │   ├── test_log_bigtensor_paddleonly
-    │   ├── test_tool.py
-    │   └── to_0_size_config.py
     ├── base.py
     ├── __init__.py
     ├── paddle_cinn_vs_dygraph.py
     ├── paddle_only.py
     ├── paddle_to_torch
-    │   ├── converter.py
-    │   ├── deprecated
-    │   ├── __init__.py
-    │   ├── mapping.json
-    │   ├── __pycache__
-    │   └── rules.py
     └── __pycache__
 ```
 
 ## 3. 使用介绍
 
 ### 环境配置
-运行环境可大致分为**cpu**环境与**gpu**环境，cpu和gpu上运行的结果**可能存在差异**，即存在cpu上能够正确运行，但gpu上报错的情况。因此需要根据需求正确安装环境。
+运行环境分为**cpu**环境与**gpu**环境，cpu和gpu上运行的结果**可能存在差异**，即存在cpu上能够正确运行，但gpu上报错的情况。因此需要根据需求正确安装环境。
 
-下载链接可参考：https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html
+下载链接：https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html
 
 若需要本地编译paddle，可参考链接：https://www.paddlepaddle.org.cn/documentation/docs/zh/install/compile/linux-compile-by-make.html
 
@@ -210,3 +135,5 @@ for i in {1..10000}; do python engine.py --api_config_file=/host_home/wanghuan29
 5. **0-size向量**：  有少数API已完成修复，大部分API尚未开展
    
 6. **特大tensor**：  尚未开展
+
+贡献人员：@wanghuancoder @cszdrg @cangtianhaung @mzj104 @Cutelemon6 @yuwu46
