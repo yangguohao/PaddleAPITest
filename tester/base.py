@@ -1,19 +1,14 @@
-from .paddle_to_torch.paddle_to_torch import paddle_to_torch
-from .api_config import TensorConfig, APIConfig, analyse_configs, USE_CACHED_NUMPY, cached_numpy
-import re
 import collections
-import paddle
-import numpy
-import math
-import json
-import torch
-import paddle
 import inspect
 import os
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+import numpy
+import paddle
+import torch
 
-api_config_paddle_to_torch_faild = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
+from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
+
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = ["paddle.Tensor.coalesce",
@@ -155,61 +150,46 @@ class APITestBase:
         return True
 
     def ana_api_info(self):
-        if not self.ana_paddle_api_info():
-            return False
-        return self.ana_torch_api_info()
+        return self.ana_paddle_api_info() and self.ana_torch_api_info()
 
     def ana_paddle_api_info(self):
         self.paddle_api = eval(self.api_config.api_name)
-
         self.paddle_args_config = self.api_config.args
         self.paddle_kwargs_config = self.api_config.kwargs
-
         return True
 
     def ana_torch_api_info(self):
-        self.torch_api_str, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
-        if paddle_to_torch_args_map is None:
-            print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
-            api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
-            api_config_paddle_to_torch_faild.flush()
-            return False
-        self.torch_api = eval(self.torch_api_str)
-
+        # self.torch_api_str, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
+        # if paddle_to_torch_args_map is None:
+        #     print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
+        #     api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
+        #     api_config_paddle_to_torch_faild.flush()
+        #     return False
+        # self.torch_api = eval(self.torch_api_str)
+    
         api_sig = inspect.signature(self.paddle_api)
         api_args_list = list(api_sig.parameters.keys())
         self.paddle_merged_kwargs_config = collections.OrderedDict()
-        index = 0
-        for arg_config in self.api_config.args:
-            self.paddle_merged_kwargs_config[api_args_list[index]] = arg_config
-            index = index + 1
-
-        for key, arg_config in self.api_config.kwargs.items():
-            self.paddle_merged_kwargs_config[key] = arg_config
+        for i, arg_config in enumerate(self.api_config.args):
+             self.paddle_merged_kwargs_config[api_args_list[i]] = arg_config
+        self.paddle_merged_kwargs_config.update(self.api_config.kwargs)
 
         self.torch_args_config = []
         self.torch_kwargs_config = collections.OrderedDict()
 
         if self.api_config.api_name in ["paddle.Tensor.__getitem__", "paddle.Tensor.__setitem__"]:
             self.torch_args_config = self.paddle_args_config
-        else:
-            first = True
-            for key, value in self.paddle_merged_kwargs_config.items():
-                if first and "paddle.Tensor." in self.api_config.api_name:
-                    self.torch_args_config.append(value)
-                    first = False
-                    continue
+            return True
+
+        first = True
+        for key, value in self.paddle_merged_kwargs_config.items():
+            if key == "name":
+                continue
+            if first and self.api_config.api_name.startswith("paddle.Tensor."):
+                self.torch_args_config.append(value)
                 first = False
-                if key == "name":
-                    continue
-                if key not in paddle_to_torch_args_map:
-                    print("[paddle_to_torch]", self.api_config.config, "\n ", key, "not in paddle_to_torch_args_map, can not call torch")
-                    api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
-                    api_config_paddle_to_torch_faild.flush()
-                    return False
-
-                self.torch_kwargs_config[paddle_to_torch_args_map[key]] = value
-
+            else:
+                self.torch_kwargs_config[key] = value
         return True
     
     def _handle_list_or_tuple(self, config_items, is_tuple=False, index=None, key=None, list_index=[]):

@@ -1,17 +1,9 @@
-from tester import TensorConfig, APIConfig, analyse_configs
-from tester import APITestAccuracy, APITestPaddleOnly, APITestCINNVSDygraph
-import re
-import collections
-import paddle
-import numpy
-import math
-import json
-import paddle
-import inspect
 import argparse
-import subprocess
 import os
 from datetime import datetime
+
+from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                    APITestPaddleOnly)
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 

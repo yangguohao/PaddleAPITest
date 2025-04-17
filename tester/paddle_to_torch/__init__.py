@@ -1,3 +1,3 @@
-from . import paddle_to_torch
+from .converter import Paddle2TorchConverter, get_converter, clear_converter
 
-__all__ = ['paddle_to_torch']
+__all__ = ["Paddle2TorchConverter", "get_converter", "clear_converter"]

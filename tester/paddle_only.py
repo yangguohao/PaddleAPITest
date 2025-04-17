@@ -1,16 +1,9 @@
-from .api_config import TensorConfig, APIConfig, analyse_configs
-import re
-import collections
-import paddle
-import numpy
-import math
-import json
-import paddle
-import inspect
-from .base import APITestBase
 import os
-import time
+
+import paddle
 from func_timeout import func_set_timeout
+
+from .base import APITestBase
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -21,7 +14,6 @@ api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt
 class APITestPaddleOnly(APITestBase):
     def __init__(self, api_config, test_amp):
         super().__init__(api_config)
-        self.api_config = api_config
         self.test_amp = test_amp
     
     @func_set_timeout(600)
