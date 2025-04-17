@@ -273,27 +273,46 @@ class APITestBase:
         value = self.paddle_args_config[2] if len(self.paddle_args_config) > 2 else self.paddle_kwargs_config["value"]
         x_shape = x.shape
         value_shape = value.shape
-        if len(config_items) > len(x_shape):
-            raise ValueError(f"The number of indices ({len(config_items)}) must not exceed the dimension of the input ({len(x_shape)})")
 
         tmp = []
+        matched_axis = 0
         indices_shape_len = 0
-        for i, item in enumerate(config_items):
-            if item.dtype == "bool":
-                if len(x_shape) - len(config_items) + indices_shape_len + len(item.shape) - 1 == len(value_shape):
-                    true_needed = 1
-                else:
-                    true_needed = value_shape[indices_shape_len]
-                if true_needed > numpy.prod(item.shape):
-                    raise ValueError(f"Number of True values required ({true_needed}) exceeds boolean index size ({numpy.prod(item.shape)})")
-                mask = numpy.zeros(item.shape, dtype=bool)
-                indices = numpy.random.choice(numpy.prod(item.shape), size=int(true_needed), replace=False)
-                mask.flat[indices] = True
-                item.numpy_tensor = mask
-            else:
-                x_dim = x_shape[i]
-                item.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=item.shape, dtype=item.dtype)
+        for item in config_items:
+            if item.dtype != "bool":
+                matched_axis += 1
                 indices_shape_len = max(indices_shape_len, len(item.shape))
+
+        expected = indices_shape_len + len(x_shape) - matched_axis
+        reduced = expected - len(value_shape)
+        x_shape_index = 0
+        value_shape_index = indices_shape_len
+
+        for item in config_items:
+            if item.dtype == "bool":
+                true_needed = []
+                for i in range(len(item.shape)):
+                    if reduced > 0:
+                        reduced -= 1
+                        true_needed.append(1)
+                    else:
+                        true_needed.append(value_shape[value_shape_index])
+                        value_shape_index += 1
+                for i in range(len(true_needed) - 1, 0, -1):
+                    if true_needed[i] > value_shape[i]:
+                        true_needed[i - 1] *= true_needed[i] // value_shape[i]
+                        true_needed[i] = value_shape[i]
+                mask = numpy.zeros(item.shape, dtype=bool)
+                indices = [
+                    numpy.random.choice(dim_size, size=needed, replace=False)
+                    for dim_size, needed in zip(item.shape, true_needed)
+                ]
+                mask[numpy.ix_(*indices)] = True
+                item.numpy_tensor = mask
+                x_shape_index += len(item.shape)
+            else:
+                x_dim = x_shape[x_shape_index]
+                item.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=item.shape, dtype=item.dtype)
+                x_shape_index += 1
             tmp.append(item.get_paddle_tensor(self.api_config))
         return tuple(tmp) if is_tuple else tmp
 
