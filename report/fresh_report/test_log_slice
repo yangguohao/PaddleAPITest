@@ -1,0 +1,8 @@
+paddle.slice(Tensor([0],"float32"), axes=list[0,], starts=list[0,], ends=list[0,], )
+
+2025-04-17 03:05:44.844138 test begin: paddle.slice(Tensor([0],"float32"), axes=list[0,], starts=list[0,], ends=list[0,], )
+
+W0417 03:05:44.864496 15243 backward.cc:437] While running Node (SliceGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.slice(Tensor([0],"float32"), axes=list[0,], starts=list[0,], ends=list[0,], ) 
+ (InvalidArgument) StridedCopyKernel's out tensor must complete mutable data before call kernel.
+  [Hint: output_data should not be null.] (at /root/Paddle/paddle/phi/kernels/gpu/strided_copy_kernel.cu:1296)
