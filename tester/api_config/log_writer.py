@@ -1,7 +1,7 @@
 import atexit
 import os
 from collections import defaultdict
-from threading import Lock
+from multiprocessing import Lock
 
 # 日志文件路径
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[
@@ -20,14 +20,16 @@ LOG_FILES = {
     ),
     "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
     "torch_error": os.path.join(TEST_LOG_PATH, "api_config_torch_error.txt"),
-    "not_support": os.path.join(DIR_PATH, "tester/api_config/api_config_merged_not_support.txt"),
+    "not_support": os.path.join(
+        DIR_PATH, "tester/api_config/api_config_merged_not_support.txt"
+    ),
 }
 
 # 线程安全的锁，每个文件一个
 _locks = defaultdict(Lock)
 
 # 批量写入的条数阈值
-_BATCH_SIZE = 5
+_BATCH_SIZE = 10
 
 # 缓存待写入的日志条目，格式为 {log_type: [lines]}
 _log_buffer = defaultdict(list)
@@ -39,15 +41,22 @@ def _write_lines(log_type, lines):
         raise ValueError(f"Invalid log type: {log_type}")
 
     file_path = LOG_FILES[log_type]
-    with _locks[file_path]:
-        with open(file_path, "a") as f:
-            f.writelines(f"{line}\n" for line in lines)
+    try:
+        with _locks[file_path]:
+            with open(file_path, "a") as f:
+                f.writelines(f"{line}\n" for line in lines)
+    except Exception as err:
+        print(f"Error writing to {file_path}: {err}")
 
 
 def write_to_log(log_type, line):
     """添加单条日志到缓存，达到批量大小后写入文件"""
     if log_type not in LOG_FILES:
         raise ValueError(f"Invalid log type: {log_type}")
+
+    line = line.strip()
+    if not line:
+        return
 
     _log_buffer[log_type].append(line)
     if len(_log_buffer[log_type]) >= _BATCH_SIZE:
@@ -66,6 +75,9 @@ def read_log(log_type):
             with open(file_path, "r") as f:
                 return set(line.strip() for line in f if line.strip())
     except FileNotFoundError:
+        return set()
+    except Exception as err:
+        print(f"Error reading {file_path}: {err}")
         return set()
 
 
