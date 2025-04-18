@@ -1,13 +1,13 @@
 # PaddleAPITest
 ******
 ## 1. 项目背景
-公司内部业务，或者Paddle Issue，偶尔会反馈Paddle API正确性的问题，经过梳理大致有**3**类问题：
+百度内部业务，或者Paddle Issue，偶尔会反馈Paddle API正确性的问题，经过我们梳理大致有**3**类问题：
 >1）API**精度**不正确；
 >
 >2）一些**特大**Tensor，尤其是numel超过int32上限的Tensor计算异常；
 >
 >3）**0-Size**（numel为0的Tensor） Tensor不支持。
-API正确性是Paddle质量的基石，影响业务训练、推理，影响用户对Paddle的信赖。至关重要。我们需要统一排查问题API、问题case，统一修复。
+API正确性是Paddle质量的基石，影响业务训练、推理，因此保证API的正确性至关重要。我们需要统一排查问题API、问题case，统一修复。
 
 为此，我们开始着手发了PaddleAPITest用于排查问题API、问题case。主要工作思路如下：
 1. 在Paddle开发Trace API机制，用于抓取API调用配置，下面是一个例子：
@@ -34,21 +34,13 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
 
 目前项目结构如下所示，主要分为report和tester文件夹，report用于储存内核报错的api信息，tester用于测试配置的正确性。
 
-在引擎补齐这一任务中，出现的内核报错均放置于report/fresh_report中。
+出现的内核报错均放置于report/fresh_report中。
 
 tester/api_config中存放测试通过（merged*）/暂未通过（merged_not_support*）的配置。
 
 tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
 
 ```
-├── engine.py
-├── __init__.py
-├── README.md
-├── report
-│   ├── 0size_tensor
-│   ├── big_tensor
-│   ├── ci_ce
-│   └── fresh_report
 └── tester
     ├── accuracy.py
     ├── api_config
@@ -57,7 +49,13 @@ tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
     ├── paddle_cinn_vs_dygraph.py
     ├── paddle_only.py
     ├── paddle_to_torch
-    └── __pycache__
+├── engine.py
+├── README.md
+├── report
+│   ├── 0size_tensor
+│   ├── big_tensor
+│   ├── ci_ce
+│   └── fresh_report
 ```
 
 ## 3. 使用介绍
@@ -65,7 +63,7 @@ tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
 ### 环境配置
 运行环境分为**cpu**环境与**gpu**环境，cpu和gpu上运行的结果**可能存在差异**，即存在cpu上能够正确运行，但gpu上报错的情况。因此需要根据需求正确安装环境。
 
-下载链接：https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html
+develop版paddle下载链接为：[paddlepaddle](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html)
 
 若需要本地编译paddle，可参考链接：https://www.paddlepaddle.org.cn/documentation/docs/zh/install/compile/linux-compile-by-make.html
 
