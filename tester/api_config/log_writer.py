@@ -1,4 +1,3 @@
-import atexit
 import os
 import threading
 from collections import defaultdict
@@ -25,13 +24,16 @@ LOG_FILES = {
         DIR_PATH, "tester/api_config/api_config_merged_not_support.txt"
     ),
 }
+# 批量写入的条数阈值
+_BATCH_SIZE = 10
 
-# 进程安全的锁
+
+# 进程安全的文件锁
 _file_locks = {}
 for log_type in LOG_FILES:
     _file_locks[log_type] = Lock()
 
-# 线程安全的日志缓冲区
+# 线程安全的日志缓冲
 _thread_local = threading.local()
 
 
@@ -40,10 +42,6 @@ def _get_log_buffer(log_type):
         _thread_local.log_buffer = defaultdict(list)
         _thread_local.buffer_locks = defaultdict(threading.Lock)
     return _thread_local.log_buffer[log_type], _thread_local.buffer_locks[log_type]
-
-
-# 批量写入的条数阈值
-_BATCH_SIZE = 10
 
 
 def _write_lines(log_type, lines):

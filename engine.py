@@ -9,8 +9,7 @@ from multiprocessing import set_start_method
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
-from tester.api_config.log_writer import (DIR_PATH, flush_buffer, read_log,
-                                          write_to_log)
+from tester.api_config.log_writer import *
 
 _executor = None
 
@@ -171,7 +170,7 @@ def main():
             try:
                 futures = []
                 for i, config_str in enumerate(api_configs):
-                    gpu_id = (i + 4) % num_workers
+                    gpu_id = i % num_workers
                     future = _executor.submit(run_test_case, config_str.strip(), options, gpu_id)
                     futures.append(future)
                 for future in as_completed(futures):
