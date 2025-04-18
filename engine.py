@@ -1,14 +1,35 @@
 import argparse
-from concurrent.futures import (ProcessPoolExecutor, ThreadPoolExecutor,
-                                as_completed)
+import atexit
+import os
+import signal
+import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime
-from multiprocessing import Queue as MPQueue
-from queue import Queue
+from multiprocessing import set_start_method
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
-from tester.api_config.log_writer import *
+from tester.api_config.log_writer import (DIR_PATH, flush_buffer, read_log,
+                                          write_to_log)
 
+_executor = None
+
+def cleanup():
+    global _executor
+    try:
+        if _executor is not None:
+            _executor.shutdown(wait=False)
+            _executor = None
+    except Exception as e:
+        print(f"Error during cleanup: {e}", flush=True)
+
+def signal_handler(sig, frame):
+    cleanup()
+    sys.exit(0)
+
+def register_cleanup():
+    atexit.register(cleanup)
+    signal.signal(signal.SIGINT, signal_handler)
 
 def get_notsupport_config():
     not_support_files = [
@@ -38,8 +59,12 @@ def get_notsupport_config():
             configs.add(config)
     return configs
 
-def run_test_case(api_config_str, options):
+
+def run_test_case(api_config_str, options, gpu_id):
     """Run a single test case for the given API configuration."""
+    atexit.register(flush_buffer)
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+
     test_class = APITestAccuracy
     if options.paddle_only:
         test_class = APITestPaddleOnly
@@ -47,7 +72,7 @@ def run_test_case(api_config_str, options):
         test_class = APITestCINNVSDygraph
     elif options.accuracy:
         test_class = APITestAccuracy
-    
+
     write_to_log("checkpoint", api_config_str)
     print(f"{datetime.now()} test begin: {api_config_str}", flush=True)
     try:
@@ -55,13 +80,11 @@ def run_test_case(api_config_str, options):
     except Exception as err:
         print(f"[config parse error] {api_config_str} {str(err)}", flush=True)
         return False
-    
+
     case = test_class(api_config, options.test_amp)
     try:
         case.test()
     except Exception as err:
-        if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
-            raise
         print(f"[test error] {api_config_str} {str(err)}", flush=True)
         return False
     finally:
@@ -70,39 +93,12 @@ def run_test_case(api_config_str, options):
         del api_config
     return True
 
-def run_tests_on_gpu(task_queue, options, gpu_id):
-    """Run tests on a single GPU with dynamic task scheduling."""
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
-    thread_task_queue = Queue()
-    lock = Lock()
-
-    def worker():
-        while True:
-            with lock:
-                if thread_task_queue.empty():
-                    break
-                config = thread_task_queue.get()
-            run_test_case(config, options)
-            thread_task_queue.task_done()
-
-    while not task_queue.empty():
-        try:
-            config = task_queue.get_nowait()
-            thread_task_queue.put(config)
-        except:
-            break
-
-    with ThreadPoolExecutor(max_workers=options.num_threads) as executor:
-        futures = [executor.submit(worker) for _ in range(options.num_threads)]
-        for future in as_completed(futures):
-            try:
-                future.result()
-            except Exception as err:
-                if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
-                    raise
-
 
 def main():
+    global _executor
+    set_start_method('spawn', force=True)
+    register_cleanup()
+
     parser = argparse.ArgumentParser(
         description='API Test'
     )
@@ -132,11 +128,6 @@ def main():
     )
     parser.add_argument(
         '--num_gpus',
-        type=int,
-        default=1,
-    )
-    parser.add_argument(
-        '--num_threads',
         type=int,
         default=1,
     )
@@ -170,26 +161,32 @@ def main():
             api_configs = set(api_config_file.readlines())
         api_configs = api_configs - finish_configs - not_support_api_config
         api_configs = sorted(api_configs)
+        print(len(api_configs), "cases will be tested.", flush=True)
 
         if options.num_gpus > 1:
             # Multi GPUs execution
-            task_queue = MPQueue()
-            for config in api_configs:
-                task_queue.put(config)
-            with ProcessPoolExecutor(max_workers=options.num_gpus) as executor:
-                futures = [executor.submit(run_tests_on_gpu, task_queue, options, gpu_id) for gpu_id in range(options.num_gpus)]
+            num_workers = options.num_gpus
+            print(f"Using {num_workers} GPU(s) via {num_workers} worker processes.")
+            _executor = ProcessPoolExecutor(max_workers=num_workers)
+            try:
+                futures = []
+                for i, config_str in enumerate(api_configs):
+                    gpu_id = (i + 4) % num_workers
+                    future = _executor.submit(run_test_case, config_str.strip(), options, gpu_id)
+                    futures.append(future)
                 for future in as_completed(futures):
                     try:
                         future.result()
-                    except Exception as err:
-                        if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
-                            raise
+                    except Exception as exc:
+                        print(f"[FATAL] A worker process might have crashed: {exc}")
+            finally:
+                _executor.shutdown()
+                flush_buffer()
+                _executor = None
         else:
             # Single GPU execution
-            task_queue = MPQueue()
             for config in api_configs:
-                task_queue.put(config)
-            run_tests_on_gpu(task_queue, options, gpu_id=0)
+                run_test_case(config, options, gpu_id=0)
 
         # elif options.api_config_file != "":
         #     with open(options.api_config_file, "r") as f:
