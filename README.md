@@ -136,4 +136,4 @@ for i in {1..10000}; do python engine.py --api_config_file=/host_home/wanghuan29
    
 6. **特大tensor**：  尚未开展
 
-贡献人员：@wanghuancoder @cszdrg @cangtianhaung @mzj104 @Cutelemon6 @yuwu46
+贡献人员：@wanghuancoder @cszdrg @cangtianhuang @mzj104 @Cutelemon6 @yuwu46
