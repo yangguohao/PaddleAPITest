@@ -35,7 +35,6 @@ paddle.incubate.nn.functional.fused_layer_norm
 paddle.incubate.nn.functional.fused_linear
 paddle.incubate.nn.functional.fused_linear_activation
 paddle.incubate.nn.functional.fused_matmul_bias
-paddle.incubate.nn.functional.fused_rms_norm
 paddle.incubate.nn.functional.fused_rotary_position_embedding
 paddle.incubate.nn.functional.swiglu
 paddle.incubate.nn.functional.variable_length_memory_efficient_attention
@@ -58,7 +57,6 @@ paddle.linalg.svdvals
 paddle.linalg.triangular_solve
 paddle.linspace
 paddle.logaddexp
-paddle.logcumsumexp
 paddle.logsumexp
 paddle.masked_fill
 paddle.masked_scatter
@@ -73,8 +71,6 @@ paddle.mode
 paddle.multiply
 paddle.nanmedian
 paddle.nanquantile
-paddle.nn.functional.adaptive_avg_pool2d
-paddle.nn.functional.adaptive_avg_pool3d
 paddle.nn.functional.avg_pool1d
 paddle.nn.functional.avg_pool2d
 paddle.nn.functional.avg_pool3d
@@ -95,7 +91,6 @@ paddle.nn.functional.flashmask_attention
 paddle.nn.functional.fold
 paddle.nn.functional.fractional_max_pool2d
 paddle.nn.functional.fractional_max_pool3d
-paddle.nn.functional.gelu
 paddle.nn.functional.group_norm
 paddle.nn.functional.hinge_embedding_loss
 paddle.nn.functional.instance_norm
@@ -106,7 +101,6 @@ paddle.nn.functional.layer_norm
 paddle.nn.functional.linear
 paddle.nn.functional.local_response_norm
 paddle.nn.functional.log_loss
-paddle.nn.functional.log_softmax
 paddle.nn.functional.lp_pool1d
 paddle.nn.functional.lp_pool2d
 paddle.nn.functional.margin_ranking_loss
@@ -130,14 +124,10 @@ paddle.nn.functional.sequence_mask
 paddle.nn.functional.sigmoid_focal_loss
 paddle.nn.functional.smooth_l1_loss
 paddle.nn.functional.soft_margin_loss
-paddle.nn.functional.softmax
 paddle.nn.functional.square_error_cost
-paddle.nn.functional.swish
-paddle.nn.functional.temporal_shift
 paddle.nn.functional.unfold
 paddle.nn.quant.weight_only_linear
 paddle.nn.quant.weight_quantize
-paddle.nonzero
 paddle.not_equal
 paddle.polar
 paddle.quantile
@@ -145,12 +135,10 @@ paddle.reduce_as
 paddle.remainder
 paddle.reshape
 paddle.roll
-paddle.round
 paddle.scale
 paddle.searchsorted
 paddle.signal.stft
 paddle.slice_scatter
-paddle.sort
 paddle.split
 paddle.subtract
 paddle.Tensor.__add__
@@ -173,7 +161,6 @@ paddle.Tensor.__pow__
 paddle.Tensor.__rmatmul__
 paddle.Tensor.__rmod__
 paddle.Tensor.__rshift__
-paddle.Tensor.__rtruediv__
 paddle.Tensor.__setitem__
 paddle.Tensor.__sub__
 paddle.Tensor.__truediv__
@@ -198,14 +185,12 @@ paddle.Tensor.split
 paddle.Tensor.subtract
 paddle.Tensor.tile
 paddle.take
-paddle.tanh
 paddle.tensor_split
 paddle.tensordot
 paddle.topk
 paddle.trapezoid
 paddle.unfold
 paddle.unique
-paddle.unstack
 paddle.vecdot
 paddle.view
 paddle.view_as
