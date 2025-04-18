@@ -94,8 +94,12 @@ def main():
             checkpoint_r.close()
         except Exception as err:
             finish_configs = set()
-        not_support_api_config = open(DIR_PATH+"/tester/api_config/api_config_merged_not_support.txt", "r")
-        not_support_api_config = set(not_support_api_config.readlines())
+        try:
+            not_support_api_config_r = open(DIR_PATH+"/tester/api_config/api_config_merged_not_support.txt", "r")
+            not_support_api_config = set(not_support_api_config_r.readlines())
+            not_support_api_config_r.close()
+        except Exception as err:
+            not_support_api_config = set()
         checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "a")
         api_config_file = open(options.api_config_file, "r")
         api_configs = set(api_config_file.readlines())
