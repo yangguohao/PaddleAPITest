@@ -1,20 +1,40 @@
 import gc
 import os
 
+import filelock
 import paddle
 import torch
+from filelock import FileLock
 from func_timeout import func_set_timeout
 
 from .base import APITestBase
-from .paddle_to_torch import Paddle2TorchConverter, get_converter
+from .paddle_to_torch import get_converter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+TEST_LOG_PATH = os.path.join(DIR_PATH, "tester/api_config/test_log")
+LOG_FILES = {
+    "accuracy_error": os.path.join(TEST_LOG_PATH, "api_config_accuracy_error.txt"),
+    "paddle_error": os.path.join(TEST_LOG_PATH, "api_config_paddle_error.txt"),
+    "torch_to_paddle_faild": os.path.join(TEST_LOG_PATH, "api_config_paddle_to_torch_faild.txt"),
+    "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
+    "torch_error": os.path.join(TEST_LOG_PATH, "api_config_torch_error.txt"),
+}
 
-api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_paddle_to_torch_faild = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_to_torch_faild.txt", "a")
-api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
-api_config_torch_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_torch_error.txt", "a")
+def write_to_log(log_type, message):
+    if log_type not in LOG_FILES:
+        print(f"Invalid log type: {log_type}")
+        return
+    log_file = LOG_FILES[log_type]
+    lock_file = log_file + ".lock"
+    try:
+        with FileLock(lock_file, timeout=10):
+            with open(log_file, "a") as f:
+                f.write(message + "\n")
+                f.flush()
+    except filelock.Timeout:
+        print(f"Timeout waiting for lock on {log_file}")
+    except Exception as e:
+        print(f"Error writing to {log_file}: {str(e)}")
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config, test_amp):
@@ -36,18 +56,15 @@ class APITestAccuracy(APITestBase):
             convert_result = self.converter.convert(self.api_config.api_name)
         except Exception as e:
             print(f"[paddle_to_torch] Convertion failed for {self.api_config.config}: {str(e)}")
-            api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
-            api_config_paddle_to_torch_faild.flush()
+            write_to_log("torch_to_paddle_faild", self.api_config.config)
             return
         if not convert_result.is_supported:
             print(f"[paddle_to_torch] Unsupported API {self.api_config.api_name}: {convert_result.error_message}")
-            api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
-            api_config_paddle_to_torch_faild.flush()
+            write_to_log("torch_to_paddle_faild", self.api_config.config)
             return
         if not convert_result.code or not convert_result.compiled_code:
             print(f"[paddle_to_torch] No code generated for {self.api_config.api_name}")
-            api_config_paddle_to_torch_faild.write(self.api_config.config + "\n")
-            api_config_paddle_to_torch_faild.flush()
+            write_to_log("torch_to_paddle_faild", self.api_config.config)
             return
 
         try:
@@ -100,8 +117,7 @@ class APITestAccuracy(APITestBase):
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[torch error]", self.api_config.config, "\n", str(err))
-            api_config_torch_error.write(self.api_config.config+"\n")
-            api_config_torch_error.flush()
+            write_to_log("torch_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
@@ -200,8 +216,7 @@ class APITestAccuracy(APITestBase):
                 paddle_output = self.paddle_args[0] if len(self.paddle_args) > 0 else next(iter(self.paddle_kwargs.values()))
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
@@ -210,8 +225,7 @@ class APITestAccuracy(APITestBase):
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             return
 
         if isinstance(paddle_output, paddle.Tensor):
@@ -223,8 +237,7 @@ class APITestAccuracy(APITestBase):
                     self.np_assert_accuracy(paddle_output.numpy(), torch_output.numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
             elif isinstance(torch_output, bool):
                 try:
@@ -233,8 +246,7 @@ class APITestAccuracy(APITestBase):
                     assert bool(paddle_output) == torch_output, f"paddle_output{bool(paddle_output)} is not equal to torch_output{torch_output}"
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
             elif isinstance(torch_output, (torch.return_types.max, torch.return_types.min)):
                 try:
@@ -245,13 +257,11 @@ class APITestAccuracy(APITestBase):
                     self.np_assert_accuracy(paddle_output.numpy(), torch_output.numpy(), 1e-2, 1e-2, self.api_config)
                 except Exception as err:
                     print("[accuracy error]", self.api_config.config, "\n", str(err))
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
             else:
                 print("[accuracy error]", self.api_config.config, "\n[output type diff error1], ", type(torch_output))
-                api_config_accuracy_error.write(self.api_config.config+"\n")
-                api_config_accuracy_error.flush()
+                write_to_log("accuracy_error", self.api_config.config)
                 return
         elif isinstance(paddle_output, (list, tuple)):
             if isinstance(paddle_output, tuple):
@@ -263,19 +273,16 @@ class APITestAccuracy(APITestBase):
                 torch_output = list(torch_output)
             if len(paddle_output) != len(torch_output):
                 print("[accuracy error]", self.api_config.config, "\n[output type diff error2], ", len(paddle_output), len(torch_output))
-                api_config_accuracy_error.write(self.api_config.config+"\n")
-                api_config_accuracy_error.flush()
+                write_to_log("accuracy_error", self.api_config.config)
                 return
             for i in range(len(paddle_output)):
                 if not isinstance(paddle_output[i], paddle.Tensor):
                     print("[not compare] ", paddle_output[i], torch_output[i])
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
                 elif not isinstance(torch_output[i], torch.Tensor):
                     print("[accuracy error]", self.api_config.config, "\n[output type diff error3], ", type(torch_output[i]))
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
                 else:
                     try:
@@ -285,8 +292,7 @@ class APITestAccuracy(APITestBase):
                         self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].numpy(), 1e-2, 1e-2, self.api_config)
                     except Exception as err:
                         print("[accuracy error]", self.api_config.config, "\n", str(err))
-                        api_config_accuracy_error.write(self.api_config.config+"\n")
-                        api_config_accuracy_error.flush()
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
 
         if self.need_check_grad() and torch_grad_success:
@@ -303,8 +309,7 @@ class APITestAccuracy(APITestBase):
                 del result_outputs_grads
             except Exception as err:
                 print("[paddle error]", self.api_config.config, "\n", str(err))
-                api_config_paddle_error.write(self.api_config.config+"\n")
-                api_config_paddle_error.flush()
+                write_to_log("paddle_error", self.api_config.config)
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
                     raise Exception(err)
                 return
@@ -313,8 +318,7 @@ class APITestAccuracy(APITestBase):
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 print("[cuda error]", self.api_config.config, "\n", str(err))
-                api_config_paddle_error.write(self.api_config.config+"\n")
-                api_config_paddle_error.flush()
+                write_to_log("paddle_error", self.api_config.config)
                 return
 
             if isinstance(paddle_out_grads, paddle.Tensor):
@@ -326,13 +330,11 @@ class APITestAccuracy(APITestBase):
                         self.np_assert_accuracy(paddle_out_grads.numpy(), torch_out_grads.numpy(), 1e-2, 1e-2, self.api_config)
                     except Exception as err:
                         print("[accuracy error] backward ", self.api_config.config, "\n", str(err))
-                        api_config_accuracy_error.write(self.api_config.config+"\n")
-                        api_config_accuracy_error.flush()
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
                 else:
                     print("[accuracy error] backward ", self.api_config.config, "\n[output type diff error1], ", type(torch_out_grads))
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
             elif isinstance(paddle_out_grads, (list, tuple)):
                 if isinstance(paddle_out_grads, tuple):
@@ -344,19 +346,16 @@ class APITestAccuracy(APITestBase):
                     torch_out_grads = list(torch_out_grads)
                 if len(paddle_out_grads) != len(torch_out_grads):
                     print("[accuracy error] backward ", self.api_config.config, "\n[output type diff error2], ", len(paddle_out_grads), len(torch_out_grads))
-                    api_config_accuracy_error.write(self.api_config.config+"\n")
-                    api_config_accuracy_error.flush()
+                    write_to_log("accuracy_error", self.api_config.config)
                     return
                 for i in range(len(paddle_out_grads)):
                     if not isinstance(paddle_out_grads[i], paddle.Tensor):
                         print("[not compare] ", paddle_out_grads[i], torch_out_grads[i])
-                        api_config_accuracy_error.write(self.api_config.config+"\n")
-                        api_config_accuracy_error.flush()
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
                     elif not isinstance(torch_out_grads[i], torch.Tensor):
                         print("[accuracy error] backward ", self.api_config.config, "\n[output type diff error3], ", type(torch_out_grads[i]))
-                        api_config_accuracy_error.write(self.api_config.config+"\n")
-                        api_config_accuracy_error.flush()
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
                     else:
                         try:
@@ -366,11 +365,8 @@ class APITestAccuracy(APITestBase):
                             self.np_assert_accuracy(paddle_out_grads[i].numpy(), torch_out_grads[i].numpy(), 1e-2, 1e-2, self.api_config)
                         except Exception as err:
                             print("[accuracy error] backward ", self.api_config.config, "\n", str(err))
-                            api_config_accuracy_error.write(self.api_config.config+"\n")
-                            api_config_accuracy_error.flush()
+                            write_to_log("accuracy_error", self.api_config.config)
                             return
 
         print("[Pass]", self.api_config.config)
-        api_config_pass.write(self.api_config.config+"\n")
-        api_config_pass.flush()
-  
+        write_to_log("pass", self.api_config.config)

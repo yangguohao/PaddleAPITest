@@ -1,24 +1,36 @@
-from .api_config import TensorConfig, APIConfig, analyse_configs
-
-import re
-import collections
-import paddle
-import numpy
-import math
-import json
-import paddle
-from paddle.jit import to_static
-import inspect
-from .base import APITestBase
-import time
 import os
+
+import filelock
+import paddle
+from filelock import FileLock
 from func_timeout import func_set_timeout
+from paddle.jit import to_static
+
+from .base import APITestBase
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+TEST_LOG_PATH = os.path.join(DIR_PATH, "tester/api_config/test_log")
+LOG_FILES = {
+    "accuracy_error": os.path.join(TEST_LOG_PATH, "api_config_accuracy_error.txt"),
+    "paddle_error": os.path.join(TEST_LOG_PATH, "api_config_paddle_error.txt"),
+    "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
+}
 
-api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
+def write_to_log(log_type, message):
+    if log_type not in LOG_FILES:
+        print(f"Invalid log type: {log_type}")
+        return
+    log_file = LOG_FILES[log_type]
+    lock_file = log_file + ".lock"
+    try:
+        with FileLock(lock_file, timeout=10):
+            with open(log_file, "a") as f:
+                f.write(message + "\n")
+                f.flush()
+    except filelock.Timeout:
+        print(f"Timeout waiting for lock on {log_file}")
+    except Exception as e:
+        print(f"Error writing to {log_file}: {str(e)}")
 
 class APITestCINNVSDygraph(APITestBase):
     def __init__(self, api_config, test_amp):
@@ -73,8 +85,7 @@ class APITestCINNVSDygraph(APITestBase):
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
@@ -83,8 +94,7 @@ class APITestCINNVSDygraph(APITestBase):
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             return
 
         if self.api_config.api_name == "paddle.broadcast_shape":
@@ -100,8 +110,7 @@ class APITestCINNVSDygraph(APITestBase):
                 print("[accuracy error]", self.api_config.config, "\n", str(err))
                 paddle_output_static = None
                 paddle_output = None
-                api_config_accuracy_error.write(self.api_config.config+"\n")
-                api_config_accuracy_error.flush()
+                write_to_log("accuracy_error", self.api_config.config)
                 return
         elif isinstance(paddle_output, (list, tuple)):
             if isinstance(paddle_output, tuple):
@@ -131,15 +140,12 @@ class APITestCINNVSDygraph(APITestBase):
                         print("[accuracy error]", self.api_config.config, "\n", str(err))
                         paddle_output_static = None
                         paddle_output = None
-                        api_config_accuracy_error.write(self.api_config.config+"\n")
-                        api_config_accuracy_error.flush()
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
 
         print("[Pass]", self.api_config.config)
-        api_config_pass.write(self.api_config.config+"\n")
-        api_config_pass.flush()
+        write_to_log("pass", self.api_config.config)
   
-
 
 # import paddle
 # from paddle.jit import to_static

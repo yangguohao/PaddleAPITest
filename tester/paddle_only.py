@@ -1,15 +1,34 @@
 import os
 
+import filelock
 import paddle
+from filelock import FileLock
 from func_timeout import func_set_timeout
 
 from .base import APITestBase
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+TEST_LOG_PATH = os.path.join(DIR_PATH, "tester/api_config/test_log")
+LOG_FILES = {
+    "paddle_error": os.path.join(TEST_LOG_PATH, "api_config_paddle_error.txt"),
+    "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
+}
 
-api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
+def write_to_log(log_type, message):
+    if log_type not in LOG_FILES:
+        print(f"Invalid log type: {log_type}")
+        return
+    log_file = LOG_FILES[log_type]
+    lock_file = log_file + ".lock"
+    try:
+        with FileLock(lock_file, timeout=10):
+            with open(log_file, "a") as f:
+                f.write(message + "\n")
+                f.flush()
+    except filelock.Timeout:
+        print(f"Timeout waiting for lock on {log_file}")
+    except Exception as e:
+        print(f"Error writing to {log_file}: {str(e)}")
 
 class APITestPaddleOnly(APITestBase):
     def __init__(self, api_config, test_amp):
@@ -48,8 +67,7 @@ class APITestPaddleOnly(APITestBase):
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
@@ -62,8 +80,7 @@ class APITestPaddleOnly(APITestBase):
             result_outputs = None
             result_outputs_grads = None
             out_grads = None
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             return
 
         paddle_output = None
@@ -71,6 +88,5 @@ class APITestPaddleOnly(APITestBase):
         result_outputs_grads = None
         out_grads = None
         print("[Pass]", self.api_config.config)
-        api_config_pass.write(self.api_config.config+"\n")
-        api_config_pass.flush()
+        write_to_log("pass", self.api_config.config)
   
