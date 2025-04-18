@@ -1,40 +1,14 @@
 import gc
-import os
 
-import filelock
 import paddle
 import torch
-from filelock import FileLock
 from func_timeout import func_set_timeout
+
+from tester.api_config.log_writer import *
 
 from .base import APITestBase
 from .paddle_to_torch import get_converter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
-TEST_LOG_PATH = os.path.join(DIR_PATH, "tester/api_config/test_log")
-LOG_FILES = {
-    "accuracy_error": os.path.join(TEST_LOG_PATH, "api_config_accuracy_error.txt"),
-    "paddle_error": os.path.join(TEST_LOG_PATH, "api_config_paddle_error.txt"),
-    "torch_to_paddle_faild": os.path.join(TEST_LOG_PATH, "api_config_paddle_to_torch_faild.txt"),
-    "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
-    "torch_error": os.path.join(TEST_LOG_PATH, "api_config_torch_error.txt"),
-}
-
-def write_to_log(log_type, message):
-    if log_type not in LOG_FILES:
-        print(f"Invalid log type: {log_type}")
-        return
-    log_file = LOG_FILES[log_type]
-    lock_file = log_file + ".lock"
-    try:
-        with FileLock(lock_file, timeout=10):
-            with open(log_file, "a") as f:
-                f.write(message + "\n")
-                f.flush()
-    except filelock.Timeout:
-        print(f"Timeout waiting for lock on {log_file}")
-    except Exception as e:
-        print(f"Error writing to {log_file}: {str(e)}")
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config, test_amp):

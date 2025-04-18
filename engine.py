@@ -1,17 +1,10 @@
 import argparse
-import os
 from datetime import datetime
-
-from filelock import FileLock
-import filelock
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
+from tester.api_config.log_writer import *
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
-TEST_LOG_PATH = os.path.join(DIR_PATH, "tester/api_config/test_log")
-os.makedirs(TEST_LOG_PATH, exist_ok=True)
-CHECKPOINT_FILE = os.path.join(TEST_LOG_PATH, "checkpoint.txt")
 
 def get_notsupport_config():
     not_support_files = [
@@ -94,38 +87,15 @@ def main():
         del case
         del api_config
     elif options.api_config_file != "":
-        lock_file = CHECKPOINT_FILE + ".lock"  # 锁文件
-        not_support_file = os.path.join(DIR_PATH, "tester/api_config/api_config_merged_not_support.txt")
-
-        finish_configs = set()
-        try:
-            with FileLock(lock_file, timeout=30):
-                with open(CHECKPOINT_FILE, "r") as checkpoint_r:
-                    finish_configs = set(checkpoint_r.readlines())
-        except FileNotFoundError:
-            pass
-        except filelock.Timeout:
-            print("Timeout waiting for lock on", CHECKPOINT_FILE)
-            return
-
-        not_support_api_config = set()
-        try:
-            with open(not_support_file, "r") as f:
-                not_support_api_config = set(f.readlines())
-        except FileNotFoundError:
-            pass
-
+        finish_configs = read_log("checkpoint")
+        not_support_api_config = read_log("not_support")
         with open(options.api_config_file, "r") as api_config_file:
             api_configs = set(api_config_file.readlines())
         api_configs = api_configs - finish_configs - not_support_api_config
         api_configs = sorted(api_configs)
 
         for api_config_str in api_configs:
-            with FileLock(lock_file, timeout=30):  # 使用文件锁保护写入
-                with open(CHECKPOINT_FILE, "a") as checkpoint:
-                    checkpoint.write(api_config_str)
-                    checkpoint.flush()
-
+            write_to_log("checkpoint", api_config_str)
             print(datetime.now(), "test begin:", api_config_str, flush=True)
             try:
                 api_config = APIConfig(api_config_str)
