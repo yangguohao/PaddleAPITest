@@ -41,6 +41,11 @@ tester/api_config中存放测试通过（merged*）/暂未通过（merged_not_su
 tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
 
 ```
+├── report
+│   ├── 0size_tensor
+│   ├── big_tensor
+│   ├── ci_ce
+│   └── fresh_report
 └── tester
     ├── accuracy.py
     ├── api_config
@@ -49,13 +54,6 @@ tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
     ├── paddle_cinn_vs_dygraph.py
     ├── paddle_only.py
     ├── paddle_to_torch
-├── engine.py
-├── README.md
-├── report
-│   ├── 0size_tensor
-│   ├── big_tensor
-│   ├── ci_ce
-│   └── fresh_report
 ```
 
 ## 3. 使用介绍
