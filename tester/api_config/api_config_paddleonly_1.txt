@@ -1,0 +1,2 @@
+paddle.add_n(list[Tensor([],"float32"),Tensor([1],"float32"),Tensor([1],"float32"),Tensor([],"float32"),Tensor([1],"float32"),Tensor([1],"float32"),], )
+paddle.add_n(list[Tensor([1],"float32"),Tensor([],"float32"),], )

@@ -13,6 +13,7 @@ from tester.api_config.log_writer import DIR_PATH, read_log, write_to_log
 
 
 def cleanup(executor=None):
+    print(f"{datetime.now()} Cleanup started", flush=True)
     if executor is not None:
         try:
             executor.shutdown(wait=False)
@@ -172,7 +173,7 @@ def main():
             # Multi GPUs execution
             num_gpus = options.num_gpus
             num_workers = num_gpus * 2
-            print(f"Using {num_gpus} GPU(s) via {num_workers} worker processes.")
+            print(f"Using {num_gpus} GPU(s) via {num_workers} worker processes.", flush=True)
             executor = ProcessPoolExecutor(max_workers=num_workers)
             try:
                 futures = []
