@@ -119,7 +119,6 @@ def run_test_case(api_config_str, options, gpu_id):
 
 
 def main():
-    print(f"main process: {os.getpid()}")
     global _executor
     set_start_method('spawn', force=True)
     register_cleanup()
@@ -182,11 +181,9 @@ def main():
     elif options.api_config_file != "":
         finish_configs = read_log("checkpoint")
         print(len(finish_configs), "cases have been tested.", flush=True)
-        with open(os.path.join(DIR_PATH, "tester/api_config/api_config_merged_not_support.txt"), "r") as f:
-            not_support_api_config = set(line.strip() for line in f if line.strip())
         with open(options.api_config_file, "r") as f:
             api_configs = set(line.strip() for line in f if line.strip())
-        api_configs = api_configs - finish_configs - not_support_api_config
+        api_configs = api_configs - finish_configs
         api_configs = sorted(api_configs)
         print(len(api_configs), "cases will be tested.", flush=True)
 

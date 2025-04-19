@@ -9,18 +9,17 @@
         "torch_args": [],
         "torch_kwargs": {
             "alpha": 1
-        }
+        },
+        "description": "result = torch.add(input=x, other=y, alpha=1)"
     },
     "paddle.add_n": {
         "composite_steps": [
             {
                 "torch_api": "torch.stack",
                 "torch_args": [
-                    "({inputs}, )"
+                    "{inputs} if isinstance({inputs}, list) else [{inputs}]"
                 ],
-                "torch_kwargs": {
-                    "dim": 0
-                }
+                "description": "_tmp_0 = torch.stack(inputs if isinstance(inputs, list) else [inputs])"
             },
             {
                 "torch_api": "torch.sum",
@@ -29,10 +28,10 @@
                 ],
                 "torch_kwargs": {
                     "dim": 0
-                }
+                },
+                "description": "_tmp_1 = torch.sum(_tmp_0, dim=0)"
             }
-        ],
-        "description": "torch.stack(inputs).sum(dim=0)"
+        ]
     },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_tensors": {

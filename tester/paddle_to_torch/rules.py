@@ -73,25 +73,24 @@ class BaseRule(ABC):
         """
         PLACEHOLDER_PATTERN: re.Pattern = re.compile(r"\{([^{}]+)\}")
 
-        def replace_placeholders(s: str) -> str:
-            placeholders = re.findall(PLACEHOLDER_PATTERN, s)
-            for placeholder in placeholders:
-                if placeholder.isdigit():
-                    s = s.replace(f"{{{placeholder}}}", f"_tmp_{placeholder}")
-                elif placeholder.replace("_", "").isalnum():
-                    s = s.replace(f"{{{placeholder}}}", placeholder)
-            return s
+        def replacer(match):
+            placeholder = match.group(1)
+            if placeholder.isdigit():
+                return f"_tmp_{placeholder}"
+            elif placeholder.replace("_", "").isalnum():
+                return placeholder
+            return match.group(0)
 
         formatted_args = []
         for arg in args:
             if isinstance(arg, str):
-                arg = replace_placeholders(arg)
+                arg = PLACEHOLDER_PATTERN.sub(replacer, arg)
             formatted_args.append(str(arg))
 
         formatted_kwargs = OrderedDict()
         for key, value in kwargs.items():
             if isinstance(value, str):
-                value = replace_placeholders(value)
+                value = PLACEHOLDER_PATTERN.sub(replacer, value)
             formatted_kwargs[key] = str(value)
 
         args_str = ", ".join(formatted_args)
@@ -110,19 +109,21 @@ class BaseRule(ABC):
         """
         if "Rule" in mapping:
             return
-        self.direct_mapping: bool = (
-            "composite_steps" not in mapping or not mapping["composite_steps"]
-        )
-        self.min_input_args: int = mapping.get("min_input_args", 0)
+        self.direct_mapping: bool = not mapping.get("composite_steps")
         if self.direct_mapping:
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
-            self.torch_api: str = mapping.get("torch_api", "")
+            self.torch_api: str = mapping["torch_api"]
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
+            for step in self.composite_steps:
+                if "torch_api" not in step:
+                    raise ValueError(
+                        f"Missing required field 'torch_api' in composite step: {step}"
+                    )
 
 
 class GenericRule(BaseRule):
