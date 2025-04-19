@@ -5,22 +5,46 @@ import signal
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime
-from multiprocessing import set_start_method
+from multiprocessing import active_children, set_start_method
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
-from tester.api_config.log_writer import *
+from tester.api_config.log_writer import DIR_PATH, write_to_log, read_log
 
 _executor = None
 
+
 def cleanup():
     global _executor
-    try:
-        if _executor is not None:
+    print(f"{datetime.now()} Starting cleanup", flush=True)
+
+    if _executor is not None:
+        try:
+            print(f"{datetime.now()} Shutting down executor", flush=True)
             _executor.shutdown(wait=False)
             _executor = None
-    except Exception as e:
-        print(f"Error during cleanup: {e}", flush=True)
+            print(f"{datetime.now()} Executor shutdown completed", flush=True)
+        except Exception as e:
+            print(f"{datetime.now()} Error shutting down executor: {e}", flush=True)
+
+    for process in active_children():
+        pid = process.pid
+        try:
+            if process.is_alive():
+                print(f"{datetime.now()} Terminating process {pid}", flush=True)
+                process.terminate()
+                process.join(timeout=2)
+                if process.is_alive():
+                    print(f"{datetime.now()} Killing process {pid}", flush=True)
+                    process.kill()
+                    process.join()
+        except Exception as e:
+            print(f"{datetime.now()} Error terminating process {pid}: {e}", flush=True)
+        finally:
+            print(f"{datetime.now()} Process {pid} terminated", flush=True)
+
+    print(f"{datetime.now()} Cleanup completed", flush=True)
+
 
 def signal_handler(sig, frame):
     cleanup()
@@ -29,6 +53,8 @@ def signal_handler(sig, frame):
 def register_cleanup():
     atexit.register(cleanup)
     signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
 
 def get_notsupport_config():
     not_support_files = [
@@ -50,7 +76,7 @@ def get_notsupport_config():
     configs = set()
 
     for flie in not_support_files:
-        with open(DIR_PATH+"/"+flie, "r") as f:
+        with open(os.path.join(DIR_PATH, flie), "r") as f:
             origin_configs = f.readlines()
             f.close()
 
@@ -61,7 +87,6 @@ def get_notsupport_config():
 
 def run_test_case(api_config_str, options, gpu_id):
     """Run a single test case for the given API configuration."""
-    atexit.register(flush_buffer)
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
 
     test_class = APITestAccuracy
@@ -94,6 +119,7 @@ def run_test_case(api_config_str, options, gpu_id):
 
 
 def main():
+    print(f"main process: {os.getpid()}")
     global _executor
     set_start_method('spawn', force=True)
     register_cleanup()
@@ -128,7 +154,7 @@ def main():
     parser.add_argument(
         '--num_gpus',
         type=int,
-        default=1,
+        default=0,
     )
     options = parser.parse_args()
 
@@ -155,22 +181,24 @@ def main():
         del api_config
     elif options.api_config_file != "":
         finish_configs = read_log("checkpoint")
+        print(len(finish_configs), "cases have been tested.", flush=True)
         not_support_api_config = read_log("not_support")
-        with open(options.api_config_file, "r") as api_config_file:
-            api_configs = set(api_config_file.readlines())
+        with open(options.api_config_file, "r") as f:
+            api_configs = set(line.strip() for line in f if line.strip())
         api_configs = api_configs - finish_configs - not_support_api_config
         api_configs = sorted(api_configs)
         print(len(api_configs), "cases will be tested.", flush=True)
 
-        if options.num_gpus > 1:
+        if options.num_gpus > 0:
             # Multi GPUs execution
-            num_workers = options.num_gpus
-            print(f"Using {num_workers} GPU(s) via {num_workers} worker processes.")
+            num_gpus = options.num_gpus
+            num_workers = num_gpus * 2
+            print(f"Using {num_gpus} GPU(s) via {num_workers} worker processes.")
             _executor = ProcessPoolExecutor(max_workers=num_workers)
             try:
                 futures = []
                 for i, config_str in enumerate(api_configs):
-                    gpu_id = i % num_workers
+                    gpu_id = i % num_gpus
                     future = _executor.submit(run_test_case, config_str.strip(), options, gpu_id)
                     futures.append(future)
                 for future in as_completed(futures):
@@ -179,8 +207,7 @@ def main():
                     except Exception as exc:
                         print(f"[FATAL] A worker process might have crashed: {exc}")
             finally:
-                _executor.shutdown()
-                flush_buffer()
+                _executor.shutdown(wait=True)
                 _executor = None
         else:
             # Single GPU execution

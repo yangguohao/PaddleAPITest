@@ -4,8 +4,7 @@ import paddle
 import torch
 from func_timeout import func_set_timeout
 
-from tester.api_config.log_writer import *
-
+from .api_config.log_writer import write_to_log
 from .base import APITestBase
 from .paddle_to_torch import get_converter
 
@@ -30,15 +29,15 @@ class APITestAccuracy(APITestBase):
             convert_result = self.converter.convert(self.api_config.api_name)
         except Exception as e:
             print(f"[paddle_to_torch] Convertion failed for {self.api_config.config}: {str(e)}")
-            write_to_log("torch_to_paddle_failed", self.api_config.config)
+            write_to_log("paddle_to_torch_failed", self.api_config.config)
             return
         if not convert_result.is_supported:
             print(f"[paddle_to_torch] Unsupported API {self.api_config.api_name}: {convert_result.error_message}")
-            write_to_log("torch_to_paddle_failed", self.api_config.config)
+            write_to_log("paddle_to_torch_failed", self.api_config.config)
             return
         if not convert_result.code or not convert_result.compiled_code:
             print(f"[paddle_to_torch] No code generated for {self.api_config.api_name}")
-            write_to_log("torch_to_paddle_failed", self.api_config.config)
+            write_to_log("paddle_to_torch_failed", self.api_config.config)
             return
 
         try:
