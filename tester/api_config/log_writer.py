@@ -82,7 +82,6 @@ def flush_buffer():
         lines_to_write = []
         with _buffer_lock[log_type]:
             if _log_buffer[log_type]:
-                print(f"{os.getpid()} flushing buffer of {log_type}")
                 lines_to_write = _log_buffer[log_type]
                 _log_buffer[log_type] = []
         if lines_to_write:

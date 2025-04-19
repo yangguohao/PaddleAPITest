@@ -11,49 +11,27 @@ from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
 from tester.api_config.log_writer import DIR_PATH, write_to_log, read_log
 
-_executor = None
 
-
-def cleanup():
-    global _executor
-    print(f"{datetime.now()} Starting cleanup", flush=True)
-
-    if _executor is not None:
+def cleanup(executor=None):
+    if executor is not None:
         try:
-            print(f"{datetime.now()} Shutting down executor", flush=True)
-            _executor.shutdown(wait=False)
-            _executor = None
-            print(f"{datetime.now()} Executor shutdown completed", flush=True)
+            executor.shutdown(wait=False)
         except Exception as e:
             print(f"{datetime.now()} Error shutting down executor: {e}", flush=True)
-
     for process in active_children():
         pid = process.pid
         try:
             if process.is_alive():
-                print(f"{datetime.now()} Terminating process {pid}", flush=True)
                 process.terminate()
                 process.join(timeout=2)
                 if process.is_alive():
-                    print(f"{datetime.now()} Killing process {pid}", flush=True)
                     process.kill()
                     process.join()
         except Exception as e:
             print(f"{datetime.now()} Error terminating process {pid}: {e}", flush=True)
         finally:
             print(f"{datetime.now()} Process {pid} terminated", flush=True)
-
     print(f"{datetime.now()} Cleanup completed", flush=True)
-
-
-def signal_handler(sig, frame):
-    cleanup()
-    sys.exit(0)
-
-def register_cleanup():
-    atexit.register(cleanup)
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
 
 
 def get_notsupport_config():
@@ -119,9 +97,12 @@ def run_test_case(api_config_str, options, gpu_id):
 
 
 def main():
-    global _executor
     set_start_method('spawn', force=True)
-    register_cleanup()
+    def cleanup_handler():
+        cleanup(executor)
+    atexit.register(cleanup_handler)
+    signal.signal(signal.SIGINT, lambda s, f: (cleanup_handler(), sys.exit(0)))
+    signal.signal(signal.SIGTERM, lambda s, f: (cleanup_handler(), sys.exit(0)))
 
     parser = argparse.ArgumentParser(
         description='API Test'
@@ -187,17 +168,18 @@ def main():
         api_configs = sorted(api_configs)
         print(len(api_configs), "cases will be tested.", flush=True)
 
+        executor = None
         if options.num_gpus > 0:
             # Multi GPUs execution
             num_gpus = options.num_gpus
             num_workers = num_gpus * 2
             print(f"Using {num_gpus} GPU(s) via {num_workers} worker processes.")
-            _executor = ProcessPoolExecutor(max_workers=num_workers)
+            executor = ProcessPoolExecutor(max_workers=num_workers)
             try:
                 futures = []
                 for i, config_str in enumerate(api_configs):
                     gpu_id = i % num_gpus
-                    future = _executor.submit(run_test_case, config_str.strip(), options, gpu_id)
+                    future = executor.submit(run_test_case, config_str.strip(), options, gpu_id)
                     futures.append(future)
                 for future in as_completed(futures):
                     try:
@@ -205,26 +187,12 @@ def main():
                     except Exception as exc:
                         print(f"[FATAL] A worker process might have crashed: {exc}")
             finally:
-                _executor.shutdown(wait=True)
-                _executor = None
+                executor.shutdown(wait=True)
         else:
             # Single GPU execution
             for config in api_configs:
                 run_test_case(config, options, gpu_id=0)
 
-        # elif options.api_config_file != "":
-        #     with open(options.api_config_file, "r") as f:
-        #         configs = f.readlines()
-        #         f.close()
-
-        #     for config in configs:
-        #         config = config.replace("\n", "")
-        #         cmd = ["python", "engine.py", "--api_config=" + config]
-        #         res = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        #         # res.wait()
-        #         print(str(res.stdout.read(), encoding="utf-8"), flush=True)
-        #         print(str(res.stderr.read(), encoding="utf-8"), flush=True)
-        #         # res.terminate()
 
 if __name__ == '__main__':
     main()
