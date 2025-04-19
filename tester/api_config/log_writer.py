@@ -22,9 +22,6 @@ LOG_FILES = {
     ),
     "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
     "torch_error": os.path.join(TEST_LOG_PATH, "api_config_torch_error.txt"),
-    "not_support": os.path.join(
-        DIR_PATH, "tester/api_config/api_config_merged_not_support.txt"
-    ),
 }
 
 # 日志缓存
