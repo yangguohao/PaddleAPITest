@@ -9,7 +9,7 @@ from multiprocessing import active_children, set_start_method
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
-from tester.api_config.log_writer import DIR_PATH, write_to_log, read_log
+from tester.api_config.log_writer import DIR_PATH, read_log, write_to_log
 
 
 def cleanup(executor=None):
@@ -138,15 +138,15 @@ def main():
     )
     options = parser.parse_args()
 
-    test_class = APITestAccuracy
-    if options.paddle_only:
-        test_class = APITestPaddleOnly
-    elif options.paddle_cinn:
-        test_class = APITestCINNVSDygraph
-    elif options.accuracy:
-        test_class = APITestAccuracy
-
     if options.api_config != "":
+        test_class = APITestAccuracy
+        if options.paddle_only:
+            test_class = APITestPaddleOnly
+        elif options.paddle_cinn:
+            test_class = APITestCINNVSDygraph
+        elif options.accuracy:
+            test_class = APITestAccuracy
+
         print("test begin:", options.api_config, flush=True)
         try:
             api_config = APIConfig(options.api_config)
@@ -168,7 +168,6 @@ def main():
         api_configs = sorted(api_configs)
         print(len(api_configs), "cases will be tested.", flush=True)
 
-        executor = None
         if options.num_gpus > 0:
             # Multi GPUs execution
             num_gpus = options.num_gpus
