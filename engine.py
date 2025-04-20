@@ -99,6 +99,7 @@ def run_test_case(api_config_str, options, gpu_id):
 
 def main():
     set_start_method('spawn', force=True)
+    executor = None
     def cleanup_handler():
         cleanup(executor)
     atexit.register(cleanup_handler)
