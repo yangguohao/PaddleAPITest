@@ -159,37 +159,28 @@ class APITestBase:
         return True
 
     def ana_torch_api_info(self):
-        # self.torch_api_str, paddle_to_torch_args_map = paddle_to_torch(self.api_config.api_name)
-        # if paddle_to_torch_args_map is None:
-        #     print("[paddle_to_torch2]", self.api_config.config, "\napi need manual fix")
-        #     api_config_paddle_to_torch_faild.write(self.api_config.config+"\n")
-        #     api_config_paddle_to_torch_faild.flush()
-        #     return False
-        # self.torch_api = eval(self.torch_api_str)
-    
-        api_sig = inspect.signature(self.paddle_api)
-        api_args_list = list(api_sig.parameters.keys())
-        self.paddle_merged_kwargs_config = collections.OrderedDict()
-        for i, arg_config in enumerate(self.api_config.args):
-             self.paddle_merged_kwargs_config[api_args_list[i]] = arg_config
-        self.paddle_merged_kwargs_config.update(self.api_config.kwargs)
+        paddle_sig = inspect.signature(self.paddle_api)
 
         self.torch_args_config = []
         self.torch_kwargs_config = collections.OrderedDict()
+        self.paddle_merged_kwargs_config = collections.OrderedDict()
 
         if self.api_config.api_name in ["paddle.Tensor.__getitem__", "paddle.Tensor.__setitem__"]:
-            self.torch_args_config = self.paddle_args_config
+            self.torch_args_config = self.api_config.args
             return True
 
-        first = True
-        for key, value in self.paddle_merged_kwargs_config.items():
-            if key == "name":
-                continue
-            if first and self.api_config.api_name.startswith("paddle.Tensor."):
-                self.torch_args_config.append(value)
-                first = False
-            else:
-                self.torch_kwargs_config[key] = value
+        args = self.api_config.args
+        if self.api_config.api_name.startswith("paddle.Tensor.") and args:
+            self.torch_args_config.append(self.api_config.args[0])
+            args = args[1:]
+        
+        paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
+        paddle_args_dict = paddle_bound_args.arguments
+
+        self.paddle_merged_kwargs_config = paddle_args_dict
+        self.torch_kwargs_config.update(paddle_args_dict)
+        self.torch_kwargs_config.pop('name', None)
+
         return True
     
     def _handle_list_or_tuple(self, config_items, is_tuple=False, index=None, key=None, list_index=[]):
@@ -663,37 +654,28 @@ class APITestBase:
         args = []
         kwargs = collections.OrderedDict()
 
-        for i in range(len(self.torch_args)):
-            if isinstance(self.torch_args[i], torch.Tensor):
-                args.append(torch.clone(self.torch_args[i]))
-            elif isinstance(self.torch_args[i], list) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
-                tmp = []
-                for j in range(len(self.torch_args[i])):
-                    tmp.append(torch.clone(self.torch_args[i][j]))
-                args.append(tmp)
-            elif isinstance(self.torch_args[i], tuple) and len(self.torch_args[i]) > 0 and isinstance(self.torch_args[i][0], torch.Tensor):
-                tmp = []
-                for j in range(len(self.torch_args[i])):
-                    tmp.append(torch.clone(self.torch_args[i][j]))
-                args.append(tmp)
+        for arg in self.torch_args:
+            if isinstance(arg, torch.Tensor):
+                args.append(torch.clone(arg))
+            elif isinstance(arg, (list, tuple)):
+                args.append([
+                    torch.clone(x) if isinstance(x, torch.Tensor) else x
+                    for x in arg
+                ])
             else:
-                args.append(self.torch_args[i])
-
+                args.append(arg)
+                
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 kwargs[key] = torch.clone(value)
-            elif isinstance(value, list):
-                tmp = []
-                for j in range(len(value)):
-                    tmp.append(torch.clone(value[j]))
-                kwargs[key] = tmp
-            elif isinstance(value, tuple):
-                tmp = []
-                for j in range(len(value)):
-                    tmp.append(torch.clone(value[j]))
-                kwargs[key] = tmp
+            elif isinstance(value, (list, tuple)):
+                kwargs[key] = [
+                    torch.clone(x) if isinstance(x, torch.Tensor) else x
+                    for x in value
+                ]
             else:
                 kwargs[key] = value
+                
         return args, kwargs
 
     def gen_torch_input(self):
