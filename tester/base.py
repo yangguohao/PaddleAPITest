@@ -61,9 +61,8 @@ stochastic_behavior_apis =[
     "paddle.nn.functional.feature_alpha_dropout",
 ]
 
-# Todo: check paddle.prod @cangtianhuang
+# Todo: check paddle.prod paddle.cumprod @cangtianhuang
 int_too_big_fail_api = [
-    "paddle.cumprod",
     "paddle.Tensor.cumprod",
     "paddle.pow",
     "paddle.Tensor.pow",

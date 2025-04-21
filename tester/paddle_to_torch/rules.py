@@ -154,12 +154,14 @@ class GenericRule(BaseRule):
         else:  # 简单组合映射
             for i, step in enumerate(self.composite_steps):
                 code.append(f"_args_{i} = []")
-                for arg in step.get('torch_args', []):
+                for arg in step.get("torch_args", []):
                     code.append(f"_args_{i}.extend([{self._format_arg(arg)}])")
                 code.append(f"_kwargs_{i} = {{}}")
-                for key, value in step.get('torch_kwargs', {}).items():
+                for key, value in step.get("torch_kwargs", {}).items():
                     code.append(f"_kwargs_{i}['{key}'] = {self._format_arg(value)}")
-                code.append(f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})")
+                code.append(
+                    f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})"
+                )
             return ConvertResult.success(
                 paddle_api, code, f"_tmp_{len(self.composite_steps) - 1}"
             )
@@ -211,6 +213,38 @@ result = x[slices]
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class CumRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        torch_api = paddle_api.replace("paddle.", "torch.")
+        impl = f"""
+axis = locals().get('axis')
+if axis is None:
+    x = x.flatten()
+    axis = 0
+dtype = locals().get('dtype', 'int64')
+if dtype is not None:
+    dtype = getattr(torch, dtype)
+result = {torch_api}(input=x, dim=axis)
+result.values.to(dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class CumprodRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = f"""
+dim = locals().get('dim')
+if dim is None:
+    x = x.flatten()
+    axis = 0
+dtype = locals().get('dtype')
+if dtype is not None:
+    dtype = getattr(torch, dtype)
+result = torch.cumprod(input=x, dim=dim, dtype=dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 # d
 
 

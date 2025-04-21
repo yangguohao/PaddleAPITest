@@ -59,6 +59,15 @@
     "paddle.crop": {
         "Rule": "CropRule"
     },
+    "paddle.cummax": {
+        "Rule": "CumRule"
+    },
+    "paddle.cummin": {
+        "Rule": "CumRule"
+    },
+    "paddle.cumprod": {
+        "Rule": "CumprodRule"
+    },
     "d": "API started with 'd' should be placed here",
     "e": "API started with 'e' should be placed here",
     "f": "API started with 'f' should be placed here",
@@ -1834,15 +1843,6 @@
             "device": "device"
         },
         "min_input_args": 0
-    },
-    "paddle.cumprod": {
-        "torch_api": "torch.cumprod",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "dim": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 2
     },
     "paddle.cumsum": {
         "torch_api": "torch.cumsum",
