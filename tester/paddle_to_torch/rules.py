@@ -128,7 +128,7 @@ class GenericRule(BaseRule):
             code.append("_args = []")
             if self.torch_args:
                 for arg in self.torch_args:
-                    code.append(f"_args.append({self._format_arg(arg)})")
+                    code.append(f"_args.extend([{self._format_arg(arg)}])")
             code.append("_kwargs = {}")
             if self.torch_kwargs:
                 for key, value in self.torch_kwargs.items():
@@ -155,7 +155,7 @@ class GenericRule(BaseRule):
             for i, step in enumerate(self.composite_steps):
                 code.append(f"_args_{i} = []")
                 for arg in step.get('torch_args', []):
-                    code.append(f"_args_{i}.append({self._format_arg(arg)})")
+                    code.append(f"_args_{i}.extend([{self._format_arg(arg)}])")
                 code.append(f"_kwargs_{i} = {{}}")
                 for key, value in step.get('torch_kwargs', {}).items():
                     code.append(f"_kwargs_{i}['{key}'] = {self._format_arg(value)}")
