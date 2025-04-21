@@ -94,12 +94,11 @@ class BaseRule(ABC):
         Returns:
             None
         """
-        if "Rule" in mapping:
-            return
+        self.mapping: Dict = mapping
+        self.have_rule: bool = "Rule" in mapping
         self.direct_mapping: bool = not mapping.get("composite_steps")
-        self.min_input_args: int = mapping.get("min_input_args", 0)
         if self.direct_mapping:
-            if "torch_api" not in mapping:
+            if not self.have_rule and "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
             self.torch_api: str = mapping["torch_api"]
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
@@ -108,7 +107,7 @@ class BaseRule(ABC):
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
             for step in self.composite_steps:
-                if "torch_api" not in step:
+                if not self.have_rule and "torch_api" not in step:
                     raise ValueError(
                         f"Missing required field 'torch_api' in composite step: {step}"
                     )
@@ -143,13 +142,19 @@ class GenericRule(BaseRule):
 
             if is_tensor_method:
                 torch_method = self.torch_api.replace("torch.Tensor.", "")
-                code.append(f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)")
                 if is_inplace:
+                    code.append(f"_tmp_tensor.{torch_method}(*_args, **_kwargs)")
                     code.append("result = _tmp_tensor")
+                else:
+                    code.append(
+                        f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)"
+                    )
             else:
-                code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
                 if is_inplace:
+                    code.append(f"{self.torch_api}(*_args, **_kwargs)")
                     code.append("result = args[0]")
+                else:
+                    code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
             return ConvertResult.success(paddle_api, code)
         else:  # 简单组合映射
             for i, step in enumerate(self.composite_steps):
@@ -162,9 +167,8 @@ class GenericRule(BaseRule):
                 code.append(
                     f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})"
                 )
-            return ConvertResult.success(
-                paddle_api, code, f"_tmp_{len(self.composite_steps) - 1}"
-            )
+            code.append(f"result = _tmp_{len(self.composite_steps) - 1}")
+            return ConvertResult.success(paddle_api, code)
 
 
 class ErrorRule(BaseRule):
@@ -245,6 +249,8 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 # d
 
 
@@ -255,6 +261,14 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 
 
 # g
+# class GetItemRule(BaseRule):
+#     def apply(self, paddle_api: str) -> ConvertResult:
+#         generic_rule = GenericRule()
+#         generic_rule.read_mapping(self.mapping)
+#         result = generic_rule.apply(paddle_api)
+#         if result.is_supported and result.code:
+#             result.code.append("result = result.item()")
+#         return result
 
 
 # h
