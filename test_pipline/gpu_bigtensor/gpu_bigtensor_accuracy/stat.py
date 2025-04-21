@@ -10,4 +10,4 @@ for i in range(8):
         test_count = content.count("test begin")
         pass_count = content.count("[Pass]")
 
-    print(i+1, case_count, test_count, "{:.2f}%".format((test_count * 100 / case_count)), pass_count)
+    print(i+1, "\t", case_count, "\t", test_count, "\t", case_count - test_count, "\t", "{:.2f}%".format((test_count * 100 / case_count)), "\t", pass_count)
