@@ -1,0 +1,13 @@
+for i in range(24):
+    test_file = "test_pipline/gpu_0size/gpu_0size_accuracy/0size_tensor_accuracy_{}.txt".format(i+1)
+    test_log = "test_pipline/gpu_0size/gpu_0size_accuracy/0size_tensor_accuracy_{}.log".format(i+1)
+    with open(test_file, "r") as file:
+        lines = file.readlines()
+        case_count = len(lines)
+
+    with open(test_log, "r") as file:
+        content = file.read()
+        test_count = content.count("test begin")
+        pass_count = content.count("[Pass]")
+
+    print(i+1, case_count, test_count, "{:.2f}%".format((test_count * 100 / case_count)), pass_count)
