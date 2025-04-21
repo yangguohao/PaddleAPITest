@@ -1,0 +1,100 @@
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([1, 1, 192],"float16"), cache_kv=Tensor([2, 1, 1, 50, 64],"float16"), src_mask=Tensor([1, 1, 1, 50],"float16"), sequence_lengths=Tensor([1, 1],"int32"), rotary_tensor=Tensor([2, 1, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, )
+
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([1, 1, 192],"float16"), cache_kv=Tensor([2, 1, 1, 50, 64],"float16"), src_mask=Tensor([1, 1, 1, 50],"float16"), sequence_lengths=Tensor([1, 1],"int32"), rotary_tensor=Tensor([2, 1, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 1, 1024],"float16"), cache_kv=Tensor([2, 2, 2, 32768, 128],"float16"), src_mask=Tensor([2, 1, 1, 32768],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 128],"float32"), rotary_emb_dims=1, use_neox_rotary_style=False, )
+
+W0416 12:50:01.238237 641357 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:50:01.239081 641357 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 1, 1024],"float16"), cache_kv=Tensor([2, 2, 2, 32768, 128],"float16"), src_mask=Tensor([2, 1, 1, 32768],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 128],"float32"), rotary_emb_dims=1, use_neox_rotary_style=False, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 1, 192],"float16"), cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=None, rotary_emb_dims=0, use_neox_rotary_style=False, )
+
+W0416 12:51:17.836977 642622 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:51:17.837867 642622 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 1, 192],"float16"), cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=None, rotary_emb_dims=0, use_neox_rotary_style=False, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 1, 192],"float16"), cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, )
+
+W0416 12:52:11.213763 643535 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:52:11.214560 643535 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 1, 192],"float16"), cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.02483507990837097, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 12:53:01.924974 644314 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:53:01.925789 644314 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.02483507990837097, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.025167126208543777, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 12:54:11.711068 645331 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:54:11.711975 645331 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.025167126208543777, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.030970240011811256, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 12:55:02.479434 646097 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:55:02.480250 646097 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.030970240011811256, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03103782795369625, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 12:57:42.763863 648089 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:57:42.764794 648089 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03103782795369625, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03455723449587822, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 12:58:54.217903 649215 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:58:54.218719 649215 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03455723449587822, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03654532507061958, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 12:59:50.812268 650173 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 12:59:50.813110 650173 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03654532507061958, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.037230949848890305, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 13:00:51.998944 651153 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 13:00:51.999795 651153 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.037230949848890305, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03799910843372345, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", )
+
+W0416 13:01:27.017244 651859 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 13:01:27.018077 651859 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 192],"int32"), bias=None, cache_kv=Tensor([2, 2, 1, 4096, 64],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 64],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, qkv_out_scale=Tensor([192],"float32"), out_shift=None, out_smooth=None, out_scale=0.03799910843372345, quant_round_type=0, quant_max_bound=127.0, quant_min_bound=-127.0, compute_dtype="fp16", ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
+
+paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 2304],"float16"), cache_kv=Tensor([2, 2, 8, 4096, 96],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 96],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, )
+W0416 13:02:00.013967 652582 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0416 13:02:00.014807 652582 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.incubate.nn.functional.masked_multihead_attention(x=Tensor([2, 2304],"float16"), cache_kv=Tensor([2, 2, 8, 4096, 96],"float16"), src_mask=Tensor([2, 1, 1, 4096],"float16"), sequence_lengths=Tensor([2, 1],"int32"), rotary_tensor=Tensor([2, 2, 1, 1, 96],"float32"), rotary_emb_dims=1, use_neox_rotary_style=True, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at ../paddle/phi/backends/gpu/cuda/cuda_info.cc:290)
