@@ -172,6 +172,7 @@ class APITestBase:
         args = self.api_config.args
         if self.api_config.api_name.startswith("paddle.Tensor.") and args:
             self.torch_args_config.append(self.api_config.args[0])
+            self.torch_kwargs_config["self"] = self.api_config.args[0]
             args = args[1:]
         
         paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
