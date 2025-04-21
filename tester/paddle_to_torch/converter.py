@@ -1,7 +1,7 @@
 import json
+import os
 import threading
 from collections import OrderedDict
-from pathlib import Path
 from typing import Any, Dict, List, Type
 
 import torch
@@ -59,8 +59,10 @@ class Paddle2TorchConverter:
         for rule_name in rules.__all__:
             rule_cls_map[rule_name] = getattr(rules, rule_name)
 
-        mapping_file = Path(__file__).absolute().parent / "mapping.json"
-        with mapping_file.open("r") as f:
+        mapping_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "mapping.json"
+        )
+        with open(mapping_file, "r") as f:
             paddle2torch_mapping = json.load(f, object_pairs_hook=OrderedDict)
             for key, value in paddle2torch_mapping.items():
                 if not key.startswith("paddle.") or key in self.rules:
