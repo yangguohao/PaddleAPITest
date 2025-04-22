@@ -1539,9 +1539,8 @@ class TensorConfig:
             elif api_config.api_name in ['paddle.Tensor.gather',"paddle.gather"]:
                 if key == "index" or index == 1:
                     s=self.get_arg(api_config, 0, "x")
-
                     if 'axis' in api_config.kwargs:
-                        tmp=self.get_arg(api_config,arg_name='axis')
+                        tmp=self.get_arg(api_config,2,'axis')
                         if isinstance(tmp,TensorConfig):
                             tmp=tmp.shape
                             tmp=tmp[0]
@@ -1553,15 +1552,9 @@ class TensorConfig:
 
             elif api_config.api_name in ["paddle.Tensor.gather_nd","paddle.gather_nd"]:
                 if key == "index" or index == 1:
-                    if 'x' in api_config.kwargs:
-                        org=self.get_arg(api_config,arg_name='x')
-                    else:
-                        org=self.get_arg(api_config,0)
+                    org=self.get_arg(api_config,0,'x')
                     org=org.shape
-                    if 'index' in api_config.kwargs:
-                        s=self.get_arg(api_config,arg_name='index')
-                    else:
-                        s=self.get_arg(api_config,1)
+                    s=self.get_arg(api_config,1,'index')
                     s=s.shape
                     self.numpy_tensor=numpy.zeros(s)
                     for i in range(s[-1]):
