@@ -853,13 +853,14 @@ class TensorConfig:
             elif api_config.api_name in ["paddle.nn.functional.adaptive_log_softmax_with_loss"]:
                 if self.check_arg(api_config, 1, "label"):
                     cutoffs = self.get_arg(api_config, 4, "cutoffs")
-                    if isinstance(cutoffs, list) and cutoffs:
-                        n_classes = cutoffs[-1]
+                    n_classes = cutoffs[-1] 
+                    generation_size = self.shape
+                    if isinstance(self.shape, (list, tuple)) and len(self.shape) == 0:
+                        generation_size = 1 
+                    if n_classes == 1:
+                        self.numpy_tensor = numpy.zeros(generation_size, dtype=self.dtype)
                     else:
-                        n_classes = numpy.random.randint(5, 20)  
-                    if len(self.shape) == 0:
-                        self.shape = [1]
-                    self.numpy_tensor = numpy.random.randint(0, n_classes, size=self.shape).astype(self.dtype)
+                        self.numpy_tensor = numpy.random.randint(low=0, high=n_classes, size=generation_size, dtype=self.dtype)
             elif api_config.api_name in ['paddle.nn.functional.affine_grid']:
                 if key == "out_shape" or index == 1:
                     s = self.get_arg(api_config, 0, "theta")
