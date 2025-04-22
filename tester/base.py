@@ -289,10 +289,10 @@ class APITestBase:
                     else:
                         true_needed.append(value_shape[value_shape_index])
                         value_shape_index += 1
-                for i in range(len(true_needed) - 1, 0, -1):
-                    if true_needed[i] > value_shape[i]:
-                        true_needed[i - 1] *= true_needed[i] // value_shape[i]
-                        true_needed[i] = value_shape[i]
+                for i in range(len(true_needed) - 1, -1, -1):
+                    if true_needed[i] > item.shape[i]:
+                        true_needed[i - 1] *= true_needed[i] // item.shape[i]
+                        true_needed[i] = item.shape[i]
                 mask = numpy.zeros(item.shape, dtype=bool)
                 indices = [
                     numpy.random.choice(dim_size, size=needed, replace=False)
