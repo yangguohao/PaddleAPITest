@@ -70,12 +70,6 @@
     },
     "d": "API started with 'd' should be placed here",
     "e": "API started with 'e' should be placed here",
-    "paddle.empty_like": {
-        "torch_api": "torch.empty_like",
-        "paddle_torch_args_map": {
-            "x": "input"
-        }
-    },
     "paddle.equal_all": {
         "torch_api": "torch.equal",
         "paddle_torch_args_map": {

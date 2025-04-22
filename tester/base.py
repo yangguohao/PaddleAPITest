@@ -46,6 +46,8 @@ rand_apis = [
     "paddle.Tensor.multinomial",
     "paddle.Tensor.normal_",
     "paddle.Tensor.uniform_",
+    "paddle.empty",
+    "paddle.empty_like",
 ]
 
 stochastic_behavior_apis =[
