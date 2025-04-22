@@ -51,6 +51,15 @@
             "*{inputs}"
         ]
     },
+    "paddle.as_strided": {
+        "torch_api": "torch.as_strided",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "shape": "size",
+            "stride": "stride",
+            "offset": "storage_offset"
+        }
+    },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_tensors": {
         "Rule": "BroadcastTensorsRule"
@@ -187,15 +196,6 @@
             "stable": "stable"
         },
         "min_input_args": 0
-    },
-    "paddle.Tensor.as_strided": {
-        "torch_api": "torch.Tensor.as_strided",
-        "paddle_torch_args_map": {
-            "shape": "size",
-            "stride": "stride",
-            "offset": "storage_offset"
-        },
-        "min_input_args": 2
     },
     "paddle.Tensor.backward": {
         "torch_api": "torch.Tensor.backward",
@@ -1484,16 +1484,6 @@
             "stable": "stable"
         },
         "min_input_args": 1
-    },
-    "paddle.as_strided": {
-        "torch_api": "torch.as_strided",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "shape": "size",
-            "stride": "stride",
-            "offset": "storage_offset"
-        },
-        "min_input_args": 3
     },
     "paddle.to_tensor": {
         "torch_api": "torch.as_tensor",

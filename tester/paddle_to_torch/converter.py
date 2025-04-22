@@ -37,7 +37,6 @@ PADDLE2TORCH_WRONG_CONFIG = frozenset(
         "paddle.nn.functional.pixel_unshuffle",
         "paddle.nn.functional.prelu",
         "paddle.nn.functional.selu",
-        "paddle.as_strided",
     ]
 )
 
