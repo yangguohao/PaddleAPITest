@@ -193,16 +193,16 @@ class TensorConfig:
                     self.dtype = "int64"
 
             elif api_config.api_name in ["paddle.atan2"]:
-                s1=self.get_arg(api_config,0)
-                s2=self.get_arg(api_config,1)
-                s1=s1.shape
-                s2=s2.shape
-                if numpy.max(s1) == 0 and max(s2) == 0:
-                    while len(s1)>len(s2):
-                        s2.append(0)
-                    while len(s2)>len(s1):
-                        s1.append(0)
-                self.numpy_tensor=numpy.random.random(s1)
+                if self.check_arg(api_config,0,'x'):
+                    s1=self.get_arg(api_config,0,'x')
+                    s1=s1.shape
+                    self.numpy_tensor=numpy.random.random(s1).astype(self.dtype)
+                elif self.check_arg(api_config,1,'y'):
+                    s2=self.get_arg(api_config,1,'y')
+                    s2=s2.shape
+                    self.numpy_tensor=numpy.random.random(s2).astype(self.dtype)
+                
+
             elif api_config.api_name in ["paddle.bernoulli"]:
                 if self.check_arg(api_config, 0, "x"):
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
