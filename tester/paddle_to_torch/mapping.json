@@ -99,6 +99,14 @@
     },
     "f": "API started with 'f' should be placed here",
     "g": "API started with 'g' should be placed here",
+    "paddle.greater_equal": {
+        "torch_api": "torch.ge",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }, 
+        "description": "result = torch.ge(input=x, other=y)"
+    },
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
     "j": "API started with 'j' should be placed here",
