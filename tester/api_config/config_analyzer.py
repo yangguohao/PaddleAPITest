@@ -825,8 +825,10 @@ class TensorConfig:
                     pool_input_size = [*pool_output_size[:-ndim], *pool_input_size[-ndim:]]
                 elif len(pool_input_size) != len(pool_output_size):
                     raise ValueError(f"invalid argument output_size {pool_input_size} for {api_config.api_name}, len(output_size) should be {ndim} or {len(pool_output_size)} or output_size == None, got len(output_size)={len(pool_input_size)} and output_size={unpool_output_size}")
-                    
-                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=self.dtype))
+                
+                # int64 handle
+                data_type = "float64" if self.dtype == "int64" else self.dtype
+                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=data_type))
                 max_poolxd_func = eval(api_config.api_name.replace("max_unpool", "max_pool"))
                 x, indices = max_poolxd_func(x, kernel_size, stride, padding, return_mask=True)
                 self.numpy_tensor = x.numpy()
