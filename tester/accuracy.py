@@ -54,37 +54,8 @@ class APITestAccuracy(APITestBase):
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed")
                 return
-            if "paddle.Tensor." in self.api_config.api_name:
-                api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
-                args = []
-                if len(self.paddle_args) > 1:
-                    args = self.paddle_args[1:]
-
-                if self.test_amp:
-                    with paddle.amp.auto_cast():
-                        paddle_output = api(*tuple(args), **self.paddle_kwargs)
-                else:
-                    paddle_output = api(*tuple(args), **self.paddle_kwargs)
-            else:
-                if self.test_amp:
-                    with paddle.amp.auto_cast():
-                        paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
-                else:
-                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
-            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
-                paddle_output = self.paddle_args[0] if len(self.paddle_args) > 0 else next(iter(self.paddle_kwargs.values()))
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
-            if "CUDA error" in str(err) or "memory corruption" in str(err):
-                raise Exception(err)
-            return
-
-        try:
-            paddle.base.core.eager._for_test_check_cuda_error()
-        except Exception as err:
-            print("[cuda error]", self.api_config.config, "\n", str(err))
             api_config_paddle_error.write(self.api_config.config+"\n")
             api_config_paddle_error.flush()
             return
@@ -213,6 +184,42 @@ class APITestAccuracy(APITestBase):
         self.clear_torch_tensor()
         gc.collect()
         torch.cuda.empty_cache()
+
+        try:
+            if "paddle.Tensor." in self.api_config.api_name:
+                api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
+                args = []
+                if len(self.paddle_args) > 1:
+                    args = self.paddle_args[1:]
+
+                if self.test_amp:
+                    with paddle.amp.auto_cast():
+                        paddle_output = api(*tuple(args), **self.paddle_kwargs)
+                else:
+                    paddle_output = api(*tuple(args), **self.paddle_kwargs)
+            else:
+                if self.test_amp:
+                    with paddle.amp.auto_cast():
+                        paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                else:
+                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+            if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
+                paddle_output = self.paddle_args[0] if len(self.paddle_args) > 0 else next(iter(self.paddle_kwargs.values()))
+        except Exception as err:
+            print("[paddle error]", self.api_config.config, "\n", str(err))
+            api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
+            if "CUDA error" in str(err) or "memory corruption" in str(err):
+                raise Exception(err)
+            return
+
+        try:
+            paddle.base.core.eager._for_test_check_cuda_error()
+        except Exception as err:
+            print("[cuda error]", self.api_config.config, "\n", str(err))
+            api_config_paddle_error.write(self.api_config.config+"\n")
+            api_config_paddle_error.flush()
+            return
 
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
