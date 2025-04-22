@@ -14,13 +14,15 @@ os.makedirs(TEST_LOG_PATH, exist_ok=True)
 
 # 日志类型和对应的文件
 LOG_FILES = {
-    "checkpoint": os.path.join(TEST_LOG_PATH, "checkpoint.txt"),
     "accuracy_error": os.path.join(TEST_LOG_PATH, "api_config_accuracy_error.txt"),
+    "checkpoint": os.path.join(TEST_LOG_PATH, "checkpoint.txt"),
+    "crash": os.path.join(TEST_LOG_PATH, "api_config_crash.txt"),
     "paddle_error": os.path.join(TEST_LOG_PATH, "api_config_paddle_error.txt"),
     "paddle_to_torch_failed": os.path.join(
         TEST_LOG_PATH, "api_config_paddle_to_torch_failed.txt"
     ),
     "pass": os.path.join(TEST_LOG_PATH, "api_config_pass.txt"),
+    "timeout": os.path.join(TEST_LOG_PATH, "api_config_timeout.txt"),
     "torch_error": os.path.join(TEST_LOG_PATH, "api_config_torch_error.txt"),
 }
 
@@ -49,6 +51,8 @@ def write_to_log(log_type, line):
     line = line.strip()
     if not line:
         return
+    if log_type == "crash" or log_type == "timeout":
+        _write_to_file(log_type, [line])
     lines_to_write = []
     with _buffer_lock[log_type]:
         _log_buffer[log_type].append(line)
