@@ -58,7 +58,8 @@
             "shape": "size",
             "stride": "stride",
             "offset": "storage_offset"
-        }
+        },
+        "description": "result = torch.as_strided(input=x, size=shape, stride=stride, storage_offset=offset)"
     },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_tensors": {
