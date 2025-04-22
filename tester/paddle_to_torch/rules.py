@@ -95,10 +95,11 @@ class BaseRule(ABC):
             None
         """
         self.mapping: Dict = mapping
-        self.have_rule: bool = "Rule" in mapping
+        if "Rule" in mapping:
+            return
         self.direct_mapping: bool = not mapping.get("composite_steps")
         if self.direct_mapping:
-            if not self.have_rule and "torch_api" not in mapping:
+            if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
             self.torch_api: str = mapping["torch_api"]
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
@@ -107,7 +108,7 @@ class BaseRule(ABC):
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
             for step in self.composite_steps:
-                if not self.have_rule and "torch_api" not in step:
+                if "torch_api" not in step:
                     raise ValueError(
                         f"Missing required field 'torch_api' in composite step: {step}"
                     )
