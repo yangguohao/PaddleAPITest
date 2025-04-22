@@ -400,7 +400,7 @@ class TensorConfig:
 
                     max_shape = max_config.shape
                     max_dtype = max_config.dtype
-                    max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
+                    max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_numpy_tensor)
                     
                     self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
                     self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
