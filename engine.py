@@ -162,10 +162,15 @@ def main():
         del case
         del api_config
     elif options.api_config_file != "":
-        finish_configs = read_log("checkpoint")
-        print(len(finish_configs), "cases have been tested.", flush=True)
-        with open(options.api_config_file, "r") as f:
-            api_configs = set(line.strip() for line in f if line.strip())
+        try:
+            checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "r")
+            finish_configs = set(checkpoint_r.readlines())
+            checkpoint_r.close()
+        except Exception as err:
+            finish_configs = set()
+        checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "a")
+        api_config_file = open(options.api_config_file, "r")
+        api_configs = set(api_config_file.readlines())
         api_configs = api_configs - finish_configs
         api_configs = sorted(api_configs)
         print(len(api_configs), "cases will be tested.", flush=True)

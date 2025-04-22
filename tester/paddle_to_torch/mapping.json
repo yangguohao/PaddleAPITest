@@ -33,11 +33,32 @@
             }
         ]
     },
+    "paddle.atleast_1d": {
+        "torch_api": "torch.atleast_1d",
+        "torch_args": [
+            "*{inputs}"
+        ]
+    },
+    "paddle.atleast_2d": {
+        "torch_api": "torch.atleast_2d",
+        "torch_args": [
+            "*{inputs}"
+        ]
+    },
+    "paddle.atleast_3d": {
+        "torch_api": "torch.atleast_3d",
+        "torch_args": [
+            "*{inputs}"
+        ]
+    },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_tensors": {
         "Rule": "BroadcastTensorsRule"
     },
     "c": "API started with 'c' should be placed here",
+    "paddle.crop": {
+        "Rule": "CropRule"
+    },
     "d": "API started with 'd' should be placed here",
     "e": "API started with 'e' should be placed here",
     "f": "API started with 'f' should be placed here",
@@ -58,10 +79,12 @@
     "paddle.Tensor.set_": {
         "torch_api": "torch.Tensor.set_",
         "paddle_torch_args_map": {
-            "source": "source",
-            "shape": "size",
-            "stride": "stride",
-            "offset": "storage_offset"
+            "stride": "stride"
+        },
+        "torch_kwargs": {
+            "source": "{source} if locals().get('{source}') is not None else torch.empty([])",
+            "size": "locals().get('{shape}') or ({source}.size() if locals().get('{source}') is not None else [])",
+            "storage_offset": "(locals().get('{offset}') or 0) // _tmp_tensor.itemsize"
         }
     },
     "u": "API started with 'u' should be placed here",

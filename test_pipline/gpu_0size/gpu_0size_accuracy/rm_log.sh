@@ -1,0 +1,1 @@
+rm -rf test_pipline/gpu_0size/gpu_0size_accuracy/0size_tensor_accuracy_*.log

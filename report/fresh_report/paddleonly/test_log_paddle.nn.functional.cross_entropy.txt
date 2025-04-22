@@ -1,0 +1,21 @@
+paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2, 5],"float64"), soft_label=True, axis=-1, weight=Tensor([5],"float64"), reduction="mean", )
+paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2, 5],"float64"), soft_label=True, label_smoothing=0.18833946207874966, axis=-1, weight=Tensor([5],"float64"), reduction="mean", )
+paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2],"int64"), soft_label=True, label_smoothing=0.20326138379662173, axis=-1, weight=Tensor([5],"float64"), reduction="mean", )
+
+2025-04-10 02:23:00.690232 test begin: paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2, 5],"float64"), soft_label=True, axis=-1, weight=Tensor([5],"float64"), reduction="mean", )
+W0410 02:23:01.185432 15401 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2, 5],"float64"), soft_label=True, axis=-1, weight=Tensor([5],"float64"), reduction="mean", ) 
+ (PreconditionNotMet) Tensor's dimension is out of bound.Tensor's dimension must be equal or less than the size of its memory.But received Tensor's dimension is 480, memory's size is 256.
+  [Hint: Expected numel() * SizeOf(dtype()) <= memory_size(), but received numel() * SizeOf(dtype()):480 > memory_size():256.] (at ../paddle/phi/core/dense_tensor_impl.cc:48)
+
+2025-04-10 02:23:01.185959 test begin: paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2, 5],"float64"), soft_label=True, label_smoothing=0.18833946207874966, axis=-1, weight=Tensor([5],"float64"), reduction="mean", )
+W0410 02:23:01.192503 15404 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2, 5],"float64"), soft_label=True, label_smoothing=0.18833946207874966, axis=-1, weight=Tensor([5],"float64"), reduction="mean", ) 
+ (PreconditionNotMet) Tensor's dimension is out of bound.Tensor's dimension must be equal or less than the size of its memory.But received Tensor's dimension is 480, memory's size is 256.
+  [Hint: Expected numel() * SizeOf(dtype()) <= memory_size(), but received numel() * SizeOf(dtype()):480 > memory_size():256.] (at ../paddle/phi/core/dense_tensor_impl.cc:48)
+
+2025-04-10 02:23:01.193134 test begin: paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2],"int64"), soft_label=True, label_smoothing=0.20326138379662173, axis=-1, weight=Tensor([5],"float64"), reduction="mean", )
+W0410 02:23:01.205358 15405 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.nn.functional.cross_entropy(Tensor([3, 2, 2, 5],"float64"), Tensor([3, 2, 2],"int64"), soft_label=True, label_smoothing=0.20326138379662173, axis=-1, weight=Tensor([5],"float64"), reduction="mean", ) 
+ (PreconditionNotMet) Tensor's dimension is out of bound.Tensor's dimension must be equal or less than the size of its memory.But received Tensor's dimension is 480, memory's size is 256.
+  [Hint: Expected numel() * SizeOf(dtype()) <= memory_size(), but received numel() * SizeOf(dtype()):480 > memory_size():256.] (at ../paddle/phi/core/dense_tensor_impl.cc:48)

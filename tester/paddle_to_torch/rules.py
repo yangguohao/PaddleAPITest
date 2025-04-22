@@ -60,16 +60,15 @@ class BaseRule(ABC):
         """
         pass
 
-    def _format_args(self, args: List, kwargs: OrderedDict) -> str:
+    def _format_arg(self, arg) -> str:
         """
         将参数格式化为调用字符串的辅助方法
 
         Args:
-            args (List): 位置参数列表
-            kwargs (Dict): 关键字参数字典
+            arg: 待格式化的参数
 
         Returns:
-            str: 格式化后的调用字符串
+            str: 格式化后的参数
         """
         PLACEHOLDER_PATTERN: re.Pattern = re.compile(r"\{([^{}]+)\}")
 
@@ -81,21 +80,9 @@ class BaseRule(ABC):
                 return placeholder
             return match.group(0)
 
-        formatted_args = []
-        for arg in args:
-            if isinstance(arg, str):
-                arg = PLACEHOLDER_PATTERN.sub(replacer, arg)
-            formatted_args.append(str(arg))
-
-        formatted_kwargs = OrderedDict()
-        for key, value in kwargs.items():
-            if isinstance(value, str):
-                value = PLACEHOLDER_PATTERN.sub(replacer, value)
-            formatted_kwargs[key] = str(value)
-
-        args_str = ", ".join(formatted_args)
-        kwargs_str = ", ".join(f"{k}={v}" for k, v in formatted_kwargs.items())
-        return ", ".join(filter(None, [args_str, kwargs_str]))
+        if isinstance(arg, str):
+            arg = PLACEHOLDER_PATTERN.sub(replacer, arg)
+        return str(arg)
 
     def read_mapping(self, mapping: Dict):
         """
@@ -110,6 +97,7 @@ class BaseRule(ABC):
         if "Rule" in mapping:
             return
         self.direct_mapping: bool = not mapping.get("composite_steps")
+        self.min_input_args: int = mapping.get("min_input_args", 0)
         if self.direct_mapping:
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
@@ -131,11 +119,20 @@ class GenericRule(BaseRule):
         code = []
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
+            if is_tensor_method:
+                code.append("_tmp_tensor = args[0]")
             is_inplace = (
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
 
+            code.append("_args = []")
+            if self.torch_args:
+                for arg in self.torch_args:
+                    code.append(f"_args.extend([{self._format_arg(arg)}])")
             code.append("_kwargs = {}")
+            if self.torch_kwargs:
+                for key, value in self.torch_kwargs.items():
+                    code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
             if self.args_map:
                 code.append("for paddle_param, torch_param in {")
                 for paddle_param, torch_param in self.args_map.items():
@@ -146,35 +143,23 @@ class GenericRule(BaseRule):
 
             if is_tensor_method:
                 torch_method = self.torch_api.replace("torch.Tensor.", "")
-                code.append("_tmp_tensor = args[0]")
-                formatted_args = self._format_args(self.torch_args, self.torch_kwargs)
-                if formatted_args:
-                    code.append(
-                        f"result = _tmp_tensor.{torch_method}({formatted_args}, **_kwargs)"
-                    )
-                else:
-                    code.append(f"result = _tmp_tensor.{torch_method}(**_kwargs)")
+                code.append(f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)")
                 if is_inplace:
                     code.append("result = _tmp_tensor")
             else:
-                formatted_args = self._format_args(self.torch_args, self.torch_kwargs)
-                if formatted_args:
-                    code.append(
-                        f"result = {self.torch_api}({formatted_args}, **_kwargs)"
-                    )
-                else:
-                    code.append(f"result = {self.torch_api}(**_kwargs)")
+                code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
                 if is_inplace:
-                    code.append(
-                        "result = args[0] if args else next(iter(kwargs.values()))"
-                    )
+                    code.append("result = args[0]")
             return ConvertResult.success(paddle_api, code)
         else:  # 简单组合映射
             for i, step in enumerate(self.composite_steps):
-                torch_args = step.get("torch_args", [])
-                torch_kwargs = step.get("torch_kwargs", OrderedDict())
-                formatted_args = self._format_args(torch_args, torch_kwargs)
-                code.append(f"_tmp_{i} = {step['torch_api']}({formatted_args})")
+                code.append(f"_args_{i} = []")
+                for arg in step.get('torch_args', []):
+                    code.append(f"_args_{i}.extend([{self._format_arg(arg)}])")
+                code.append(f"_kwargs_{i} = {{}}")
+                for key, value in step.get('torch_kwargs', {}).items():
+                    code.append(f"_kwargs_{i}['{key}'] = {self._format_arg(value)}")
+                code.append(f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})")
             return ConvertResult.success(
                 paddle_api, code, f"_tmp_{len(self.composite_steps) - 1}"
             )
@@ -200,6 +185,30 @@ class BroadcastTensorsRule(BaseRule):
 
 
 # c
+class CropRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+ndim = x.dim()
+offsets = locals().get('offsets')
+shape = locals().get('shape')
+if offsets is None:
+    offsets = [0] * ndim
+elif isinstance(offsets, (list, tuple)):
+    offsets = [o.item() if isinstance(o, torch.Tensor) else int(o) for o in offsets]
+elif isinstance(offsets, torch.Tensor):
+    offsets = offsets.tolist()
+if shape is None:
+    shape = [x.size(i) - offsets[i] for i in range(ndim)]
+elif isinstance(shape, (list, tuple)):
+    shape = [s.item() if isinstance(s, torch.Tensor) else int(s) for s in shape]
+elif isinstance(shape, torch.Tensor):
+    shape = shape.tolist()
+shape = [x.size(i) - offsets[i] if s == -1 else s for i, s in enumerate(shape)]
+slices = [slice(offsets[i], offsets[i] + shape[i]) for i in range(ndim)]
+result = x[slices]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 
 
 # d

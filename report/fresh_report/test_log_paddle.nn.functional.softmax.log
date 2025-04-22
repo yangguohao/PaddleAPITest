@@ -1,5 +1,0 @@
-paddle.nn.functional.softmax(Tensor([1, 2, 2048, 2048],"bfloat16"), )
-
-[paddle error] paddle.nn.functional.softmax(Tensor([1, 2, 2048, 2048],"bfloat16"), ) 
- (InvalidArgument) The type of data we are trying to retrieve (float32) does not match the type of data (bfloat16) currently contained in the container.
-  [Hint: Expected dtype() == phi::CppTypeToDataType<T>::Type(), but received dtype():16 != phi::CppTypeToDataType<T>::Type():10.] (at ../paddle/phi/core/dense_tensor.cc:153)
