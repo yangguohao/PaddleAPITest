@@ -58,8 +58,7 @@
             "shape": "size",
             "stride": "stride",
             "offset": "storage_offset"
-        },
-        "min_input_args": 3
+        }
     },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_tensors": {
