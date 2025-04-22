@@ -726,6 +726,13 @@ class TensorConfig:
                         self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
                 elif api_config.api_name.endswith("pca_lowrank"):
                     self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
+                    
+            elif api_config.api_name in ["paddle.linspace"]:
+                if "int" in self.dtype:
+                    self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
+                else:
+                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                    self.numpy_tensor = (numpy.random.random(self.shape)).astype(dtype)
             # m
             elif api_config.api_name in ["paddle.incubate.nn.functional.masked_multihead_attention"]:
                 if self.check_arg(api_config, 4, "sequence_lengths"):
@@ -1153,37 +1160,38 @@ class TensorConfig:
                 if not (key == "x" or index == 0):
                     self.numpy_tensor = numpy.random.rand(1).astype(self.dtype)
             elif api_config.api_name in ["paddle.Tensor.reshape","paddle.reshape"]:
-                if index == 0 or key == "x":
-                    if not hasattr(api_config, "shape"):
-                        api_config.shape = self.shape
-                    if not hasattr(api_config, "maxvalue"):
-                        api_config.maxvalue = self.numel()
-                    if not hasattr(api_config, "tensornum"):
-                        api_config.tensornum = 0
-                    for arg in api_config.args:
-                        if isinstance(arg, list) or isinstance(arg, tuple):
-                            i = 0
-                            for item in arg:
-                                if "int" in str(type(item)):
-                                    if item == 0:
-                                        api_config.maxvalue = api_config.maxvalue // self.shape[i]
-                                    elif not item == -1:
-                                        api_config.maxvalue = api_config.maxvalue // item
-                                if "Tensor" in str(type(item)):
-                                    api_config.tensornum += 1
-                                i += 1
-                    for thekey, thevalue in api_config.kwargs.items():
-                        if isinstance(thevalue, list) or isinstance(thevalue, tuple):
-                            i = 0
-                            for item in thevalue:
-                                if "int" in str(type(item)):
-                                    if item == 0:
-                                        api_config.maxvalue = api_config.maxvalue // self.shape[i]
-                                    elif not item == -1:
-                                        api_config.maxvalue = api_config.maxvalue // item
-                                if "Tensor" in str(type(item)):
-                                    api_config.tensornum += 1
-                                i += 1
+                if (index == 0 or key == "x"):
+                    if not 0 in self.shape:
+                        if not hasattr(api_config, "shape"):
+                            api_config.shape = self.shape
+                        if not hasattr(api_config, "maxvalue"):
+                            api_config.maxvalue = self.numel()
+                        if not hasattr(api_config, "tensornum"):
+                            api_config.tensornum = 0
+                        for arg in api_config.args:
+                            if isinstance(arg, list) or isinstance(arg, tuple):
+                                i = 0
+                                for item in arg:
+                                    if "int" in str(type(item)):
+                                        if item == 0:
+                                            api_config.maxvalue = api_config.maxvalue // self.shape[i]
+                                        elif not item == -1:
+                                            api_config.maxvalue = api_config.maxvalue // item
+                                    if "Tensor" in str(type(item)):
+                                        api_config.tensornum += 1
+                                    i += 1
+                        for thekey, thevalue in api_config.kwargs.items():
+                            if isinstance(thevalue, list) or isinstance(thevalue, tuple):
+                                i = 0
+                                for item in thevalue:
+                                    if "int" in str(type(item)):
+                                        if item == 0:
+                                            api_config.maxvalue = api_config.maxvalue // self.shape[i]
+                                        elif not item == -1:
+                                            api_config.maxvalue = api_config.maxvalue // item
+                                    if "Tensor" in str(type(item)):
+                                        api_config.tensornum += 1
+                                    i += 1
                 else:
                     if api_config.tensornum == 0:
                         api_config.tensornum = 1
@@ -1716,11 +1724,10 @@ class TensorConfig:
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
                 place=self.place
             )
-            self.paddle_tensor.stop_gradient = True
+            self.paddle_tensor.stop_gradient = False
             if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
                 if self.dtype == "bfloat16":
                     self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
-                self.paddle_tensor.stop_gradient = False
         return self.paddle_tensor
 
     def get_torch_tensor(self, api_config):
