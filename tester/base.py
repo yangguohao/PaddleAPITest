@@ -1053,6 +1053,7 @@ class APITestBase:
             "lstsq",
             "mask_adaptive_xpu",
             "masked_multihead_attention_",
+            "masked_multihead_attention",
             "matrix_nms",
             "matrix_rank",
             "matrix_rank_tol",
