@@ -21,12 +21,12 @@ not_support_api = ["paddle.Tensor.coalesce",
 rand_apis = [
     "paddle.bernoulli",
     "paddle.bernoulli_",
-    "paddle.binomial"
+    "paddle.binomial",
     "paddle.cauchy_",
     "paddle.geometric_",
     "paddle.log_normal",
     "paddle.log_normal_",
-    "paddle.multinomial"
+    "paddle.multinomial",
     "paddle.normal",
     "paddle.normal_",
     "paddle.poisson",
@@ -93,6 +93,8 @@ class APITestBase:
         if self.api_config.api_name in not_support_api:
             return True
         if self.api_config.api_name in rand_apis:
+            return True
+        if self.api_config.api_name in stochastic_behavior_apis:
             return True
         if self.api_config.api_name in int_too_big_fail_api:
             return True
