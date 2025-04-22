@@ -94,10 +94,10 @@ class BaseRule(ABC):
         Returns:
             None
         """
+        self.mapping: Dict = mapping
         if "Rule" in mapping:
             return
         self.direct_mapping: bool = not mapping.get("composite_steps")
-        self.min_input_args: int = mapping.get("min_input_args", 0)
         if self.direct_mapping:
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
@@ -143,26 +143,33 @@ class GenericRule(BaseRule):
 
             if is_tensor_method:
                 torch_method = self.torch_api.replace("torch.Tensor.", "")
-                code.append(f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)")
                 if is_inplace:
+                    code.append(f"_tmp_tensor.{torch_method}(*_args, **_kwargs)")
                     code.append("result = _tmp_tensor")
+                else:
+                    code.append(
+                        f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)"
+                    )
             else:
-                code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
                 if is_inplace:
+                    code.append(f"{self.torch_api}(*_args, **_kwargs)")
                     code.append("result = args[0]")
+                else:
+                    code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
             return ConvertResult.success(paddle_api, code)
         else:  # 简单组合映射
             for i, step in enumerate(self.composite_steps):
                 code.append(f"_args_{i} = []")
-                for arg in step.get('torch_args', []):
+                for arg in step.get("torch_args", []):
                     code.append(f"_args_{i}.extend([{self._format_arg(arg)}])")
                 code.append(f"_kwargs_{i} = {{}}")
-                for key, value in step.get('torch_kwargs', {}).items():
+                for key, value in step.get("torch_kwargs", {}).items():
                     code.append(f"_kwargs_{i}['{key}'] = {self._format_arg(value)}")
-                code.append(f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})")
-            return ConvertResult.success(
-                paddle_api, code, f"_tmp_{len(self.composite_steps) - 1}"
-            )
+                code.append(
+                    f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})"
+                )
+            code.append(f"result = _tmp_{len(self.composite_steps) - 1}")
+            return ConvertResult.success(paddle_api, code)
 
 
 class ErrorRule(BaseRule):
@@ -211,16 +218,74 @@ result = x[slices]
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class CumRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        torch_api = paddle_api.replace("paddle.", "torch.")
+        impl = f"""
+axis = locals().get('axis')
+if axis is None:
+    x = x.flatten()
+    axis = 0
+dtype = locals().get('dtype', 'int64')
+if dtype is not None:
+    dtype = getattr(torch, dtype)
+result = {torch_api}(input=x, dim=axis)
+result.values.to(dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class CumprodRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = f"""
+dim = locals().get('dim')
+if dim is None:
+    x = x.flatten()
+    axis = 0
+dtype = locals().get('dtype')
+if dtype is not None:
+    dtype = getattr(torch, dtype)
+result = torch.cumprod(input=x, dim=dim, dtype=dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
 # d
 
 
 # e
+class EmptyRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+if isinstance(shape, torch.Tensor):
+    size_list = shape.tolist()
+elif isinstance(shape, (list, tuple)):
+    size_list = []
+    for s in shape:
+        if isinstance(s, torch.Tensor):
+            size_list.append(s.item())
+        else:
+            size_list.append(s)
+result = torch.empty(*size_list)     
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # f
 
 
 # g
+# class GetItemRule(BaseRule):
+#     def apply(self, paddle_api: str) -> ConvertResult:
+#         generic_rule = GenericRule()
+#         generic_rule.read_mapping(self.mapping)
+#         result = generic_rule.apply(paddle_api)
+#         if result.is_supported and result.code:
+#             result.code.append("result = result.item()")
+#         return result
 
 
 # h

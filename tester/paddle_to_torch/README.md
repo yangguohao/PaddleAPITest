@@ -174,7 +174,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
         "<api_name>": {
             "torch_api": "torch api 名称（torch_api 与 composite_steps 必须定义其一）",
             "paddle_torch_args_map": "参数名映射字典，键对应 paddle ，值对应 torch",
-            "torch_args": ["torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \ 转义，也可以直接设为常值"],
+            "torch_args": ["torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \\ 转义，也可以直接设为常值"],
             "torch_kwargs": {
                 "_description": "torch api 关键字参数字典，与 torch_args 类似"
             },
@@ -266,7 +266,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
 ## 结语
 
-感谢同学们仔细阅读 README 至此，如果您有任何修改建议，或问题修复、转换补齐的想法，请提交 Issue 与 PR ，并 at @cangtianhaung 进行 Review
+感谢同学们仔细阅读 README 至此，如果您有任何修改建议，或问题修复、转换补齐的想法，请提交 Issue 与 PR ，并 at @cangtianhuang 进行 Review
 
 也可以直接发送至开发者邮箱: 1903374751@qq.com / l1903374751@gmail.com
 

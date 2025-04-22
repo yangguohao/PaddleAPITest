@@ -69,8 +69,34 @@
     "paddle.crop": {
         "Rule": "CropRule"
     },
+    "paddle.cummax": {
+        "Rule": "CumRule"
+    },
+    "paddle.cummin": {
+        "Rule": "CumRule"
+    },
+    "paddle.cumprod": {
+        "Rule": "CumprodRule"
+    },
     "d": "API started with 'd' should be placed here",
     "e": "API started with 'e' should be placed here",
+    "paddle.equal_all": {
+        "torch_api": "torch.equal",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.empty": {
+        "Rule": "EmptyRule"
+    },
+    "paddle.empty_like": {
+        "torch_api": "torch.empty_like",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "dtype": "dtype"
+        }
+    },
     "f": "API started with 'f' should be placed here",
     "g": "API started with 'g' should be placed here",
     "h": "API started with 'h' should be placed here",
@@ -1826,15 +1852,6 @@
         },
         "min_input_args": 0
     },
-    "paddle.cumprod": {
-        "torch_api": "torch.cumprod",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "dim": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 2
-    },
     "paddle.cumsum": {
         "torch_api": "torch.cumsum",
         "paddle_torch_args_map": {
@@ -2403,18 +2420,6 @@
         "torch_api": "torch.dstack",
         "paddle_torch_args_map": {
             "x": "tensors"
-        },
-        "min_input_args": 1
-    },
-    "paddle.empty_like": {
-        "torch_api": "torch.empty_like",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad",
-            "memory_format": "memory_format"
         },
         "min_input_args": 1
     },

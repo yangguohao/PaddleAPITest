@@ -46,6 +46,8 @@ rand_apis = [
     "paddle.Tensor.multinomial",
     "paddle.Tensor.normal_",
     "paddle.Tensor.uniform_",
+    "paddle.empty",
+    "paddle.empty_like",
 ]
 
 stochastic_behavior_apis =[
@@ -61,9 +63,8 @@ stochastic_behavior_apis =[
     "paddle.nn.functional.feature_alpha_dropout",
 ]
 
-# Todo: check paddle.prod @cangtianhuang
+# Todo: check paddle.prod paddle.cumprod @cangtianhuang
 int_too_big_fail_api = [
-    "paddle.cumprod",
     "paddle.Tensor.cumprod",
     "paddle.pow",
     "paddle.Tensor.pow",
@@ -290,9 +291,9 @@ class APITestBase:
                         true_needed.append(value_shape[value_shape_index])
                         value_shape_index += 1
                 for i in range(len(true_needed) - 1, 0, -1):
-                    if true_needed[i] > value_shape[i]:
-                        true_needed[i - 1] *= true_needed[i] // value_shape[i]
-                        true_needed[i] = value_shape[i]
+                    if true_needed[i] > item.shape[i]:
+                        true_needed[i - 1] *= true_needed[i] // item.shape[i]
+                        true_needed[i] = item.shape[i]
                 mask = numpy.zeros(item.shape, dtype=bool)
                 indices = [
                     numpy.random.choice(dim_size, size=needed, replace=False)
