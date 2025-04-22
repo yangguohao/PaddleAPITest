@@ -256,6 +256,22 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 
 
 # e
+class EmptyRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+if isinstance(shape, torch.Tensor):
+    size_list = shape.tolist()
+elif isinstance(shape, (list, tuple)):
+    size_list = []
+    for s in shape:
+        if isinstance(s, torch.Tensor):
+            size_list.append(s.item())
+        else:
+            size_list.append(s)
+result = torch.empty(*size_list)     
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # f

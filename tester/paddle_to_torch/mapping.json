@@ -77,6 +77,16 @@
             "y": "other"
         }
     },
+    "paddle.empty": {
+        "Rule": "EmptyRule"
+    },
+    "paddle.empty_like": {
+        "torch_api": "torch.empty_like",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "dtype": "dtype"
+        }
+    },
     "f": "API started with 'f' should be placed here",
     "g": "API started with 'g' should be placed here",
     "h": "API started with 'h' should be placed here",
