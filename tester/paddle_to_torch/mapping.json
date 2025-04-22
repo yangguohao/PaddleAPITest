@@ -128,6 +128,14 @@
         },
         "description": "result = torch.lt(input=x, other=y)"
     },
+    "paddle.less_equal": {
+        "torch_api": "torch.le", 
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "description": "result = torch.le(input=x, other=y)"
+    },
     "m": "API started with 'm' should be placed here",
     "n": "API started with 'n' should be placed here",
     "o": "API started with 'o' should be placed here",
