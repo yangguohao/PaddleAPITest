@@ -139,18 +139,26 @@ class APITestBase:
 
         return False
     def need_check_grad(self):
-        if self.is_forward_only():
-            return False
-        if self.api_config.api_name == "paddle.assign":
-            if (len(self.paddle_args) and isinstance(self.paddle_args[0], list)) or \
-            (len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
-                return False
-        if len(self.api_config.args) > 0 and isinstance(self.api_config.args[0], TensorConfig):
-            dtype = self.api_config.args[0].dtype
-            if dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
-                return True
-            return False
-        return True
+        # if self.is_forward_only():
+        #     return False
+        # if self.api_config.api_name == "paddle.assign":
+        #     if (len(self.paddle_args) and isinstance(self.paddle_args[0], list)) or \
+        #     (len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
+        #         return False
+        # if len(self.api_config.args) > 0 and isinstance(self.api_config.args[0], TensorConfig):
+        #     dtype = self.api_config.args[0].dtype
+        #     if dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
+        #         return True
+        #     return False
+        # return True
+        
+        if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
+            if len(self.api_config.args) > 0 and isinstance(self.api_config.args[0], TensorConfig):
+                dtype = self.api_config.args[0].dtype
+                if dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
+                    return True
+            return True
+        return False
 
     def ana_api_info(self):
         return self.ana_paddle_api_info() and self.ana_torch_api_info()
