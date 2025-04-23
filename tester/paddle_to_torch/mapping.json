@@ -169,6 +169,14 @@
     "x": "API started with 'x' should be placed here",
     "y": "API started with 'y' should be placed here",
     "z": "API started with 'z' should be placed here",
+    "_": "API started with '_' should be placed here",
+    "paddle.Tensor.__eq__": {
+        "torch_api": "torch.Tensor.__eq__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__eq__(other=y)"
+    },
     "migrated": "APIs migrated are placed here",
     "paddle.Tensor.addmm": {
         "torch_api": "torch.Tensor.addmm",

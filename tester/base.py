@@ -63,6 +63,12 @@ stochastic_behavior_apis =[
     "paddle.nn.functional.feature_alpha_dropout",
 ]
 
+# Mappings for APIs without signatures
+no_signature_api_mappings = {
+    "paddle.Tensor.__eq__": {"self": lambda cfg:get_arg(cfg, 0, "self"), "y": lambda cfg:get_arg(cfg, 1, "y")},
+    # Add more mappings as needed
+}
+
 # Todo: check paddle.prod paddle.cumprod @cangtianhuang
 int_too_big_fail_api = [
     "paddle.Tensor.cumprod",
@@ -170,8 +176,6 @@ class APITestBase:
         return True
 
     def ana_torch_api_info(self):
-        paddle_sig = inspect.signature(self.paddle_api)
-
         self.torch_args_config = []
         self.torch_kwargs_config = collections.OrderedDict()
         self.paddle_merged_kwargs_config = collections.OrderedDict()
@@ -186,11 +190,24 @@ class APITestBase:
             self.torch_kwargs_config["self"] = self.api_config.args[0]
             args = args[1:]
         
-        paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
-        paddle_args_dict = paddle_bound_args.arguments
+        if self.api_config.api_name not in no_signature_api_mappings:
+            # For APIs with signatures, use paddle_sig.bind to get arguments
+            paddle_sig = inspect.signature(self.paddle_api)
+            paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
+            paddle_args_dict = paddle_bound_args.arguments
 
-        self.paddle_merged_kwargs_config = paddle_args_dict
-        self.torch_kwargs_config.update(paddle_args_dict)
+            self.paddle_merged_kwargs_config = paddle_args_dict
+            self.torch_kwargs_config.update(paddle_args_dict)
+        else:
+            # For APIs without signatures, use the external mapping dict
+            mapping = no_signature_api_mappings[self.api_config.api_name]
+            mapped_kwargs = {}
+            for key, value_func in mapping.items():
+                mapped_kwargs[key] = value_func(self.api_config)
+            
+            self.paddle_merged_kwargs_config = mapped_kwargs
+            self.torch_kwargs_config.update(mapped_kwargs)
+
         self.torch_kwargs_config.pop('name', None)
 
         return True
@@ -1269,3 +1286,10 @@ class APITestBase:
         api = self.api_config.api_name[self.api_config.api_name.rindex(".")+1:]
         
         return api in forward_only_apis
+    
+def get_arg(api_config, arg_pos, arg_name, default=None):
+    if 0 <= arg_pos < len(api_config.args):
+        return api_config.args[arg_pos]
+    if arg_name in api_config.kwargs:
+        return api_config.kwargs[arg_name]
+    return default
