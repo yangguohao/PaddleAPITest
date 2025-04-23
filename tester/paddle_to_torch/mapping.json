@@ -149,15 +149,15 @@
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.vision.ops.psroi_pool":{
-        "Rule": "psroi_poolRule"
+        "Rule": "Rsroi_poolRule"
     },
     "q": "API started with 'q' should be placed here",
     "r": "API started with 'r' should be placed here",
     "paddle.vision.ops.roi_align":{
-        "Rule": "roi_alignRule"
+        "Rule": "Roi_aignRule"
     },
     "paddle.vision.ops.roi_pool": {
-        "Rule": "roi_poolRule"
+        "Rule": "Roi_poolRule"
     },
     "s": "API started with 's' should be placed here",
     "t": "API started with 't' should be placed here",

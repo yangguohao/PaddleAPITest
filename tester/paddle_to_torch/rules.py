@@ -314,7 +314,7 @@ result = torch.empty(*size_list)
 
 # p
 
-class psroi_poolRule(BaseRule):
+class Rsroi_poolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
 import torchvision
@@ -342,7 +342,7 @@ result = torchvision.ops.ps_roi_pool( **_kwargs, boxes = ans)
 
 
 # r
-class roi_alignRule(BaseRule):
+class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
 import torchvision
@@ -369,7 +369,7 @@ result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
     
-class roi_poolRule(BaseRule):
+class Roi_poolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
 import torchvision
@@ -391,7 +391,7 @@ for i in range(boxnum.shape[0]):
     begin = end
     end = end + int(boxnum[i])
     ans.append(boxes[begin:end,])
-result = torchvision.ops.roi_pool(input = _kwargs['input'],boxes = ans, output_size = _kwargs['output_size'], spatial_scale = _kwargs['spatial_scale'])
+result = torchvision.ops.roi_pool(boxes = ans, **_kwargs)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
