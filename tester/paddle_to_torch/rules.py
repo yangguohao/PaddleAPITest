@@ -96,6 +96,8 @@ class BaseRule(ABC):
         """
         self.mapping: Dict = mapping
         if "Rule" in mapping:
+            if "torch_api" in mapping:
+                self.torch_api: str = mapping["torch_api"]
             return
         self.direct_mapping: bool = not mapping.get("composite_steps")
         if self.direct_mapping:
@@ -370,30 +372,6 @@ result = f.func(x,index)
 
 # p
 
-class Psroi_poolRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
-import torchvision
-_kwargs = {}
-for paddle_param, torch_param in {
-    'x': 'input',
-    'output_size': 'output_size',
-    'spatial_scale': 'spatial_scale',
-}.items():
-    if paddle_param in locals():
-        _kwargs[torch_param] = locals()[paddle_param]
-boxes = locals().get('boxes')
-boxnum = locals().get('boxes_num')
-ans = []
-end = 0
-for i in range(boxnum.shape[0]):
-    begin = end
-    end = end + int(boxnum[i])
-    ans.append(boxes[begin:end,])
-result = torchvision.ops.ps_roi_pool( **_kwargs, boxes = ans)
-"""
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code, "result")
 # q
 
 
@@ -447,9 +425,9 @@ for i in range(boxnum.shape[0]):
     begin = end
     end = end + int(boxnum[i])
     ans.append(boxes[begin:end,])
-result = torchvision.ops.roi_pool(boxes = ans, **_kwargs)
 """
         code = impl.splitlines()
+        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")
         return ConvertResult.success(paddle_api, code, "result")
 
 # s
