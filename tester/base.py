@@ -66,6 +66,7 @@ stochastic_behavior_apis =[
 # Mappings for APIs without signatures
 no_signature_api_mappings = {
     "paddle.Tensor.__eq__": {"self": lambda cfg:get_arg(cfg, 0, "self"), "y": lambda cfg:get_arg(cfg, 1, "y")},
+    "paddle.Tensor.__ge__": {"self": lambda cfg:get_arg(cfg, 0, "self"), "y": lambda cfg:get_arg(cfg, 1, "y")},
     # Add more mappings as needed
 }
 
