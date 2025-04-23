@@ -324,19 +324,22 @@ result = torch.squeeze(result)
 class Gather_ndRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
+class _func:
+    def func(self,x,index):
+        if index.dim() == 1:
+            temp = x
+            for i in range(index.numel()):
+                temp = torch.narrow(temp, 0, index[i].reshape([]), 1)
+                temp = torch.squeeze(temp, 0)
+            return temp
+        ans = []
+        for i in index:
+            ans.append(self.func(x, i))
+        return torch.stack(ans, 0)
+f = _func()
 x = locals().get('x')
 index = locals().get('index')
-ans = []
-for i in index:
-    temp = x
-    for j in range(i.numel()):
-        print("------")
-        print(j)
-        print(i[j])
-        temp = torch.narrow(temp, j, i[j].reshape([]), 1)
-    ans.append(temp)
-result = torch.stack(ans)
-result = torch.squeeze(result)
+result = f.func(x,index)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
