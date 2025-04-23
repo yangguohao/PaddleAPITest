@@ -63,8 +63,10 @@ def read_log(log_type):
 def aggregate_logs():
     """聚合所有相同类型的日志文件"""
     for prefix in LOG_PREFIXES.values():
-        pattern = f"{prefix}_*.txt"
-        log_files = glob(pattern, root_dir=TMP_LOG_PATH)
+        pattern = os.path.join(TMP_LOG_PATH, f"{prefix}_*.txt")
+        log_files = glob(pattern)
+        if not log_files:
+            continue
 
         all_lines = set()
         for file_path in log_files:
