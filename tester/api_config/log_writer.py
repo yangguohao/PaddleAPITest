@@ -1,14 +1,11 @@
 import os
-from glob import glob
 import shutil
+from pathlib import Path
 
 # 日志文件路径
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))[
-    0 : os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest") + 13
-]
-TEST_LOG_PATH = os.path.join(DIR_PATH, "tester/api_config/test_log")
-TMP_LOG_PATH = os.path.join(TEST_LOG_PATH, ".tmp")
-os.makedirs(TMP_LOG_PATH, exist_ok=True)
+DIR_PATH = Path(__file__).resolve().parent.parent
+TEST_LOG_PATH = DIR_PATH / "tester/api_config/test_log"
+TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
 
 # 日志类型和对应的文件
 LOG_PREFIXES = {
@@ -23,11 +20,20 @@ LOG_PREFIXES = {
 }
 
 
+def set_engineV2():
+    global is_engineV2, TMP_LOG_PATH
+    is_engineV2 = True
+    TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
+    TMP_LOG_PATH.mkdir(exist_ok=True)
+
+
 def get_log_file(log_type: str):
     """获取指定日志类型和PID对应的日志文件路径"""
+    if not is_engineV2:
+        return TEST_LOG_PATH / f"{log_type}.txt"
     pid = os.getpid()
     prefix = LOG_PREFIXES.get(log_type)
-    return os.path.join(TMP_LOG_PATH, f"{prefix}_{pid}.txt")
+    return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
 
 
 def write_to_log(log_type, line):
@@ -39,7 +45,7 @@ def write_to_log(log_type, line):
         return
     file_path = get_log_file(log_type)
     try:
-        with open(file_path, "a") as f:
+        with file_path.open("a") as f:
             f.write(line + "\n")
     except Exception as err:
         print(f"Error writing to {file_path}: {err}", flush=True)
@@ -49,9 +55,9 @@ def read_log(log_type):
     """读取文件所有行，返回集合"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-    file_path = LOG_PREFIXES[log_type]
+    file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type]}.txt"
     try:
-        with open(file_path, "r") as f:
+        with file_path.open("r") as f:
             return set(line.strip() for line in f if line.strip())
     except FileNotFoundError:
         return set()
@@ -60,25 +66,24 @@ def read_log(log_type):
         return set()
 
 
-def aggregate_logs():
+def aggregate_logs(mkdir=False):
     """聚合所有相同类型的日志文件"""
     for prefix in LOG_PREFIXES.values():
-        pattern = os.path.join(TMP_LOG_PATH, f"{prefix}_*.txt")
-        log_files = glob(pattern)
+        log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
         if not log_files:
             continue
 
         all_lines = set()
         for file_path in log_files:
             try:
-                with open(file_path, "r") as f:
+                with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
 
-        aggregated_file = os.path.join(TEST_LOG_PATH, f"{prefix}.txt")
+        aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
         try:
-            with open(aggregated_file, "w") as f:
+            with aggregated_file.open("w") as f:
                 f.writelines(f"{line}\n" for line in sorted(all_lines))
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
@@ -87,3 +92,5 @@ def aggregate_logs():
         shutil.rmtree(TMP_LOG_PATH)
     except OSError:
         pass
+    if mkdir:
+        TMP_LOG_PATH.mkdir(exist_ok=True)

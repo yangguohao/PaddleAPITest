@@ -13,7 +13,7 @@ from pebble import ProcessPool
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
 from tester.api_config.log_writer import (DIR_PATH, aggregate_logs, read_log,
-                                          write_to_log)
+                                          set_engineV2, write_to_log)
 
 
 def cleanup(pool):
@@ -87,6 +87,7 @@ def estimate_timeout(api_config) -> float:
 
 
 def init_worker(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
+    set_engineV2()
     my_pid = os.getpid()
     assigned_gpu = -1
 
@@ -276,6 +277,7 @@ def main():
                                 flush=True,
                             )
                             fail_case += 1
+                    aggregate_logs(mkdir=True)
                 print(f"{all_cases} cases tested, {fail_case} failed", flush=True)
                 pool.close()
                 pool.join()
@@ -288,7 +290,6 @@ def main():
             # Single GPU execution
             for config in api_configs:
                 run_test_case(config, test_class, options.test_amp)
-            aggregate_logs()
 
 
 if __name__ == "__main__":

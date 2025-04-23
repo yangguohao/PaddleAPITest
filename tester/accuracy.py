@@ -174,9 +174,6 @@ class APITestAccuracy(APITestBase):
         torch.cuda.empty_cache()
 
         try:
-            if not self.gen_paddle_input():
-                print("gen_paddle_input failed", flush=True)
-                return
             if "paddle.Tensor." in self.api_config.api_name:
                 api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
                 args = []

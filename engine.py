@@ -26,7 +26,7 @@ def get_notsupport_config():
     configs = set()
 
     for flie in not_support_files:
-        with open(DIR_PATH+"/"+flie, "r") as f:
+        with open(DIR_PATH / flie, "r") as f:
             origin_configs = f.readlines()
             f.close()
 
