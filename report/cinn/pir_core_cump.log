@@ -1,0 +1,194 @@
+test begin: paddle.einsum("...i, ...i", Tensor([2, 3, 16],"float64"), Tensor([16],"float64"), )
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::dialect::VjpInterface::Model<paddle::dialect::UnsqueezeOp>::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+1   paddle::dialect::UnsqueezeOp::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+2   common::DDim::CopyFrom(common::DDim const&)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739528652 (unix time) try "date -d @1739528652" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x58) received by PID 69238 (TID 0x7f3e0aa3d740) from PID 88 ***]
+
+
+
+test begin: paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 256],"float16"), Tensor([256],"float16"), None, 1e-05, begin_norm_axis=1, )
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::GetEmptyTensorsWithValue(_object*, _object*)
+1   paddle::pybind::CreateTensorFromValue(pir::Value const&)
+2   paddle::pybind::GetValueDims(pir::Value)
+3   paddle::pybind::GetTensorDims(pir::Type)
+4   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+5   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+InvalidArgumentError: The type used to get dims is nullptr. (at ../paddle/fluid/pybind/pir.cc:1265)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::GetEmptyTensorsWithValue(_object*, _object*)
+1   paddle::pybind::CreateTensorFromValue(pir::Value const&)
+2   paddle::pybind::GetValueDims(pir::Value)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739529092 (unix time) try "date -d @1739529092" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x126c6) received by PID 75462 (TID 0x7fee1c56a740) from PID 75462 ***]
+
+test begin: paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 256],"float32"), Tensor([256],"float32"), None, 1e-05, begin_norm_axis=1, )
+W0214 18:31:53.332082 76228 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0214 18:31:53.333318 76228 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::GetEmptyTensorsWithValue(_object*, _object*)
+1   paddle::pybind::CreateTensorFromValue(pir::Value const&)
+2   paddle::pybind::GetValueDims(pir::Value)
+3   paddle::pybind::GetTensorDims(pir::Type)
+4   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+5   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+InvalidArgumentError: The type used to get dims is nullptr. (at ../paddle/fluid/pybind/pir.cc:1265)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::GetEmptyTensorsWithValue(_object*, _object*)
+1   paddle::pybind::CreateTensorFromValue(pir::Value const&)
+2   paddle::pybind::GetValueDims(pir::Value)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739529113 (unix time) try "date -d @1739529113" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x129c4) received by PID 76228 (TID 0x7f6f345df740) from PID 76228 ***]
+
+
+test begin: paddle.nn.functional.pairwise_distance(Tensor([5],"float32"), Tensor([5],"float32"), 1, 1e-06, False, None, )
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   pir::Value::use_begin() const
+1   pir::Value::first_use() const
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739531343 (unix time) try "date -d @1739531343" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x28) received by PID 105393 (TID 0x7face3abf740) from PID 40 ***]
+
+test begin: paddle.nn.functional.pairwise_distance(Tensor([5],"float64"), Tensor([5],"float64"), -math.inf, 1e-06, False, None, )
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   pir::Value::use_begin() const
+1   pir::Value::first_use() const
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739531366 (unix time) try "date -d @1739531366" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x28) received by PID 105628 (TID 0x7f1a4024f740) from PID 40 ***]
+
+
+
+test begin: paddle.tensor_split(Tensor([7, 4],"int64"), tuple(2,6,), )
+W0214 19:37:23.790373 125655 pattern_rewrite_driver.cc:235] The pattern rewrite did not converge after scanning 10 times
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::IsFakeValue(pir::Value const&)
+1   pir::Value::type() const
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739533043 (unix time) try "date -d @1739533043" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x0) received by PID 125655 (TID 0x7fb7c9a3e740) from PID 0 ***]
+
+test begin: paddle.tensordot(Tensor([1, 5, 5, 5],"float64"), Tensor([1, 1, 1, 5],"float64"), list[list[1,3,0,],list[3,0,2,],], )
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::IsFakeValue(pir::Value const&)
+1   pir::Value::type() const
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739533217 (unix time) try "date -d @1739533217" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0xa) received by PID 126803 (TID 0x7fe192453740) from PID 10 ***]
+
+test begin: paddle.trapezoid(y=Tensor([2, 3],"float32"), x=None, dx=None, axis=-1, )
+W0214 19:48:25.993777 128831 pattern_rewrite_driver.cc:235] The pattern rewrite did not converge after scanning 10 times
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::IsFakeValue(pir::Value const&)
+1   pir::Value::type() const
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739533705 (unix time) try "date -d @1739533705" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x0) received by PID 128831 (TID 0x7f52bc0e0740) from PID 0 ***]
+
+test begin: paddle.cartesian_prod(list[Tensor([2],"int64"),Tensor([2],"int64"),Tensor([1],"int64"),Tensor([0],"int64"),], )
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::dialect::VjpInterface::Model<paddle::dialect::MeshgridOp>::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+1   paddle::dialect::MeshgridOp::Vjp(pir::Operation*, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<pir::Value, std::allocator<pir::Value> >, std::allocator<std::vector<pir::Value, std::allocator<pir::Value> > > > const&, std::vector<std::vector<bool, std::allocator<bool> >, std::allocator<std::vector<bool, std::allocator<bool> > > > const&)
+2   pir::DenseTensorType::dyn_cast_impl(pir::Type)
+3   pir::Type::type_id()
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1739534220 (unix time) try "date -d @1739534220" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x4) received by PID 138730 (TID 0x7f26ed1e3740) from PID 4 ***]
+
