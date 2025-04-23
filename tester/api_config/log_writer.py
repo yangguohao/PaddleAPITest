@@ -1,5 +1,6 @@
 import atexit
 import os
+import signal
 import threading
 from collections import defaultdict
 
@@ -27,9 +28,9 @@ LOG_FILES = {
 }
 
 # 日志缓存
-_log_buffer = defaultdict(list)
-_buffer_lock = defaultdict(lambda: threading.Lock())
-_buffer_size_limit = 10
+# _log_buffer = defaultdict(list)
+# _buffer_lock = defaultdict(lambda: threading.Lock())
+# _buffer_size_limit = 5
 
 
 def _write_to_file(log_type, lines):
@@ -41,7 +42,7 @@ def _write_to_file(log_type, lines):
             with open(file_path, "a") as f:
                 f.writelines(f"{line}\n" for line in lines)
     except Exception as err:
-        print(f"Error writing to {file_path}: {err}")
+        print(f"Error writing to {file_path}: {err}", flush=True)
 
 
 def write_to_log(log_type, line):
@@ -51,16 +52,17 @@ def write_to_log(log_type, line):
     line = line.strip()
     if not line:
         return
-    if log_type == "crash" or log_type == "timeout":
-        _write_to_file(log_type, [line])
-    lines_to_write = []
-    with _buffer_lock[log_type]:
-        _log_buffer[log_type].append(line)
-        if len(_log_buffer[log_type]) >= _buffer_size_limit:
-            lines_to_write = _log_buffer[log_type]
-            _log_buffer[log_type] = []
-    if lines_to_write:
-        _write_to_file(log_type, lines_to_write)
+    _write_to_file(log_type, [line])
+    # if log_type == "crash" or log_type == "timeout":
+    #     _write_to_file(log_type, [line])
+    # lines_to_write = []
+    # with _buffer_lock[log_type]:
+    #     _log_buffer[log_type].append(line)
+    #     if len(_log_buffer[log_type]) >= _buffer_size_limit:
+    #         lines_to_write = _log_buffer[log_type]
+    #         _log_buffer[log_type] = []
+    # if lines_to_write:
+    #     _write_to_file(log_type, lines_to_write)
 
 
 def read_log(log_type):
@@ -76,25 +78,23 @@ def read_log(log_type):
     except FileNotFoundError:
         return set()
     except Exception as err:
-        print(f"Error reading {file_path}: {err}")
+        print(f"Error reading {file_path}: {err}", flush=True)
         return set()
 
 
-def flush_buffer():
-    """在程序退出时写入所有剩余缓存的日志"""
-    for log_type in LOG_FILES.keys():
-        lines_to_write = []
-        with _buffer_lock[log_type]:
-            if _log_buffer[log_type]:
-                lines_to_write = _log_buffer[log_type]
-                _log_buffer[log_type] = []
-        if lines_to_write:
-            _write_to_file(log_type, lines_to_write)
-        lock_path = f"{LOG_FILES[log_type]}.lock"
-        try:
-            os.remove(lock_path)
-        except Exception:
-            pass
-
-
-atexit.register(flush_buffer)
+# def flush_buffer():
+#     """在程序退出时写入所有剩余缓存的日志"""
+#     print(f"{os.getpid()} will flush buffer...", flush=True)
+#     for log_type in LOG_FILES.keys():
+#         lines_to_write = []
+#         with _buffer_lock[log_type]:
+#             if _log_buffer[log_type]:
+#                 lines_to_write = _log_buffer[log_type]
+#                 _log_buffer[log_type] = []
+#         if lines_to_write:
+#             _write_to_file(log_type, lines_to_write)
+#         lock_path = f"{LOG_FILES[log_type]}.lock"
+#         try:
+#             os.remove(lock_path)
+#         except Exception:
+#             pass

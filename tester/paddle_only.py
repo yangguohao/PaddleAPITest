@@ -14,16 +14,16 @@ class APITestPaddleOnly(APITestBase):
     @func_set_timeout(600)
     def test(self):
         if self.need_skip():
-            print("[Skip]")
+            print("[Skip]", flush=True)
             return
 
         if not self.ana_paddle_api_info():
-            print("ana_paddle_api_info failed")
+            print("ana_paddle_api_info failed", flush=True)
             return
 
         try:
             if not self.gen_paddle_input():
-                print("gen_paddle_input failed")
+                print("gen_paddle_input failed", flush=True)
                 return  
             if self.test_amp:
                 with paddle.amp.auto_cast():
@@ -42,7 +42,7 @@ class APITestPaddleOnly(APITestBase):
             out_grads = None
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
                 return
-            print("[paddle error]", self.api_config.config, "\n", str(err))
+            print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
@@ -51,7 +51,7 @@ class APITestPaddleOnly(APITestBase):
         try:
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
-            print("[cuda error]", self.api_config.config, "\n", str(err))
+            print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
             paddle_output = None
             result_outputs = None
             result_outputs_grads = None
@@ -63,6 +63,6 @@ class APITestPaddleOnly(APITestBase):
         result_outputs = None
         result_outputs_grads = None
         out_grads = None
-        print("[Pass]", self.api_config.config)
+        print("[Pass]", self.api_config.config, flush=True)
         write_to_log("pass", self.api_config.config)
   
