@@ -1,18 +1,19 @@
 import argparse
-import atexit
+import math
 import os
 import signal
 import sys
 from concurrent.futures import TimeoutError, as_completed
 from datetime import datetime
-from multiprocessing import Lock, Manager, active_children, set_start_method
+from multiprocessing import Lock, Manager, set_start_method
 
-import numpy as np
 import psutil
 from pebble import ProcessPool
 
-from tester import APIConfig, APITestAccuracy, APITestCINNVSDygraph, APITestPaddleOnly
-from tester.api_config.log_writer import DIR_PATH, read_log, write_to_log
+from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                    APITestPaddleOnly)
+from tester.api_config.log_writer import (DIR_PATH, aggregate_logs, read_log,
+                                          write_to_log)
 
 
 def cleanup(pool):
@@ -24,20 +25,6 @@ def cleanup(pool):
                 pool.join(timeout=5)
         except Exception as e:
             print(f"{datetime.now()} Error shutting down executor: {e}", flush=True)
-
-    for process in active_children():
-        pid = process.pid
-        try:
-            if process.is_alive():
-                process.terminate()
-                process.join(timeout=2)
-                if process.is_alive():
-                    process.kill()
-                    process.join()
-        except Exception as e:
-            print(f"{datetime.now()} Error terminating process {pid}: {e}", flush=True)
-        finally:
-            print(f"{datetime.now()} Process {pid} terminated", flush=True)
     print(f"{datetime.now()} Cleanup completed", flush=True)
 
 
@@ -59,7 +46,6 @@ def get_notsupport_config():
             "tensor_init",
             "topk",
             "zeros",
-            "",
         ]
     ]
     configs = set()
@@ -91,7 +77,7 @@ def estimate_timeout(api_config) -> float:
         elif api_config.kwargs:
             first = next(iter(api_config.kwargs.values()))
         if first is not None and hasattr(first, "shape"):
-            total_elements = np.prod(first.shape)
+            total_elements = math.prod(first.shape)
             for threshold, timeout in TIMEOUT_STEPS:
                 if total_elements <= threshold:
                     return timeout
@@ -296,10 +282,13 @@ def main():
             except Exception as e:
                 print(f"Unexpected error: {e}", flush=True)
                 cleanup(pool)
+            finally:
+                aggregate_logs()
         else:
             # Single GPU execution
             for config in api_configs:
                 run_test_case(config, test_class, options.test_amp)
+            aggregate_logs()
 
 
 if __name__ == "__main__":

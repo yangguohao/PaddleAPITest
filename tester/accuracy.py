@@ -46,8 +46,7 @@ class APITestAccuracy(APITestBase):
                 return
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            write_to_log("paddle_error", self.api_config.config)
             return
 
         try:

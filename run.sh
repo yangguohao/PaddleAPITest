@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 配置参数
-INPUT_FILE="tester/api_config/api_config_merged_temp.txt"
+INPUT_FILE="tester/api_config/api_config_temp.txt"
 LOG_DIR="tester/api_config/test_log"
 NUM_GPUS=8
 NUM_WORKERS_PER_GPU=1
