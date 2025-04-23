@@ -1103,7 +1103,14 @@ class TensorConfig:
 
                 elif index == 2 or key =="boxes_num":
                     self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
-                    self.numpy_tensor[0] = api_config.boxes[0]
+                    all = api_config.boxes[0]
+                    for i in range(self.numel()-1):
+                        if all < self.numel():
+                            self.numpy_tensor[i] = 0
+                        else:
+                            self.numpy_tensor[i] = numpy.random.randint(1, all-(self.numel()-1-i)+1)
+                            all = all - self.numpy_tensor[i]
+                    self.numpy_tensor[self.numel()-1] = all
                 else:
                     self.numpy_tensor = numpy.random.randint(0,1024,self.shape).astype(self.dtype)
                 
@@ -1233,9 +1240,15 @@ class TensorConfig:
                         self.numpy_tensor[i][3] = numpy.random.random() * (api_config.x[3]-1 - self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
                 elif index == 2 or key =="boxes_num":
                     self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
-                    self.numpy_tensor[0] = api_config.boxes[0]
-                
-            
+                    all = api_config.boxes[0]
+                    for i in range(self.numel()-1):
+                        if all < self.numel():
+                            self.numpy_tensor[i] = 0
+                        else:
+                            self.numpy_tensor[i] = numpy.random.randint(1, all-(self.numel()-1-i)+1)
+                            all = all - self.numpy_tensor[i]
+                    self.numpy_tensor[self.numel()-1] = all
+        
             elif api_config.api_name in ["paddle.repeat_interleave"]:
                 if self.check_arg(api_config, 0, "x"):
                     if self.dtype=='bfloat16':

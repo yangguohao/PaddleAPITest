@@ -314,12 +314,87 @@ result = torch.empty(*size_list)
 
 # p
 
-
+class psroi_poolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale',
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+result = torchvision.ops.ps_roi_pool( **_kwargs, boxes = ans)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 # q
 
 
 # r
-
+class roi_alignRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale',
+    'sampling_ratio': 'sampling_ratio',
+    'aligned': 'aligned'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+    
+class roi_poolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+    else:
+        _kwargs[torch_param] = 1.0
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+result = torchvision.ops.roi_pool(input = _kwargs['input'],boxes = ans, output_size = _kwargs['output_size'], spatial_scale = _kwargs['spatial_scale'])
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 
 # s
 
