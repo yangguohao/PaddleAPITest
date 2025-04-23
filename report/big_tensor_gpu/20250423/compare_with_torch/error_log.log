@@ -15310,10 +15310,6 @@ Max absolute difference: 2576.
 Max relative difference: 17.11
  x: array(2726., dtype=float16)
  y: array(150.6, dtype=float16)
-2025-04-22 10:21:02.221358 test begin: paddle.mean(Tensor([3, 71582789, 2, 1, 10],"float16"), )
-
-[accuracy error] backward  paddle.mean(Tensor([3, 71582789, 2, 1, 10],"float16"), ) 
- Unable to allocate 8.00 GiB for an array with shape (4294967340,) and data type float16
 2025-04-23 11:29:36.251614 test begin: paddle.roll(Tensor([1, 38044, 21, 14, 384],"float16"), shifts=tuple(-4,-3,-3,), axis=tuple(1,2,3,), )
 
 [accuracy error] paddle.roll(Tensor([1, 38044, 21, 14, 384],"float16"), shifts=tuple(-4,-3,-3,), axis=tuple(1,2,3,), ) 

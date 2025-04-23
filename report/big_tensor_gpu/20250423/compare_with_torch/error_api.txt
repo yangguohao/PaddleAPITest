@@ -44,7 +44,6 @@ paddle.linalg.vector_norm
 paddle.logical_or
 paddle.logsumexp
 paddle.masked_fill
-paddle.mean
 paddle.nanmean
 paddle.nansum
 paddle.nn.functional.adaptive_avg_pool1d
