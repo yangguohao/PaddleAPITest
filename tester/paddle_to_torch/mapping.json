@@ -177,6 +177,13 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__eq__(other=y)"
     },
+    "paddle.Tensor.__ge__": {
+        "torch_api": "torch.Tensor.__ge__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ge__(other=y)"
+    },
     "migrated": "APIs migrated are placed here",
     "paddle.Tensor.addmm": {
         "torch_api": "torch.Tensor.addmm",
