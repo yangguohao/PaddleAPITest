@@ -314,7 +314,7 @@ result = torch.empty(*size_list)
 
 # p
 
-class Rsroi_poolRule(BaseRule):
+class Psroi_poolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
 import torchvision
