@@ -120,7 +120,8 @@ class GenericRule(BaseRule):
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
             if is_tensor_method:
-                code.append("_tmp_tensor = args[0]")
+                # code.append("_tmp_tensor = args[0]")
+                code.append("_tmp_tensor = next(iter(kwargs.values()))")
             is_inplace = (
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
@@ -153,7 +154,8 @@ class GenericRule(BaseRule):
             else:
                 if is_inplace:
                     code.append(f"{self.torch_api}(*_args, **_kwargs)")
-                    code.append("result = args[0]")
+                    # code.append("result = args[0]")
+                    code.append("result = next(iter(kwargs.values()))")
                 else:
                     code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
             return ConvertResult.success(paddle_api, code)
@@ -273,6 +275,22 @@ result = torch.empty(*size_list)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class ExpandRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.expand(*shape)  
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+class ExpandasRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.expand_as(y)  
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
 
 # f
 
@@ -325,6 +343,13 @@ result = torch.empty(*size_list)
 
 
 # t
+class TensorExpandRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.expand(*shape)  
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # u

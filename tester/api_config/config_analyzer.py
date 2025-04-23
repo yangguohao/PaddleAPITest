@@ -455,6 +455,8 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(0, 2048, size = self.shape)
 
             elif api_config.api_name in ["paddle.expand","paddle.Tensor.expand"]:
+                if key == None and index == None:
+                    return 
                 if key == "shape" or index == 1:
                     d=self.get_arg(api_config, 0, "x")
                     s=d.shape
@@ -462,7 +464,7 @@ class TensorConfig:
                         ind=kwargs['list_index'][0]
                     else:
                         ind=0
-                    if len(s)==0 or s[ind]==1:
+                    if len(s)==0 or ind>len(s)-1 or s[ind]==1:
                         self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
                     else:
                         if len(self.shape)==0 or self.shape[0]==1:

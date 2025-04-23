@@ -69,6 +69,13 @@
         "Rule": "CumprodRule"
     },
     "d": "API started with 'd' should be placed here",
+    "paddle.divide": {
+        "torch_api": "torch.divide",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },    
     "e": "API started with 'e' should be placed here",
     "paddle.equal_all": {
         "torch_api": "torch.equal",
@@ -87,7 +94,20 @@
             "dtype": "dtype"
         }
     },
+    "paddle.expand": {
+        "Rule": "ExpandRule"
+    },
+    "paddle.expand_as": {
+        "Rule": "ExpandasRule"
+    },
     "f": "API started with 'f' should be placed here",
+    "paddle.floor_divide": {
+        "torch_api": "torch.floor_divide",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },    
     "g": "API started with 'g' should be placed here",
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
@@ -493,6 +513,9 @@
             "y": "other"
         },
         "min_input_args": 1
+    },
+    "paddle.Tensor.expand": {
+        "Rule": "TensorExpandRule"
     },
     "paddle.Tensor.expand_as": {
         "torch_api": "torch.Tensor.expand_as",
