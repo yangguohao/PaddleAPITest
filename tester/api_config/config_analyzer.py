@@ -464,7 +464,7 @@ class TensorConfig:
                         ind=kwargs['list_index'][0]
                     else:
                         ind=0
-                    if len(s)==0 or ind>len(s)-1 or s[ind]==1:
+                    if len(s) == 0 or ind > len(s)-1 or s[ind] == 1:
                         self.numpy_tensor = (numpy.random.randint(1, 127, size=self.shape)).astype(self.dtype)
                     else:
                         if len(self.shape)==0 or self.shape[0]==1:

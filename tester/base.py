@@ -422,7 +422,7 @@ class APITestBase:
                 result.append(self.torch_args[i])
             elif isinstance(self.torch_args[i], tuple) or isinstance(self.torch_args[i], list):
                 for item in self.paddle_args[i]:
-                    if isinstance(item, paddle.Tensor):
+                    if isinstance(item, torch.Tensor):
                         result.append(item)
 
         for key, value in self.torch_kwargs.items():
@@ -689,28 +689,27 @@ class APITestBase:
     def gen_torch_input(self):
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
-        if len(self.torch_args_config):
-            for arg_config in self.torch_args_config:
-                if isinstance(arg_config, TensorConfig):
-                    self.torch_args.append(arg_config.get_torch_tensor(self.api_config))
-                elif isinstance(arg_config, list):
-                    value = []
-                    for i in range(len(arg_config)):
-                        if isinstance(arg_config[i], TensorConfig):
-                            value.append(arg_config[i].get_torch_tensor(self.api_config))
-                        else:
-                            value.append(arg_config[i])
-                    self.torch_args.append(value)
-                elif isinstance(arg_config, tuple):
-                    value = []
-                    for i in range(len(arg_config)):
-                        if isinstance(arg_config[i], TensorConfig):
-                            value.append(arg_config[i].get_torch_tensor(self.api_config))
-                        else:
-                            value.append(arg_config[i])
-                    self.torch_args.append(tuple(value))
-                else:
-                    self.torch_args.append(arg_config)
+        for arg_config in self.torch_args_config:
+            if isinstance(arg_config, TensorConfig):
+                self.torch_args.append(arg_config.get_torch_tensor(self.api_config))
+            elif isinstance(arg_config, list):
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_torch_tensor(self.api_config))
+                    else:
+                        value.append(arg_config[i])
+                self.torch_args.append(value)
+            elif isinstance(arg_config, tuple):
+                value = []
+                for i in range(len(arg_config)):
+                    if isinstance(arg_config[i], TensorConfig):
+                        value.append(arg_config[i].get_torch_tensor(self.api_config))
+                    else:
+                        value.append(arg_config[i])
+                self.torch_args.append(tuple(value))
+            else:
+                self.torch_args.append(arg_config)
 
         for key, arg_config in self.torch_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):

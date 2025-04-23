@@ -556,7 +556,10 @@
         "min_input_args": 1
     },
     "paddle.Tensor.expand": {
-        "Rule": "TensorExpandRule"
+        "torch_api": "torch.Tensor.expand",
+        "torch_args": [
+            "*{shape}"
+        ]
     },
     "paddle.Tensor.expand_as": {
         "torch_api": "torch.Tensor.expand_as",
