@@ -2,13 +2,13 @@
 
 # Assuming this script and run*.sh scripts are in the same directory (e.g., PaddleAPITest/)
 
-PYTHON_CMD_PATTERN="python engine.py --api_config_file=/home/Test/PaddleAPITest/tester/api_config/api_config_merged.*\.txt --paddle_only=True"
+PYTHON_CMD_PATTERN="python engine.py --api_config_file=tester/api_config/api_config_merged.*\.txt --paddle_only=True"
 
-SCRIPT_CMD_PATTERN="bash \./gpu_paddleonly_run(1[0-9]|[1-9])\.sh" 
+SCRIPT_CMD_PATTERN="bash \./gpu_paddleonly_run(1[0-9]|[1-9]|20)\.sh" 
 
 # --- Script Logic ---
 
-echo "Attempting to stop all related run script processes (gpu_paddleonly_run1.sh to gpu_paddleonly_run19.sh)..."
+echo "Attempting to stop all related run script processes (gpu_paddleonly_run1.sh to gpu_paddleonly_run20.sh)..."
 echo ""
 
 # --- Step 1: Send SIGTERM (Graceful Shutdown) ---

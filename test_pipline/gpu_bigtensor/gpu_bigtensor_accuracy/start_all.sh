@@ -5,7 +5,7 @@
 echo "Starting gpu_bigtensor_accuracy_run1.sh to gpu_bigtensor_accuracy_run8.sh in the background..."
 echo ""
 
-for i in {1..24}; do
+for i in {1..8}; do
   SCRIPT_NAME="gpu_bigtensor_accuracy_run${i}.sh"
   if [ -f "$SCRIPT_NAME" ]; then
     bash "./${SCRIPT_NAME}" &

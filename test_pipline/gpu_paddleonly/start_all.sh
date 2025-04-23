@@ -2,10 +2,10 @@
 
 # Assuming this script and run*.sh scripts are in the same directory (PaddleAPITest/)
 
-echo "Starting gpu_paddleonly_run1.sh to gpu_paddleonly_run19.sh in the background..."
+echo "Starting gpu_paddleonly_run1.sh to gpu_paddleonly_run20.sh in the background..."
 echo ""
 
-for i in {1..19}; do
+for i in {1..20}; do
   SCRIPT_NAME="gpu_paddleonly_run${i}.sh"
   if [ -f "$SCRIPT_NAME" ]; then
     bash "./${SCRIPT_NAME}" &
