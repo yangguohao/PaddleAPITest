@@ -400,7 +400,7 @@ class TensorConfig:
 
                     max_shape = max_config.shape
                     max_dtype = max_config.dtype
-                    max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min)
+                    max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_numpy_tensor)
                     
                     self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
                     self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
@@ -739,10 +739,6 @@ class TensorConfig:
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
                 elif self.check_arg(api_config, 5, "rotary_tensor"):
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=1000)
-                elif self.check_arg(api_config, 0, "x"):
-                    # squeeze to 2-D tensor
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype).reshape([-1, self.shape[-1]])
-                    self.shape = self.numpy_tensor.shape
                     
             elif api_config.api_name in ["paddle.matrix_transpose"]:
                 if self.check_arg(api_config, 0, "x"):
@@ -832,8 +828,10 @@ class TensorConfig:
                     pool_input_size = [*pool_output_size[:-ndim], *pool_input_size[-ndim:]]
                 elif len(pool_input_size) != len(pool_output_size):
                     raise ValueError(f"invalid argument output_size {pool_input_size} for {api_config.api_name}, len(output_size) should be {ndim} or {len(pool_output_size)} or output_size == None, got len(output_size)={len(pool_input_size)} and output_size={unpool_output_size}")
-                    
-                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=self.dtype))
+                
+                # int64 handle
+                data_type = "float64" if self.dtype == "int64" else self.dtype
+                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=data_type))
                 max_poolxd_func = eval(api_config.api_name.replace("max_unpool", "max_pool"))
                 x, indices = max_poolxd_func(x, kernel_size, stride, padding, return_mask=True)
                 self.numpy_tensor = x.numpy()
