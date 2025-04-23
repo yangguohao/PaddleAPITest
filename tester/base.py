@@ -180,14 +180,15 @@ class APITestBase:
             self.torch_args_config = self.api_config.args
             return True
 
-        args = self.api_config.args
-        if self.api_config.api_name.startswith("paddle.Tensor.") and args:
-            self.torch_args_config.append(self.api_config.args[0])
+        # args = self.api_config.args
+        # if self.api_config.api_name.startswith("paddle.Tensor.") and args:
+        #     self.torch_args_config.append(self.api_config.args[0])
+        #     self.torch_kwargs_config["self"] = self.api_config.args[0]
+        #     args = args[1:]
 
         paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
         paddle_args_dict = paddle_bound_args.arguments
 
-        self.torch_args_config=[]
         self.paddle_merged_kwargs_config = paddle_args_dict
         self.torch_kwargs_config.update(paddle_args_dict)
         self.torch_kwargs_config.pop('name', None)
