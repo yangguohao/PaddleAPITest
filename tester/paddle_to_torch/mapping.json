@@ -51,6 +51,16 @@
             "*{inputs}"
         ]
     },
+    "paddle.as_strided": {
+        "torch_api": "torch.as_strided",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "shape": "size",
+            "stride": "stride",
+            "offset": "storage_offset"
+        },
+        "description": "result = torch.as_strided(input=x, size=shape, stride=stride, storage_offset=offset)"
+    },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_tensors": {
         "Rule": "BroadcastTensorsRule"
@@ -109,11 +119,51 @@
         }
     },    
     "g": "API started with 'g' should be placed here",
+    "paddle.greater_equal": {
+        "torch_api": "torch.ge",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }, 
+        "description": "result = torch.ge(input=x, other=y)"
+    },
+    "paddle.greater_than": {
+        "torch_api": "torch.gt",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "description": "result = torch.gt(input=x, other=y)"
+    },
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "l": "API started with 'l' should be placed here",
+    "paddle.less": {
+        "torch_api": "torch.lt",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "description": "result = torch.lt(input=x, other=y)"
+    },
+    "paddle.less_equal": {
+        "torch_api": "torch.le", 
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "description": "result = torch.le(input=x, other=y)"
+    },
+    "paddle.less_than": {
+        "torch_api": "torch.lt",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "description": "result = torch.lt(input=x, other=y)"
+    },
     "m": "API started with 'm' should be placed here",
     "n": "API started with 'n' should be placed here",
     "o": "API started with 'o' should be placed here",
@@ -207,15 +257,6 @@
             "stable": "stable"
         },
         "min_input_args": 0
-    },
-    "paddle.Tensor.as_strided": {
-        "torch_api": "torch.Tensor.as_strided",
-        "paddle_torch_args_map": {
-            "shape": "size",
-            "stride": "stride",
-            "offset": "storage_offset"
-        },
-        "min_input_args": 2
     },
     "paddle.Tensor.backward": {
         "torch_api": "torch.Tensor.backward",
@@ -1507,16 +1548,6 @@
             "stable": "stable"
         },
         "min_input_args": 1
-    },
-    "paddle.as_strided": {
-        "torch_api": "torch.as_strided",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "shape": "size",
-            "stride": "stride",
-            "offset": "storage_offset"
-        },
-        "min_input_args": 3
     },
     "paddle.to_tensor": {
         "torch_api": "torch.as_tensor",
