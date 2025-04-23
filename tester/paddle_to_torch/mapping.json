@@ -99,6 +99,12 @@
     },
     "f": "API started with 'f' should be placed here",
     "g": "API started with 'g' should be placed here",
+    "paddle.Tensor.gather":{
+        "Rule": "GatherRule"
+    },
+    "paddle.Tensor.gather_nd":{
+        "Rule": "Gather_ndRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {

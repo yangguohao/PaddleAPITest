@@ -286,7 +286,44 @@ result = torch.empty(*size_list)
 #         if result.is_supported and result.code:
 #             result.code.append("result = result.item()")
 #         return result
+class GatherRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        #抽取对应维度的tensor直接进行stack操作
+        impl = """
+x = locals().get('x')
+index = locals().get('index')
+if 'axis' in locals():
+    axis = locals().get('axis')
+else:
+    axis = 0
+ans = []
+for i in index:
+    ans.append(torch.narrow(x, axis, i.reshape([]), 1))
+result = torch.stack(ans,axis)
+result = torch.squeeze(result)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
+class Gather_ndRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('x')
+index = locals().get('index')
+ans = []
+for i in index:
+    temp = x
+    for j in range(i.numel()):
+        print("------")
+        print(j)
+        print(i[j])
+        temp = torch.narrow(temp, j, i[j].reshape([]), 1)
+    ans.append(temp)
+result = torch.stack(ans)
+result = torch.squeeze(result)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # h
 
