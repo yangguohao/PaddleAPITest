@@ -188,12 +188,12 @@ class APITestBase:
             self.torch_args_config = self.api_config.args
             return True
 
-        args = self.api_config.args
-        if self.api_config.api_name.startswith("paddle.Tensor.") and args:
-            self.torch_args_config.append(self.api_config.args[0])
-            self.torch_kwargs_config["self"] = self.api_config.args[0]
-            args = args[1:]
-        
+        # args = self.api_config.args
+        # if self.api_config.api_name.startswith("paddle.Tensor.") and args:
+        #     self.torch_args_config.append(self.api_config.args[0])
+        #     self.torch_kwargs_config["self"] = self.api_config.args[0]
+        #     args = args[1:]
+
         if self.api_config.api_name not in no_signature_api_mappings:
             # For APIs with signatures, use paddle_sig.bind to get arguments
             paddle_sig = inspect.signature(self.paddle_api)
@@ -440,13 +440,12 @@ class APITestBase:
 
     def get_torch_input_list(self):
         result = []
-
         for i in range(len(self.torch_args)):
             if isinstance(self.torch_args[i], torch.Tensor):
                 result.append(self.torch_args[i])
             elif isinstance(self.torch_args[i], tuple) or isinstance(self.torch_args[i], list):
                 for item in self.paddle_args[i]:
-                    if isinstance(item, paddle.Tensor):
+                    if isinstance(item, torch.Tensor):
                         result.append(item)
 
         for key, value in self.torch_kwargs.items():
@@ -454,9 +453,8 @@ class APITestBase:
                 result.append(value)
             elif isinstance(value, tuple) or isinstance(value, list):
                 for item in value:
-                    if isinstance(item, paddle.Tensor):
+                    if isinstance(item, torch.Tensor):
                         result.append(item)
-
         return result
 
     def get_cached_numpy(self, dtype, shape):
@@ -714,7 +712,6 @@ class APITestBase:
     def gen_torch_input(self):
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
-
         for arg_config in self.torch_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.torch_args.append(arg_config.get_torch_tensor(self.api_config))
