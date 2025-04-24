@@ -156,6 +156,24 @@
     },
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
+    "paddle.Tensor.isinf": {
+        "torch_api": "torch.Tensor.isinf"
+    },
+    "paddke.Tensor.isnan": {
+        "torch_api": "torch.Tensor.isnan"
+    },
+    "paddle.Tensor.item": {
+        "Rule": "ItemRule"
+    },
+    "paddle.Tensor.less": {
+        "torch_api": "torch.Tensor.less",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.lgamma": {
+        "torch_api": "torch.Tensor.lgamma"
+    },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "l": "API started with 'l' should be placed here",

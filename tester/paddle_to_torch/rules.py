@@ -380,7 +380,16 @@ result = f.func(x,index)
 
 
 # i
-
+class ItemRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+if args in locals():
+    result = x[args].item()
+else:
+    result = x.item()
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # j
 
