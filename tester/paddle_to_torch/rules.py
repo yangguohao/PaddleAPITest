@@ -434,7 +434,10 @@ class ScatterRule(BaseRule):
 overwrite = locals().get('overwrite', True)
 x = x.clone()
 index = index.view(-1, 1)
-updates = updates.expand_as(x)
+try:
+    updates = updates.expand_as(x)
+except:
+    pass
 if not overwrite:
     for i in range(index.shape[0]):
         x[index[i]] = torch.zeros_like(x[index[i]])
