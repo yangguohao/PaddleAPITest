@@ -184,8 +184,8 @@
         "Rule": "Roi_aignRule"
     },
     "paddle.vision.ops.roi_pool": {
-        "Rule": "Roi_poolRule",
-        "torch_api":"torchvision.ops.roi_pool"
+        "torch_api":"torchvision.ops.roi_pool",
+        "Rule": "Roi_poolRule"
     },
     "s": "API started with 's' should be placed here",
     "t": "API started with 't' should be placed here",
