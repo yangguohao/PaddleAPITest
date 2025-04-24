@@ -1,0 +1,98 @@
+import os
+import shutil
+from pathlib import Path
+
+# 日志文件路径
+DIR_PATH = Path(__file__).resolve()
+while DIR_PATH.name != "PaddleAPITest":
+    DIR_PATH = DIR_PATH.parent
+TEST_LOG_PATH = DIR_PATH / "tester/api_config/test_log"
+TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
+
+# 日志类型和对应的文件
+LOG_PREFIXES = {
+    "accuracy_error": "api_config_accuracy_error",
+    "checkpoint": "checkpoint",
+    "crash": "api_config_crash",
+    "paddle_error": "api_config_paddle_error",
+    "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
+    "pass": "api_config_pass",
+    "timeout": "api_config_timeout",
+    "torch_error": "api_config_torch_error",
+}
+
+
+def set_engineV2():
+    global is_engineV2, TMP_LOG_PATH
+    is_engineV2 = True
+    TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
+    TMP_LOG_PATH.mkdir(exist_ok=True)
+
+
+def get_log_file(log_type: str):
+    """获取指定日志类型和PID对应的日志文件路径"""
+    if not is_engineV2:
+        return TEST_LOG_PATH / f"{log_type}.txt"
+    pid = os.getpid()
+    prefix = LOG_PREFIXES.get(log_type)
+    return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
+
+
+def write_to_log(log_type, line):
+    """添加单条日志到当前进程的日志文件"""
+    if log_type not in LOG_PREFIXES:
+        raise ValueError(f"Invalid log type: {log_type}")
+    line = line.strip()
+    if not line:
+        return
+    file_path = get_log_file(log_type)
+    try:
+        with file_path.open("a") as f:
+            f.write(line + "\n")
+    except Exception as err:
+        print(f"Error writing to {file_path}: {err}", flush=True)
+
+
+def read_log(log_type):
+    """读取文件所有行，返回集合"""
+    if log_type not in LOG_PREFIXES:
+        raise ValueError(f"Invalid log type: {log_type}")
+    file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type]}.txt"
+    try:
+        with file_path.open("r") as f:
+            return set(line.strip() for line in f if line.strip())
+    except FileNotFoundError:
+        return set()
+    except Exception as err:
+        print(f"Error reading {file_path}: {err}", flush=True)
+        return set()
+
+
+def aggregate_logs(mkdir=False):
+    """聚合所有相同类型的日志文件"""
+    for prefix in LOG_PREFIXES.values():
+        log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
+        if not log_files:
+            continue
+
+        all_lines = set()
+        for file_path in log_files:
+            try:
+                with file_path.open("r") as f:
+                    all_lines.update(line.strip() for line in f if line.strip())
+            except Exception as err:
+                print(f"Error reading {file_path}: {err}", flush=True)
+
+        aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
+        try:
+            with aggregated_file.open("w") as f:
+                f.writelines(f"{line}\n" for line in sorted(all_lines))
+        except Exception as err:
+            print(f"Error writing to {aggregated_file}: {err}", flush=True)
+
+    try:
+        shutil.rmtree(TMP_LOG_PATH)
+    except OSError:
+        pass
+    if mkdir:
+        TMP_LOG_PATH.mkdir(exist_ok=True)
