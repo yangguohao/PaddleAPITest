@@ -165,7 +165,34 @@
         "description": "result = torch.lt(input=x, other=y)"
     },
     "m": "API started with 'm' should be placed here",
+    "paddle.median": {
+        "Rule": "MedianRule"
+    },
+    "paddle.mod": {
+        "torch_api": "torch.fmod",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.mode": {
+        "torch_api": "torch.mode",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
     "n": "API started with 'n' should be placed here",
+    "paddle.nanmedian": {
+        "Rule": "NanmedianRule"
+    },
+    "paddle.negative": {
+        "torch_api": "torch.negative",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "q": "API started with 'q' should be placed here",

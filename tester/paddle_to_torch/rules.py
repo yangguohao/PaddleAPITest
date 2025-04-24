@@ -320,9 +320,109 @@ result = x.expand_as(y)
 
 
 # m
-
+class MedianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get('axis')
+keepdim = locals().get('keepdim', False)
+mode = locals().get('mode', 'avg')
+if axis is None:
+    x_flat = x.flatten()
+    length = x_flat.numel()
+    if length % 2 == 0 and mode == 'avg':
+        sorted_x = torch.sort(x_flat).values
+        mid = length // 2
+        median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
+    else:
+        median = torch.median(x_flat)
+else:
+    if mode == 'avg':
+        length = x.shape[axis] if x.ndim > 0 else 1
+        if length % 2 == 0:
+            sorted_x = torch.sort(x, dim=axis).values
+            mid = length // 2
+            median = (sorted_x.index_select(axis, torch.tensor([mid - 1])) + 
+                      sorted_x.index_select(axis, torch.tensor([mid]))) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.median(x, dim=axis, keepdim=keepdim).values
+    else:
+        median = torch.median(x, dim=axis, keepdim=keepdim).values
+result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # n
+class NanmedianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get("axis")
+keepdim = locals().get("keepdim", False)
+mode = locals().get("mode", "avg")
+
+def single_axis_nanmedian(x, axis, keepdim, mode):
+    if mode == "avg":
+        valid_mask = ~torch.isnan(x)
+        if x.ndim == 0:
+            valid_x = x.masked_select(valid_mask).reshape(1)
+            length = valid_x.numel()
+        else:
+            valid_x = x.masked_select(valid_mask).reshape(
+                *[s if i != axis else -1 for i, s in enumerate(x.shape)]
+            )
+            length = valid_x.shape[axis]
+        if length % 2 == 0:
+            sorted_x = torch.sort(valid_x, dim=axis).values
+            non_nan_mask = ~torch.isnan(sorted_x)
+            sorted_x = sorted_x.masked_select(non_nan_mask).reshape(
+                *[s if i != axis else -1 for i, s in enumerate(sorted_x.shape)]
+            )
+            mid = length // 2
+            median = (
+                sorted_x.index_select(axis, torch.tensor([mid - 1]))
+                + sorted_x.index_select(axis, torch.tensor([mid]))
+            ) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.nanmedian(x, dim=axis, keepdim=keepdim).values
+    else:
+        median = torch.nanmedian(x, dim=axis, keepdim=keepdim).values
+    return median
+
+if axis is None:
+    x = x.flatten()
+    valid_mask = ~torch.isnan(x)
+    valid_x = x[valid_mask]
+    length = valid_x.numel()
+    if length % 2 == 0 and mode == "avg":
+        sorted_x = torch.sort(valid_x).values
+        mid = length // 2
+        median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
+    else:
+        median = torch.nanmedian(x)
+elif isinstance(axis, int):
+    median = single_axis_nanmedian(x, axis, keepdim, mode)
+else:
+    non_axes = [i for i in range(x.ndim) if i not in axis]
+    perm = non_axes + list(axis)
+    x_permuted = x.permute(perm)
+    non_axes_shape = [x.shape[i] for i in non_axes]
+    flattened_size = 1
+    for ax in axis:
+        flattened_size *= x.shape[ax]
+    new_shape = non_axes_shape + [flattened_size]
+    x_flat = x_permuted.reshape(new_shape)
+    median = single_axis_nanmedian(x_flat, -1, False, mode)
+    if keepdim:
+        output_shape = [1 if i in axis else x.shape[i] for i in range(x.ndim)]
+        median = median.reshape(output_shape)
+result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # o
