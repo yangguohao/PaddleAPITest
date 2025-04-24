@@ -103,7 +103,7 @@ class BaseRule(ABC):
         if self.direct_mapping:
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
-            self.torch_api: str = mapping["torch_api"]
+            self.torch_api: str = mapping.get("torch_api", "")
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
@@ -462,7 +462,7 @@ def single_axis_nanmedian(x, axis, keepdim, mode):
         else:
             median = torch.nanmedian(x, dim=axis, keepdim=keepdim).values
     else:
-        median = torch.nanmedian(x, dim=axis, keepdim=keepdim).values
+        median = torch.nanmedian(x, dim=axis, keepdim=keepdim)
     return median
 
 if axis is None:
@@ -490,6 +490,8 @@ else:
     new_shape = non_axes_shape + [flattened_size]
     x_flat = x_permuted.reshape(new_shape)
     median = single_axis_nanmedian(x_flat, -1, False, mode)
+    if mode == "min":
+        median = median.values
     if keepdim:
         output_shape = [1 if i in axes else x.shape[i] for i in range(x.ndim)]
         median = median.reshape(output_shape)
