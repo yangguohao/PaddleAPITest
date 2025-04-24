@@ -1,0 +1,126 @@
+test begin: paddle.eye(Tensor([],"int64"), Tensor([],"int64"), )
+W0214 18:26:04.449203 69867 shape_optimization_pass.cc:346] cached shape is not consistent with real shape
+I0214 18:26:04.449664 69867 build_cinn_pass.cc:68] Time of building group ops (size=4): 0 min 0 s 0 ms
+I0214 18:26:04.449872 69867 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 18:26:04.449908 69867 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 18:26:04.449913 69867 add_cinn_pass.cc:303] Number of ops in the original program is: 4, after lowering it becomes: 4. (compression ratio: 4/4 = 1)
+I0214 18:26:04.451159 69867 build_cinn_pass.cc:68] Time of building group ops (size=0): 0 min 0 s 0 ms
+I0214 18:26:04.451299 69867 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 18:26:04.451325 69867 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 18:26:04.451329 69867 add_cinn_pass.cc:303] Number of ops in the original program is: 0, after lowering it becomes: 0. (compression ratio: 0/0 = -nan)
+[cuda error] paddle.eye(Tensor([],"int64"), Tensor([],"int64"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager__for_test_check_cuda_error(_object*, _object*, _object*)
+1   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+2   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ExternalError: CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+test begin: paddle.nn.functional.sequence_mask(Tensor([0],"int64"), )
+I0214 19:10:41.787500 106263 build_cinn_pass.cc:68] Time of building group ops (size=4): 0 min 0 s 0 ms
+I0214 19:10:41.787760 106263 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:10:41.787804 106263 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:10:41.787809 106263 add_cinn_pass.cc:303] Number of ops in the original program is: 4, after lowering it becomes: 4. (compression ratio: 4/4 = 1)
+I0214 19:10:41.789144 106263 build_cinn_pass.cc:68] Time of building group ops (size=0): 0 min 0 s 0 ms
+I0214 19:10:41.789299 106263 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:10:41.789326 106263 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:10:41.789330 106263 add_cinn_pass.cc:303] Number of ops in the original program is: 0, after lowering it becomes: 0. (compression ratio: 0/0 = -nan)
+[cuda error] paddle.nn.functional.sequence_mask(Tensor([0],"int64"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager__for_test_check_cuda_error(_object*, _object*, _object*)
+1   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+2   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ExternalError: CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+test begin: paddle.nn.functional.sequence_mask(Tensor([4],"int64"), 10, Dtype(float64), None, )
+I0214 19:10:41.926270 106263 build_cinn_pass.cc:68] Time of building group ops (size=4): 0 min 0 s 0 ms
+I0214 19:10:41.926601 106263 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:10:41.926659 106263 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:10:41.926668 106263 add_cinn_pass.cc:303] Number of ops in the original program is: 4, after lowering it becomes: 4. (compression ratio: 4/4 = 1)
+I0214 19:10:41.928279 106263 build_cinn_pass.cc:68] Time of building group ops (size=0): 0 min 0 s 0 ms
+I0214 19:10:41.928450 106263 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:10:41.928484 106263 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:10:41.928489 106263 add_cinn_pass.cc:303] Number of ops in the original program is: 0, after lowering it becomes: 0. (compression ratio: 0/0 = -nan)
+[cuda error] paddle.nn.functional.sequence_mask(Tensor([4],"int64"), 10, Dtype(float64), None, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager__for_test_check_cuda_error(_object*, _object*, _object*)
+1   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+2   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ExternalError: CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+test begin: paddle.nn.functional.sequence_mask(Tensor([4],"int64"), None, "float64", None, )
+I0214 19:10:41.977766 106263 build_cinn_pass.cc:68] Time of building group ops (size=4): 0 min 0 s 0 ms
+I0214 19:10:41.978067 106263 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:10:41.978125 106263 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:10:41.978134 106263 add_cinn_pass.cc:303] Number of ops in the original program is: 4, after lowering it becomes: 4. (compression ratio: 4/4 = 1)
+I0214 19:10:41.979689 106263 build_cinn_pass.cc:68] Time of building group ops (size=0): 0 min 0 s 0 ms
+I0214 19:10:41.979854 106263 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:10:41.979887 106263 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:10:41.979892 106263 add_cinn_pass.cc:303] Number of ops in the original program is: 0, after lowering it becomes: 0. (compression ratio: 0/0 = -nan)
+[cuda error] paddle.nn.functional.sequence_mask(Tensor([4],"int64"), None, "float64", None, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager__for_test_check_cuda_error(_object*, _object*, _object*)
+1   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+2   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ExternalError: CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+test begin: paddle.Tensor.log1p(Tensor([],"float32"), )
+I0214 19:23:34.220027 113304 build_cinn_pass.cc:68] Time of building group ops (size=3): 0 min 0 s 0 ms
+I0214 19:23:34.220284 113304 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:23:34.220327 113304 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:23:34.220332 113304 add_cinn_pass.cc:303] Number of ops in the original program is: 3, after lowering it becomes: 3. (compression ratio: 3/3 = 1)
+I0214 19:23:34.221992 113304 build_cinn_pass.cc:68] Time of building group ops (size=2): 0 min 0 s 0 ms
+I0214 19:23:34.222175 113304 add_cinn_pass.cc:285] FusionOp count before lowering : *****[ 0 ]*****
+I0214 19:23:34.222206 113304 add_cinn_pass.cc:299] Time of lowering and compiling program: ***** [ 0 ] ***** seconds.
+I0214 19:23:34.222210 113304 add_cinn_pass.cc:303] Number of ops in the original program is: 2, after lowering it becomes: 2. (compression ratio: 2/2 = 1)
+[cuda error] paddle.Tensor.log1p(Tensor([],"float32"), ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager__for_test_check_cuda_error(_object*, _object*, _object*)
+1   common::enforce::EnforceNotMet::EnforceNotMet(common::ErrorSummary const&, char const*, int)
+2   common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ExternalError: CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
