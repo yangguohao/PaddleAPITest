@@ -96,6 +96,8 @@ class BaseRule(ABC):
         """
         self.mapping: Dict = mapping
         if "Rule" in mapping:
+            if "torch_api" in mapping:
+                self.torch_api: str = mapping["torch_api"]
             return
         self.direct_mapping: bool = not mapping.get("composite_steps")
         if self.direct_mapping:
@@ -302,7 +304,44 @@ result = x.expand_as(y)
 #         if result.is_supported and result.code:
 #             result.code.append("result = result.item()")
 #         return result
+class GatherRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        #抽取对应维度的tensor直接进行stack操作
+        impl = """
+x = locals().get('x')
+index = locals().get('index')
+axis = locals().get('axis', 0)
+ans = []
+for i in index:
+    ans.append(torch.narrow(x, axis, i.reshape([]), 1))
+result = torch.stack(ans,axis)
+result = torch.squeeze(result)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
+class Gather_ndRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+class _func:
+    def func(self,x,index):
+        if index.dim() == 1:
+            temp = x
+            for i in range(index.numel()):
+                temp = torch.narrow(temp, 0, index[i].reshape([]), 1)
+                temp = torch.squeeze(temp, 0)
+            return temp
+        ans = []
+        for i in index:
+            ans.append(self.func(x, i))
+        return torch.stack(ans, 0)
+f = _func()
+x = locals().get('x')
+index = locals().get('index')
+result = f.func(x,index)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # h
 
@@ -330,12 +369,63 @@ result = x.expand_as(y)
 
 # p
 
-
 # q
 
 
 # r
-
+class Roi_aignRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale',
+    'sampling_ratio': 'sampling_ratio',
+    'aligned': 'aligned'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+    
+class Roi_poolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+    else:
+        _kwargs[torch_param] = 1.0
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+"""
+        code = impl.splitlines()
+        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")
+        return ConvertResult.success(paddle_api, code, "result")
 
 # s
 
