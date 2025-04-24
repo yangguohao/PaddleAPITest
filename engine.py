@@ -1,11 +1,10 @@
 import argparse
-import os
 from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
+from tester.api_config.log_writer import DIR_PATH, read_log, write_to_log
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
 def main():
     parser = argparse.ArgumentParser(
@@ -59,20 +58,13 @@ def main():
         del case
         del api_config
     elif options.api_config_file != "":
-        try:
-            checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "r")
-            finish_configs = set(checkpoint_r.readlines())
-            checkpoint_r.close()
-        except Exception as err:
-            finish_configs = set()
-        checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "a")
-        api_config_file = open(options.api_config_file, "r")
-        api_configs = set(api_config_file.readlines())
+        finish_configs = read_log("checkpoint")
+        with open(options.api_config_file, "r") as f:
+            api_configs = set(line.strip() for line in f if line.strip())
         api_configs = api_configs - finish_configs
         api_configs = sorted(api_configs)
         for api_config_str in api_configs:
-            checkpoint.write(api_config_str)
-            checkpoint.flush()
+            write_to_log("checkpoint", api_config_str)
 
             print(datetime.now(), "test begin:", api_config_str, flush=True)
             try:

@@ -1352,7 +1352,11 @@ class TensorConfig:
                 if key == "index" or index == 1:
                     d=self.get_arg(api_config, 0, "x")
                     s=d.shape[0]
-                    self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
+                    overwrite = self.get_arg(api_config, 3, "overwrite")
+                    if ( overwrite == None or overwrite == True ) and ( self.shape == [] or self.shape[0] ) <=s :
+                        self.numpy_tensor = numpy.random.choice(s, size=self.shape, replace=False).astype(self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd"]:
                 future_data=self.get_arg(api_config, 2, "shape")     
