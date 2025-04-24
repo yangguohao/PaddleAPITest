@@ -313,7 +313,7 @@ index = locals().get('index')
 if 'axis' in locals():
     axis = locals().get('axis')
 else:
-    axis = 0
+    axis = locals().get('axis', 0)
 ans = []
 for i in index:
     ans.append(torch.narrow(x, axis, i.reshape([]), 1))
