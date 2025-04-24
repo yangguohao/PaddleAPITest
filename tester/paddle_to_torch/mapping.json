@@ -194,8 +194,13 @@
         "paddle_torch_args_map": {
             "axis": "dim",
             "keepdim": "keepdim"
-        },
-        "min_input_args": 1
+        }
+    },
+    "paddle.Tensor.min": {
+        "torch_api": "torch.Tensor.min",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
     },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
@@ -223,7 +228,6 @@
         "Rule": "Roi_poolRule"
     },
     "s": "API started with 's' should be placed here",
-    "t": "API started with 't' should be placed here",
     "paddle.Tensor.set_": {
         "torch_api": "torch.Tensor.set_",
         "paddle_torch_args_map": {
@@ -235,6 +239,7 @@
             "storage_offset": "(locals().get('{offset}') or 0) // _tmp_tensor.itemsize"
         }
     },
+    "t": "API started with 't' should be placed here",
     "u": "API started with 'u' should be placed here",
     "v": "API started with 'v' should be placed here",
     "w": "API started with 'w' should be placed here",
