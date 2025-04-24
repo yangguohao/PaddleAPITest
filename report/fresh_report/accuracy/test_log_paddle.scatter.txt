@@ -1,0 +1,4 @@
+[torch error] paddle.scatter(Tensor([183826, 256],"float32"), Tensor([10759233],"int64"), Tensor([10759233, 256],"float32"), ) 
+ CUDA out of memory. Tried to allocate 10.26 GiB. GPU 0 has a total capacity of 22.38 GiB of which 9.30 GiB is free. Process 7206 has 8.00 MiB memory in use. Process 13463 has 628.00 MiB memory in use. Process 22859 has 628.00 MiB memory in use. Process 31759 has 11.84 GiB memory in use. Of the allocated memory 262.09 MiB is allocated by PyTorch, and 1.91 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+ 备注：即使不oom，也会出现accuracy的问题
