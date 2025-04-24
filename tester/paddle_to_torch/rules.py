@@ -383,8 +383,12 @@ result = f.func(x,index)
 class ItemRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
-if args in locals():
-    result = x[args].item()
+x = next(iter(kwargs.values()))
+args = locals().get('args')
+if args:
+    if len(args) == 1:
+        x = x.flatten()
+    result = x[*args].item()
 else:
     result = x.item()
 """

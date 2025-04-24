@@ -159,7 +159,7 @@
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
     },
-    "paddke.Tensor.isnan": {
+    "paddle.Tensor.isnan": {
         "torch_api": "torch.Tensor.isnan"
     },
     "paddle.Tensor.item": {
