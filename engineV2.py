@@ -148,6 +148,7 @@ def run_test_case(api_config_str, test_class, test_amp):
 
 def main():
     print(f"Main process id: {os.getpid()}")
+    set_engineV2()
     set_start_method("spawn")
 
     parser = argparse.ArgumentParser(description="API Test")
