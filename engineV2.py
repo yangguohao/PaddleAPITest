@@ -28,37 +28,6 @@ def cleanup(pool):
     print(f"{datetime.now()} Cleanup completed", flush=True)
 
 
-def get_notsupport_config():
-    """Load not-supported API configurations from files."""
-    not_support_files = [
-        f"tester/api_config/api_config_merged_not_support_{suffix}.txt"
-        for suffix in [
-            "amp",
-            "arange",
-            "empty",
-            "eye",
-            "flatten",
-            "full",
-            "getset_item",
-            "reshape",
-            "slice",
-            "sparse",
-            "tensor_init",
-            "topk",
-            "zeros",
-        ]
-    ]
-    configs = set()
-    for file_name in not_support_files:
-        file_path = os.path.join(DIR_PATH, file_name)
-        try:
-            with open(file_path, "r") as f:
-                configs.update(line.strip() for line in f if line.strip())
-        except FileNotFoundError:
-            pass
-    return configs
-
-
 def estimate_timeout(api_config) -> float:
     """Estimate timeout based on tensor size in APIConfig."""
     TIMEOUT_STEPS = (
