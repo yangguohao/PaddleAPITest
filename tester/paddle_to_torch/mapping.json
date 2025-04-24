@@ -119,6 +119,12 @@
         }
     },    
     "g": "API started with 'g' should be placed here",
+    "paddle.Tensor.gather":{
+        "Rule": "GatherRule"
+    },
+    "paddle.Tensor.gather_nd":{
+        "Rule": "Gather_ndRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {
@@ -165,11 +171,49 @@
         "description": "result = torch.lt(input=x, other=y)"
     },
     "m": "API started with 'm' should be placed here",
+    "paddle.median": {
+        "Rule": "MedianRule"
+    },
+    "paddle.mod": {
+        "torch_api": "torch.fmod",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.mode": {
+        "torch_api": "torch.mode",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
     "n": "API started with 'n' should be placed here",
+    "paddle.nanmedian": {
+        "Rule": "NanmedianRule"
+    },
+    "paddle.negative": {
+        "torch_api": "torch.negative",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
+    "paddle.vision.ops.psroi_pool":{
+        "torch_api":"torchvision.ops.ps_roi_pool",
+        "Rule": "Roi_poolRule"
+    },
     "q": "API started with 'q' should be placed here",
     "r": "API started with 'r' should be placed here",
+    "paddle.vision.ops.roi_align":{
+        "Rule": "Roi_aignRule"
+    },
+    "paddle.vision.ops.roi_pool": {
+        "torch_api":"torchvision.ops.roi_pool",
+        "Rule": "Roi_poolRule"
+    },
     "s": "API started with 's' should be placed here",
     "t": "API started with 't' should be placed here",
     "paddle.Tensor.set_": {
@@ -189,6 +233,42 @@
     "x": "API started with 'x' should be placed here",
     "y": "API started with 'y' should be placed here",
     "z": "API started with 'z' should be placed here",
+    "_": "API started with '_' should be placed here",
+    "paddle.Tensor.__eq__": {
+        "torch_api": "torch.Tensor.__eq__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__eq__(other=y)"
+    },
+    "paddle.Tensor.__ge__": {
+        "torch_api": "torch.Tensor.__ge__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ge__(other=y)"
+    },
+    "paddle.Tensor.__gt__": {
+        "torch_api": "torch.Tensor.__gt__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__gt__(other=y)"
+    },
+    "paddle.Tensor.__le__": {
+        "torch_api": "torch.Tensor.__le__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__le__(other=y)"
+    },
+    "paddle.Tensor.__lt__": {
+        "torch_api": "torch.Tensor.__lt__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__lt__(other=y)"
+    },
     "migrated": "APIs migrated are placed here",
     "paddle.Tensor.addmm": {
         "torch_api": "torch.Tensor.addmm",

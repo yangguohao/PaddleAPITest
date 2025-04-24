@@ -1,0 +1,1 @@
+rm -rf tester/api_config/test_log/checkpoint.txt

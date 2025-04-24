@@ -96,12 +96,14 @@ class BaseRule(ABC):
         """
         self.mapping: Dict = mapping
         if "Rule" in mapping:
+            if "torch_api" in mapping:
+                self.torch_api: str = mapping["torch_api"]
             return
         self.direct_mapping: bool = not mapping.get("composite_steps")
         if self.direct_mapping:
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
-            self.torch_api: str = mapping["torch_api"]
+            self.torch_api: str = mapping.get("torch_api", "")
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
@@ -273,6 +275,7 @@ result = torch.empty(*size_list)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class ExpandRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -280,6 +283,7 @@ result = x.expand(*shape)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class ExpandasRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -302,6 +306,45 @@ result = x.expand_as(y)
 #         if result.is_supported and result.code:
 #             result.code.append("result = result.item()")
 #         return result
+class GatherRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        # 抽取对应维度的tensor直接进行stack操作
+        impl = """
+x = locals().get('x')
+index = locals().get('index')
+axis = locals().get('axis', 0)
+ans = []
+for i in index:
+    ans.append(torch.narrow(x, axis, i.reshape([]), 1))
+result = torch.stack(ans,axis)
+result = torch.squeeze(result)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class Gather_ndRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+class _func:
+    def func(self,x,index):
+        if index.dim() == 1:
+            temp = x
+            for i in range(index.numel()):
+                temp = torch.narrow(temp, 0, index[i].reshape([]), 1)
+                temp = torch.squeeze(temp, 0)
+            return temp
+        ans = []
+        for i in index:
+            ans.append(self.func(x, i))
+        return torch.stack(ans, 0)
+f = _func()
+x = locals().get('x')
+index = locals().get('index')
+result = f.func(x,index)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # h
@@ -320,9 +363,113 @@ result = x.expand_as(y)
 
 
 # m
+class MedianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get('axis')
+keepdim = locals().get('keepdim', False)
+mode = locals().get('mode', 'avg')
+if axis is None:
+    x_flat = x.flatten()
+    length = x_flat.numel()
+    if length % 2 == 0 and mode == 'avg':
+        sorted_x = torch.sort(x_flat).values
+        mid = length // 2
+        median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
+    else:
+        median = torch.median(x_flat)
+else:
+    if mode == 'avg':
+        length = x.shape[axis] if x.ndim > 0 else 1
+        if length % 2 == 0:
+            sorted_x = torch.sort(x, dim=axis).values
+            mid = length // 2
+            median = (sorted_x.index_select(axis, torch.tensor([mid - 1])) + 
+                      sorted_x.index_select(axis, torch.tensor([mid]))) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.median(x, dim=axis, keepdim=keepdim).values
+    else:
+        median = torch.median(x, dim=axis, keepdim=keepdim)
+result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # n
+class NanmedianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get("axis")
+keepdim = locals().get("keepdim", False)
+mode = locals().get("mode", "avg")
+
+def single_axis_nanmedian(x, axis, keepdim, mode):
+    if mode == "avg":
+        valid_mask = ~torch.isnan(x)
+        if x.ndim == 0:
+            valid_x = x.masked_select(valid_mask).reshape(1)
+            length = valid_x.numel()
+        else:
+            valid_x = x.masked_select(valid_mask).reshape(
+                *[s if i != axis else -1 for i, s in enumerate(x.shape)]
+            )
+            length = valid_x.shape[axis]
+        if length % 2 == 0:
+            sorted_x = torch.sort(valid_x, dim=axis).values
+            non_nan_mask = ~torch.isnan(sorted_x)
+            sorted_x = sorted_x.masked_select(non_nan_mask).reshape(
+                *[s if i != axis else -1 for i, s in enumerate(sorted_x.shape)]
+            )
+            mid = length // 2
+            median = (
+                sorted_x.index_select(axis, torch.tensor([mid - 1]))
+                + sorted_x.index_select(axis, torch.tensor([mid]))
+            ) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.nanmedian(x, dim=axis, keepdim=keepdim).values
+    else:
+        median = torch.nanmedian(x, dim=axis, keepdim=keepdim)
+    return median
+
+if axis is None:
+    x = x.flatten()
+    valid_mask = ~torch.isnan(x)
+    valid_x = x[valid_mask]
+    length = valid_x.numel()
+    if length % 2 == 0 and mode == "avg":
+        sorted_x = torch.sort(valid_x).values
+        mid = length // 2
+        median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
+    else:
+        median = torch.nanmedian(x)
+elif isinstance(axis, int):
+    median = single_axis_nanmedian(x, axis, keepdim, mode)
+else:
+    axes = [ax % x.ndim for ax in axis]
+    non_axes = [i for i in range(x.ndim) if i not in axes]
+    perm = non_axes + list(axes)
+    x_permuted = x.permute(perm)
+    non_axes_shape = [x.shape[i] for i in non_axes]
+    flattened_size = 1
+    for ax in axes:
+        flattened_size *= x.shape[ax]
+    new_shape = non_axes_shape + [flattened_size]
+    x_flat = x_permuted.reshape(new_shape)
+    median = single_axis_nanmedian(x_flat, -1, False, mode)
+    if mode == "min":
+        median = median.values
+    if keepdim:
+        output_shape = [1 if i in axes else x.shape[i] for i in range(x.ndim)]
+        median = median.reshape(output_shape)
+result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # o
@@ -330,11 +477,64 @@ result = x.expand_as(y)
 
 # p
 
-
 # q
 
 
 # r
+class Roi_aignRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale',
+    'sampling_ratio': 'sampling_ratio',
+    'aligned': 'aligned'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
+
+class Roi_poolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'output_size': 'output_size',
+    'spatial_scale': 'spatial_scale'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+    else:
+        _kwargs[torch_param] = 1.0
+boxes = locals().get('boxes')
+boxnum = locals().get('boxes_num')
+ans = []
+end = 0
+for i in range(boxnum.shape[0]):
+    begin = end
+    end = end + int(boxnum[i])
+    ans.append(boxes[begin:end,])
+"""
+        code = impl.splitlines()
+        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")  # type: ignore
+        return ConvertResult.success(paddle_api, code, "result")
 
 
 # s

@@ -6,35 +6,6 @@ from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
 from tester.api_config.log_writer import DIR_PATH, read_log, write_to_log
 
 
-def get_notsupport_config():
-    not_support_files = [
-        "tester/api_config/api_config_merged_not_support_amp.txt",
-        "tester/api_config/api_config_merged_not_support_arange.txt",
-        "tester/api_config/api_config_merged_not_support_empty.txt",
-        "tester/api_config/api_config_merged_not_support_eye.txt",
-        "tester/api_config/api_config_merged_not_support_flatten.txt",
-        "tester/api_config/api_config_merged_not_support_full.txt",
-        "tester/api_config/api_config_merged_not_support_getset_item.txt",
-        "tester/api_config/api_config_merged_not_support_reshape.txt",
-        "tester/api_config/api_config_merged_not_support_slice.txt",
-        "tester/api_config/api_config_merged_not_support_sparse.txt",
-        "tester/api_config/api_config_merged_not_support_tensor_init.txt",
-        "tester/api_config/api_config_merged_not_support_topk.txt",
-        "tester/api_config/api_config_merged_not_support_zeros.txt",
-        "tester/api_config/api_config_merged_not_support.txt",
-    ]
-    configs = set()
-
-    for flie in not_support_files:
-        with open(DIR_PATH / flie, "r") as f:
-            origin_configs = f.readlines()
-            f.close()
-
-        for config in origin_configs:
-            configs.add(config)
-    return configs
-
-
 def main():
     parser = argparse.ArgumentParser(
         description='API Test'
