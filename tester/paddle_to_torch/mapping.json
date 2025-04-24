@@ -189,6 +189,14 @@
             "keepdim": "keepdim"
         }
     },
+    "paddle.Tensor.max": {
+        "torch_api": "torch.Tensor.max",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "min_input_args": 1
+    },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
         "Rule": "NanmedianRule"

@@ -115,12 +115,41 @@ class BaseRule(ABC):
                         f"Missing required field 'torch_api' in composite step: {step}"
                     )
 
+    def apply_generic(self) -> List:
+        code = []
+        # if "torch_api" in self.mapping:
+        #     self.torch_api: str = self.mapping.get("torch_api", "")
+        if "import" in self.mapping:
+            imports = self.mapping.get("import", [])
+            for import_statement in imports:
+                code.append(f"import {import_statement}")
+            code.append("")
+        if "paddle_torch_args_map" in self.mapping:
+            args_map = self.mapping.get("paddle_torch_args_map", {})
+            code.append("for paddle_param, torch_param in {")
+            for paddle_param, torch_param in args_map.items():
+                code.append(f"    '{paddle_param}': '{torch_param}',")
+            code.append("}.items():")
+            code.append("    torch_param = locals().get(paddle_param)")
+        if "set_default" in self.mapping:
+            defaults = self.mapping.get("set_default", {})
+            for default_name, default_value in defaults.items():
+                code.append(
+                    f"{default_name} = locals().get('{default_name}', {default_value})"
+                )
+        return code
+
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
+            if not self.torch_api.startswith("torch.Tensor."):
+                return ConvertResult.error(
+                    paddle_api,
+                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
+                )
             if is_tensor_method:
                 code.append("_tmp_tensor = next(iter(kwargs.values()))")
             is_inplace = (
