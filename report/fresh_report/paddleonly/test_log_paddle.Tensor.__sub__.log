@@ -1,5 +1,0 @@
-paddle.Tensor.__sub__(Tensor([0],"float32"), Tensor([0],"float32"), )
-
-[cuda error] paddle.Tensor.__sub__(Tensor([0],"float32"), Tensor([0],"float32"), ) 
- (External) CUDA error(9), invalid configuration argument. 
-  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
