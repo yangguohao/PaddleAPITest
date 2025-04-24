@@ -338,6 +338,59 @@ result = x.expand_as(y)
 
 
 # s
+class ScatterRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+overwrite = locals().get('overwrite', True)
+x = x.clone()
+index = index.view(-1, 1)
+updates = updates.expand_as(x)
+if not overwrite:
+    for i in range(index.shape[0]):
+        x[index[i]] = torch.zeros_like(x[index[i]])
+    for i in range(index.shape[0]):
+        x[index[i]] += updates[i]
+else:
+    for i in range(index.shape[0]):
+        x[index[i]] = updates[i]
+result = x    
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+class ScatterndRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+output = torch.zeros(shape, dtype=updates.dtype).to(updates.device)
+if index.numel() == 0:
+    result = output + updates
+else:
+    flat_index = index.view(-1, index.size(-1))
+    flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
+    for i in range(flat_index.size(0)):
+        idx_tuple = tuple(flat_index[i])
+        output[idx_tuple] += flat_updates[i]
+    result = output    
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
+class ScatterndaddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = x.clone()
+if index.numel() == 0:
+    result = x + updates
+else:
+    flat_index = index.view(-1, index.size(-1))
+    flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
+    for i in range(flat_index.size(0)):
+        idx_tuple = tuple(flat_index[i])
+        x[idx_tuple] += flat_updates[i]
+    result = x    
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # t

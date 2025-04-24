@@ -117,7 +117,20 @@
             "x": "input",
             "y": "other"
         }
-    },    
+    },
+    "paddle.floor_mod": {
+        "torch_api": "torch.fmod",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.frexp": {
+        "torch_api": "torch.frexp",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },       
     "g": "API started with 'g' should be placed here",
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
@@ -171,6 +184,15 @@
     "q": "API started with 'q' should be placed here",
     "r": "API started with 'r' should be placed here",
     "s": "API started with 's' should be placed here",
+    "paddle.scatter": {
+        "Rule": "ScatterRule"
+    },
+    "paddle.scatter_nd": {
+        "Rule": "ScatterndRule"
+    },
+    "paddle.scatter_nd_add": {
+        "Rule": "ScatterndaddRule"
+    },
     "t": "API started with 't' should be placed here",
     "paddle.Tensor.set_": {
         "torch_api": "torch.Tensor.set_",

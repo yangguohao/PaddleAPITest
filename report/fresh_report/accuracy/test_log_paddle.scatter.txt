@@ -1,0 +1,1 @@
+paddle.scatter(Tensor([183826, 256],"float32"), Tensor([10759233],"int64"), Tensor([10759233, 256],"float32"), )
