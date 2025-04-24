@@ -445,18 +445,19 @@ if axis is None:
 elif isinstance(axis, int):
     median = single_axis_nanmedian(x, axis, keepdim, mode)
 else:
-    non_axes = [i for i in range(x.ndim) if i not in axis]
-    perm = non_axes + list(axis)
+    axes = [ax % x.ndim for ax in axis]
+    non_axes = [i for i in range(x.ndim) if i not in axes]
+    perm = non_axes + list(axes)
     x_permuted = x.permute(perm)
     non_axes_shape = [x.shape[i] for i in non_axes]
     flattened_size = 1
-    for ax in axis:
+    for ax in axes:
         flattened_size *= x.shape[ax]
     new_shape = non_axes_shape + [flattened_size]
     x_flat = x_permuted.reshape(new_shape)
     median = single_axis_nanmedian(x_flat, -1, False, mode)
     if keepdim:
-        output_shape = [1 if i in axis else x.shape[i] for i in range(x.ndim)]
+        output_shape = [1 if i in axes else x.shape[i] for i in range(x.ndim)]
         median = median.reshape(output_shape)
 result = median
 """
