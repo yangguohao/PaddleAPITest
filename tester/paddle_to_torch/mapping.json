@@ -194,6 +194,12 @@
             "y": "other"
         }
     },
+    "paddle.Tensor.mod": {
+        "torch_api": "torch.Tensor.fmod",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
     "paddle.mode": {
         "torch_api": "torch.mode",
         "paddle_torch_args_map": {
@@ -212,6 +218,13 @@
     "paddle.Tensor.min": {
         "torch_api": "torch.Tensor.min",
         "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
+    "paddle.Tensor.multiply": {
+        "torch_api": "torch.Tensor.mul",
+        "paddle_torch_args_map": {
             "y": "other"
         }
     },
@@ -224,6 +237,9 @@
         "paddle_torch_args_map": {
             "x": "input"
         }
+    },
+    "paddle.Tensor.neg": {
+        "torch_api": "torch.Tensor.neg"
     },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
