@@ -275,6 +275,7 @@ result = torch.empty(*size_list)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class ExpandRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -282,6 +283,7 @@ result = x.expand(*shape)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class ExpandasRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -306,7 +308,7 @@ result = x.expand_as(y)
 #         return result
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        #抽取对应维度的tensor直接进行stack操作
+        # 抽取对应维度的tensor直接进行stack操作
         impl = """
 x = locals().get('x')
 index = locals().get('index')
@@ -319,6 +321,7 @@ result = torch.squeeze(result)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class Gather_ndRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -342,6 +345,7 @@ result = f.func(x,index)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 # h
 
@@ -387,11 +391,12 @@ else:
         else:
             median = torch.median(x, dim=axis, keepdim=keepdim).values
     else:
-        median = torch.median(x, dim=axis, keepdim=keepdim).values
+        median = torch.median(x, dim=axis, keepdim=keepdim)
 result = median
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 # n
 class NanmedianRule(BaseRule):
@@ -500,7 +505,8 @@ result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
-    
+
+
 class Roi_poolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -525,8 +531,9 @@ for i in range(boxnum.shape[0]):
     ans.append(boxes[begin:end,])
 """
         code = impl.splitlines()
-        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")
+        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")  # type: ignore
         return ConvertResult.success(paddle_api, code, "result")
+
 
 # s
 
