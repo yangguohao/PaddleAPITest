@@ -170,8 +170,12 @@ def main():
         default=False,
     )
     parser.add_argument("--num_gpus", type=int, default=0)
-    parser.add_argument("--num_workers_per_gpu", type=int, default=2)
+    parser.add_argument("--num_workers_per_gpu", type=int, default=1)
+    # parser.add_argument("--num_cpus", type=int, default=0)
     options = parser.parse_args()
+
+    # if options.num_gpus > 0 and options.num_cpus > 0:
+    #     raise ValueError("Cannot use both --num_gpus and --num_cpus at the same time.")
 
     test_class = APITestAccuracy
     if options.paddle_only:
@@ -219,7 +223,7 @@ def main():
         print(all_cases, "cases will be tested.", flush=True)
 
         if options.num_gpus > 0:
-            # Multi GPUs execution
+            # Multi GPUs
             BATCH_SIZE = 16384
             num_gpus = options.num_gpus
             num_workers_per_gpu = options.num_workers_per_gpu
@@ -286,8 +290,63 @@ def main():
                 cleanup(pool)
             finally:
                 aggregate_logs()
+        # elif options.num_cpus > 0:
+        #     # Multi CPUs
+        #     BATCH_SIZE = 16384
+        #     num_cpus = options.num_cpus
+        #     print(f"Using {num_cpus} CPU(s).", flush=True)
+
+        #     pool = ProcessPool(max_workers=num_cpus)
+
+        #     def cleanup_handler(*args):
+        #         cleanup(pool)
+        #         sys.exit(1)
+
+        #     signal.signal(signal.SIGINT, cleanup_handler)
+        #     signal.signal(signal.SIGTERM, cleanup_handler)
+
+        #     try:
+        #         for batch_start in range(0, len(api_configs), BATCH_SIZE):
+        #             batch = api_configs[batch_start : batch_start + BATCH_SIZE]
+        #             futures = {}
+        #             for config in batch:
+        #                 timeout = estimate_timeout(config)
+        #                 future = pool.schedule(
+        #                     run_test_case,
+        #                     [config, test_class, options.test_amp],
+        #                     timeout=timeout,
+        #                 )
+        #                 futures[future] = config
+
+        #             for future in as_completed(futures):
+        #                 config = futures[future]
+        #                 try:
+        #                     future.result()
+        #                 except TimeoutError as exc:
+        #                     write_to_log("timeout", config)
+        #                     print(
+        #                         f"[timeout] Test case timed out for {config}: {exc}",
+        #                         flush=True,
+        #                     )
+        #                     fail_case += 1
+        #                 except Exception as exc:
+        #                     write_to_log("crash", config)
+        #                     print(
+        #                         f"[fatal] Worker crashed for {config}: {exc}",
+        #                         flush=True,
+        #                     )
+        #                     fail_case += 1
+        #             aggregate_logs(mkdir=True)
+        #         print(f"{all_cases} cases tested, {fail_case} failed", flush=True)
+        #         pool.close()
+        #         pool.join()
+        #     except Exception as e:
+        #         print(f"Unexpected error: {e}", flush=True)
+        #         cleanup(pool)
+        #     finally:
+        #         aggregate_logs()
         else:
-            # Single GPU execution
+            # Single worker
             for config in api_configs:
                 run_test_case(config, test_class, options.test_amp)
 
