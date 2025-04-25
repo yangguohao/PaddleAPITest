@@ -1,0 +1,181 @@
+paddle.put_along_axis(Tensor([1, 8000],"float32"), Tensor([1, 799],"int64"), Tensor([1, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([10, 8000],"float32"), Tensor([10, 799],"int64"), Tensor([10, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([2, 8000],"float32"), Tensor([2, 799],"int64"), Tensor([2, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([3, 8000],"float32"), Tensor([3, 799],"int64"), Tensor([3, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([4, 8000],"float32"), Tensor([4, 799],"int64"), Tensor([4, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([5, 8000],"float32"), Tensor([5, 799],"int64"), Tensor([5, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([6, 8000],"float32"), Tensor([6, 799],"int64"), Tensor([6, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([64, 1327104],"float32"), Tensor([64, 1327104],"int64"), Tensor([64, 1327104],"float32"), 1, )
+paddle.put_along_axis(Tensor([7, 8000],"float32"), Tensor([7, 799],"int64"), Tensor([7, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([8, 8000],"float32"), Tensor([8, 799],"int64"), Tensor([8, 799],"float32"), 1, )
+paddle.put_along_axis(Tensor([9, 8000],"float32"), Tensor([9, 799],"int64"), Tensor([9, 799],"float32"), 1, )
+
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-04-25 05:49:43.703467 test begin: paddle.put_along_axis(Tensor([1, 8000],"float32"), Tensor([1, 799],"int64"), Tensor([1, 799],"float32"), 1, )
+W0425 05:49:46.412510 28206 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 12.0
+W0425 05:49:46.413888 28206 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([1, 8000],"float32"), Tensor([1, 799],"int64"), Tensor([1, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 12 / 8000 (0.15%)
+Max absolute difference: 2.3360677e+38
+Max relative difference: 56.51534
+ x: array([[ 9.257970e+37,  4.773195e-01, -7.286226e-02, ...,  2.129481e-02,
+         8.152824e+37, -2.621148e+37]], dtype=float32)
+ y: array([[ 9.257970e+37,  4.773195e-01, -7.286226e-02, ...,  2.129481e-02,
+         8.152824e+37, -2.621148e+37]], dtype=float32)
+2025-04-25 05:50:06.001083 test begin: paddle.put_along_axis(Tensor([10, 8000],"float32"), Tensor([10, 799],"int64"), Tensor([10, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([10, 8000],"float32"), Tensor([10, 799],"int64"), Tensor([10, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 150 / 80000 (0.188%)
+Max absolute difference: 3.2113153e+38
+Max relative difference: 2520.1882
+ x: array([[-5.881870e+37, -4.746643e-01, -1.548228e-01, ...,  9.738492e-02,
+        -1.680230e+37, -3.502728e-01],
+       [-2.054769e-01,  1.196379e-01,  8.645631e-02, ..., -2.110495e-01,...
+ y: array([[-5.881870e+37, -4.746643e-01, -1.548228e-01, ...,  9.738492e-02,
+        -1.680230e+37, -3.502728e-01],
+       [-2.054769e-01,  1.196379e-01,  8.645631e-02, ..., -2.110495e-01,...
+2025-04-25 05:50:06.207046 test begin: paddle.put_along_axis(Tensor([2, 8000],"float32"), Tensor([2, 799],"int64"), Tensor([2, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([2, 8000],"float32"), Tensor([2, 799],"int64"), Tensor([2, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 48 / 16000 (0.3%)
+Max absolute difference: 2.760365e+38
+Max relative difference: 35.76418
+ x: array([[ 1.647765e+38, -8.784043e-02, -2.861240e-01, ...,  4.472984e-02,
+         3.596870e-01, -2.717356e-01],
+       [ 3.270777e-01, -3.036613e-01,  2.533612e-01, ..., -1.711500e-01,
+         1.300558e-01,  5.274566e+37]], dtype=float32)
+ y: array([[ 1.647765e+38, -8.784043e-02, -2.861240e-01, ...,  4.472984e-02,
+         3.596870e-01, -2.717356e-01],
+       [ 3.270777e-01, -3.036613e-01,  2.533612e-01, ..., -1.711500e-01,
+         1.300558e-01,  5.274566e+37]], dtype=float32)
+2025-04-25 05:50:06.358542 test begin: paddle.put_along_axis(Tensor([3, 8000],"float32"), Tensor([3, 799],"int64"), Tensor([3, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([3, 8000],"float32"), Tensor([3, 799],"int64"), Tensor([3, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 45 / 24000 (0.188%)
+Max absolute difference: 3.2331863e+38
+Max relative difference: 28.956865
+ x: array([[ 4.680501e+37,  2.906183e-01, -4.329375e-01, ...,  2.128488e-01,
+        -2.399839e-01,  5.661834e-02],
+       [-1.598665e-01, -1.877748e-02, -7.521936e-02, ..., -1.473947e+38,...
+ y: array([[ 4.680501e+37,  2.906183e-01, -4.329375e-01, ...,  2.128488e-01,
+        -2.399839e-01,  5.661834e-02],
+       [-1.598665e-01, -1.877748e-02, -7.521936e-02, ..., -1.473947e+38,...
+2025-04-25 05:50:06.517915 test begin: paddle.put_along_axis(Tensor([4, 8000],"float32"), Tensor([4, 799],"int64"), Tensor([4, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([4, 8000],"float32"), Tensor([4, 799],"int64"), Tensor([4, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 80 / 32000 (0.25%)
+Max absolute difference: 2.7754871e+38
+Max relative difference: 29.116146
+ x: array([[-5.279191e+36,  4.112089e-01,  2.799482e-01, ..., -4.119786e-01,
+         2.415482e-02, -3.645576e-01],
+       [-4.385320e-01, -1.594546e-01,  4.302676e-01, ..., -7.595847e+37,...
+ y: array([[-5.279191e+36,  4.112089e-01,  2.799482e-01, ..., -4.119786e-01,
+         2.415482e-02, -3.645576e-01],
+       [-4.385320e-01, -1.594546e-01,  4.302676e-01, ..., -7.595847e+37,...
+2025-04-25 05:50:06.666919 test begin: paddle.put_along_axis(Tensor([5, 8000],"float32"), Tensor([5, 799],"int64"), Tensor([5, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([5, 8000],"float32"), Tensor([5, 799],"int64"), Tensor([5, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 88 / 40000 (0.22%)
+Max absolute difference: 2.6861273e+38
+Max relative difference: 63.661736
+ x: array([[ 1.145387e+38, -2.617204e-01, -1.638655e-01, ..., -1.435384e-01,
+         1.059619e+38,  8.685771e-02],
+       [ 1.820298e-01, -2.705390e-01, -4.868450e-01, ...,  2.999835e-01,...
+ y: array([[ 1.145387e+38, -2.617204e-01, -1.638655e-01, ..., -1.435384e-01,
+         1.059619e+38,  8.685771e-02],
+       [ 1.820298e-01, -2.705390e-01, -4.868450e-01, ...,  2.999835e-01,...
+2025-04-25 05:50:06.831064 test begin: paddle.put_along_axis(Tensor([6, 8000],"float32"), Tensor([6, 799],"int64"), Tensor([6, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([6, 8000],"float32"), Tensor([6, 799],"int64"), Tensor([6, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 115 / 48000 (0.24%)
+Max absolute difference: 3.1533813e+38
+Max relative difference: 98.92326
+ x: array([[ 4.948575e+37, -1.598556e-01, -2.627335e-01, ...,  1.132928e+38,
+         6.942010e-02, -4.255804e-01],
+       [-3.264082e-01,  8.030278e-02,  2.817231e-01, ...,  2.385078e-01,...
+ y: array([[ 4.948575e+37, -1.598556e-01, -2.627335e-01, ...,  1.132928e+38,
+         6.942010e-02, -4.255804e-01],
+       [-3.264082e-01,  8.030278e-02,  2.817231e-01, ...,  2.385078e-01,...
+2025-04-25 05:50:06.984277 test begin: paddle.put_along_axis(Tensor([64, 1327104],"float32"), Tensor([64, 1327104],"int64"), Tensor([64, 1327104],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([64, 1327104],"float32"), Tensor([64, 1327104],"int64"), Tensor([64, 1327104],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1430811 / 84934656 (1.68%)
+Max absolute difference: 3.401741e+38
+Max relative difference: 2506994.5
+ x: array([[ 1.507493e+38,  9.266924e+37, -2.659014e+37, ...,  7.153064e+37,
+         4.935945e+37, -2.539229e+37],
+       [ 1.544308e+38,  5.970667e+37, -4.013702e-01, ...,  5.813900e+37,...
+ y: array([[ 1.507493e+38,  9.266924e+37, -2.659014e+37, ...,  7.153064e+37,
+         4.935945e+37, -2.539229e+37],
+       [ 1.544308e+38,  5.970667e+37, -4.013702e-01, ...,  5.813900e+37,...
+2025-04-25 05:50:21.082364 test begin: paddle.put_along_axis(Tensor([7, 8000],"float32"), Tensor([7, 799],"int64"), Tensor([7, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([7, 8000],"float32"), Tensor([7, 799],"int64"), Tensor([7, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 129 / 56000 (0.23%)
+Max absolute difference: 3.2919462e+38
+Max relative difference: 63.077183
+ x: array([[-1.028002e+38,  1.302270e+38, -1.194851e-01, ..., -4.405358e-01,
+         3.600181e-01,  1.851523e-01],
+       [-4.835287e-01,  2.512971e-01, -2.504003e-01, ...,  2.125785e-01,...
+ y: array([[-1.028002e+38,  1.302270e+38, -1.194851e-01, ..., -4.405358e-01,
+         3.600181e-01,  1.851523e-01],
+       [-4.835287e-01,  2.512971e-01, -2.504003e-01, ...,  2.125785e-01,...
+2025-04-25 05:50:21.264054 test begin: paddle.put_along_axis(Tensor([8, 8000],"float32"), Tensor([8, 799],"int64"), Tensor([8, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([8, 8000],"float32"), Tensor([8, 799],"int64"), Tensor([8, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 131 / 64000 (0.205%)
+Max absolute difference: 3.249928e+38
+Max relative difference: 368.68378
+ x: array([[ 8.948120e+37, -3.068858e-01, -2.683352e-02, ..., -3.255189e-01,
+        -2.350210e-01, -1.805920e-01],
+       [ 1.458398e-01,  1.299153e+38, -3.537694e-01, ...,  3.746341e-01,...
+ y: array([[ 8.948120e+37, -3.068858e-01, -2.683352e-02, ..., -3.255189e-01,
+        -2.350210e-01, -1.805920e-01],
+       [ 1.458398e-01,  1.299153e+38, -3.537694e-01, ...,  3.746341e-01,...
+2025-04-25 05:50:21.414166 test begin: paddle.put_along_axis(Tensor([9, 8000],"float32"), Tensor([9, 799],"int64"), Tensor([9, 799],"float32"), 1, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.put_along_axis(Tensor([9, 8000],"float32"), Tensor([9, 799],"int64"), Tensor([9, 799],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 139 / 72000 (0.193%)
+Max absolute difference: 3.1851693e+38
+Max relative difference: 70.370544
+ x: array([[-9.329670e+37, -4.445956e-01,  2.729010e-01, ...,  2.856243e-01,
+         4.317718e-01,  3.371250e-03],
+       [-4.831262e-01, -3.787937e-01, -3.090092e-01, ...,  1.298967e-01,...
+ y: array([[-9.329670e+37, -4.445956e-01,  2.729010e-01, ...,  2.856243e-01,
+         4.317718e-01,  3.371250e-03],
+       [-4.831262e-01, -3.787937e-01, -3.090092e-01, ...,  1.298967e-01,...

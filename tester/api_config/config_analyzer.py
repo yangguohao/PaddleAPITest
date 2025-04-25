@@ -561,9 +561,6 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "index"):
                     x_dim = self.get_arg(api_config, 0, "x").shape[1]
                     self.numpy_tensor = numpy.random.randint(0, x_dim, size=self.shape)
-            elif api_config.api_name in ["paddle.index_select"]:
-                if self.check_arg(api_config, 1, "index"):
-                    self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
             elif api_config.api_name in ["paddle.incubate.nn.functional.fused_rotary_position_embedding"]:
                 q_shape = None
                 k_shape = None
@@ -1586,7 +1583,7 @@ class TensorConfig:
                     for i in range(s[-1]):
                         self.numpy_tensor[...,i]=(numpy.random.randint(0,org[i], size=self.numpy_tensor[...,i].shape)).astype(self.dtype)
 
-            elif api_config.api_name in ["paddle.Tensor.index_select"]:
+            elif api_config.api_name in ["paddle.Tensor.index_select", "paddle.index_select"]:
                 if self.check_arg(api_config,1,'index'):
                     axis=self.get_arg(api_config, 2, 'axis')
                     if axis is None:
