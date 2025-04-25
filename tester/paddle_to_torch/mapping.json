@@ -220,6 +220,9 @@
     "paddle.Tensor.log1p": {
         "torch_api": "torch.Tensor.log1p"
     },
+    "paddle.Tensor.logical_not": {
+        "torch_api": "torch.Tensor.logical_not"
+    },
     "m": "API started with 'm' should be placed here",
     "paddle.median": {
         "Rule": "MedianRule"
