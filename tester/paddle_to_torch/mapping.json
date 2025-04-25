@@ -78,6 +78,15 @@
     "paddle.cumprod": {
         "Rule": "CumprodRule"
     },
+    "paddle.Tensor.ceil":{
+        "torch_api": "torch.Tensor.ceil"
+    },
+    "paddle.Tensor.conj":{
+        "torch_api": "torch.Tensor.conj"
+    },
+    "paddle.Tensor.cos":{
+        "torch_api": "torch.Tensor.cos"
+    },
     "d": "API started with 'd' should be placed here",
     "paddle.divide": {
         "torch_api": "torch.divide",
@@ -186,6 +195,15 @@
     },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
+    "paddle.kthvalue":{
+        "torch_api": "torch.kthvalue",
+        "paddle_torch_args_map": {
+        "x": "input",
+        "k": "k",
+        "axis":"dim",
+        "keepdim":"keepdim"
+        }
+    },
     "l": "API started with 'l' should be placed here",
     "paddle.less": {
         "torch_api": "torch.lt",
@@ -331,6 +349,12 @@
         },
         "torch_kwargs": {
             "count_include_pad": "not {exclusive}"
+        }
+    },
+    "paddle.Tensor.nonzero": {
+        "torch_api": "torch.Tensor.nonzero",
+        "paddle_torch_args_map": {
+            "as_tuple": "as_tuple"
         }
     },
     "o": "API started with 'o' should be placed here",
