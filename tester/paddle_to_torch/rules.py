@@ -145,7 +145,7 @@ class GenericRule(BaseRule):
         code = []
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-            if not self.torch_api.startswith("torch.Tensor."):
+            if is_tensor_method and not self.torch_api.startswith("torch.Tensor."):
                 return ConvertResult.error(
                     paddle_api,
                     "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",

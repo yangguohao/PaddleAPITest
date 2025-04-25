@@ -183,6 +183,12 @@
     "paddle.Tensor.lgamma": {
         "torch_api": "torch.Tensor.lgamma"
     },
+    "paddle.Tensor.inverse": {
+        "torch_api": "torch.Tensor.inverse"
+    },
+    "paddle.Tensor.is_complex": {
+        "torch_api": "torch.Tensor.is_complex"
+    },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "l": "API started with 'l' should be placed here",
