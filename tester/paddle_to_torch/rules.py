@@ -103,7 +103,7 @@ class BaseRule(ABC):
         if self.direct_mapping:
             if "torch_api" not in mapping:
                 raise ValueError("Missing required field 'torch_api' in the mapping.")
-            self.torch_api: str = mapping["torch_api"]
+            self.torch_api: str = mapping.get("torch_api", "")
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
@@ -115,12 +115,41 @@ class BaseRule(ABC):
                         f"Missing required field 'torch_api' in composite step: {step}"
                     )
 
+    def apply_generic(self) -> List:
+        code = []
+        # if "torch_api" in self.mapping:
+        #     self.torch_api: str = self.mapping.get("torch_api", "")
+        if "import" in self.mapping:
+            imports = self.mapping.get("import", [])
+            for import_statement in imports:
+                code.append(f"import {import_statement}")
+            code.append("")
+        if "paddle_torch_args_map" in self.mapping:
+            args_map = self.mapping.get("paddle_torch_args_map", {})
+            code.append("for paddle_param, torch_param in {")
+            for paddle_param, torch_param in args_map.items():
+                code.append(f"    '{paddle_param}': '{torch_param}',")
+            code.append("}.items():")
+            code.append("    torch_param = locals().get(paddle_param)")
+        if "set_default" in self.mapping:
+            defaults = self.mapping.get("set_default", {})
+            for default_name, default_value in defaults.items():
+                code.append(
+                    f"{default_name} = locals().get('{default_name}', {default_value})"
+                )
+        return code
+
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
+            if not self.torch_api.startswith("torch.Tensor."):
+                return ConvertResult.error(
+                    paddle_api,
+                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
+                )
             if is_tensor_method:
                 code.append("_tmp_tensor = next(iter(kwargs.values()))")
             is_inplace = (
@@ -275,6 +304,7 @@ result = torch.empty(*size_list)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class ExpandRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -282,6 +312,7 @@ result = x.expand(*shape)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class ExpandasRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -306,7 +337,7 @@ result = x.expand_as(y)
 #         return result
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        #抽取对应维度的tensor直接进行stack操作
+        # 抽取对应维度的tensor直接进行stack操作
         impl = """
 x = locals().get('x')
 index = locals().get('index')
@@ -322,6 +353,7 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class Gather_ndRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -346,6 +378,7 @@ result = f.func(x,index)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+<<<<<<< HEAD
 class Gather_treeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -365,11 +398,14 @@ for batch in range(batch_size):
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)        
+=======
+>>>>>>> 206579ebcec54b7aa92075f312de4b9fdfd053b4
 
 # h
 
 
 # i
+<<<<<<< HEAD
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -388,6 +424,22 @@ result = torch.index_select( **_kwargs)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+=======
+class ItemRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = next(iter(kwargs.values()))
+args = locals().get('args')
+if args:
+    if len(args) == 1:
+        x = x.flatten()
+    result = x[*args].item()
+else:
+    result = x.item()
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+>>>>>>> 206579ebcec54b7aa92075f312de4b9fdfd053b4
 
 # j
 
@@ -399,9 +451,113 @@ result = torch.index_select( **_kwargs)
 
 
 # m
+class MedianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get('axis')
+keepdim = locals().get('keepdim', False)
+mode = locals().get('mode', 'avg')
+if axis is None:
+    x_flat = x.flatten()
+    length = x_flat.numel()
+    if length % 2 == 0 and mode == 'avg':
+        sorted_x = torch.sort(x_flat).values
+        mid = length // 2
+        median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
+    else:
+        median = torch.median(x_flat)
+else:
+    if mode == 'avg':
+        length = x.shape[axis] if x.ndim > 0 else 1
+        if length % 2 == 0:
+            sorted_x = torch.sort(x, dim=axis).values
+            mid = length // 2
+            median = (sorted_x.index_select(axis, torch.tensor([mid - 1])) + 
+                      sorted_x.index_select(axis, torch.tensor([mid]))) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.median(x, dim=axis, keepdim=keepdim).values
+    else:
+        median = torch.median(x, dim=axis, keepdim=keepdim)
+result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # n
+class NanmedianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get("axis")
+keepdim = locals().get("keepdim", False)
+mode = locals().get("mode", "avg")
+
+def single_axis_nanmedian(x, axis, keepdim, mode):
+    if mode == "avg":
+        valid_mask = ~torch.isnan(x)
+        if x.ndim == 0:
+            valid_x = x.masked_select(valid_mask).reshape(1)
+            length = valid_x.numel()
+        else:
+            valid_x = x.masked_select(valid_mask).reshape(
+                *[s if i != axis else -1 for i, s in enumerate(x.shape)]
+            )
+            length = valid_x.shape[axis]
+        if length % 2 == 0:
+            sorted_x = torch.sort(valid_x, dim=axis).values
+            non_nan_mask = ~torch.isnan(sorted_x)
+            sorted_x = sorted_x.masked_select(non_nan_mask).reshape(
+                *[s if i != axis else -1 for i, s in enumerate(sorted_x.shape)]
+            )
+            mid = length // 2
+            median = (
+                sorted_x.index_select(axis, torch.tensor([mid - 1]))
+                + sorted_x.index_select(axis, torch.tensor([mid]))
+            ) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.nanmedian(x, dim=axis, keepdim=keepdim).values
+    else:
+        median = torch.nanmedian(x, dim=axis, keepdim=keepdim)
+    return median
+
+if axis is None:
+    x = x.flatten()
+    valid_mask = ~torch.isnan(x)
+    valid_x = x[valid_mask]
+    length = valid_x.numel()
+    if length % 2 == 0 and mode == "avg":
+        sorted_x = torch.sort(valid_x).values
+        mid = length // 2
+        median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
+    else:
+        median = torch.nanmedian(x)
+elif isinstance(axis, int):
+    median = single_axis_nanmedian(x, axis, keepdim, mode)
+else:
+    axes = [ax % x.ndim for ax in axis]
+    non_axes = [i for i in range(x.ndim) if i not in axes]
+    perm = non_axes + list(axes)
+    x_permuted = x.permute(perm)
+    non_axes_shape = [x.shape[i] for i in non_axes]
+    flattened_size = 1
+    for ax in axes:
+        flattened_size *= x.shape[ax]
+    new_shape = non_axes_shape + [flattened_size]
+    x_flat = x_permuted.reshape(new_shape)
+    median = single_axis_nanmedian(x_flat, -1, False, mode)
+    if mode == "min":
+        median = median.values
+    if keepdim:
+        output_shape = [1 if i in axes else x.shape[i] for i in range(x.ndim)]
+        median = median.reshape(output_shape)
+result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # o
@@ -472,7 +628,8 @@ result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
-    
+
+
 class Roi_poolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -497,10 +654,67 @@ for i in range(boxnum.shape[0]):
     ans.append(boxes[begin:end,])
 """
         code = impl.splitlines()
-        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")
+        code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")  # type: ignore
         return ConvertResult.success(paddle_api, code, "result")
 
+
 # s
+class ScatterRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+overwrite = locals().get('overwrite', True)
+x = x.clone()
+index = index.view(-1, 1)
+try:
+    updates = updates.expand_as(x)
+except:
+    pass
+if not overwrite:
+    for i in range(index.shape[0]):
+        x[index[i]] = torch.zeros_like(x[index[i]])
+    for i in range(index.shape[0]):
+        x[index[i]] += updates[i]
+else:
+    for i in range(index.shape[0]):
+        x[index[i]] = updates[i]
+result = x    
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+class ScatterndRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+output = torch.zeros(shape, dtype=updates.dtype).to(updates.device)
+if index.numel() == 0:
+    result = output + updates
+else:
+    flat_index = index.view(-1, index.size(-1))
+    flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
+    for i in range(flat_index.size(0)):
+        idx_tuple = tuple(flat_index[i])
+        output[idx_tuple] += flat_updates[i]
+    result = output    
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
+class ScatterndaddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = x.clone()
+if index.numel() == 0:
+    result = x + updates
+else:
+    flat_index = index.view(-1, index.size(-1))
+    flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
+    for i in range(flat_index.size(0)):
+        idx_tuple = tuple(flat_index[i])
+        x[idx_tuple] += flat_updates[i]
+    result = x    
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # t

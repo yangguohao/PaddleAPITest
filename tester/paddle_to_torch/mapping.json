@@ -117,7 +117,20 @@
             "x": "input",
             "y": "other"
         }
-    },    
+    },
+    "paddle.floor_mod": {
+        "torch_api": "torch.fmod",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.frexp": {
+        "torch_api": "torch.frexp",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },       
     "g": "API started with 'g' should be placed here",
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
@@ -152,6 +165,24 @@
     },
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
+    "paddle.Tensor.isinf": {
+        "torch_api": "torch.Tensor.isinf"
+    },
+    "paddle.Tensor.isnan": {
+        "torch_api": "torch.Tensor.isnan"
+    },
+    "paddle.Tensor.item": {
+        "Rule": "ItemRule"
+    },
+    "paddle.Tensor.less": {
+        "torch_api": "torch.Tensor.less",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.lgamma": {
+        "torch_api": "torch.Tensor.lgamma"
+    },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "l": "API started with 'l' should be placed here",
@@ -180,7 +211,63 @@
         "description": "result = torch.lt(input=x, other=y)"
     },
     "m": "API started with 'm' should be placed here",
+    "paddle.median": {
+        "Rule": "MedianRule"
+    },
+    "paddle.mod": {
+        "torch_api": "torch.fmod",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.mod": {
+        "torch_api": "torch.Tensor.fmod",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.mode": {
+        "torch_api": "torch.mode",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
+    "paddle.Tensor.max": {
+        "torch_api": "torch.Tensor.max",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
+    "paddle.Tensor.min": {
+        "torch_api": "torch.Tensor.min",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
+    "paddle.Tensor.multiply": {
+        "torch_api": "torch.Tensor.mul",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
     "n": "API started with 'n' should be placed here",
+    "paddle.nanmedian": {
+        "Rule": "NanmedianRule"
+    },
+    "paddle.negative": {
+        "torch_api": "torch.negative",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
+    "paddle.Tensor.neg": {
+        "torch_api": "torch.Tensor.neg"
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.vision.ops.psroi_pool":{
@@ -203,7 +290,15 @@
         "Rule": "Roi_poolRule"
     },
     "s": "API started with 's' should be placed here",
-    "t": "API started with 't' should be placed here",
+    "paddle.scatter": {
+        "Rule": "ScatterRule"
+    },
+    "paddle.scatter_nd": {
+        "Rule": "ScatterndRule"
+    },
+    "paddle.scatter_nd_add": {
+        "Rule": "ScatterndaddRule"
+    },
     "paddle.Tensor.set_": {
         "torch_api": "torch.Tensor.set_",
         "paddle_torch_args_map": {
@@ -215,6 +310,7 @@
             "storage_offset": "(locals().get('{offset}') or 0) // _tmp_tensor.itemsize"
         }
     },
+    "t": "API started with 't' should be placed here",
     "u": "API started with 'u' should be placed here",
     "v": "API started with 'v' should be placed here",
     "w": "API started with 'w' should be placed here",
