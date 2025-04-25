@@ -246,10 +246,11 @@ class AvgPoolRule(BaseRule):
         head_code, map_code = self.apply_generic()
         func1 = """
 
-def _get_same_padding(input_size, kernel_size, stride):
+def _get_same_padding_1d(input_size, kernel_size, stride):
     if stride is None:
         stride = kernel_size
-    total_pad = max(0, (input_size - 1) * stride + kernel_size - input_size)
+    output_size = (input_size + stride - 1) // stride
+    total_pad = max(0, (output_size - 1) * stride + kernel_size - input_size)
     pad_left = total_pad // 2
     pad_right = total_pad - pad_left
     return pad_left, pad_right
@@ -258,7 +259,7 @@ if padding == "VALID":
     padding = 0
 elif padding == "SAME":
     input_size = x.shape[2]
-    pad_left, pad_right = _get_same_padding(input_size, kernel_size, stride)
+    pad_left, pad_right = _get_same_padding_1d(input_size, kernel_size, stride)
     padding = pad_left # 对称填充
     if pad_left != pad_right:
         x = torch.nn.functional.pad(x, (pad_left, pad_right))  # 非对称填充
@@ -273,17 +274,17 @@ elif isinstance(padding, (list, tuple)):
 if data_format == 'NHWC':
     x = x.permute(0, 2, 3, 1)
             
-def _get_same_padding(input_size, kernel_size, stride):
+def _get_same_padding_2d(input_size, kernel_size, stride):
     if isinstance(kernel_size, int):
         kernel_size = (kernel_size, kernel_size)
     if stride is None:
         stride = kernel_size
     if isinstance(stride, int):
         stride = (stride, stride)
-    
-    total_pad_h = max(0, (input_size[0] - 1) * stride[0] + kernel_size[0] - input_size[0])
-    total_pad_w = max(0, (input_size[1] - 1) * stride[1] + kernel_size[1] - input_size[1])
-
+    output_size_h = (input_size[0] + stride[0] - 1) // stride[0]
+    output_size_w = (input_size[1] + stride[1] - 1) // stride[1]
+    total_pad_h = max(0, (output_size_h - 1) * stride[0] + kernel_size[0] - input_size[0])
+    total_pad_w = max(0, (output_size_w - 1) * stride[1] + kernel_size[1] - input_size[1])
     pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_h, pad_w
@@ -292,7 +293,7 @@ if padding == "VALID":
     padding = 0
 elif padding == "SAME":
     x_size = (x.shape[2], x.shape[3])
-    pad_h, pad_w = _get_same_padding(x_size, kernel_size, stride)
+    pad_h, pad_w = _get_same_padding_2d(x_size, kernel_size, stride)
     padding = (pad_h[0], pad_w[0])
     if pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
         x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1]))
@@ -317,17 +318,19 @@ elif isinstance(padding, (list, tuple)):
 if data_format == 'NDHWC':
     x = x.permute(0, 4, 1, 2, 3)
         
-def _get_same_padding(input_size, kernel_size, stride):
+def _get_same_padding_3d(input_size, kernel_size, stride):
     if isinstance(kernel_size, int):
         kernel_size = (kernel_size,) * 3
     if stride is None:
         stride = kernel_size
     if isinstance(stride, int):
         stride = (stride,) * 3
-    
-    total_pad_d = max(0, (input_size[0] - 1) * stride[0] + kernel_size[0] - input_size[0])
-    total_pad_h = max(0, (input_size[1] - 1) * stride[1] + kernel_size[1] - input_size[1])
-    total_pad_w = max(0, (input_size[2] - 1) * stride[2] + kernel_size[2] - input_size[2])
+    output_size_d = (input_size[0] + stride[0] - 1) // stride[0]
+    output_size_h = (input_size[1] + stride[1] - 1) // stride[1]
+    output_size_w = (input_size[2] + stride[2] - 1) // stride[2]
+    total_pad_d = max(0, (output_size_d - 1) * stride[0] + kernel_size[0] - input_size[0])
+    total_pad_h = max(0, (output_size_h - 1) * stride[1] + kernel_size[1] - input_size[1])
+    total_pad_w = max(0, (output_size_w - 1) * stride[2] + kernel_size[2] - input_size[2])
     
     pad_d = (total_pad_d // 2, total_pad_d - total_pad_d // 2)
     pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
@@ -338,7 +341,7 @@ if padding == "VALID":
     padding = 0
 elif padding == "SAME":
     input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
-    pad_d, pad_h, pad_w = _get_same_padding(input_size, kernel_size, stride)
+    pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
     padding = (pad_d[0], pad_h[0], pad_w[0])  # 对称填充
     if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
         x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
@@ -359,10 +362,8 @@ elif isinstance(padding, (list, tuple)):
             pad_front, pad_back = padding[1][0], padding[1][1]
             pad_top, pad_bottom = padding[2][0], padding[2][1]
             pad_left, pad_right = padding[3][0], padding[3][1]
-        x = F.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-        return x, 0
-elif isinstance(padding, int):
-    return x, padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
