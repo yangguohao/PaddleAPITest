@@ -1,0 +1,145 @@
+paddle.nn.functional.batch_norm(Tensor([2, 1, 2, 3],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, )
+paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, )
+paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), training=False, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=False, )
+paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=False, )
+paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, )
+paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, )
+
+
+2025-04-25 11:19:28.146192 23342 test begin: paddle.nn.functional.batch_norm(Tensor([2, 1, 2, 3],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+W0425 11:19:32.827170 23402 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0425 11:19:32.828753 23402 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+One of the differentiated Tensors does not require grad
+W0425 11:19:59.978416 23402 gpu_resources.cc:306] WARNING: device: 0. The installed Paddle is compiled with CUDNN 8.9, but CUDNN version in your machine is 8.8, which may cause serious incompatible bug. Please recompile or reinstall Paddle with compatible CUDNN version.
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([2, 1, 2, 3],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[nan, nan, nan],
+         [nan, nan, nan]]],
+...
+ DESIRED: array([[[[0.352104, 0.38554 , 0.425251],
+         [0.342989, 0.312814, 0.371863]]],
+...
+2025-04-25 11:20:04.182440 23342 test begin: paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[ 0.229671, -0.512323, -0.064498],
+         [ 0.034271, -0.547037, -0.044404],
+         [-0.236554, -0.313919, -0.017924]],...
+ DESIRED: array([[[[      nan, -0.469117,       nan],
+         [      nan, -0.488054,       nan],
+         [      nan, -0.360886,       nan]],...
+2025-04-25 11:20:04.933581 23342 test begin: paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[nan, nan, nan],
+         [nan, nan, nan],
+         [nan, nan, nan]],...
+ DESIRED: array([[[[-0.549094,  0.388506,  0.146397],
+         [ 0.170185,  0.185538,  0.080563],
+         [ 0.719439,  0.006209, -0.026085]],...
+2025-04-25 11:20:05.091374 23342 test begin: paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), training=False, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=False, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), training=False, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=False, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[ 0.12803 ,  0.025963,  0.103936, ...,  0.319887,  0.205042,
+           0.325666],
+         [ 0.090541,  0.283519,  0.107197, ...,  0.018795,  0.331126,...
+ DESIRED: array([[[[ 5.468924e-02,  4.650270e-03,  4.287717e-02, ...,
+           1.487482e-01,  9.244457e-02,  1.515815e-01],
+         [ 3.631021e-02,  1.309184e-01,  4.447569e-02, ...,...
+2025-04-25 11:20:05.243152 23342 test begin: paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), Tensor([6],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[-0.205787, -0.687734, -0.13353 , ..., -0.535988, -0.172582,
+          -0.677349],
+         [-0.381851, -0.719852, -0.35071 , ..., -0.550215, -0.021089,...
+ DESIRED: array([[[[-4.652002e-02, -7.810223e-01,  6.360145e-02, ...,
+          -5.497565e-01,  4.085268e-03, -7.651954e-01],
+         [-3.148476e-01, -8.299710e-01, -2.673863e-01, ...,...
+2025-04-25 11:20:05.398069 23342 test begin: paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=False, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=False, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[ 0.250314, -0.023474,  0.339749, ...,  0.168258, -0.074596,
+          -0.243943],
+         [ 0.313161,  0.287349,  0.520787, ..., -0.10913 ,  0.080979,...
+ DESIRED: array([[[[ 2.254656e-01,  3.692093e-02,  2.870554e-01, ...,
+           1.689579e-01,  1.715903e-03, -1.149055e-01],
+         [ 2.687454e-01,  2.509704e-01,  4.117278e-01, ...,...
+2025-04-25 11:20:05.553650 23342 test begin: paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([4, 6, 12, 24],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), Tensor([6],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[ 2.979240e-01, -3.022260e-01, -4.930308e-01, ...,
+          -4.236074e-01, -5.783164e-01,  1.544710e-01],
+         [-5.159625e-01, -2.412884e-01,  2.584307e-01, ...,...
+ DESIRED: array([[[[ 3.563336e-01, -5.315599e-01, -8.138466e-01, ...,
+          -7.111380e-01, -9.400226e-01,  1.441016e-01],
+         [-8.477729e-01, -4.414056e-01,  2.979051e-01, ...,...
+2025-04-25 11:20:05.707336 23342 test begin: paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), Tensor([8],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[          nan,           nan,           nan, ...,
+                    nan,           nan,           nan],
+         [          nan,           nan,           nan, ...,...
+ DESIRED: array([[[[-2.114250e-01,  5.898309e-02, -1.341114e-01, ...,
+          -1.818623e-01, -1.218124e-01,  2.951828e-02],
+         [ 8.920916e-02,  4.951822e-02, -2.620057e-01, ...,...
+2025-04-25 11:20:05.866951 23342 test begin: paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[-5.119750e-01,  5.495361e-01,  7.648502e-02, ...,
+          -1.561598e-01, -8.032336e-02,  6.995144e-01],
+         [ 6.301850e-01,  5.947966e-01,  4.706893e-01, ...,...
+ DESIRED: array([[[[-4.526457e-02,           nan,           nan, ...,
+          -5.960022e-02, -4.052687e-01,           nan],
+         [ 1.090028e+00,           nan,           nan, ...,...
+2025-04-25 11:20:06.048785 23342 test begin: paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+nan location mismatch:
+ ACTUAL: array([[[[      nan,  0.37078 ,  0.41404 , ..., -0.372915,       nan,
+                nan],
+         [      nan,  0.685302,  0.333545, ..., -0.473796,       nan,...
+ DESIRED: array([[[[-8.620895e-01,  8.061345e-02,  4.283745e-01, ...,
+          -2.740256e-01, -3.017201e-01, -2.714382e-01],
+         [-7.731683e-01,  7.418186e-01,  2.633572e-01, ...,...

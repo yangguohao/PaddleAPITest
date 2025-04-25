@@ -342,6 +342,26 @@
             "count_include_pad": "not {exclusive} "
         }
     },
+    "paddle.nn.functional.batch_norm": {
+        "Rule": "BatchNormRule",
+        "torch_api": "torch.nn.functional.batch_norm",
+        "set_defaults": {
+            "momentum": 0.9,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "running_mean": "running_mean",
+            "running_var": "running_var",
+            "weight": "weight",
+            "bias": "bias",
+            "epsilon": "eps",
+            "training": "training"
+        },
+        "torch_kwargs": {
+            "momentum": "1 - {momentum}"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.vision.ops.psroi_pool":{

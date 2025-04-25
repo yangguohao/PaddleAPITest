@@ -402,6 +402,32 @@ class BroadcastTensorsRule(BaseRule):
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class BatchNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if data_format == 'NHWC':
+    x = x.permute(0, 3, 1, 2)
+if 'running_mean' in locals():
+    running_mean.requires_grad = False
+if 'running_var' in locals():
+    running_var.requires_grad = False
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if data_format == 'NHWC':
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 # c
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
