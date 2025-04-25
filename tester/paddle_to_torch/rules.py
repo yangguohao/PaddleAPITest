@@ -5,6 +5,8 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
+import paddle
+
 
 @dataclass
 class ConvertResult:
@@ -107,6 +109,7 @@ class BaseRule(ABC):
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
+            self.is_attribute: bool = mapping.get("is_attribute", False)
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
             for step in self.composite_steps:
@@ -124,19 +127,31 @@ class BaseRule(ABC):
             for import_statement in imports:
                 code.append(f"import {import_statement}")
             code.append("")
-        if "paddle_torch_args_map" in self.mapping:
-            args_map = self.mapping.get("paddle_torch_args_map", {})
-            code.append("for paddle_param, torch_param in {")
-            for paddle_param, torch_param in args_map.items():
-                code.append(f"    '{paddle_param}': '{torch_param}',")
-            code.append("}.items():")
-            code.append("    torch_param = locals().get(paddle_param)")
         if "set_default" in self.mapping:
             defaults = self.mapping.get("set_default", {})
             for default_name, default_value in defaults.items():
                 code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
                 )
+        if "torch_args" in self.mapping:
+            args = self.mapping.get("torch_args", [])
+            code.append("_args = []")
+            for arg in args:
+                code.append(f"_args.extend([{self._format_arg(arg)}])")
+        if "torch_kwargs" in self.mapping or "paddle_torch_args_map" in self.mapping:
+            code.append("_kwargs = {}")
+        if "torch_kwargs" in self.mapping:
+            kwargs = self.mapping.get("torch_kwargs", {})
+            for key, value in kwargs.items():
+                code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+        if "paddle_torch_args_map" in self.mapping:
+            args_map = self.mapping.get("paddle_torch_args_map", {})
+            code.append("for paddle_param, torch_param in {")
+            for paddle_param, torch_param in args_map.items():
+                code.append(f"    '{paddle_param}': '{torch_param}',")
+            code.append("}.items():")
+            code.append("    if paddle_param in locals():")
+            code.append("        _kwargs[torch_param] = locals()[paddle_param]")
         return code
 
 
@@ -145,13 +160,16 @@ class GenericRule(BaseRule):
         code = []
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-            if is_tensor_method and not self.torch_api.startswith("torch.Tensor."):
-                return ConvertResult.error(
-                    paddle_api,
-                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
-                )
             if is_tensor_method:
+                if not self.torch_api.startswith("torch.Tensor."):
+                    return ConvertResult.error(
+                        paddle_api,
+                        "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
+                    )
                 code.append("_tmp_tensor = next(iter(kwargs.values()))")
+                if self.is_attribute:
+                    code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
+                    return ConvertResult.success(paddle_api, code)
             is_inplace = (
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
@@ -213,6 +231,21 @@ class ErrorRule(BaseRule):
 
 
 # a
+class AvgPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        code = self.apply_generic()
+        impl = """
+data_format = locals().get('data_format', 'NCHW')
+if data_format == 'NHWC':
+    x.permute_(0, 3, 1, 2)
+""" if paddle_api == "paddle.nn.functional.avg_pool2d" else """
+data_format = locals().get('data_format', 'NCDHW')
+if data_format == 'NDHWC':
+    x.permute_(0, 4, 1, 2, 3)
+"""
+        code.extend(impl.splitlines())
+        code.append(f"result = {self.torch_api}(**_kwargs)")
+        return ConvertResult.success(paddle_api, code)
 
 
 # b
@@ -394,6 +427,7 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 # j
 
@@ -603,6 +637,7 @@ result = x
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class ScatterndRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -619,7 +654,8 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class ScatterndaddRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
