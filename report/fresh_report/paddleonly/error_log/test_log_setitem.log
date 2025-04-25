@@ -1,0 +1,5 @@
+2025-04-23 23:10:09.818963 test begin: paddle.Tensor.__setitem__(Tensor([128, 128, 64],"float32"), tuple(Tensor([502],"int64"),Tensor([502],"int64"),), Tensor([502, 64],"float32"), )
+
+[paddle error] paddle.Tensor.__setitem__(Tensor([128, 128, 64],"float32"), tuple(Tensor([502],"int64"),Tensor([502],"int64"),), Tensor([502, 64],"float32"), ) 
+ (InvalidArgument) The 2-th dimension of input tensor (502) must match or be broadcastable to the corresponding dimension (128) in shape.
+  [Hint: Expected vec_in_dims[i] == 1 || vec_in_dims[i] == expand_shape[i] == true, but received vec_in_dims[i] == 1 || vec_in_dims[i] == expand_shape[i]:0 != true:1.] (at ../paddle/phi/kernels/gpu/expand_kernel.cu:63)

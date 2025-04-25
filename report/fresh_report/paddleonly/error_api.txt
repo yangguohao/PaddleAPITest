@@ -30,4 +30,7 @@ paddle.view
 paddle.incubate.nn.functional.fused_rms_norm
 paddle.incubate.nn.functional.masked_multihead_attention
 paddle.meshgrid
+paddle.put_along_axis
 paddle.Tensor.__mul__
+paddle.Tensor.__setitem__
+paddle.nn.functional.binary_cross_entropy_with_logits
