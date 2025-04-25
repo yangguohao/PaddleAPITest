@@ -33,7 +33,7 @@ def estimate_timeout(api_config) -> float:
     TIMEOUT_STEPS = (
         # (1e4, 10),
         # (1e5, 30),
-        (1e6, 60),
+        (1e6, 90),
         (1e7, 300),
         (1e8, 1800),
         (float("inf"), 3600),
@@ -117,7 +117,6 @@ def run_test_case(api_config_str, test_class, test_amp):
 
 def main():
     print(f"Main process id: {os.getpid()}")
-    set_engineV2()
     set_start_method("spawn")
 
     parser = argparse.ArgumentParser(description="API Test")
@@ -188,12 +187,13 @@ def main():
             return
 
         api_configs = sorted(api_configs - finish_configs)
-        all_cases = len(api_configs)
+        all_case = len(api_configs)
         fail_case = 0
-        print(all_cases, "cases will be tested.", flush=True)
+        print(all_case, "cases will be tested.", flush=True)
 
         if options.num_gpus > 0:
             # Multi GPUs
+            set_engineV2()
             BATCH_SIZE = 16384
             num_gpus = options.num_gpus
             num_workers_per_gpu = options.num_workers_per_gpu
@@ -252,7 +252,7 @@ def main():
                             )
                             fail_case += 1
                     aggregate_logs(mkdir=True)
-                print(f"{all_cases} cases tested, {fail_case} failed", flush=True)
+                print(f"{all_case} cases tested, {fail_case} failed.", flush=True)
                 pool.close()
                 pool.join()
             except Exception as e:
@@ -319,6 +319,7 @@ def main():
             # Single worker
             for config in api_configs:
                 run_test_case(config, test_class, options.test_amp)
+            print(f"{all_case} cases tested.", flush=True)
 
 
 if __name__ == "__main__":

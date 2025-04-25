@@ -174,7 +174,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
         "<api_name>": {
             "torch_api": "torch api 名称（torch_api 与 composite_steps 必须定义其一）",
             "paddle_torch_args_map": {
-                "_description": "参数名映射字典，键对应 paddle ，值对应 torch",
+                "_description": "参数名映射字典，键对应 paddle，值对应 torch",
             },
             "torch_args": [
                 "torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \\ 转义，也可以直接设为常值"
@@ -205,7 +205,25 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
         }
     ```
 
-    对于 paddle.crop 而言，在 mapping.json 的 "c" 条目下注册 Rule 类：
+    此外，也可以添加更多的常规配置，以减少 Rule 类代码的编写量（需要主动使用 apply_generic() 方法获取 code ）：
+
+    ```json
+        "<api_name>": {
+            "Rule": "自定义的 Rule 类的类名",
+            "torch_api": "torch api 名称",
+            "paddle_torch_args_map": {
+                "_description": "参数名映射字典，键对应 paddle，值对应 torch"
+            },
+            "set_default": {
+                "_description": "默认值设置字典，键为参数名，值为默认值"
+            },
+            "import": [
+                "需要导入的模块名列表"
+            ]
+        }
+    ```
+
+    对于 paddle.crop 而言，直接在 mapping.json 的 "c" 条目下注册 Rule 类：
 
     ```json
         "paddle.crop":{

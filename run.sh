@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # 配置参数
-INPUT_FILE="tester/api_config/api_config_support2torch_1.txt"
+INPUT_FILE="tester/api_config/api_config_temp.txt"
 LOG_DIR="tester/api_config/test_log"
-NUM_GPUS=8
+NUM_GPUS=0
 NUM_WORKERS_PER_GPU=1
 
 mkdir -p "$LOG_DIR" || { echo "无法创建日志目录 $LOG_DIR"; exit 1; }
