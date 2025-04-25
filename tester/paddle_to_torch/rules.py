@@ -245,6 +245,31 @@ class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         func1 = """
+
+def _get_same_padding(input_size, kernel_size, stride):
+    if stride is None:
+        stride = kernel_size
+    total_pad = max(0, (input_size - 1) * stride + kernel_size - input_size)
+    pad_left = total_pad // 2
+    pad_right = total_pad - pad_left
+    return pad_left, pad_right
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    input_size = x.shape[2]
+    pad_left, pad_right = _get_same_padding(input_size, kernel_size, stride)
+    padding = pad_left # 对称填充
+    if pad_left != pad_right:
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))  # 非对称填充
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:  # [pad_left, pad_right]
+        pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))
+        padding = 0
+"""
+        func2 = """
 if data_format == 'NHWC':
     x = x.permute(0, 2, 3, 1)
             
@@ -288,7 +313,7 @@ elif isinstance(padding, (list, tuple)):
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
         padding = 0
 """
-        func2 = """
+        func3 = """
 if data_format == 'NDHWC':
     x = x.permute(0, 4, 1, 2, 3)
         
@@ -340,31 +365,31 @@ elif isinstance(padding, int):
     return x, padding
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl1 = """
+        impl2 = """
 if data_format == 'NHWC':
     result = result.permute(0, 3, 1, 2)
 """
-        impl2 = """
+        impl3 = """
 if data_format == 'NDHWC':
     result = result.permute(0, 2, 3, 4, 1)
 """
         if paddle_api == "paddle.nn.functional.avg_pool1d":
-            code = head_code + map_code + core.splitlines()
+            code = head_code + func1.splitlines() + map_code + core.splitlines()
         elif paddle_api == "paddle.nn.functional.avg_pool2d":
-            code = (
-                head_code
-                + func1.splitlines()
-                + map_code
-                + core.splitlines()
-                + impl1.splitlines()
-            )
-        else:
             code = (
                 head_code
                 + func2.splitlines()
                 + map_code
                 + core.splitlines()
                 + impl2.splitlines()
+            )
+        else:
+            code = (
+                head_code
+                + func3.splitlines()
+                + map_code
+                + core.splitlines()
+                + impl3.splitlines()
             )
         return ConvertResult.success(paddle_api, code)
 
