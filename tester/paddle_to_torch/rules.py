@@ -107,6 +107,7 @@ class BaseRule(ABC):
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
+            self.is_attribute: bool = mapping.get("is_attribute", False)
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
             for step in self.composite_steps:
@@ -145,13 +146,16 @@ class GenericRule(BaseRule):
         code = []
         if self.direct_mapping:  # 直接映射
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-            if is_tensor_method and not self.torch_api.startswith("torch.Tensor."):
-                return ConvertResult.error(
-                    paddle_api,
-                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
-                )
             if is_tensor_method:
+                if not self.torch_api.startswith("torch.Tensor."):
+                    return ConvertResult.error(
+                        paddle_api,
+                        "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
+                    )
                 code.append("_tmp_tensor = next(iter(kwargs.values()))")
+                if self.is_attribute:
+                    code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
+                    return ConvertResult.success(paddle_api, code)
             is_inplace = (
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"

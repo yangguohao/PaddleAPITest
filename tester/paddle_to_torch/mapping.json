@@ -165,14 +165,9 @@
     "paddle.Tensor.item": {
         "Rule": "ItemRule"
     },
-    "paddle.Tensor.less": {
-        "torch_api": "torch.Tensor.less",
-        "paddle_torch_args_map": {
-            "y": "other"
-        }
-    },
-    "paddle.Tensor.lgamma": {
-        "torch_api": "torch.Tensor.lgamma"
+    "paddle.Tensor.imag": {
+        "torch_api": "torch.Tensor.imag",
+        "is_attribute": true
     },
     "paddle.Tensor.inverse": {
         "torch_api": "torch.Tensor.inverse"
@@ -206,6 +201,24 @@
             "y": "other"
         },
         "description": "result = torch.lt(input=x, other=y)"
+    },
+    "paddle.Tensor.less": {
+        "torch_api": "torch.Tensor.less",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.lgamma": {
+        "torch_api": "torch.Tensor.lgamma"
+    },
+    "paddle.Tensor.log": {
+        "torch_api": "torch.Tensor.log"
+    },
+    "paddle.Tensor.log10": {
+        "torch_api": "torch.Tensor.log10"
+    },
+    "paddle.Tensor.log1p": {
+        "torch_api": "torch.Tensor.log1p"
     },
     "m": "API started with 'm' should be placed here",
     "paddle.median": {
