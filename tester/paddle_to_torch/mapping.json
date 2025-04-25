@@ -132,11 +132,20 @@
         }
     },       
     "g": "API started with 'g' should be placed here",
+    "paddle.gather_nd": {
+        "Rule": "Gather_ndRule"
+    },
+    "paddle.gather": {
+        "Rule": "GatherRule"
+    },
     "paddle.Tensor.gather":{
         "Rule": "GatherRule"
     },
     "paddle.Tensor.gather_nd":{
         "Rule": "Gather_ndRule"
+    },
+    "paddle.nn.functional.gather_tree":{
+        "Rule": "Gather_treeRule"
     },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
@@ -329,6 +338,12 @@
     "paddle.vision.ops.psroi_pool":{
         "torch_api":"torchvision.ops.ps_roi_pool",
         "Rule": "Roi_poolRule"
+    },
+    "paddle.Tensor.put_along_axis": {
+        "Rule": "Put_along_axisRule"
+    },
+    "paddle.put_along_axis": {
+        "Rule": "Put_along_axisRule"
     },
     "q": "API started with 'q' should be placed here",
     "r": "API started with 'r' should be placed here",
@@ -948,12 +963,7 @@
         "min_input_args": 2
     },
     "paddle.Tensor.index_select": {
-        "torch_api": "torch.Tensor.index_select",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "index": "index"
-        },
-        "min_input_args": 2
+        "Rule": "IndexSelectRule"
     },
     "paddle.Tensor.inner": {
         "torch_api": "torch.Tensor.inner",
@@ -3126,13 +3136,7 @@
         "min_input_args": 4
     },
     "paddle.index_select": {
-        "torch_api": "torch.index_select",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "index": "index"
-        },
-        "min_input_args": 3
+        "Rule": "IndexSelectRule"
     },
     "paddle.inner": {
         "torch_api": "torch.inner",
