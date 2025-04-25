@@ -377,8 +377,6 @@ result = f.func(x,index)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-
-<<<<<<< HEAD
 class Gather_treeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -398,14 +396,10 @@ for batch in range(batch_size):
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)        
-=======
->>>>>>> 206579ebcec54b7aa92075f312de4b9fdfd053b4
-
 # h
 
 
 # i
-<<<<<<< HEAD
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -424,7 +418,7 @@ result = torch.index_select( **_kwargs)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
-=======
+    
 class ItemRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -439,7 +433,6 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
->>>>>>> 206579ebcec54b7aa92075f312de4b9fdfd053b4
 
 # j
 
@@ -574,21 +567,24 @@ src = locals().get('values')
 reduce = locals().get('reduce', 'assign')
 if reduce == 'add':
     reduce = 'sum'
-if reduce == 'multiply':
+if reduce == 'mul':
     reduce = 'prod'
 include_self = locals().get('include_self', True)
 broadcast = locals().get('broadcast', True)
-flag = True
-if broadcast == True:
+
+def infer_broadcast_shape(input, index, dim):
+    broadcast_shape_list = list(input.shape)
+    broadcast_shape_list[dim] = list(index.shape)[dim]
+    broadcast_shape = tuple(broadcast_shape_list)
     for i in range(len(input.shape)):
-        if input.shape[i] < indices.shape[i]:
-            flag = False
-    if flag == False:
-        src, index= torch.broadcast_tensor(src, index)
-    else:
-        broadcast_shape_list = list(input.shape)
-        broadcast_shape_list[dim] = list(index.shape)[dim]
-        broadcast_shape = tuple(broadcast_shape_list)
+        if input.shape[i] < index.shape[i]:
+            # if indices matrix has larger size than arr matrix, do not broadcast.
+            return None
+    return broadcast_shape
+
+if broadcast == True:
+    broadcast_shape = infer_broadcast_shape(arr, indices, axis)
+    if broadcast_shape:
         index = torch.broadcast_to(index, broadcast_shape)
         src = torch.broadcast_to(src, broadcast_shape)
 if reduce == 'assign':
