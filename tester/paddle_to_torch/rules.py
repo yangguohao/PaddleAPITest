@@ -110,6 +110,8 @@ class BaseRule(ABC):
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
             self.is_attribute: bool = mapping.get("is_attribute", False)
+            self.imports: List = mapping.get("import", [])
+            self.defaults: Dict = mapping.get("set_defaults", {})
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
             for step in self.composite_steps:
@@ -118,47 +120,55 @@ class BaseRule(ABC):
                         f"Missing required field 'torch_api' in composite step: {step}"
                     )
 
-    def apply_generic(self) -> List:
-        code = []
+    def apply_generic(self):
+        head_code = []
         # if "torch_api" in self.mapping:
         #     self.torch_api: str = self.mapping.get("torch_api", "")
         if "import" in self.mapping:
             imports = self.mapping.get("import", [])
             for import_statement in imports:
-                code.append(f"import {import_statement}")
-            code.append("")
-        if "set_default" in self.mapping:
-            defaults = self.mapping.get("set_default", {})
+                head_code.append(f"import {import_statement}")
+            head_code.append("")
+        if "set_defaults" in self.mapping:
+            defaults = self.mapping.get("set_defaults", {})
             for default_name, default_value in defaults.items():
-                code.append(
+                head_code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
                 )
+        map_code = []
         if "torch_args" in self.mapping:
             args = self.mapping.get("torch_args", [])
-            code.append("_args = []")
+            map_code.append("_args = []")
             for arg in args:
-                code.append(f"_args.extend([{self._format_arg(arg)}])")
+                map_code.append(f"_args.extend([{self._format_arg(arg)}])")
         if "torch_kwargs" in self.mapping or "paddle_torch_args_map" in self.mapping:
-            code.append("_kwargs = {}")
+            map_code.append("_kwargs = {}")
         if "torch_kwargs" in self.mapping:
             kwargs = self.mapping.get("torch_kwargs", {})
             for key, value in kwargs.items():
-                code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+                map_code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
         if "paddle_torch_args_map" in self.mapping:
             args_map = self.mapping.get("paddle_torch_args_map", {})
-            code.append("for paddle_param, torch_param in {")
+            map_code.append("for paddle_param, torch_param in {")
             for paddle_param, torch_param in args_map.items():
-                code.append(f"    '{paddle_param}': '{torch_param}',")
-            code.append("}.items():")
-            code.append("    if paddle_param in locals():")
-            code.append("        _kwargs[torch_param] = locals()[paddle_param]")
-        return code
+                map_code.append(f"    '{paddle_param}': '{torch_param}',")
+            map_code.append("}.items():")
+            map_code.append("    if paddle_param in locals():")
+            map_code.append("        _kwargs[torch_param] = locals()[paddle_param]")
+        return head_code, map_code
 
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
-        if self.direct_mapping:  # 直接映射
+        if self.direct_mapping:  # 直接映射)
+            for import_statement in self.imports:
+                code.append(f"import {import_statement}")
+            code.append("")
+            for default_name, default_value in self.defaults.items():
+                code.append(
+                    f"{default_name} = locals().get('{default_name}', {default_value})"
+                )
             is_tensor_method = paddle_api.startswith("paddle.Tensor.")
             if is_tensor_method:
                 if not self.torch_api.startswith("torch.Tensor."):
@@ -233,18 +243,155 @@ class ErrorRule(BaseRule):
 # a
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        code = self.apply_generic()
-        impl = """
-data_format = locals().get('data_format', 'NCHW')
-if data_format == 'NHWC':
-    x.permute_(0, 3, 1, 2)
-""" if paddle_api == "paddle.nn.functional.avg_pool2d" else """
-data_format = locals().get('data_format', 'NCDHW')
-if data_format == 'NDHWC':
-    x.permute_(0, 4, 1, 2, 3)
+        head_code, map_code = self.apply_generic()
+        func1 = """
+
+def _get_same_padding_1d(input_size, kernel_size, stride):
+    if stride is None:
+        stride = kernel_size
+    output_size = (input_size + stride - 1) // stride
+    total_pad = max(0, (output_size - 1) * stride + kernel_size - input_size)
+    pad_left = total_pad // 2
+    pad_right = total_pad - pad_left
+    return pad_left, pad_right
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    input_size = x.shape[2]
+    pad_left, pad_right = _get_same_padding_1d(input_size, kernel_size, stride)
+    padding = pad_left # 对称填充
+    if pad_left != pad_right:
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))  # 非对称填充
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:  # [pad_left, pad_right]
+        pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))
+        padding = 0
 """
-        code.extend(impl.splitlines())
-        code.append(f"result = {self.torch_api}(**_kwargs)")
+        func2 = """
+if data_format == 'NHWC':
+    x = x.permute(0, 2, 3, 1)
+            
+def _get_same_padding_2d(input_size, kernel_size, stride):
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size, kernel_size)
+    if stride is None:
+        stride = kernel_size
+    if isinstance(stride, int):
+        stride = (stride, stride)
+    output_size_h = (input_size[0] + stride[0] - 1) // stride[0]
+    output_size_w = (input_size[1] + stride[1] - 1) // stride[1]
+    total_pad_h = max(0, (output_size_h - 1) * stride[0] + kernel_size[0] - input_size[0])
+    total_pad_w = max(0, (output_size_w - 1) * stride[1] + kernel_size[1] - input_size[1])
+    pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
+    pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
+    return pad_h, pad_w
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    x_size = (x.shape[2], x.shape[3])
+    pad_h, pad_w = _get_same_padding_2d(x_size, kernel_size, stride)
+    padding = (pad_h[0], pad_w[0])
+    if pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
+        x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1]))
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:  # [pad_height, pad_width]
+        padding = tuple(padding)
+    elif len(padding) == 4:
+        if all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 4D 填充格式(NCHW 或 NHWC)
+            if data_format == "NCHW":
+                pad_top, pad_bottom = padding[2][0], padding[2][1]
+                pad_left, pad_right = padding[3][0], padding[3][1]
+            else:  # NHWC
+                pad_top, pad_bottom = padding[1][0], padding[1][1]
+                pad_left, pad_right = padding[2][0], padding[2][1]
+        else: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+            pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
+        padding = 0
+"""
+        func3 = """
+if data_format == 'NDHWC':
+    x = x.permute(0, 4, 1, 2, 3)
+        
+def _get_same_padding_3d(input_size, kernel_size, stride):
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size,) * 3
+    if stride is None:
+        stride = kernel_size
+    if isinstance(stride, int):
+        stride = (stride,) * 3
+    output_size_d = (input_size[0] + stride[0] - 1) // stride[0]
+    output_size_h = (input_size[1] + stride[1] - 1) // stride[1]
+    output_size_w = (input_size[2] + stride[2] - 1) // stride[2]
+    total_pad_d = max(0, (output_size_d - 1) * stride[0] + kernel_size[0] - input_size[0])
+    total_pad_h = max(0, (output_size_h - 1) * stride[1] + kernel_size[1] - input_size[1])
+    total_pad_w = max(0, (output_size_w - 1) * stride[2] + kernel_size[2] - input_size[2])
+    
+    pad_d = (total_pad_d // 2, total_pad_d - total_pad_d // 2)
+    pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
+    pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
+    return pad_d, pad_h, pad_w
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+    pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+    padding = (pad_d[0], pad_h[0], pad_w[0])  # 对称填充
+    if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
+        x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+        padding = tuple(padding)
+    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+    elif len(padding) == 5 and all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 5D 填充格式
+        if data_format == "NCDHW":
+            pad_front, pad_back = padding[2][0], padding[2][1]
+            pad_top, pad_bottom = padding[3][0], padding[3][1]
+            pad_left, pad_right = padding[4][0], padding[4][1]
+        else: # NDHWC
+            pad_front, pad_back = padding[1][0], padding[1][1]
+            pad_top, pad_bottom = padding[2][0], padding[2][1]
+            pad_left, pad_right = padding[3][0], padding[3][1]
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if data_format == 'NHWC':
+    result = result.permute(0, 3, 1, 2)
+"""
+        impl3 = """
+if data_format == 'NDHWC':
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        if paddle_api == "paddle.nn.functional.avg_pool1d":
+            code = head_code + func1.splitlines() + map_code + core.splitlines()
+        elif paddle_api == "paddle.nn.functional.avg_pool2d":
+            code = (
+                head_code
+                + func2.splitlines()
+                + map_code
+                + core.splitlines()
+                + impl2.splitlines()
+            )
+        else:
+            code = (
+                head_code
+                + func3.splitlines()
+                + map_code
+                + core.splitlines()
+                + impl3.splitlines()
+            )
         return ConvertResult.success(paddle_api, code)
 
 

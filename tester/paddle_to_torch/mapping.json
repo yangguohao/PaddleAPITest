@@ -309,7 +309,13 @@
         "torch_api": "torch.Tensor.neg"
     },
     "paddle.nn.functional.avg_pool1d": {
+        "Rule": "AvgPoolRule",
         "torch_api": "torch.nn.functional.avg_pool1d",
+        "set_defaults": {
+            "padding": 0,
+            "stride": "None",
+            "exclusive": false
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "kernel_size": "kernel_size",
@@ -324,6 +330,12 @@
     "paddle.nn.functional.avg_pool2d": {
         "Rule": "AvgPoolRule",
         "torch_api": "torch.nn.functional.avg_pool2d",
+        "set_defaults": {
+            "padding": 0,
+            "stride": "None",
+            "exclusive": false,
+            "data_format": "'NCHW'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "kernel_size": "kernel_size",
@@ -339,6 +351,12 @@
     "paddle.nn.functional.avg_pool3d": {
         "Rule": "AvgPoolRule",
         "torch_api": "torch.nn.functional.avg_pool3d",
+        "set_defaults": {
+            "padding": 0,
+            "stride": "None",
+            "exclusive": false,
+            "data_format": "'NCDHW'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "kernel_size": "kernel_size",
@@ -348,7 +366,7 @@
             "divisor_override": "divisor_override"
         },
         "torch_kwargs": {
-            "count_include_pad": "not {exclusive}"
+            "count_include_pad": "not {exclusive} "
         }
     },
     "paddle.Tensor.nonzero": {
