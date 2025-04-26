@@ -634,11 +634,14 @@ class GatherRule(BaseRule):
 x = locals().get('x')
 index = locals().get('index')
 axis = locals().get('axis', 0)
-ans = []
-for i in index:
-    ans.append(torch.narrow(x, axis, i.reshape([]), 1))
-result = torch.stack(ans,axis)
-result = torch.squeeze(result)
+if len(index.shape) == 0:
+    result = torch.squeeze(torch.narrow(x, axis, index, 1),axis)
+else:
+    ans = []
+    for i in index:
+        temp = torch.narrow(x, axis, i.reshape([]), 1)
+        ans.append(torch.squeeze(temp, axis))
+    result = torch.stack(ans,axis)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
@@ -666,12 +669,48 @@ result = f.func(x,index)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-
-
+class Gather_treeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+parents = locals().get('parents')
+ids = locals().get('ids')
+result = torch.empty(ids.shape)
+max_time = ids.shape[0]
+batch_size = ids.shape[1]
+beam_size = ids.shape[2]
+for batch in range(batch_size):
+    for beam in range(beam_size):
+        result[max_time-1,batch,beam] = ids[max_time-1,batch,beam]
+        pa = parents[max_time-1,batch,beam]
+        for step in range(max_time-2,-1,-1):
+            result[step,batch,beam] = ids[step,batch,pa]
+            pa = parents[step,batch,pa]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)        
 # h
 
 
 # i
+class IndexSelectRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+_kwargs = {}
+for paddle_param, torch_param in {
+    'x': 'input',
+    'index': 'index',
+    'axis': 'dim'
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+    else:
+        _kwargs[torch_param] = 0
+_kwargs['index'] = torch.squeeze(_kwargs['index'])
+result = torch.index_select( **_kwargs)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+    
 class ItemRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -811,7 +850,43 @@ result = median
 
 
 # p
+class Put_along_axisRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+input = locals().get('arr')
+dim = locals().get('axis')
+index = locals().get('indices')
+src = locals().get('values')
+reduce = locals().get('reduce', 'assign')
+if reduce == 'add':
+    reduce = 'sum'
+if reduce == 'mul':
+    reduce = 'prod'
+include_self = locals().get('include_self', True)
+broadcast = locals().get('broadcast', True)
 
+def infer_broadcast_shape(input, index, dim):
+    broadcast_shape_list = list(input.shape)
+    broadcast_shape_list[dim] = list(index.shape)[dim]
+    broadcast_shape = tuple(broadcast_shape_list)
+    for i in range(len(input.shape)):
+        if input.shape[i] < index.shape[i]:
+            # if indices matrix has larger size than arr matrix, do not broadcast.
+            return None
+    return broadcast_shape
+
+if broadcast == True:
+    broadcast_shape = infer_broadcast_shape(arr, indices, axis)
+    if broadcast_shape:
+        index = torch.broadcast_to(index, broadcast_shape)
+        src = torch.broadcast_to(src, broadcast_shape)
+if reduce == 'assign':
+    result = torch.scatter(input, dim, index, src)
+else:
+    result = torch.scatter_reduce(input, dim, index, src, reduce, include_self=include_self)  
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 # q
 
 
