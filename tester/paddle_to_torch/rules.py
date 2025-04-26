@@ -554,6 +554,10 @@ class FractionalMaxPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         func1 = """
+batch_size, C = x.shape[0], x.shape[1]
+if locals().get('random_u') is not None:
+    random_u = torch.tensor([[[random_u] * 2] * C] * batch_size, dtype=x.dtype, device=x.device)
+
 def compute_kernel_size(x, output_size):
     H_in, W_in = x.shape[2], x.shape[3]
     if isinstance(output_size, int):
@@ -572,6 +576,10 @@ def compute_kernel_size(x, output_size):
     return (kH, kW)
 """
         func2 = """
+batch_size, C = x.shape[0], x.shape[1]
+if locals().get('random_u') is not None:
+    random_u = torch.tensor([[[random_u] * 3] * C] * batch_size, dtype=x.dtype, device=x.device)
+
 def compute_kernel_size(x, output_size):
     D_in, H_in, W_in = x.shape[2], x.shape[3], x.shape[4]
     if isinstance(output_size, int):
@@ -597,8 +605,8 @@ if kernel_size is None:
 elif isinstance(kernel_size, list):
     kernel_size = tuple(kernel_size)
 if isinstance(output_size, (list, tuple)):
-    output_size = tuple(x.shape[i + 2] if size is None else size 
-                       for i, size in enumerate(output_size))
+    output_size = tuple([x.shape[i + 2] if size is None else size 
+                       for i, size in enumerate(output_size)])
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = head_code
