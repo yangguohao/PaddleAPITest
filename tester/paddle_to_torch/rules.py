@@ -406,7 +406,7 @@ class BatchNormRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         impl1 = """
-if data_format == 'NHWC':
+if locals().get('data_format') == 'NHWC':
     x = x.permute(0, 3, 1, 2)
 if 'running_mean' in locals():
     running_mean.requires_grad = False
@@ -415,7 +415,7 @@ if 'running_var' in locals():
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
-if data_format == 'NHWC':
+if locals().get('data_format') == 'NHWC':
     result = result.permute(0, 2, 3, 1)
 """
         code = (
@@ -490,6 +490,26 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 
 
 # d
+class DataFormatRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if locals().get('data_format') == 'NHWC':
+    x = x.permute(0, 3, 1, 2)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if locals().get('data_format') == 'NHWC':
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # e
@@ -530,6 +550,64 @@ result = x.expand_as(y)
 
 
 # f
+class FractionalMaxPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        func1 = """
+def compute_kernel_size(x, output_size):
+    H_in, W_in = x.shape[2], x.shape[3]
+    if isinstance(output_size, int):
+        H_out = W_out = output_size
+    else:
+        H_out, W_out = output_size
+    
+    def compute_k(input_size, output_size):
+        if output_size is None or output_size == input_size:
+            return 1  # No pooling
+        else:
+            return (input_size + output_size - 1) // output_size  # ceil(input_size / output_size)
+    
+    kH = compute_k(H_in, H_out)
+    kW = compute_k(W_in, W_out)
+    return (kH, kW)
+"""
+        func2 = """
+def compute_kernel_size(x, output_size):
+    D_in, H_in, W_in = x.shape[2], x.shape[3], x.shape[4]
+    if isinstance(output_size, int):
+        D_out = H_out = W_out = output_size
+    else:
+        D_out, H_out, W_out = output_size
+
+    def compute_k(input_size, output_size):
+        if output_size is None or output_size == input_size:
+            return 1  # No pooling
+        else:
+            return (input_size + output_size - 1) // output_size  # ceil(input_size / output_size)
+
+    kD = compute_k(D_in, D_out)
+    kH = compute_k(H_in, H_out)
+    kW = compute_k(W_in, W_out)
+    return (kD, kH, kW)  
+"""
+        impl = """
+kernel_size = locals().get('kernel_size')
+if kernel_size is None:
+    kernel_size = compute_kernel_size(x, output_size)
+elif isinstance(kernel_size, list):
+    kernel_size = tuple(kernel_size)
+if isinstance(output_size, (list, tuple)):
+    output_size = tuple(x.shape[i + 2] if size is None else size 
+                       for i, size in enumerate(output_size))
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = head_code
+        if paddle_api == 'paddle.nn.functional.fractional_max_pool2d':
+            code += func1.splitlines()
+        else:
+            code += func2.splitlines()
+        code += impl.splitlines() + map_code + core.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # g

@@ -346,8 +346,7 @@
         "Rule": "BatchNormRule",
         "torch_api": "torch.nn.functional.batch_norm",
         "set_defaults": {
-            "momentum": 0.9,
-            "data_format": "'NCHW'"
+            "momentum": 0.9
         },
         "paddle_torch_args_map": {
             "x": "input",
@@ -360,6 +359,51 @@
         },
         "torch_kwargs": {
             "momentum": "1 - {momentum}"
+        }
+    },
+    "paddle.nn.functional.bilinear": {
+        "torch_api": "torch.nn.functional.bilinear",
+        "paddle_torch_args_map": {
+            "x1": "input1",
+            "x2": "input2",
+            "weight": "weight"
+        },
+        "torch_kwargs": {
+            "bias": "{bias}.squeeze(0) if '{bias}' in locals() else None"
+        }
+    },
+    "paddle.nn.functional.channel_shuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.channel_shuffle",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.fractional_max_pool2d": {
+        "Rule": "FractionalMaxPoolRule",
+        "torch_api": "torch.nn.functional.fractional_max_pool2d",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "output_size": "output_size",
+            "return_mask": "return_indices"
+        },
+        "torch_kwargs": {
+            "_random_samples": "torch.tensor([[[{random_u}] * 2]], device=x.device) if locals().get('random_u') is not None else None"
+        }
+    },
+    "paddle.nn.functional.fractional_max_pool3d": {
+        "Rule": "FractionalMaxPoolRule",
+        "torch_api": "torch.nn.functional.fractional_max_pool3d",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "output_size": "output_size",
+            "return_mask": "return_indices"
+        },
+        "torch_kwargs": {
+            "_random_samples": "torch.tensor([[[{random_u}] * 3]], device=x.device) if locals().get('random_u') is not None else None"
         }
     },
     "o": "API started with 'o' should be placed here",
@@ -4536,14 +4580,6 @@
             "inplace": "inplace"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.channel_shuffle": {
-        "torch_api": "torch.nn.functional.channel_shuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "groups": "groups"
-        },
-        "min_input_args": 0
     },
     "paddle.nn.functional.conv1d": {
         "torch_api": "torch.nn.functional.conv1d",
