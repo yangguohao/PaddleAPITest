@@ -172,6 +172,9 @@
         },
         "description": "result = torch.gt(input=x, other=y)"
     },
+    "paddle.audio.functional.get_window": {
+        "Rule": "GetWindowRule"
+    },
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
     "paddle.Tensor.isinf": {
