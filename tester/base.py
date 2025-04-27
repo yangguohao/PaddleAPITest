@@ -337,6 +337,34 @@ class APITestBase:
             tmp.append(item.get_paddle_tensor(self.api_config))
         return tuple(tmp) if is_tuple else tmp
 
+
+    def gen_numpy_input(self):
+        for i, arg_config in enumerate(self.paddle_args_config):
+            if isinstance(arg_config, (list, tuple)):
+                is_tuple = isinstance(arg_config, tuple)
+                self._handle_list_or_tuple(arg_config, is_tuple=is_tuple, index=i)
+            elif isinstance(arg_config, TensorConfig):
+                arg_config.get_numpy_tensor(self.api_config, index=i)
+
+        for key, kwarg_config in self.paddle_kwargs_config.items():
+            if isinstance(kwarg_config, (list, tuple)):
+                is_tuple = isinstance(kwarg_config, tuple)
+                self._handle_list_or_tuple(kwarg_config, is_tuple=is_tuple, key=key)
+            elif isinstance(kwarg_config, TensorConfig):
+                kwarg_config.get_numpy_tensor(self.api_config, key=key)
+
+        def _clear(config):
+            if isinstance(config, TensorConfig):
+                config.clear_paddle_tensor()
+            elif isinstance(config, (list, tuple)):
+                for item in config:
+                    _clear(item)
+
+        _clear(self.paddle_args_config)
+        _clear(self.paddle_kwargs_config)
+        return True
+
+
     def gen_paddle_input(self):
         self.paddle_args = []
         self.paddle_kwargs = collections.OrderedDict()

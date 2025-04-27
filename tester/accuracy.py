@@ -42,8 +42,8 @@ class APITestAccuracy(APITestBase):
             return
 
         try:
-            if not self.gen_paddle_input():
-                print("gen_paddle_input failed")
+            if not self.gen_numpy_input():
+                print("gen_numpy_input failed")
                 return
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
@@ -176,6 +176,9 @@ class APITestAccuracy(APITestBase):
         torch.cuda.empty_cache()
 
         try:
+            if not self.gen_paddle_input():
+                print("gen_paddle_input failed")
+                return
             if "paddle.Tensor." in self.api_config.api_name:
                 api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
                 args = []
