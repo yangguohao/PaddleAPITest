@@ -145,20 +145,30 @@ class APITestBase:
                 return True
 
         return False
+
     def need_check_grad(self):
         # if self.is_forward_only():
         #     return False
         # if self.api_config.api_name == "paddle.assign":
-        #     if (len(self.paddle_args) and isinstance(self.paddle_args[0], list)) or \
-        #     (len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
+        #     if (len(self.paddle_args) and isinstance(self.paddle_args[0], list)) or (
+        #         len(self.paddle_args) > 1 and self.paddle_args[1] is not None
+        #     ):
         #         return False
-        # if len(self.api_config.args) > 0 and isinstance(self.api_config.args[0], TensorConfig):
+        # if len(self.api_config.args) > 0 and isinstance(
+        #     self.api_config.args[0], TensorConfig
+        # ):
         #     dtype = self.api_config.args[0].dtype
-        #     if dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
+        #     if dtype in [
+        #         "float32",
+        #         "float64",
+        #         "float16",
+        #         "complex64",
+        #         "complex128",
+        #         "bfloat16",
+        #     ]:
         #         return True
-        #     return False
         # return True
-        
+
         if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
             if len(self.api_config.args) > 0 and isinstance(self.api_config.args[0], TensorConfig):
                 dtype = self.api_config.args[0].dtype
@@ -196,13 +206,13 @@ class APITestBase:
             paddle_args_dict = {}
             for key, get_value_func in mapping.items():
                 paddle_args_dict[key] = get_value_func(self.api_config)
-            
+
         self.paddle_merged_kwargs_config = paddle_args_dict
         self.torch_kwargs_config.update(paddle_args_dict)
         self.torch_kwargs_config.pop('name', None)
 
         return True
-    
+
     def _handle_list_or_tuple(self, config_items, is_tuple=False, index=None, key=None, list_index=[]):
         """处理 list 或 tuple """
 
@@ -237,7 +247,7 @@ class APITestBase:
                 processed_item = item
             tmp.append(processed_item)
         return tuple(tmp) if is_tuple else tmp
-        
+
     def _handle_axis_arg(self, config_items, is_tuple=False):
         """处理 axis 参数"""
         x = self.paddle_args_config[0] if len(self.paddle_args_config) > 0 else self.paddle_kwargs_config["x"]
@@ -406,7 +416,7 @@ class APITestBase:
 
     def get_paddle_input_list(self):
         result = []
-        
+
         for i in range(len(self.paddle_args)):
             if isinstance(self.paddle_args[i], paddle.Tensor):
                 result.append(self.paddle_args[i])
@@ -422,7 +432,7 @@ class APITestBase:
                 for item in value:
                     if isinstance(item, paddle.Tensor):
                         result.append(item)
-        
+
         return result
 
     def get_torch_input_list(self):
@@ -682,7 +692,7 @@ class APITestBase:
                 ])
             else:
                 args.append(arg)
-                
+
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 kwargs[key] = torch.clone(value)
@@ -693,7 +703,7 @@ class APITestBase:
                 ]
             else:
                 kwargs[key] = value
-                
+
         return args, kwargs
 
     def gen_torch_input(self):
@@ -1268,13 +1278,12 @@ class APITestBase:
             "__rlshift__",
             "__rrshift__",
             "__rshift__",
-
         ]
-        
+
         api = self.api_config.api_name[self.api_config.api_name.rindex(".")+1:]
-        
+
         return api in forward_only_apis
-    
+
 def get_arg(api_config, arg_pos, arg_name, default=None):
     if 0 <= arg_pos < len(api_config.args):
         return api_config.args[arg_pos]
