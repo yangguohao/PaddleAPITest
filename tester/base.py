@@ -237,7 +237,7 @@ class APITestBase:
                     list_index=current_list_index
                 )
             elif isinstance(item, TensorConfig):
-                processed_item = item.get_paddle_tensor(
+                processed_item = item.get_numpy_tensor(
                     self.api_config,
                     index=index,
                     key=key,
@@ -277,7 +277,7 @@ class APITestBase:
         if tensor_configs:
             available_dims = list(set(range(max_dim)) - used_axes)
             if len(available_dims) < len(tensor_configs):
-                raise ValueError(f"Not enough available dimensions ({len(available_dims)}) for {tensor_config_count} TensorConfig items")
+                raise ValueError(f"Not enough available dimensions ({len(available_dims)}) for {len(tensor_configs)} TensorConfig items")
             selected_dims = numpy.random.choice(available_dims, size=len(tensor_configs), replace=False)
             mask = numpy.random.randint(0, 2, size=len(tensor_configs)).astype(bool)
             final_dims = numpy.where(mask, selected_dims - max_dim, selected_dims)
@@ -285,7 +285,7 @@ class APITestBase:
             for i, item in enumerate(config_items):
                 if isinstance(item, TensorConfig):
                     item.fill_numpy_tensor(final_dims[tensor_idx])
-                    tmp[i] = item.get_paddle_tensor(self.api_config)
+                    tmp[i] = item.get_numpy_tensor(self.api_config)
                     tensor_idx += 1
         return tuple(tmp) if is_tuple else tmp
 
@@ -334,7 +334,7 @@ class APITestBase:
                 x_dim = x_shape[x_shape_index]
                 item.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=item.shape, dtype=item.dtype)
                 x_shape_index += 1
-            tmp.append(item.get_paddle_tensor(self.api_config))
+            tmp.append(item.get_numpy_tensor(self.api_config))
         return tuple(tmp) if is_tuple else tmp
 
 
@@ -345,24 +345,29 @@ class APITestBase:
                 self._handle_list_or_tuple(arg_config, is_tuple=is_tuple, index=i)
             elif isinstance(arg_config, TensorConfig):
                 arg_config.get_numpy_tensor(self.api_config, index=i)
-
         for key, kwarg_config in self.paddle_kwargs_config.items():
             if isinstance(kwarg_config, (list, tuple)):
                 is_tuple = isinstance(kwarg_config, tuple)
                 self._handle_list_or_tuple(kwarg_config, is_tuple=is_tuple, key=key)
             elif isinstance(kwarg_config, TensorConfig):
                 kwarg_config.get_numpy_tensor(self.api_config, key=key)
-
-        def _clear(config):
-            if isinstance(config, TensorConfig):
-                config.clear_paddle_tensor()
-            elif isinstance(config, (list, tuple)):
-                for item in config:
-                    _clear(item)
-
-        _clear(self.paddle_args_config)
-        _clear(self.paddle_kwargs_config)
         return True
+
+    def _handle_list_or_tuple_paddle(self, config_items, is_tuple=False):
+        """处理 list 或 tuple """
+        tmp = []
+        for item in config_items:
+            if isinstance(item, (list, tuple)):
+                is_nested_tuple = isinstance(item, tuple)
+                processed_item = self._handle_list_or_tuple_paddle(
+                    item, 
+                    is_tuple=is_nested_tuple)
+            elif isinstance(item, TensorConfig):
+                processed_item = item.get_paddle_tensor(self.api_config)
+            else:
+                processed_item = item
+            tmp.append(processed_item)
+        return tuple(tmp) if is_tuple else tmp
 
 
     def gen_paddle_input(self):
@@ -370,23 +375,23 @@ class APITestBase:
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
 
-        for i, arg_config in enumerate(self.paddle_args_config):
+        for arg_config in self.paddle_args_config:
             if isinstance(arg_config, TensorConfig):
-                self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config, index=i))
+                self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config))
             elif isinstance(arg_config, list):
-                self.paddle_args.append(self._handle_list_or_tuple(arg_config, index=i))
+                self.paddle_args.append(self._handle_list_or_tuple_paddle(arg_config))
             elif isinstance(arg_config, tuple):
-                self.paddle_args.append(self._handle_list_or_tuple(arg_config, is_tuple=True, index=i))
+                self.paddle_args.append(self._handle_list_or_tuple_paddle(arg_config, is_tuple=True))
             else:
                 self.paddle_args.append(arg_config)
 
         for key, kwarg_config in self.paddle_kwargs_config.items():
             if isinstance(kwarg_config, TensorConfig):
-                self.paddle_kwargs[key] = kwarg_config.get_paddle_tensor(self.api_config, key=key)
+                self.paddle_kwargs[key] = kwarg_config.get_paddle_tensor(self.api_config)
             elif isinstance(kwarg_config, list):
-                self.paddle_kwargs[key] = self._handle_list_or_tuple(kwarg_config, key=key)
+                self.paddle_kwargs[key] = self._handle_list_or_tuple_paddle(kwarg_config)
             elif isinstance(kwarg_config, tuple):
-                self.paddle_kwargs[key] = self._handle_list_or_tuple(kwarg_config, is_tuple=True, key=key)
+                self.paddle_kwargs[key] = self._handle_list_or_tuple_paddle(kwarg_config, is_tuple=True)
             else:
                 self.paddle_kwargs[key] = kwarg_config
 
