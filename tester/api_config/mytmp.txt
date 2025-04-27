@@ -1,3 +1,0 @@
-paddle.nn.functional.adaptive_log_softmax_with_loss(Tensor([128, 16],"float32"), Tensor([128],"int64"), Tensor([16, 8],"float32"), list[list[Tensor([16, 8],"float32"),Tensor([8, 5],"float32"),],list[Tensor([16, 4],"float32"),Tensor([4, 5],"float32"),],list[Tensor([16, 2],"float32"),Tensor([2, 5],"float32"),],], list[5,10,15,20,], None, )
-paddle.nn.functional.adaptive_log_softmax_with_loss(Tensor([4, 8],"float32"), Tensor([4],"int64"), Tensor([8, 3],"float32"), list[list[Tensor([8, 4],"float32"),Tensor([4, 2],"float32"),],], list[2,4,], None, )
-paddle.nn.functional.adaptive_log_softmax_with_loss(Tensor([8, 8],"float32"), Tensor([8],"int64"), Tensor([8, 3],"float32"), list[list[Tensor([8, 4],"float32"),Tensor([4, 2],"float32"),],], list[2,4,], None, )
