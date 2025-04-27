@@ -241,6 +241,110 @@ class ErrorRule(BaseRule):
 
 
 # a
+class Adaptive_log_softmax_with_lossRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+def scatter_nd(index, updates, shape):
+    output = torch.zeros(shape, dtype=updates.dtype).to(updates.device)
+    if index.numel() == 0:
+        result = output + updates
+    else:
+        flat_index = index.view(-1, index.size(-1))
+        flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
+        for i in range(flat_index.size(0)):
+            idx_tuple = tuple(flat_index[i])
+            output[idx_tuple] += flat_updates[i]
+        result = output   
+    return result
+        
+input = locals().get('input')
+label = locals().get('label')
+head_weight = locals().get('head_weight')
+tail_weight = locals().get('tail_weights')
+cutoffs = locals().get('cutoffs')
+head_bias = locals().get('head_bias', None)
+
+target_dim = label.dim()
+
+is_batched = target_dim > 0
+input = input if is_batched else input.unsqueeze(0)
+label = label if is_batched else label.unsqueeze(0)
+
+used_rows = 0
+batch_size = label.shape[0]
+
+output = torch.zeros([batch_size], dtype = input.dtype)
+gather_inds = torch.empty([batch_size], dtype = label.dtype)
+
+cutoff_values = [0, *cutoffs]
+for i in range(len(cutoff_values) - 1):
+    index1 = cutoff_values[i]
+    index2 = cutoff_values[i + 1]
+    label_mask = (label >= index1) & (label < index2)
+    row_indices = label_mask.nonzero().squeeze()
+    if row_indices.numel() == 0:
+        continue
+    
+    if i == 0:
+        scatter_output = scatter_nd(
+            index = torch.unsqueeze(row_indices, 1),
+            updates = torch.masked_select(label, label_mask),
+            shape = gather_inds.shape
+        )
+        gather_inds = scatter_output
+    else:
+        relative_label = label[label_mask] - index1
+        input_subset = input.index_select(index = row_indices, dim = 0)
+        cluster_output = torch.nn.functional.linear(
+            input = input_subset, weight = tail_weight[i-1][0].t()
+        )
+        cluster_output = torch.nn.functional.linear(
+            input = cluster_output, weight = tail_weight[i-1][1].t()
+        )
+
+        cluster_index = cutoffs[0] + i - 1
+        
+        gather_inds = torch.index_fill(
+            gather_inds, 0, row_indices, cluster_index
+        )
+
+        cluster_logprob = torch.nn.functional.log_softmax(
+            cluster_output, dim = 1
+        )
+
+        local_logprob = torch.gather(
+            cluster_logprob, dim = 1, index = relative_label.unsqueeze(1)
+        )
+        
+        scatter_output = scatter_nd(
+            row_indices.unsqueeze(1), local_logprob.squeeze(1), output.shape
+        )
+        output = (
+            output * (scatter_output == 0).float()
+            + scatter_output
+        )
+    used_rows += row_indices.numel()
+if head_bias is not None:
+    head_output = torch.nn.functional.linear(
+        input = input, weight = head_weight.t(), bias = head_bias
+    )
+else:
+    head_output = torch.nn.functional.linear(
+        input = input, weight = head_weight.t()
+    )    
+head_logprob = torch.nn.functional.log_softmax(head_output, dim = 1)
+output += torch.gather(
+    head_logprob, dim = 1, index = gather_inds.unsqueeze(1)
+).squeeze()
+loss = (-output).mean()
+
+if not is_batched:
+    output = output.squeeze(0)
+    
+result = [output, loss]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -771,7 +875,19 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
-
+class MultiplexRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+input = locals().get("inputs")
+index = locals().get("index")
+temp = []
+for i in range(index.shape[0]):
+    j = index[i].item()
+    temp.append(input[j][i])
+result = torch.stack(temp)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

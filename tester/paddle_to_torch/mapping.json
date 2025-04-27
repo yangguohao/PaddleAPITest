@@ -295,6 +295,9 @@
             "y": "other"
         }
     },
+    "paddle.multiplex": {
+        "Rule": "MultiplexRule"
+    },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
         "Rule": "NanmedianRule"
@@ -307,6 +310,9 @@
     },
     "paddle.Tensor.neg": {
         "torch_api": "torch.Tensor.neg"
+    },
+    "paddle.nn.functional.adaptive_log_softmax_with_loss": {
+        "Rule": "Adaptive_log_softmax_with_lossRule"
     },
     "paddle.Tensor.nonzero": {
         "torch_api": "torch.Tensor.nonzero",
