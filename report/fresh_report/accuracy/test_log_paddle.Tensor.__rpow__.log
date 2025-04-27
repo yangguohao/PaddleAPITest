@@ -1,0 +1,19 @@
+paddle.Tensor.__rpow__(Tensor([2, 2, 2],"int64"), 3, )
+
+W0425 07:57:15.213881 3790612 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0425 07:57:15.214807 3790612 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__rpow__(Tensor([2, 2, 2],"int64"), 3, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 8 (50%)
+Max absolute difference: 9130736318196515682
+Max relative difference: 98.56604397
+ x: array([[[9223372036854775807,                   0],
+        [                  0, 9223372036854775807]],
+...
+ y: array([[[-5642588177638596095,                    0],
+        [                   0,  2263919891189906433]],
+...
+
