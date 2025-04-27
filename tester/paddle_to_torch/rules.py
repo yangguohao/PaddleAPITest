@@ -125,6 +125,7 @@ class BaseRule(ABC):
         # if "torch_api" in self.mapping:
         #     self.torch_api: str = self.mapping.get("torch_api", "")
         if "import" in self.mapping:
+            head_code.append("")
             imports = self.mapping.get("import", [])
             for import_statement in imports:
                 head_code.append(f"import {import_statement}")
@@ -714,7 +715,7 @@ if isinstance(output_size, (list, tuple)):
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = head_code
-        if paddle_api == 'paddle.nn.functional.fractional_max_pool2d':
+        if paddle_api == "paddle.nn.functional.fractional_max_pool2d":
             code += func1.splitlines()
         else:
             code += func2.splitlines()
@@ -773,6 +774,8 @@ result = f.func(x,index)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 class Gather_treeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -791,7 +794,152 @@ for batch in range(batch_size):
             pa = parents[step,batch,pa]
 """
         code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)        
+        return ConvertResult.success(paddle_api, code)
+
+
+class GetWindowRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+
+def general_gaussian(M, p, sig, sym=True, dtype=torch.float64):
+    if M < 1:
+        return torch.tensor([], dtype=dtype)
+    if M == 1:
+        return torch.ones(1, dtype=dtype)
+    odd = M % 2
+    if not sym and not odd:
+        M = M + 1
+    n = torch.arange(0, M, dtype=dtype)
+    w = n.new_empty(n.shape)
+    if not sym and not odd:
+        n = n[:-1]
+    sig2 = 2 * sig * sig
+    w = torch.exp(-torch.pow(n - (M - 1.0) / 2.0, 2.0 * p) / sig2)
+    return w
+
+def triang(M, sym=True, dtype=torch.float64):
+    if M < 1:
+        return torch.tensor([], dtype=dtype)
+    if M == 1:
+        return torch.ones(1, dtype=dtype)
+    odd = M % 2
+    if not sym and not odd:
+        M = M + 1
+    n = torch.arange(1, (M + 1) // 2 + 1, dtype=dtype)
+    if M % 2 == 0:
+        w = (2 * n - 1.0) / M
+        w = torch.cat([w, w.flip(0)])
+    else:
+        w = 2 * n / (M + 1.0)
+        w = torch.cat([w, w[-2::-1]])
+    if not sym and not odd:
+        w = w[:-1]
+    return w
+
+def bohman(M, sym=True, dtype=torch.float64):
+    if M < 1:
+        return torch.tensor([], dtype=dtype)
+    if M == 1:
+        return torch.ones(1, dtype=dtype)
+    odd = M % 2
+    if not sym and not odd:
+        M = M + 1
+    fac = torch.linspace(-1, 1, M, dtype=dtype)
+    w = (1 - torch.abs(fac)) * torch.cos(torch.pi * torch.abs(fac)) + 1.0 / torch.pi * torch.sin(torch.pi * torch.abs(fac))
+    if not sym and not odd:
+        w = w[:-1]
+    return w
+
+def tukey(M, alpha=0.5, sym=True, dtype=torch.float64):
+    if M < 1:
+        return torch.tensor([], dtype=dtype)
+    if M == 1:
+        return torch.ones(1, dtype=dtype)
+    if alpha <= 0:
+        return torch.ones(M, dtype=dtype)
+    if alpha >= 1:
+        return torch.hann_window(M, periodic=not sym, dtype=dtype)
+    odd = M % 2
+    if not sym and not odd:
+        M = M + 1
+    n = torch.arange(0, M, dtype=dtype)
+    width = int(alpha * (M - 1) / 2.0)
+    n1 = n[0:width+1]
+    n2 = n[width+1:M-width-1]
+    n3 = n[M-width-1:]
+    w1 = 0.5 * (1 + torch.cos(torch.pi * (-1 + 2.0*n1/alpha/(M-1))))
+    w2 = torch.ones(len(n2), dtype=dtype)
+    w3 = 0.5 * (1 + torch.cos(torch.pi * (-2.0/alpha + 1 + 2.0*n3/alpha/(M-1))))
+    w = torch.cat([w1, w2, w3])
+    if not sym and not odd:
+        w = w[:-1]
+    return w
+
+def taylor(M, nbar=4, sll=30, norm=True, sym=True, dtype=torch.float64):
+    if M < 1:
+        return torch.tensor([], dtype=dtype)
+    if M == 1:
+        return torch.ones(1, dtype=dtype)
+    odd = M % 2
+    if not sym and not odd:
+        M = M + 1
+    B = 10**(sll / 20)
+    A = torch.log(B + torch.sqrt(B**2 - 1)) / torch.pi
+    sigma2 = nbar**2 / (A**2 + (nbar - 0.5)**2)
+    fm = lambda m: torch.prod(torch.tensor([(1 - (m/torch.sqrt(sigma2))**2/(n**2 + (n-0.5)**2)) 
+                                          for n in range(1, nbar)], dtype=dtype))
+    coefficients = torch.tensor([fm(i) for i in range(nbar)], dtype=dtype)
+    n = torch.arange(-(M-1)/2, (M+1)/2, dtype=dtype) * 2/M
+    w = coefficients[0]
+    for i in range(1, nbar):
+        w = w + coefficients[i] * torch.cos(2 * torch.pi * i * torch.arange(M, dtype=dtype) / M)
+    if norm:
+        w = w / w.max()
+    if not sym and not odd:
+        w = w[:-1]
+    return w
+
+if isinstance(window, tuple):
+    window_name, param = window[0], window[1:]
+else:
+    window_name, param = window, None
+fftbins = locals().get('fftbins', True)
+dtype = locals().get('dtype', 'float64')
+dtype = getattr(torch, dtype)
+if window_name == 'hamming':
+    window = torch.signal.windows.hamming(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'hann':
+    window = torch.signal.windows.hann(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'gaussian':
+    window = torch.signal.windows.gaussian(win_length, std=param[0], sym=not fftbins, dtype=dtype)
+elif window_name == 'general_gaussian':
+    window = general_gaussian(win_length, p=param[0], sig=param[1], sym=not fftbins, dtype=dtype)
+elif window_name == 'exponential':
+    window = torch.signal.windows.exponential(win_length, center=param[0], tau=param[1], sym=not fftbins, dtype=dtype)
+elif window_name == 'triang':
+    window = triang(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'bohman':
+    window = bohman(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'blackman':
+    window = torch.signal.windows.blackman(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'cosine':
+    window = torch.signal.windows.cosine(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'tukey':
+    window = tukey(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'taylor':
+    window = taylor(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'bartlett':
+    window = torch.signal.windows.bartlett(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'kaiser':
+    window = torch.signal.windows.kaiser(win_length, beta=param[0], sym=not fftbins, dtype=dtype)
+elif window_name == 'nuttall':
+    window = torch.signal.windows.nuttall(win_length, sym=not fftbins, dtype=dtype)
+result = window
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
 # h
 
 
@@ -814,7 +962,8 @@ result = torch.index_select( **_kwargs)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
-    
+
+
 class ItemRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1003,6 +1152,8 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
+
 # q
 
 
