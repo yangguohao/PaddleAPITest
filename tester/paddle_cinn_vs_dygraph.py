@@ -13,12 +13,9 @@ from .base import APITestBase
 import time
 import os
 from func_timeout import func_set_timeout
+from .config import get_cfg, set_cfg
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
-
-api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error.txt", "a")
-api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error.txt", "a")
-api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass.txt", "a")
 
 class APITestCINNVSDygraph(APITestBase):
     def __init__(self, api_config, test_amp):
@@ -26,6 +23,12 @@ class APITestCINNVSDygraph(APITestBase):
         self.test_amp = test_amp
     @func_set_timeout(600)
     def test(self):
+        cmdline_cfg = get_cfg()
+
+        api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error"+cmdline_cfg.id+".txt", "a")
+        api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error"+cmdline_cfg.id+".txt", "a")
+        api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass"+cmdline_cfg.id+".txt", "a")
+        
         if self.need_skip():
             print("[Skip]")
             return

@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                    APITestPaddleOnly)
+                    APITestPaddleOnly, set_cfg)
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
 
@@ -64,8 +64,14 @@ def main():
         '--test_amp',
         default=False,
     )
+    parser.add_argument(
+        '--id',
+        default="",
+        type=str,
+    )
     options = parser.parse_args()
-
+    set_cfg(options)  # Set the command line arguments in the config module
+    
     test_class = APITestAccuracy
     if options.paddle_only:
         test_class = APITestPaddleOnly
@@ -89,12 +95,12 @@ def main():
         del api_config
     elif options.api_config_file != "":
         try:
-            checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "r")
+            checkpoint_r = open(DIR_PATH+"/tester/api_config/test_log/checkpoint"+options.id+".txt", "r")
             finish_configs = set(checkpoint_r.readlines())
             checkpoint_r.close()
         except Exception as err:
             finish_configs = set()
-        checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint.txt", "a")
+        checkpoint = open(DIR_PATH+"/tester/api_config/test_log/checkpoint"+options.id+".txt", "a")
         api_config_file = open(options.api_config_file, "r")
         api_configs = set(api_config_file.readlines())
         api_configs = api_configs - finish_configs
