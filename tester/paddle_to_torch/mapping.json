@@ -65,6 +65,13 @@
     "paddle.broadcast_tensors": {
         "Rule": "BroadcastTensorsRule"
     },
+    "paddle.bitwise_invert": {
+        "torch_api": "torch.bitwise_not",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "out": "out"
+        }
+    },
     "c": "API started with 'c' should be placed here",
     "paddle.crop": {
         "Rule": "CropRule"
