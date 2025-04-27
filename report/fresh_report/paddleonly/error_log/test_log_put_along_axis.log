@@ -1,0 +1,20 @@
+2025-04-22 23:14:13.962731 test begin: paddle.put_along_axis(Tensor([10, 10, 10],"uint8"), Tensor([5, 5, 5],"int64"), Tensor([5, 5, 5],"uint8"), 1, "mul", True, False, )
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   egr::Grad(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+1   egr::RunBackward(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+2   PutAlongAxisGradNode::operator()(paddle::small_vector<std::vector<paddle::Tensor, std::allocator<paddle::Tensor> >, 15u>&, bool, bool)
+3   paddle::experimental::put_along_axis_grad(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, int, std::string const&, bool, paddle::Tensor*, paddle::Tensor*)
+4   void phi::PutAlongAxisGradKernel<unsigned char, phi::CPUContext>(phi::CPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, int, std::string const&, bool, phi::DenseTensor*, phi::DenseTensor*)
+5   void phi::funcs::cpu_scatter_mul_min_max_input_grad_kernel<unsigned char, long>(phi::DenseTensor, int, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor, std::string const&, bool, phi::DeviceContext const&)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Erroneous arithmetic operation` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1745334853 (unix time) try "date -d @1745334853" if you are using GNU date ***]
+  [SignalInfo: *** SIGFPE (@0x7fbda9fd693c) received by PID 88556 (TID 0x7fbf0d653700) from PID 18446744072266541372 ***]

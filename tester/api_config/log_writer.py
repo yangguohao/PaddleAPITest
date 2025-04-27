@@ -12,14 +12,14 @@ TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
 
 # 日志类型和对应的文件
 LOG_PREFIXES = {
-    "accuracy_error": "api_config_accuracy_error",
     "checkpoint": "checkpoint",
-    "crash": "api_config_crash",
-    "paddle_error": "api_config_paddle_error",
-    "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
     "pass": "api_config_pass",
-    "timeout": "api_config_timeout",
+    "paddle_error": "api_config_paddle_error",
     "torch_error": "api_config_torch_error",
+    "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
+    "accuracy_error": "api_config_accuracy_error",
+    "timeout": "api_config_timeout",
+    "crash": "api_config_crash",
 }
 
 is_engineV2 = False

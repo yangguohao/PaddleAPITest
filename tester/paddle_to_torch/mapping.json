@@ -78,6 +78,15 @@
     "paddle.cumprod": {
         "Rule": "CumprodRule"
     },
+    "paddle.Tensor.ceil":{
+        "torch_api": "torch.Tensor.ceil"
+    },
+    "paddle.Tensor.conj":{
+        "torch_api": "torch.Tensor.conj"
+    },
+    "paddle.Tensor.cos":{
+        "torch_api": "torch.Tensor.cos"
+    },
     "d": "API started with 'd' should be placed here",
     "paddle.divide": {
         "torch_api": "torch.divide",
@@ -132,11 +141,20 @@
         }
     },       
     "g": "API started with 'g' should be placed here",
+    "paddle.gather_nd": {
+        "Rule": "Gather_ndRule"
+    },
+    "paddle.gather": {
+        "Rule": "GatherRule"
+    },
     "paddle.Tensor.gather":{
         "Rule": "GatherRule"
     },
     "paddle.Tensor.gather_nd":{
         "Rule": "Gather_ndRule"
+    },
+    "paddle.nn.functional.gather_tree":{
+        "Rule": "Gather_treeRule"
     },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
@@ -165,14 +183,9 @@
     "paddle.Tensor.item": {
         "Rule": "ItemRule"
     },
-    "paddle.Tensor.less": {
-        "torch_api": "torch.Tensor.less",
-        "paddle_torch_args_map": {
-            "y": "other"
-        }
-    },
-    "paddle.Tensor.lgamma": {
-        "torch_api": "torch.Tensor.lgamma"
+    "paddle.Tensor.imag": {
+        "torch_api": "torch.Tensor.imag",
+        "is_attribute": true
     },
     "paddle.Tensor.inverse": {
         "torch_api": "torch.Tensor.inverse"
@@ -182,6 +195,15 @@
     },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
+    "paddle.kthvalue":{
+        "torch_api": "torch.kthvalue",
+        "paddle_torch_args_map": {
+        "x": "input",
+        "k": "k",
+        "axis":"dim",
+        "keepdim":"keepdim"
+        }
+    },
     "l": "API started with 'l' should be placed here",
     "paddle.less": {
         "torch_api": "torch.lt",
@@ -206,6 +228,27 @@
             "y": "other"
         },
         "description": "result = torch.lt(input=x, other=y)"
+    },
+    "paddle.Tensor.less": {
+        "torch_api": "torch.Tensor.less",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.lgamma": {
+        "torch_api": "torch.Tensor.lgamma"
+    },
+    "paddle.Tensor.log": {
+        "torch_api": "torch.Tensor.log"
+    },
+    "paddle.Tensor.log10": {
+        "torch_api": "torch.Tensor.log10"
+    },
+    "paddle.Tensor.log1p": {
+        "torch_api": "torch.Tensor.log1p"
+    },
+    "paddle.Tensor.logical_not": {
+        "torch_api": "torch.Tensor.logical_not"
     },
     "m": "API started with 'm' should be placed here",
     "paddle.median": {
@@ -265,11 +308,84 @@
     "paddle.Tensor.neg": {
         "torch_api": "torch.Tensor.neg"
     },
+    "paddle.nn.functional.avg_pool1d": {
+        "Rule": "AvgPoolRule",
+        "torch_api": "torch.nn.functional.avg_pool1d",
+        "set_defaults": {
+            "padding": 0,
+            "stride": "None",
+            "exclusive": false
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode"
+        },
+        "torch_kwargs": {
+            "count_include_pad": "not {exclusive}"
+        }
+    },
+    "paddle.nn.functional.avg_pool2d": {
+        "Rule": "AvgPoolRule",
+        "torch_api": "torch.nn.functional.avg_pool2d",
+        "set_defaults": {
+            "padding": 0,
+            "stride": "None",
+            "exclusive": false,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "divisor_override": "divisor_override"
+        },
+        "torch_kwargs": {
+            "count_include_pad": "not {exclusive}"
+        }
+    },
+    "paddle.nn.functional.avg_pool3d": {
+        "Rule": "AvgPoolRule",
+        "torch_api": "torch.nn.functional.avg_pool3d",
+        "set_defaults": {
+            "padding": 0,
+            "stride": "None",
+            "exclusive": false,
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "divisor_override": "divisor_override"
+        },
+        "torch_kwargs": {
+            "count_include_pad": "not {exclusive} "
+        }
+    },
+    "paddle.Tensor.nonzero": {
+        "torch_api": "torch.Tensor.nonzero",
+        "paddle_torch_args_map": {
+            "as_tuple": "as_tuple"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.vision.ops.psroi_pool":{
         "torch_api":"torchvision.ops.ps_roi_pool",
         "Rule": "Roi_poolRule"
+    },
+    "paddle.Tensor.put_along_axis": {
+        "Rule": "Put_along_axisRule"
+    },
+    "paddle.put_along_axis": {
+        "Rule": "Put_along_axisRule"
     },
     "q": "API started with 'q' should be placed here",
     "r": "API started with 'r' should be placed here",
@@ -889,12 +1005,7 @@
         "min_input_args": 2
     },
     "paddle.Tensor.index_select": {
-        "torch_api": "torch.Tensor.index_select",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "index": "index"
-        },
-        "min_input_args": 2
+        "Rule": "IndexSelectRule"
     },
     "paddle.Tensor.inner": {
         "torch_api": "torch.Tensor.inner",
@@ -3067,13 +3178,7 @@
         "min_input_args": 4
     },
     "paddle.index_select": {
-        "torch_api": "torch.index_select",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "index": "index"
-        },
-        "min_input_args": 3
+        "Rule": "IndexSelectRule"
     },
     "paddle.inner": {
         "torch_api": "torch.inner",
