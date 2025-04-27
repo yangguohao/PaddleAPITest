@@ -5,6 +5,8 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
+import paddle
+
 
 @dataclass
 class ConvertResult:
@@ -107,6 +109,9 @@ class BaseRule(ABC):
             self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
+            self.is_attribute: bool = mapping.get("is_attribute", False)
+            self.imports: List = mapping.get("import", [])
+            self.defaults: Dict = mapping.get("set_defaults", {})
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
             for step in self.composite_steps:
@@ -115,43 +120,66 @@ class BaseRule(ABC):
                         f"Missing required field 'torch_api' in composite step: {step}"
                     )
 
-    def apply_generic(self) -> List:
-        code = []
+    def apply_generic(self):
+        head_code = []
         # if "torch_api" in self.mapping:
         #     self.torch_api: str = self.mapping.get("torch_api", "")
         if "import" in self.mapping:
             imports = self.mapping.get("import", [])
             for import_statement in imports:
-                code.append(f"import {import_statement}")
-            code.append("")
-        if "paddle_torch_args_map" in self.mapping:
-            args_map = self.mapping.get("paddle_torch_args_map", {})
-            code.append("for paddle_param, torch_param in {")
-            for paddle_param, torch_param in args_map.items():
-                code.append(f"    '{paddle_param}': '{torch_param}',")
-            code.append("}.items():")
-            code.append("    torch_param = locals().get(paddle_param)")
-        if "set_default" in self.mapping:
-            defaults = self.mapping.get("set_default", {})
+                head_code.append(f"import {import_statement}")
+            head_code.append("")
+        if "set_defaults" in self.mapping:
+            defaults = self.mapping.get("set_defaults", {})
             for default_name, default_value in defaults.items():
-                code.append(
+                head_code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
                 )
-        return code
+        map_code = []
+        if "torch_args" in self.mapping:
+            args = self.mapping.get("torch_args", [])
+            map_code.append("_args = []")
+            for arg in args:
+                map_code.append(f"_args.extend([{self._format_arg(arg)}])")
+        if "torch_kwargs" in self.mapping or "paddle_torch_args_map" in self.mapping:
+            map_code.append("_kwargs = {}")
+        if "torch_kwargs" in self.mapping:
+            kwargs = self.mapping.get("torch_kwargs", {})
+            for key, value in kwargs.items():
+                map_code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+        if "paddle_torch_args_map" in self.mapping:
+            args_map = self.mapping.get("paddle_torch_args_map", {})
+            map_code.append("for paddle_param, torch_param in {")
+            for paddle_param, torch_param in args_map.items():
+                map_code.append(f"    '{paddle_param}': '{torch_param}',")
+            map_code.append("}.items():")
+            map_code.append("    if paddle_param in locals():")
+            map_code.append("        _kwargs[torch_param] = locals()[paddle_param]")
+        return head_code, map_code
 
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
-        if self.direct_mapping:  # 直接映射
-            is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-            if is_tensor_method and not self.torch_api.startswith("torch.Tensor."):
-                return ConvertResult.error(
-                    paddle_api,
-                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
+        if self.direct_mapping:  # 直接映射)
+            for import_statement in self.imports:
+                code.append(f"import {import_statement}")
+            code.append("")
+            for default_name, default_value in self.defaults.items():
+                code.append(
+                    f"{default_name} = locals().get('{default_name}', {default_value})"
                 )
+            is_tensor_method = paddle_api.startswith("paddle.Tensor.")
             if is_tensor_method:
+                if not self.torch_api.startswith("torch.Tensor."):
+                    return ConvertResult.error(
+                        paddle_api,
+                        "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
+                    )
                 code.append("_tmp_tensor = next(iter(kwargs.values()))")
+                if self.is_attribute:
+                    code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
+                    return ConvertResult.success(paddle_api, code)
             is_inplace = (
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
@@ -317,12 +345,191 @@ result = [output, loss]
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+class AvgPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        func1 = """
+
+def _get_same_padding_1d(input_size, kernel_size, stride):
+    if stride is None:
+        stride = kernel_size
+    output_size = (input_size + stride - 1) // stride
+    total_pad = max(0, (output_size - 1) * stride + kernel_size - input_size)
+    pad_left = total_pad // 2
+    pad_right = total_pad - pad_left
+    return pad_left, pad_right
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    input_size = x.shape[2]
+    pad_left, pad_right = _get_same_padding_1d(input_size, kernel_size, stride)
+    padding = pad_left # 对称填充
+    if pad_left != pad_right:
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))  # 非对称填充
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:  # [pad_left, pad_right]
+        pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))
+        padding = 0
+"""
+        func2 = """
+if data_format == 'NHWC':
+    x = x.permute(0, 2, 3, 1)
+            
+def _get_same_padding_2d(input_size, kernel_size, stride):
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size, kernel_size)
+    if stride is None:
+        stride = kernel_size
+    if isinstance(stride, int):
+        stride = (stride, stride)
+    output_size_h = (input_size[0] + stride[0] - 1) // stride[0]
+    output_size_w = (input_size[1] + stride[1] - 1) // stride[1]
+    total_pad_h = max(0, (output_size_h - 1) * stride[0] + kernel_size[0] - input_size[0])
+    total_pad_w = max(0, (output_size_w - 1) * stride[1] + kernel_size[1] - input_size[1])
+    pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
+    pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
+    return pad_h, pad_w
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    x_size = (x.shape[2], x.shape[3])
+    pad_h, pad_w = _get_same_padding_2d(x_size, kernel_size, stride)
+    padding = (pad_h[0], pad_w[0])
+    if pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
+        x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1]))
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:  # [pad_height, pad_width]
+        padding = tuple(padding)
+    elif len(padding) == 4:
+        if all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 4D 填充格式(NCHW 或 NHWC)
+            if data_format == "NCHW":
+                pad_top, pad_bottom = padding[2][0], padding[2][1]
+                pad_left, pad_right = padding[3][0], padding[3][1]
+            else:  # NHWC
+                pad_top, pad_bottom = padding[1][0], padding[1][1]
+                pad_left, pad_right = padding[2][0], padding[2][1]
+        else: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+            pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
+        padding = 0
+"""
+        func3 = """
+if data_format == 'NDHWC':
+    x = x.permute(0, 4, 1, 2, 3)
+        
+def _get_same_padding_3d(input_size, kernel_size, stride):
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size,) * 3
+    if stride is None:
+        stride = kernel_size
+    if isinstance(stride, int):
+        stride = (stride,) * 3
+    output_size_d = (input_size[0] + stride[0] - 1) // stride[0]
+    output_size_h = (input_size[1] + stride[1] - 1) // stride[1]
+    output_size_w = (input_size[2] + stride[2] - 1) // stride[2]
+    total_pad_d = max(0, (output_size_d - 1) * stride[0] + kernel_size[0] - input_size[0])
+    total_pad_h = max(0, (output_size_h - 1) * stride[1] + kernel_size[1] - input_size[1])
+    total_pad_w = max(0, (output_size_w - 1) * stride[2] + kernel_size[2] - input_size[2])
+    
+    pad_d = (total_pad_d // 2, total_pad_d - total_pad_d // 2)
+    pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
+    pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
+    return pad_d, pad_h, pad_w
+
+if padding == "VALID":
+    padding = 0
+elif padding == "SAME":
+    input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+    pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+    padding = (pad_d[0], pad_h[0], pad_w[0])  # 对称填充
+    if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
+        x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+        padding = tuple(padding)
+    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+    elif len(padding) == 5 and all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 5D 填充格式
+        if data_format == "NCDHW":
+            pad_front, pad_back = padding[2][0], padding[2][1]
+            pad_top, pad_bottom = padding[3][0], padding[3][1]
+            pad_left, pad_right = padding[4][0], padding[4][1]
+        else: # NDHWC
+            pad_front, pad_back = padding[1][0], padding[1][1]
+            pad_top, pad_bottom = padding[2][0], padding[2][1]
+            pad_left, pad_right = padding[3][0], padding[3][1]
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if data_format == 'NHWC':
+    result = result.permute(0, 3, 1, 2)
+"""
+        impl3 = """
+if data_format == 'NDHWC':
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        if paddle_api == "paddle.nn.functional.avg_pool1d":
+            code = head_code + func1.splitlines() + map_code + core.splitlines()
+        elif paddle_api == "paddle.nn.functional.avg_pool2d":
+            code = (
+                head_code
+                + func2.splitlines()
+                + map_code
+                + core.splitlines()
+                + impl2.splitlines()
+            )
+        else:
+            code = (
+                head_code
+                + func3.splitlines()
+                + map_code
+                + core.splitlines()
+                + impl3.splitlines()
+            )
+        return ConvertResult.success(paddle_api, code)
+
 
 # b
 class BroadcastTensorsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = ["result = torch.broadcast_tensors(*input)"]
         return ConvertResult.success(paddle_api, code, "result")
+
+
+class BatchNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if locals().get('data_format') == 'NHWC':
+    x = x.permute(0, 3, 1, 2)
+if 'running_mean' in locals():
+    running_mean.requires_grad = False
+if 'running_var' in locals():
+    running_var.requires_grad = False
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if locals().get('data_format') == 'NHWC':
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # c
@@ -387,6 +594,26 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 
 
 # d
+class DataFormatRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if locals().get('data_format') == 'NHWC':
+    x = x.permute(0, 3, 1, 2)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if locals().get('data_format') == 'NHWC':
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # e
@@ -427,6 +654,72 @@ result = x.expand_as(y)
 
 
 # f
+class FractionalMaxPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        func1 = """
+batch_size, C = x.shape[0], x.shape[1]
+if locals().get('random_u') is not None:
+    random_u = torch.tensor([[[random_u] * 2] * C] * batch_size, dtype=x.dtype, device=x.device)
+
+def compute_kernel_size(x, output_size):
+    H_in, W_in = x.shape[2], x.shape[3]
+    if isinstance(output_size, int):
+        H_out = W_out = output_size
+    else:
+        H_out, W_out = output_size
+    
+    def compute_k(input_size, output_size):
+        if output_size is None or output_size == input_size:
+            return 1  # No pooling
+        else:
+            return (input_size + output_size - 1) // output_size  # ceil(input_size / output_size)
+    
+    kH = compute_k(H_in, H_out)
+    kW = compute_k(W_in, W_out)
+    return (kH, kW)
+"""
+        func2 = """
+batch_size, C = x.shape[0], x.shape[1]
+if locals().get('random_u') is not None:
+    random_u = torch.tensor([[[random_u] * 3] * C] * batch_size, dtype=x.dtype, device=x.device)
+
+def compute_kernel_size(x, output_size):
+    D_in, H_in, W_in = x.shape[2], x.shape[3], x.shape[4]
+    if isinstance(output_size, int):
+        D_out = H_out = W_out = output_size
+    else:
+        D_out, H_out, W_out = output_size
+
+    def compute_k(input_size, output_size):
+        if output_size is None or output_size == input_size:
+            return 1  # No pooling
+        else:
+            return (input_size + output_size - 1) // output_size  # ceil(input_size / output_size)
+
+    kD = compute_k(D_in, D_out)
+    kH = compute_k(H_in, H_out)
+    kW = compute_k(W_in, W_out)
+    return (kD, kH, kW)  
+"""
+        impl = """
+kernel_size = locals().get('kernel_size')
+if kernel_size is None:
+    kernel_size = compute_kernel_size(x, output_size)
+elif isinstance(kernel_size, list):
+    kernel_size = tuple(kernel_size)
+if isinstance(output_size, (list, tuple)):
+    output_size = tuple([x.shape[i + 2] if size is None else size 
+                       for i, size in enumerate(output_size)])
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = head_code
+        if paddle_api == 'paddle.nn.functional.fractional_max_pool2d':
+            code += func1.splitlines()
+        else:
+            code += func2.splitlines()
+        code += impl.splitlines() + map_code + core.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # g
@@ -536,6 +829,7 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 # j
 
@@ -793,6 +1087,7 @@ result = x
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class ScatterndRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -809,7 +1104,8 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class ScatterndaddRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
