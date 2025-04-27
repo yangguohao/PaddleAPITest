@@ -94,7 +94,16 @@
             "x": "input",
             "y": "other"
         }
-    },    
+    },   
+    "paddle.Tensor.detach":{
+        "torch_api": "torch.Tensor.detach"
+    },
+    "paddle.Tensor.digamma":{
+        "torch_api": "torch.Tensor.digamma"
+    },
+    "paddle.Tensor.dim":{
+        "torch_api": "torch.Tensor.dim"
+    },
     "e": "API started with 'e' should be placed here",
     "paddle.equal_all": {
         "torch_api": "torch.equal",
@@ -377,6 +386,20 @@
     },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
+    "paddle.Tensor.pow":{
+        "torch_api":"torch.Tensor.pow",
+        "paddle_torch_args_map": {
+            "y": "exponent"
+        }
+    },
+    "paddle.Tensor.prod": {
+        "torch_api": "torch.Tensor.prod",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim",
+            "dtype": "dtype"
+        }
+    },
     "paddle.vision.ops.psroi_pool":{
         "torch_api":"torchvision.ops.ps_roi_pool",
         "Rule": "Roi_poolRule"
@@ -1365,28 +1388,12 @@
         },
         "min_input_args": 1
     },
-    "paddle.Tensor.pow": {
-        "torch_api": "torch.Tensor.pow",
-        "paddle_torch_args_map": {
-            "y": "exponent"
-        },
-        "min_input_args": 1
-    },
     "paddle.Tensor.pow_": {
         "torch_api": "torch.Tensor.pow_",
         "paddle_torch_args_map": {
             "y": "exponent"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.prod": {
-        "torch_api": "torch.Tensor.prod",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 0
     },
     "paddle.Tensor.quantile": {
         "torch_api": "torch.Tensor.quantile",
