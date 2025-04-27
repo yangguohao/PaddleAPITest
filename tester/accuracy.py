@@ -1,4 +1,5 @@
 import gc
+import traceback
 
 import paddle
 import torch
@@ -98,7 +99,8 @@ class APITestAccuracy(APITestBase):
             #     torch_output = self.torch_args[0] if len(self.torch_args) > 0 else next(iter(self.torch_kwargs.values()))
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
-            print("[torch error]", self.api_config.config, "\n", str(err), flush=True)
+            print("[torch error]", self.api_config.config, flush=True)
+            traceback.print_exc()
             write_to_log("torch_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)

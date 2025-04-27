@@ -241,6 +241,110 @@ class ErrorRule(BaseRule):
 
 
 # a
+class Adaptive_log_softmax_with_lossRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+def scatter_nd(index, updates, shape):
+    output = torch.zeros(shape, dtype=updates.dtype).to(updates.device)
+    if index.numel() == 0:
+        result = output + updates
+    else:
+        flat_index = index.view(-1, index.size(-1))
+        flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
+        for i in range(flat_index.size(0)):
+            idx_tuple = tuple(flat_index[i])
+            output[idx_tuple] += flat_updates[i]
+        result = output   
+    return result
+        
+input = locals().get('input')
+label = locals().get('label')
+head_weight = locals().get('head_weight')
+tail_weight = locals().get('tail_weights')
+cutoffs = locals().get('cutoffs')
+head_bias = locals().get('head_bias', None)
+
+target_dim = label.dim()
+
+is_batched = target_dim > 0
+input = input if is_batched else input.unsqueeze(0)
+label = label if is_batched else label.unsqueeze(0)
+
+used_rows = 0
+batch_size = label.shape[0]
+
+output = torch.zeros([batch_size], dtype = input.dtype)
+gather_inds = torch.empty([batch_size], dtype = label.dtype)
+
+cutoff_values = [0, *cutoffs]
+for i in range(len(cutoff_values) - 1):
+    index1 = cutoff_values[i]
+    index2 = cutoff_values[i + 1]
+    label_mask = (label >= index1) & (label < index2)
+    row_indices = label_mask.nonzero().squeeze()
+    if row_indices.numel() == 0:
+        continue
+    
+    if i == 0:
+        scatter_output = scatter_nd(
+            index = torch.unsqueeze(row_indices, 1),
+            updates = torch.masked_select(label, label_mask),
+            shape = gather_inds.shape
+        )
+        gather_inds = scatter_output
+    else:
+        relative_label = label[label_mask] - index1
+        input_subset = input.index_select(index = row_indices, dim = 0)
+        cluster_output = torch.nn.functional.linear(
+            input = input_subset, weight = tail_weight[i-1][0].t()
+        )
+        cluster_output = torch.nn.functional.linear(
+            input = cluster_output, weight = tail_weight[i-1][1].t()
+        )
+
+        cluster_index = cutoffs[0] + i - 1
+        
+        gather_inds = torch.index_fill(
+            gather_inds, 0, row_indices, cluster_index
+        )
+
+        cluster_logprob = torch.nn.functional.log_softmax(
+            cluster_output, dim = 1
+        )
+
+        local_logprob = torch.gather(
+            cluster_logprob, dim = 1, index = relative_label.unsqueeze(1)
+        )
+        
+        scatter_output = scatter_nd(
+            row_indices.unsqueeze(1), local_logprob.squeeze(1), output.shape
+        )
+        output = (
+            output * (scatter_output == 0).float()
+            + scatter_output
+        )
+    used_rows += row_indices.numel()
+if head_bias is not None:
+    head_output = torch.nn.functional.linear(
+        input = input, weight = head_weight.t(), bias = head_bias
+    )
+else:
+    head_output = torch.nn.functional.linear(
+        input = input, weight = head_weight.t()
+    )    
+head_logprob = torch.nn.functional.log_softmax(head_output, dim = 1)
+output += torch.gather(
+    head_logprob, dim = 1, index = gather_inds.unsqueeze(1)
+).squeeze()
+loss = (-output).mean()
+
+if not is_batched:
+    output = output.squeeze(0)
+    
+result = [output, loss]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -402,6 +506,32 @@ class BroadcastTensorsRule(BaseRule):
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class BatchNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if locals().get('data_format') == 'NHWC':
+    x = x.permute(0, 3, 1, 2)
+if 'running_mean' in locals():
+    running_mean.requires_grad = False
+if 'running_var' in locals():
+    running_var.requires_grad = False
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if locals().get('data_format') == 'NHWC':
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 # c
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -464,6 +594,26 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 
 
 # d
+class DataFormatRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if locals().get('data_format') == 'NHWC':
+    x = x.permute(0, 3, 1, 2)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if locals().get('data_format') == 'NHWC':
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # e
@@ -504,6 +654,72 @@ result = x.expand_as(y)
 
 
 # f
+class FractionalMaxPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        func1 = """
+batch_size, C = x.shape[0], x.shape[1]
+if locals().get('random_u') is not None:
+    random_u = torch.tensor([[[random_u] * 2] * C] * batch_size, dtype=x.dtype, device=x.device)
+
+def compute_kernel_size(x, output_size):
+    H_in, W_in = x.shape[2], x.shape[3]
+    if isinstance(output_size, int):
+        H_out = W_out = output_size
+    else:
+        H_out, W_out = output_size
+    
+    def compute_k(input_size, output_size):
+        if output_size is None or output_size == input_size:
+            return 1  # No pooling
+        else:
+            return (input_size + output_size - 1) // output_size  # ceil(input_size / output_size)
+    
+    kH = compute_k(H_in, H_out)
+    kW = compute_k(W_in, W_out)
+    return (kH, kW)
+"""
+        func2 = """
+batch_size, C = x.shape[0], x.shape[1]
+if locals().get('random_u') is not None:
+    random_u = torch.tensor([[[random_u] * 3] * C] * batch_size, dtype=x.dtype, device=x.device)
+
+def compute_kernel_size(x, output_size):
+    D_in, H_in, W_in = x.shape[2], x.shape[3], x.shape[4]
+    if isinstance(output_size, int):
+        D_out = H_out = W_out = output_size
+    else:
+        D_out, H_out, W_out = output_size
+
+    def compute_k(input_size, output_size):
+        if output_size is None or output_size == input_size:
+            return 1  # No pooling
+        else:
+            return (input_size + output_size - 1) // output_size  # ceil(input_size / output_size)
+
+    kD = compute_k(D_in, D_out)
+    kH = compute_k(H_in, H_out)
+    kW = compute_k(W_in, W_out)
+    return (kD, kH, kW)  
+"""
+        impl = """
+kernel_size = locals().get('kernel_size')
+if kernel_size is None:
+    kernel_size = compute_kernel_size(x, output_size)
+elif isinstance(kernel_size, list):
+    kernel_size = tuple(kernel_size)
+if isinstance(output_size, (list, tuple)):
+    output_size = tuple([x.shape[i + 2] if size is None else size 
+                       for i, size in enumerate(output_size)])
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = head_code
+        if paddle_api == 'paddle.nn.functional.fractional_max_pool2d':
+            code += func1.splitlines()
+        else:
+            code += func2.splitlines()
+        code += impl.splitlines() + map_code + core.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # g
@@ -659,7 +875,19 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
-
+class MultiplexRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+input = locals().get("inputs")
+index = locals().get("index")
+temp = []
+for i in range(index.shape[0]):
+    j = index[i].item()
+    temp.append(input[j][i])
+result = torch.stack(temp)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
