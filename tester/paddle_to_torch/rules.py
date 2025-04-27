@@ -698,76 +698,40 @@ class GetWindowRule(BaseRule):
 import math
 
 if isinstance(window, tuple):
-    window_name, param = window
+    window_name, param = window[0], window[1:]
 else:
     window_name, param = window, None
 fftbins = locals().get('fftbins', True)
 dtype = locals().get('dtype', 'float64')
 dtype = getattr(torch, dtype)
-if window_name == 'hann':
-    window = torch.hann_window(win_length, periodic=not fftbins, dtype=dtype)
-elif window_name == 'hamming':
-    window = torch.hamming_window(win_length, periodic=not fftbins, dtype=dtype)
-elif window_name == 'blackman':
-    window = torch.blackman_window(win_length, periodic=not fftbins, dtype=dtype)
-elif window_name == 'triang':
-    window = torch.tensor([1.0 - abs(2*i/(win_length-1) - 1) for i in range(win_length)], dtype=dtype)
-elif window_name == 'gaussian':
-    if param is None:
-        param = 2.5  # default sigma
-    window = torch.tensor([math.exp(-0.5 * ((i - (win_length-1)/2) / (param * (win_length-1)/2)) ** 2) 
-                            for i in range(win_length)], dtype=dtype)
+if window_name == 'hamming':
+    window = torch.signal.windows.hamming(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'hann':
+    window = torch.signal.windows.hann(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'guassian':
+    window = torch.signal.windows.gaussian(win_length, std=param[0], sym=not fftbins, dtype=dtype)
 elif window_name == 'general_gaussian':
-    p, sigma = param
-    window = torch.tensor([math.exp(-0.5 * (abs(i - (win_length-1)/2) / (sigma * (win_length-1)/2)) ** p) 
-                            for i in range(win_length)], dtype=dtype)
+    
 elif window_name == 'exponential':
-    if param is None:
-        param = 1.0  # default tau
-    window = torch.tensor([math.exp(-abs(i - (win_length-1)/2) / param) 
-                            for i in range(win_length)], dtype=dtype)
+    window = torch.signal.windows.exponential(win_length, center=param[0], tau=param[1], sym=not fftbins, dtype=dtype)
+elif window_name == 'triang':
+
 elif window_name == 'bohman':
-    x = torch.linspace(-1, 1, win_length, dtype=dtype)
-    window = (1 - torch.abs(x)) * torch.cos(math.pi * torch.abs(x)) + (1 / math.pi) * torch.sin(math.pi * torch.abs(x))
+
+elif window_name == 'blackman':
+    window = torch.signal.windows.blackman(win_length, sym=not fftbins, dtype=dtype)
 elif window_name == 'cosine':
-    window = torch.sin(math.pi * torch.arange(win_length, dtype=dtype) / (win_length - 1))
+    window = torch.signal.windows.cosine(win_length, sym=not fftbins, dtype=dtype)
 elif window_name == 'tukey':
-    if param is None:
-        param = 0.5  # default alpha
-    if param <= 0:
-        window = torch.ones(win_length, dtype=dtype)
-    elif param >= 1:
-        window = torch.hann_window(win_length, periodic=not fftbins, dtype=dtype)
-    else:
-        # Tukey window implementation
-        x = torch.linspace(0, 1, win_length, dtype=dtype)
-        width = int(param * (win_length - 1) / 2.0)
-        n = win_length
-        # Tukey window is a cosine lobe convolved with a rectangle
-        window = torch.ones(n, dtype=dtype)
-        if width > 0:
-            window[:width] = 0.5 * (1 + torch.cos(math.pi * (-1 + 2 * x[:width] / param)))
-            window[-width:] = 0.5 * (1 + torch.cos(math.pi * (1 - 2 * (x[-width:] - 1 + param) / param)))
+
 elif window_name == 'taylor':
-    if param is None:
-        param = 4  # default nbar
-    nbar = param
-    # Taylor window approximation
-    a = math.acosh(10 ** (3 / 20.0)) / math.pi
-    n = win_length
-    window = torch.zeros(n, dtype=dtype)
-    for i in range(n):
-        sum_val = 1.0
-        for m in range(1, nbar):
-            product = 1.0
-            for p in range(1, nbar):
-                if p != m:
-                    product *= (1 - (i / (n/2) - 1)**2 / (a**2 * (m**2 - 0.25) / (nbar**2 - 0.25)))
-            sum_val += 2 * (-1)**(m+1) * product * torch.cos(2 * math.pi * m * (i/(n-1) - 0.5))
-        window[i] = sum_val / (2 * nbar - 1)
-# Normalize windows that might not be in [0,1] range
-if window_name in ['gaussian', 'general_gaussian', 'exponential']:
-    window = window / window.max()
+
+elif window_name == 'bartlett':
+    window = torch.signal.windows.bartlett(win_length, sym=not fftbins, dtype=dtype)
+elif window_name == 'kaiser':
+    window = torch.signal.windows.kaiser(win_length, beta=param[0], sym=not fftbins, dtype=dtype)
+elif window_name == 'nuttall':
+    window = torch.signal.windows.nuttall(win_length, sym=not fftbins, dtype=dtype)
 result = window
 """
         code = impl.splitlines()
