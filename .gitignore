@@ -3,3 +3,6 @@ tester/__pycache__/
 tester/api_config/__pycache__/
 tester/paddle_to_torch/__pycache__/
 tester/api_config/test_log/
+.gitignore
+tester/api_config/move_config.py
+tester/api_config/mytmp.txt
