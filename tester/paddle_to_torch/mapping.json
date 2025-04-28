@@ -224,6 +224,16 @@
         }
     },
     "l": "API started with 'l' should be placed here",
+    "paddle.lcm": {
+        "Rule": "LcmRule"
+    },
+    "paddle.ldexp": {
+        "torch_api": "torch.ldexp",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },  
     "paddle.less": {
         "torch_api": "torch.lt",
         "paddle_torch_args_map": {
@@ -459,6 +469,22 @@
             "return_mask": "return_indices",
             "_random_samples": "random_u"
         }
+    },
+    "paddle.nonzero": {
+        "torch_api": "torch.argwhere",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },  
+    "paddle.not_equal": {
+        "torch_api": "torch.ne",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },  
+    "paddle.numel": {
+        "Rule": "NumelRule"
     },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
@@ -3496,14 +3522,6 @@
     },
     "paddle.kron": {
         "torch_api": "torch.kron",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "other"
-        },
-        "min_input_args": 2
-    },
-    "paddle.lcm": {
-        "torch_api": "torch.lcm",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
