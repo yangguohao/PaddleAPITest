@@ -596,7 +596,7 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
         return ConvertResult.success(paddle_api, code)
 
 
-class ClassCenterSample(BaseRule):
+class ClassCenterSampleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
 unique_pos_classes = torch.unique(label)
