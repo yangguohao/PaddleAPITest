@@ -1,0 +1,141 @@
+paddle.vision.ops.psroi_pool(Tensor([2, 128, 32, 32],"float32"), Tensor([4, 4],"float32"), Tensor([2],"int32"), 8, 1.1, )
+paddle.vision.ops.psroi_pool(Tensor([2, 128, 32, 32],"float64"), Tensor([4, 4],"float64"), Tensor([2],"int32"), 8, 1.1, )
+paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float32"), Tensor([3, 4],"float32"), Tensor([2],"int32"), 7, )
+paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float32"), Tensor([3, 4],"float32"), Tensor([2],"int32"), tuple(7,7,), )
+paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float64"), Tensor([3, 4],"float64"), Tensor([2],"int32"), tuple(7,7,), )
+paddle.vision.ops.psroi_pool(Tensor([3, 12, 6, 4],"float64"), Tensor([6, 4],"float64"), Tensor([3],"int32"), tuple(2,2,), 0.25, )
+paddle.vision.ops.roi_align(Tensor([1, 256, 32, 32],"float32"), Tensor([3, 4],"float32"), boxes_num=Tensor([1],"int32"), output_size=3, )
+paddle.vision.ops.roi_align(Tensor([1, 256, 32, 32],"float32"), Tensor([3, 4],"float32"), boxes_num=Tensor([1],"int32"), output_size=tuple(3,4,), )
+
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-04-23 05:33:10.429133 test begin: paddle.vision.ops.psroi_pool(Tensor([2, 128, 32, 32],"float32"), Tensor([4, 4],"float32"), Tensor([2],"int32"), 8, 1.1, )
+
+W0423 05:33:13.055356 16186 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 12.0
+W0423 05:33:13.056680 16186 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.psroi_pool(Tensor([2, 128, 32, 32],"float32"), Tensor([4, 4],"float32"), Tensor([2],"int32"), 8, 1.1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 427 / 512 (83.4%)
+Max absolute difference: 173.17162
+Max relative difference: 13.939596
+ x: array([[[[104.56701 , 158.64351 , 147.73851 , 100.787445, 118.56979 ,
+          181.30757 ,   0.      ,   0.      ],
+         [ 74.71026 , 123.31836 ,  92.181725, 117.5654  , 124.540405,...
+ y: array([[[[103.66087 , 156.79866 , 177.15175 , 132.1769  , 106.70571 ,
+          163.2196  ,   0.      ,   0.      ],
+         [ 69.62588 , 121.22302 , 109.09357 , 125.20005 , 152.75389 ,...
+2025-04-23 05:33:32.238375 test begin: paddle.vision.ops.psroi_pool(Tensor([2, 128, 32, 32],"float64"), Tensor([4, 4],"float64"), Tensor([2],"int32"), 8, 1.1, )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.psroi_pool(Tensor([2, 128, 32, 32],"float64"), Tensor([4, 4],"float64"), Tensor([2],"int32"), 8, 1.1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 369 / 512 (72.1%)
+Max absolute difference: 180.95681846
+Max relative difference: 9.86768552
+ x: array([[[[112.132277, 103.653862, 104.373437, 129.456624, 141.565277,
+          168.98509 , 106.626041, 124.794949],
+         [ 20.158677,  82.057904,  71.438426, 125.896057, 190.704908,...
+ y: array([[[[ 56.507846, 170.185599, 129.818532, 108.886847, 200.701563,
+          126.361409, 154.867059, 104.387002],
+         [ 20.158677, 151.956539, 187.390199, 186.344614, 201.138131,...
+2025-04-23 05:33:32.511214 test begin: paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float32"), Tensor([3, 4],"float32"), Tensor([2],"int32"), 7, )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float32"), Tensor([3, 4],"float32"), Tensor([2],"int32"), 7, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1370 / 1470 (93.2%)
+Max absolute difference: 196.78418
+Max relative difference: 36.894558
+ x: array([[[[ 43.70161 ,  98.424164, 111.682526, ...,  45.727814,
+          152.89392 , 146.40846 ],
+         [117.87095 , 102.62329 , 131.95958 , ..., 168.51224 ,...
+ y: array([[[[ 43.70161 ,  98.424164,  83.0352  , ...,  33.600883,
+           80.82883 ,  59.404526],
+         [117.87095 , 102.62329 ,  99.42033 , ..., 136.3246  ,...
+2025-04-23 05:33:32.764081 test begin: paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float32"), Tensor([3, 4],"float32"), Tensor([2],"int32"), tuple(7,7,), )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float32"), Tensor([3, 4],"float32"), Tensor([2],"int32"), tuple(7,7,), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1181 / 1470 (80.3%)
+Max absolute difference: 237.25749
+Max relative difference: 7.613401
+ x: array([[[[ 77.44393 ,  95.8194  ,  98.157326, ..., 101.80285 ,
+          138.19487 , 176.15971 ],
+         [127.02776 ,  72.05488 , 115.68806 , ..., 122.46719 ,...
+ y: array([[[[ 77.44393 ,  95.8194  ,  98.157326, ...,  90.822655,
+           94.04339 , 173.86462 ],
+         [123.87507 , 101.98257 , 132.58278 , ..., 111.88676 ,...
+2025-04-23 05:33:33.002183 test begin: paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float64"), Tensor([3, 4],"float64"), Tensor([2],"int32"), tuple(7,7,), )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.psroi_pool(Tensor([2, 490, 28, 28],"float64"), Tensor([3, 4],"float64"), Tensor([2],"int32"), tuple(7,7,), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1305 / 1470 (88.8%)
+Max absolute difference: 166.96004709
+Max relative difference: 4.31659284
+ x: array([[[[134.393731, 103.155767, 151.128962, ...,  78.842691,
+          212.555423, 113.250593],
+         [ 83.895237, 100.633717, 159.279635, ..., 108.618552,...
+ y: array([[[[134.393731, 103.155767, 132.79523 , ...,  55.019201,
+          147.551298,  60.940537],
+         [ 83.895237, 100.633717, 176.056153, ..., 103.579032,...
+2025-04-23 05:33:33.247089 test begin: paddle.vision.ops.psroi_pool(Tensor([3, 12, 6, 4],"float64"), Tensor([6, 4],"float64"), Tensor([3],"int32"), tuple(2,2,), 0.25, )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.psroi_pool(Tensor([3, 12, 6, 4],"float64"), Tensor([6, 4],"float64"), Tensor([3],"int32"), tuple(2,2,), 0.25, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 42 / 72 (58.3%)
+Max absolute difference: 200.37323851
+Max relative difference: 8.12748912
+ x: array([[[[8.552379e+01, 7.001047e+01],
+         [1.133930e+02, 3.612505e+01]],
+...
+ y: array([[[[2.680626e+01, 7.001047e+01],
+         [4.444119e+01, 5.637273e+01]],
+...
+2025-04-23 05:33:33.451129 test begin: paddle.vision.ops.roi_align(Tensor([1, 256, 32, 32],"float32"), Tensor([3, 4],"float32"), boxes_num=Tensor([1],"int32"), output_size=3, )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.roi_align(Tensor([1, 256, 32, 32],"float32"), Tensor([3, 4],"float32"), boxes_num=Tensor([1],"int32"), output_size=3, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 6617 / 6912 (95.7%)
+Max absolute difference: 106.52692
+Max relative difference: 2.5000505
+ x: array([[[[133.20758 , 153.24567 , 105.30674 ],
+         [159.4675  , 146.16245 , 115.89699 ],
+         [182.35886 , 135.1826  , 137.62852 ]],...
+ y: array([[[[159.29611 , 126.78381 , 124.87724 ],
+         [185.66455 , 113.55916 , 154.6427  ],
+         [158.22366 , 104.57745 , 159.11827 ]],...
+2025-04-23 05:33:33.643350 test begin: paddle.vision.ops.roi_align(Tensor([1, 256, 32, 32],"float32"), Tensor([3, 4],"float32"), boxes_num=Tensor([1],"int32"), output_size=tuple(3,4,), )
+
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.vision.ops.roi_align(Tensor([1, 256, 32, 32],"float32"), Tensor([3, 4],"float32"), boxes_num=Tensor([1],"int32"), output_size=tuple(3,4,), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 8945 / 9216 (97.1%)
+Max absolute difference: 130.9548
+Max relative difference: 4.310538
+ x: array([[[[140.68178 , 130.21698 , 148.74673 , 154.63477 ],
+         [177.08606 , 149.41902 ,  93.83994 , 149.11174 ],
+         [168.62828 , 149.93779 ,  75.83812 , 152.13858 ]],...
+ y: array([[[[140.82956 , 125.93864 , 159.8138  , 176.53539 ],
+         [183.08478 , 124.269516,  92.45571 , 136.16187 ],
+         [148.8074  ,  83.3788  , 123.12638 , 168.63237 ]],...

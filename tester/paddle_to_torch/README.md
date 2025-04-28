@@ -73,7 +73,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
 ### 编写转换代码
 
-8. 在编写代码前，测试环境已经将 paddle.crop 的所有参数放置于变量 `arg` 、`kwargs` 和 执行环境 `local()` 中，我们可以通过 `kwargs.get('var')` 、 `locals().get('var')` 或直接使用 `var` 获取参数（ 未提供 `var` 参数时直接访问会抛出 `NameError` 错误，而 `get()` 获取可以设定默认值）。
+8. 在编写代码前，测试环境已经将 paddle.crop 的所有参数放置于变量 `arg` 、`kwargs` 和 执行环境 `locals()` 中，我们可以通过 `kwargs.get('var')` 、 `locals().get('var')` 或直接使用 `var` 获取参数（ 未提供 `var` 参数时直接访问会抛出 `NameError` 错误，而 `get()` 获取可以设定默认值）。
 
     首先单独构造出 slices 可用的 shape 与 offsets 参数，使用 list 来表示（默认所有参数均是符合文档描述的，不需要再验证和抛出错误）：
 
@@ -109,7 +109,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
     slices = [slice(offsets[i], offsets[i] + shape[i]) for i in range(ndim)]
     ```
 
-    使用 Torch 切片操作，将结果保存至 result 中（ x 一定存在于 `local()` 中，不需要再使用 `get()` ）：
+    使用 Torch 切片操作，将结果保存至 result 中（ x 一定存在于 `locals()` 中，不需要再使用 `get()` ）：
 
     ```python
     result = x[slices]
@@ -173,16 +173,22 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
     ```json
         "<api_name>": {
             "torch_api": "torch api 名称（torch_api 与 composite_steps 必须定义其一）",
-            "paddle_torch_args_map": "参数名映射字典，键对应 paddle ，值对应 torch",
-            "torch_args": ["torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \\ 转义，也可以直接设为常值"],
+            "paddle_torch_args_map": {
+                "_description": "参数名映射字典，键对应 paddle，值对应 torch",
+            },
+            "torch_args": [
+                "torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \\ 转义，也可以直接设为常值"
+            ],
             "torch_kwargs": {
                 "_description": "torch api 关键字参数字典，与 torch_args 类似"
             },
             "composite_steps": [
-                "_description": "当需要多个 torch api 组合实现时，定义步骤列表，每行的执行结果将被赋值给 _tmp_i，可通过 {i} 访问",
+                "当需要多个 torch api 组合实现时，定义步骤列表，每行的执行结果将被赋值给 _tmp_i，可通过 {i} 访问",
                 {
                     "torch_api": "torch api",
-                    "torch_args": ["torch api 位置参数列表，可以使用 {i} 代表中间变量"],
+                    "torch_args": [
+                        "torch api 位置参数列表，可以使用 {i} 代表中间变量"
+                    ],
                     "torch_kwargs": {
                         "_description": "torch api 关键字参数字典，与 torch_args 类似"
                     }
@@ -199,7 +205,25 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
         }
     ```
 
-    对于 paddle.crop 而言，在 mapping.json 的 "c" 条目下注册 Rule 类：
+    此外，也可以添加更多的常规配置，以减少 Rule 类代码的编写量（需要主动使用 apply_generic() 方法获取 code ）：
+
+    ```json
+        "<api_name>": {
+            "Rule": "自定义的 Rule 类的类名",
+            "torch_api": "torch api 名称",
+            "paddle_torch_args_map": {
+                "_description": "参数名映射字典，键对应 paddle，值对应 torch"
+            },
+            "set_default": {
+                "_description": "默认值设置字典，键为参数名，值为默认值"
+            },
+            "import": [
+                "需要导入的模块名列表"
+            ]
+        }
+    ```
+
+    对于 paddle.crop 而言，直接在 mapping.json 的 "c" 条目下注册 Rule 类：
 
     ```json
         "paddle.crop":{
@@ -272,4 +296,4 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
 非常感谢以下贡献人员:
 
-@wanghuancoder @cangtianhuang
+@wanghuancoder @cangtianhuang @mzj104 @Cutelemon6 @cszdrg @yuwu46

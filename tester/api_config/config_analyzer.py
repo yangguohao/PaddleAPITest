@@ -561,9 +561,6 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "index"):
                     x_dim = self.get_arg(api_config, 0, "x").shape[1]
                     self.numpy_tensor = numpy.random.randint(0, x_dim, size=self.shape)
-            elif api_config.api_name in ["paddle.index_select"]:
-                if self.check_arg(api_config, 1, "index"):
-                    self.numpy_tensor = self.generate_random_index(api_config, allow_none=True)
             elif api_config.api_name in ["paddle.incubate.nn.functional.fused_rotary_position_embedding"]:
                 q_shape = None
                 k_shape = None
@@ -1103,7 +1100,14 @@ class TensorConfig:
 
                 elif index == 2 or key =="boxes_num":
                     self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
-                    self.numpy_tensor[0] = api_config.boxes[0]
+                    all = api_config.boxes[0]
+                    for i in range(self.numel()-1):
+                        if all < self.numel():
+                            self.numpy_tensor[i] = 0
+                        else:
+                            self.numpy_tensor[i] = numpy.random.randint(1, all-(self.numel()-1-i)+1)
+                            all = all - self.numpy_tensor[i]
+                    self.numpy_tensor[self.numel()-1] = all
                 else:
                     self.numpy_tensor = numpy.random.randint(0,1024,self.shape).astype(self.dtype)
                 
@@ -1233,9 +1237,15 @@ class TensorConfig:
                         self.numpy_tensor[i][3] = numpy.random.random() * (api_config.x[3]-1 - self.numpy_tensor[i][1]+1) + self.numpy_tensor[i][1]+1
                 elif index == 2 or key =="boxes_num":
                     self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
-                    self.numpy_tensor[0] = api_config.boxes[0]
-                
-            
+                    all = api_config.boxes[0]
+                    for i in range(self.numel()-1):
+                        if all < self.numel():
+                            self.numpy_tensor[i] = 0
+                        else:
+                            self.numpy_tensor[i] = numpy.random.randint(1, all-(self.numel()-1-i)+1)
+                            all = all - self.numpy_tensor[i]
+                    self.numpy_tensor[self.numel()-1] = all
+        
             elif api_config.api_name in ["paddle.repeat_interleave"]:
                 if self.check_arg(api_config, 0, "x"):
                     if self.dtype=='bfloat16':
@@ -1339,7 +1349,11 @@ class TensorConfig:
                 if key == "index" or index == 1:
                     d=self.get_arg(api_config, 0, "x")
                     s=d.shape[0]
-                    self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
+                    overwrite = self.get_arg(api_config, 3, "overwrite")
+                    if ( overwrite == None or overwrite == True ) and ( self.shape == [] or self.shape[0] ) <=s :
+                        self.numpy_tensor = numpy.random.choice(s, size=self.shape, replace=False).astype(self.dtype)
+                    else:
+                        self.numpy_tensor = numpy.random.randint(0, s, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name in ["paddle.scatter_nd"]:
                 future_data=self.get_arg(api_config, 2, "shape")     
@@ -1569,7 +1583,7 @@ class TensorConfig:
                     for i in range(s[-1]):
                         self.numpy_tensor[...,i]=(numpy.random.randint(0,org[i], size=self.numpy_tensor[...,i].shape)).astype(self.dtype)
 
-            elif api_config.api_name in ["paddle.Tensor.index_select"]:
+            elif api_config.api_name in ["paddle.Tensor.index_select", "paddle.index_select"]:
                 if self.check_arg(api_config,1,'index'):
                     axis=self.get_arg(api_config, 2, 'axis')
                     if axis is None:

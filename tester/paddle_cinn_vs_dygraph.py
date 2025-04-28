@@ -1,21 +1,11 @@
-from .api_config import TensorConfig, APIConfig, analyse_configs
 
-import re
-import collections
 import paddle
-import numpy
-import math
-import json
-import paddle
-from paddle.jit import to_static
-import inspect
-from .base import APITestBase
-import time
-import os
 from func_timeout import func_set_timeout
-from .config import get_cfg, set_cfg
+from paddle.jit import to_static
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))[0:os.path.dirname(os.path.realpath(__file__)).index("PaddleAPITest")+13]
+from .api_config.log_writer import write_to_log
+from .base import APITestBase
+
 
 class APITestCINNVSDygraph(APITestBase):
     def __init__(self, api_config, test_amp):
@@ -23,18 +13,13 @@ class APITestCINNVSDygraph(APITestBase):
         self.test_amp = test_amp
     @func_set_timeout(600)
     def test(self):
-        cmdline_cfg = get_cfg()
-
-        api_config_accuracy_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_accuracy_error"+cmdline_cfg.id+".txt", "a")
-        api_config_paddle_error = open(DIR_PATH+"/tester/api_config/test_log/api_config_paddle_error"+cmdline_cfg.id+".txt", "a")
-        api_config_pass = open(DIR_PATH+"/tester/api_config/test_log/api_config_pass"+cmdline_cfg.id+".txt", "a")
         
         if self.need_skip():
-            print("[Skip]")
+            print("[Skip]", flush=True)
             return
 
         if not self.ana_paddle_api_info():
-            print("ana_paddle_api_info failed")
+            print("ana_paddle_api_info failed", flush=True)
             return
 
         try:
@@ -55,7 +40,7 @@ class APITestCINNVSDygraph(APITestBase):
                 return func(args, kwargs)
 
             if not self.gen_paddle_input():
-                print("gen_paddle_input failed")
+                print("gen_paddle_input failed", flush=True)
                 return
 
             if self.test_amp:
@@ -75,9 +60,8 @@ class APITestCINNVSDygraph(APITestBase):
         except Exception as err:
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
                 return
-            print("[paddle error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
+            write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise Exception(err)
             return
@@ -85,9 +69,8 @@ class APITestCINNVSDygraph(APITestBase):
         try:
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
-            print("[cuda error]", self.api_config.config, "\n", str(err))
-            api_config_paddle_error.write(self.api_config.config+"\n")
-            api_config_paddle_error.flush()
+            print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
+            write_to_log("paddle_error", self.api_config.config)
             return
 
         if self.api_config.api_name == "paddle.broadcast_shape":
@@ -100,30 +83,29 @@ class APITestCINNVSDygraph(APITestBase):
                     paddle_output_static = paddle.cast(paddle_output_static, dtype="float32")
                 self.np_assert_accuracy(paddle_output.numpy(), paddle_output_static.cpu().numpy(), 1e-2, 1e-2, self.api_config)
             except Exception as err:
-                print("[accuracy error]", self.api_config.config, "\n", str(err))
+                print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
                 paddle_output_static = None
                 paddle_output = None
-                api_config_accuracy_error.write(self.api_config.config+"\n")
-                api_config_accuracy_error.flush()
+                write_to_log("accuracy_error", self.api_config.config)
                 return
         elif isinstance(paddle_output, (list, tuple)):
             if isinstance(paddle_output, tuple):
                 paddle_output = list(paddle_output)
             if not isinstance(paddle_output_static, (list, tuple)):
-                print("[output type diff error]", self.api_config.config)
+                print("[output type diff error]", self.api_config.config, flush=True)
                 paddle_output_static = None
                 paddle_output = None
                 return
             if isinstance(paddle_output_static, tuple):
                 paddle_output_static = list(paddle_output_static)
             if len(paddle_output) != len(paddle_output_static):
-                print("[output type diff error]", self.api_config.config)
+                print("[output type diff error]", self.api_config.config, flush=True)
                 paddle_output_static = None
                 paddle_output = None
                 return
             for i in range(len(paddle_output)):
                 if not isinstance(paddle_output[i], paddle.Tensor):
-                    print("not compare ", paddle_output[i], paddle_output_static[i])
+                    print("not compare ", paddle_output[i], paddle_output_static[i], flush=True)
                 else:
                     try:
                         if paddle_output[i].dtype == paddle.bfloat16:
@@ -131,18 +113,15 @@ class APITestCINNVSDygraph(APITestBase):
                             paddle_output_static[i] = paddle.cast(paddle_output_static[i], dtype="float32")
                         self.np_assert_accuracy(paddle_output[i].numpy(), paddle_output_static[i].cpu().numpy(), 1e-2, 1e-2, self.api_config)
                     except Exception as err:
-                        print("[accuracy error]", self.api_config.config, "\n", str(err))
+                        print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
                         paddle_output_static = None
                         paddle_output = None
-                        api_config_accuracy_error.write(self.api_config.config+"\n")
-                        api_config_accuracy_error.flush()
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
 
-        print("[Pass]", self.api_config.config)
-        api_config_pass.write(self.api_config.config+"\n")
-        api_config_pass.flush()
+        print("[Pass]", self.api_config.config, flush=True)
+        write_to_log("pass", self.api_config.config)
   
-
 
 # import paddle
 # from paddle.jit import to_static
