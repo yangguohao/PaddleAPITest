@@ -485,6 +485,19 @@
     "paddle.nn.functional.class_center_sample": {
         "Rule": "ClassCenterSampleRule"
     },
+    "paddle.nn.functional.gelu": {
+        "torch_api": "torch.nn.functional.gelu",
+        "set_defaults": {
+            "approximate": false
+        },
+        "paddle_torch_args_map": {
+              "x": "input",
+              "approximate": "approximate"
+        },
+        "torch_kwargs": {
+            "approximate": "'tanh' if {approximate} else 'none'"
+        }
+  },
     "paddle.nonzero": {
         "torch_api": "torch.argwhere",
         "paddle_torch_args_map": {
