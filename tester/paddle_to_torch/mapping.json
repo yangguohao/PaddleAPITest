@@ -87,6 +87,13 @@
     "paddle.Tensor.cos":{
         "torch_api": "torch.Tensor.cos"
     },
+    "paddle.Tensor.cumprod": {
+        "torch_api": "torch.Tensor.cumprod",
+        "paddle_torch_args_map": {
+            "dim": "dim",
+            "dtype": "dtype"
+        }
+    },
     "d": "API started with 'd' should be placed here",
     "paddle.divide": {
         "torch_api": "torch.divide",
@@ -104,6 +111,12 @@
     "paddle.Tensor.dim":{
         "torch_api": "torch.Tensor.dim"
     },
+    "paddle.Tensor.divide": {
+        "torch_api": "torch.Tensor.true_divide",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },  
     "e": "API started with 'e' should be placed here",
     "paddle.equal_all": {
         "torch_api": "torch.equal",
@@ -127,6 +140,18 @@
     },
     "paddle.expand_as": {
         "Rule": "ExpandasRule"
+    },
+    "paddle.Tensor.equal_all": {
+        "torch_api": "torch.Tensor.equal",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.erfinv": {
+        "torch_api": "torch.Tensor.erfinv"
+    },
+    "paddle.Tensor.exp": {
+        "torch_api": "torch.Tensor.exp"
     },
     "f": "API started with 'f' should be placed here",
     "paddle.floor_divide": {
