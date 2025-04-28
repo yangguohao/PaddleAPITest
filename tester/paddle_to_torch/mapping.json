@@ -602,11 +602,8 @@
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ne__(other=y)"
     },
     "paddle.Tensor.__pow__": {
-        "torch_api": "torch.Tensor.__pow__",
-        "paddle_torch_args_map": {
-            "y": "other"
-        },
-        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__pow__(other=y)"
+        "Rule": "__Pow__Rule",
+        "description": "use rule since torch.Tensor.__pow__(other=y) throws unimplemented error"
     },
     "paddle.Tensor.__radd__": {
         "torch_api": "torch.Tensor.__radd__",
