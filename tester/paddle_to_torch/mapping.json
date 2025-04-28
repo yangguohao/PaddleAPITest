@@ -491,8 +491,7 @@
             "approximate": false
         },
         "paddle_torch_args_map": {
-              "x": "input",
-              "approximate": "approximate"
+              "x": "input"
         },
         "torch_kwargs": {
             "approximate": "'tanh' if {approximate} else 'none'"
