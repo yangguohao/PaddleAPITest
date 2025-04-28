@@ -225,12 +225,8 @@
     },
     "l": "API started with 'l' should be placed here",
     "paddle.lcm": {
-        "torch_api": "torch.lcm",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "other"
-        }
-    },  
+        "Rule": "LcmRule"
+    },
     "paddle.ldexp": {
         "torch_api": "torch.ldexp",
         "paddle_torch_args_map": {
@@ -3415,9 +3411,6 @@
             "y": "other"
         },
         "min_input_args": 2
-    },
-    "paddle.lcm": {
-        "Rule": "LcmRule"
     },
     "paddle.lerp": {
         "torch_api": "torch.lerp",
