@@ -4,7 +4,8 @@ from datetime import datetime
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly)
 from tester.api_config.log_writer import DIR_PATH, read_log, write_to_log
-
+import torch
+import paddle
 
 def main():
     parser = argparse.ArgumentParser(
@@ -57,6 +58,8 @@ def main():
         case.clear_tensor()
         del case
         del api_config
+        torch.cuda.empty_cache()
+        paddle.device.cuda.empty_cache()
     elif options.api_config_file != "":
         finish_configs = read_log("checkpoint")
         with open(options.api_config_file, "r") as f:
@@ -82,8 +85,8 @@ def main():
             case.clear_tensor()
             del case
             del api_config
-
-
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
 
         # elif options.api_config_file != "":
         #     with open(options.api_config_file, "r") as f:

@@ -8,33 +8,36 @@ while DIR_PATH.name != "PaddleAPITest":
     DIR_PATH = DIR_PATH.parent
 TEST_LOG_PATH = DIR_PATH / "tester/api_config/test_log"
 TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
+TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
 
 # 日志类型和对应的文件
 LOG_PREFIXES = {
-    "accuracy_error": "api_config_accuracy_error",
     "checkpoint": "checkpoint",
-    "crash": "api_config_crash",
-    "paddle_error": "api_config_paddle_error",
-    "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
     "pass": "api_config_pass",
-    "timeout": "api_config_timeout",
+    "paddle_error": "api_config_paddle_error",
     "torch_error": "api_config_torch_error",
+    "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
+    "accuracy_error": "api_config_accuracy_error",
+    "timeout": "api_config_timeout",
+    "crash": "api_config_crash",
 }
+
+is_engineV2 = False
 
 
 def set_engineV2():
-    global is_engineV2, TMP_LOG_PATH
+    global is_engineV2
     is_engineV2 = True
-    TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
     TMP_LOG_PATH.mkdir(exist_ok=True)
 
 
 def get_log_file(log_type: str):
     """获取指定日志类型和PID对应的日志文件路径"""
-    if not is_engineV2:
-        return TEST_LOG_PATH / f"{log_type}.txt"
-    pid = os.getpid()
+    global is_engineV2
     prefix = LOG_PREFIXES.get(log_type)
+    if not is_engineV2:
+        return TEST_LOG_PATH / f"{prefix}.txt"
+    pid = os.getpid()
     return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
 
 
@@ -70,6 +73,10 @@ def read_log(log_type):
 
 def aggregate_logs(mkdir=False):
     """聚合所有相同类型的日志文件"""
+    if not TMP_LOG_PATH.exists():
+        if mkdir:
+            TMP_LOG_PATH.mkdir(exist_ok=True)
+        return
     for prefix in LOG_PREFIXES.values():
         log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
         if not log_files:
@@ -85,7 +92,7 @@ def aggregate_logs(mkdir=False):
 
         aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
         try:
-            with aggregated_file.open("w") as f:
+            with aggregated_file.open("a") as f:
                 f.writelines(f"{line}\n" for line in sorted(all_lines))
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)

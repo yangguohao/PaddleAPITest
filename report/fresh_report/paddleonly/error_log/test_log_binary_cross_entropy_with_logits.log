@@ -1,0 +1,23 @@
+2025-04-23 23:13:01.196605 test begin: paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1, 1],"float16"), Tensor([1, 1],"float16"), reduction="mean", )
+
+[paddle error] paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1, 1],"float16"), Tensor([1, 1],"float16"), reduction="mean", ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), float16) of kernel `sigmoid_cross_entropy_with_logits` is not registered and fail to fallback to CPU one. Selected wrong DataType `float16`. Paddle support following DataTypes: float64, float32.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+2025-04-23 23:13:01.197969 test begin: paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1],"float16"), Tensor([1],"float16"), reduction="mean", )
+
+[paddle error] paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1],"float16"), Tensor([1],"float16"), reduction="mean", ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), float16) of kernel `sigmoid_cross_entropy_with_logits` is not registered and fail to fallback to CPU one. Selected wrong DataType `float16`. Paddle support following DataTypes: float64, float32.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+2025-04-23 23:13:01.198808 test begin: paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([2, 1],"float16"), Tensor([2, 1],"float16"), reduction="mean", )
+
+[paddle error] paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([2, 1],"float16"), Tensor([2, 1],"float16"), reduction="mean", ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), float16) of kernel `sigmoid_cross_entropy_with_logits` is not registered and fail to fallback to CPU one. Selected wrong DataType `float16`. Paddle support following DataTypes: float64, float32.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+2025-04-23 23:13:01.199544 test begin: paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([8, 1],"float16"), Tensor([8, 1],"float16"), reduction="mean", )
+
+[paddle error] paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([8, 1],"float16"), Tensor([8, 1],"float16"), reduction="mean", ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), float16) of kernel `sigmoid_cross_entropy_with_logits` is not registered and fail to fallback to CPU one. Selected wrong DataType `float16`. Paddle support following DataTypes: float64, float32.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)

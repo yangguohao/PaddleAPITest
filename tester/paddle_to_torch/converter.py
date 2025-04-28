@@ -14,7 +14,6 @@ PADDLE2TORCH_WRONG_CONFIG = frozenset(
         "paddle.matmul",
         "paddle.nn.functional.adaptive_avg_pool2d",
         "paddle.nn.functional.adaptive_avg_pool3d",
-        "paddle.nn.functional.channel_shuffle",
         "paddle.nn.functional.conv1d",
         "paddle.nn.functional.conv1d_transpose",
         "paddle.nn.functional.conv2d",
