@@ -421,11 +421,24 @@ class TensorConfig:
 
                 return self.numpy_tensor
             elif api_config.api_name in ["paddle.vision.ops.distribute_fpn_proposals"]:
-                if "int" in self.dtype:
-                    self.numpy_tensor = (numpy.random.randint(1, 128, size=self.shape)).astype(self.dtype)
-                else:
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
+                if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
+                    self.numpy_tensor = numpy.zeros(self.shape)
+                    for i in range(self.shape[0]):
+                        self.numpy_tensor[i][0] = numpy.random.randint(1,1024) + numpy.random.random()
+                        self.numpy_tensor[i][1] = numpy.random.randint(1,1024) + numpy.random.random()
+                        self.numpy_tensor[i][2] = self.numpy_tensor[i][0] + numpy.random.randint(1,1024) + numpy.random.random()
+                        self.numpy_tensor[i][3] = self.numpy_tensor[i][1] + numpy.random.randint(1,1024) + numpy.random.random()
+                    if not hasattr(api_config, "num"):
+                        api_config.num = self.shape[0]
+                elif (index is not None and index == 6 ) or (key is not None and key == "rois_num"):
+                    num = api_config.num
+                    re = self.shape[0]
+                    self.numpy_tensor =  numpy.zeros(self.shape)
+                    for i in range(self.shape[0]-1):
+                        self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
+                        num = num - self.numpy_tensor[i]
+                        re -= 1
+                    self.numpy_tensor[self.shape[0]-1] = num
             elif api_config.api_name in ["paddle.empty"]:
                 is_shape_param = False
                 if len(api_config.args) > 0:

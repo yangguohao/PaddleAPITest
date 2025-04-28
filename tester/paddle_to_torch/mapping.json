@@ -484,12 +484,31 @@
         }
     },
     "t": "API started with 't' should be placed here",
+    "paddle.topk":{
+        "torch_api": "torch.topk",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "k": "k",
+            "axis": "dim",
+            "largest": "largest",
+            "sorted": "sorted"
+        }
+    },
     "u": "API started with 'u' should be placed here",
     "v": "API started with 'v' should be placed here",
+    "paddle.view":{
+        "Rule": "ViewRule"
+    },
+    "paddle.vision.ops.distribute_fpn_proposals":{
+        "Rule": "Distribute_fpn_proposalsRule"
+    },
     "w": "API started with 'w' should be placed here",
     "x": "API started with 'x' should be placed here",
     "y": "API started with 'y' should be placed here",
     "z": "API started with 'z' should be placed here",
+    "paddle.Tensor.zero_":{
+        "torch_api": "torch.Tensor.zero_"
+    },
     "_": "API started with '_' should be placed here",
     "paddle.Tensor.__eq__": {
         "torch_api": "torch.Tensor.__eq__",

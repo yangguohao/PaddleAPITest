@@ -615,7 +615,81 @@ if locals().get('data_format') == 'NHWC':
         )
         return ConvertResult.success(paddle_api, code)
 
+class Distribute_fpn_proposalsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import math
+        
+def BBoxArea(box, pixel_offset):
+    w = box[2] - box[0]
+    h = box[3] - box[1]
+    if pixel_offset:
+        return (w+1) * (h+1)
+    else:
+        return w * h     
 
+pixel_offset = locals().get('pixel_offset',False)
+rois_num = locals().get('rois_num', None)
+num_level = max_level - min_level + 1
+if rois_num is not None:
+    for i in range(1, rois_num.numel()):
+        rois_num[i] += rois_num[i-1]
+    fpn_rois_lod = torch.concat([torch.tensor([0]), rois_num])
+else:
+    fpn_rois_lod = torch.tensor([0, fpn_rois.shape[0]])   
+
+size = fpn_rois_lod.numel() - 1
+fpn_rois_num = (int)(fpn_rois_lod[size])
+# 计算roi所属的level
+num_rois_level = torch.zeros([num_level])
+target_level = []
+for i in range(fpn_rois_lod.numel() - 1):
+    fpn_rois_slice = fpn_rois[fpn_rois_lod[i]:fpn_rois_lod[i+1]]
+    for rois_data in fpn_rois_slice:
+        roi_scale = math.sqrt(BBoxArea(rois_data, pixel_offset))
+        tgt_lvl = math.floor(math.log2(roi_scale / refer_scale) + refer_level)
+        tgt_lvl = min(max_level, max(tgt_lvl, min_level))
+        target_level.append(tgt_lvl)
+        num_rois_level[tgt_lvl - min_level] += 1 
+# 初始化结果
+multi_rois = []
+for i in range(num_level):
+    multi_rois.append([])
+restore_ind = torch.empty(fpn_rois.shape[0], 1)
+rois_num_per_level = []
+for i in range(num_level):
+    rois_num_per_level.append(
+        torch.zeros([rois_num.numel()])
+    )
+# 计算结果
+index = 0
+for i in range(fpn_rois_lod.numel() - 1):
+    fpn_rois_slice = fpn_rois[fpn_rois_lod[i]:fpn_rois_lod[i+1]]
+    for rois_data in fpn_rois_slice:
+        level = target_level[index]
+        if multi_rois[level-min_level] == []:
+            multi_rois[level-min_level].append(rois_data)
+        else:
+            multi_rois[level-min_level].append(rois_data)
+        rois_num_per_level[level - min_level][i] += 1
+        index += 1
+for i in range(num_level):
+    if multi_rois[i] == []:
+        multi_rois[i] = torch.zeros([0,4])
+    else:
+        multi_rois[i] = torch.stack(multi_rois[i])
+index = 0
+for i in range(num_level):
+    for j in range(fpn_rois.shape[0]):
+        if target_level[j] == i + min_level:
+            restore_ind[j] = index
+            index += 1
+          
+print(rois_num_per_level)
+result = (multi_rois, restore_ind, rois_num_per_level)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 # e
 class EmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1131,8 +1205,13 @@ else:
 
 
 # v
-
-
+class ViewRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.view(shape_or_dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 # w
 
 
