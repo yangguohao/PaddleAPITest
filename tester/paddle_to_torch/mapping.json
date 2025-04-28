@@ -465,10 +465,15 @@
         "paddle_torch_args_map": {
             "input": "input1",
             "other": "input2",
-            "label": "target",
             "margin": "margin",
             "reduction": "reduction"
+        },
+        "torch_kwargs": {
+            "target": "torch.broadcast_to({label}, {input}.shape)"
         }
+    },
+    "paddle.nn.functional.class_center_sample": {
+        "Rule": "ClassCenterSampleRule"
     },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
