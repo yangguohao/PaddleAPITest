@@ -284,3 +284,4 @@ paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float32"), 
 paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float32"), output_size=list[None,3,3,], random_u=0.6, )
 paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float64"), output_size=list[3,3,3,], random_u=0.3, )
 paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float64"), output_size=list[3,3,3,], random_u=None, )
+paddle.audio.functional.get_window("triang", 512, )
