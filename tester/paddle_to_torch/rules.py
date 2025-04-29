@@ -177,7 +177,7 @@ class GenericRule(BaseRule):
                         paddle_api,
                         "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                     )
-                code.append("_tmp_tensor = next(iter(kwargs.values()))")
+                code.append("_tmp_tensor = args[0] if args else next(iter(kwargs.values()))")
                 if self.is_attribute:
                     code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
                     return ConvertResult.success(paddle_api, code)
@@ -185,7 +185,7 @@ class GenericRule(BaseRule):
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
 
-            code.append("_args = []")
+            code.append("_args = args[1:]")
             if self.torch_args:
                 for arg in self.torch_args:
                     code.append(f"_args.extend([{self._format_arg(arg)}])")
