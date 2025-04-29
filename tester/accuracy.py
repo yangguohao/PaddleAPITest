@@ -264,9 +264,11 @@ class APITestAccuracy(APITestBase):
                     for item in paddle_output[i]:
                         if not isinstance(item, paddle.Tensor):
                             flag = False
+                            break
                     for item in torch_output[i]:
                         if not isinstance(item, torch.Tensor):
                             flag = False
+                            break
                 if flag:
                     try:
                         for index, item_paddle in enumerate(paddle_output[i]):

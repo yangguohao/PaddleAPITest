@@ -685,8 +685,7 @@ for i in range(num_level):
         if target_level[j] == i + min_level:
             restore_ind[j] = index
             index += 1
-          
-print(rois_num_per_level)
+
 result = (multi_rois, restore_ind, rois_num_per_level)
 """
         code = impl.splitlines()
