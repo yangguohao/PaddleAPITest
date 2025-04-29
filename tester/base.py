@@ -364,11 +364,11 @@ class APITestBase:
                     is_tuple=is_nested_tuple)
             elif isinstance(item, TensorConfig):
                 processed_item = item.get_paddle_tensor(self.api_config)
+                item.clear_paddle_tensor()
             else:
                 processed_item = item
             tmp.append(processed_item)
         return tuple(tmp) if is_tuple else tmp
-
 
     def gen_paddle_input(self):
         self.paddle_args = []
@@ -378,24 +378,24 @@ class APITestBase:
         for arg_config in self.paddle_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config))
-            elif isinstance(arg_config, list):
-                self.paddle_args.append(self._handle_list_or_tuple_paddle(arg_config))
-            elif isinstance(arg_config, tuple):
-                self.paddle_args.append(self._handle_list_or_tuple_paddle(arg_config, is_tuple=True))
+                arg_config.clear_paddle_tensor()
+            elif isinstance(arg_config, (list, tuple)):
+                is_tuple = isinstance(arg_config, tuple)
+                self.paddle_args.append(self._handle_list_or_tuple_paddle(arg_config, is_tuple))
             else:
                 self.paddle_args.append(arg_config)
 
         for key, kwarg_config in self.paddle_kwargs_config.items():
             if isinstance(kwarg_config, TensorConfig):
                 self.paddle_kwargs[key] = kwarg_config.get_paddle_tensor(self.api_config)
-            elif isinstance(kwarg_config, list):
-                self.paddle_kwargs[key] = self._handle_list_or_tuple_paddle(kwarg_config)
-            elif isinstance(kwarg_config, tuple):
-                self.paddle_kwargs[key] = self._handle_list_or_tuple_paddle(kwarg_config, is_tuple=True)
+                kwarg_config.clear_paddle_tensor()
+            elif isinstance(kwarg_config, (list, tuple)):
+                is_tuple = isinstance(kwarg_config, tuple)
+                self.paddle_kwargs[key] = self._handle_list_or_tuple_paddle(kwarg_config, is_tuple)
             else:
                 self.paddle_kwargs[key] = kwarg_config
 
-        if len(self.paddle_args) == 0 and "paddle.Tensor." in self.api_config.api_name:
+        if len(self.paddle_args) == 0 and self.api_config.api_name.startswith("paddle.Tensor."):
             self.paddle_args.append(self.paddle_kwargs.popitem(last=False)[1])
 
         if self.api_config.api_name == "paddle.linalg.lstsq" and 'gpu' in paddle.device.get_device():
@@ -407,45 +407,24 @@ class APITestBase:
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 self.paddle_args, self.paddle_kwargs = self.copy_paddle_input()
-        self.clear_paddle_tensor()
+
         return True
 
     def copy_paddle_input(self):
-        args = []
-        kwargs = collections.OrderedDict()
 
-        for i in range(len(self.paddle_args)):
-            if isinstance(self.paddle_args[i], paddle.Tensor):
-                args.append(paddle.assign(self.paddle_args[i]))
-            elif isinstance(self.paddle_args[i], list) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                tmp = []
-                for j in range(len(self.paddle_args[i])):
-                    tmp.append(paddle.assign(self.paddle_args[i][j]))
-                args.append(tmp)
-            elif isinstance(self.paddle_args[i], tuple) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                tmp = []
-                for j in range(len(self.paddle_args[i])):
-                    tmp.append(paddle.assign(self.paddle_args[i][j]))
-                args.append(tmp)
-            else:
-                args.append(self.paddle_args[i])
+        def _deep_copy(data):
+            if isinstance(data, paddle.Tensor):
+                return paddle.assign(data)
+            elif isinstance(data, (list, tuple)):
+                return type(data)(_deep_copy(x) for x in data)
+            return data
 
-        for key, value in self.paddle_kwargs.items():
-            if isinstance(value, paddle.Tensor):
-                kwargs[key] = paddle.assign(value)
-            elif isinstance(value, list):
-                tmp = []
-                for j in range(len(value)):
-                    tmp.append(paddle.assign(value[j]))
-                kwargs[key] = tmp
-            elif isinstance(value, tuple):
-                tmp = []
-                for j in range(len(value)):
-                    tmp.append(paddle.assign(value[j]))
-                kwargs[key] = tmp
-            else:
-                kwargs[key] = value
+        args = [_deep_copy(arg) for arg in self.paddle_args]
+        kwargs = collections.OrderedDict(
+            (k, _deep_copy(v)) for k, v in self.paddle_kwargs.items()
+        )
         return args, kwargs
+
 
     def get_paddle_input_list(self):
         result = []
@@ -712,32 +691,21 @@ class APITestBase:
         return True
 
     def copy_torch_input(self):
-        args = []
-        kwargs = collections.OrderedDict()
 
-        for arg in self.torch_args:
-            if isinstance(arg, torch.Tensor):
-                args.append(torch.clone(arg))
-            elif isinstance(arg, (list, tuple)):
-                args.append([
-                    torch.clone(x) if isinstance(x, torch.Tensor) else x
-                    for x in arg
-                ])
-            else:
-                args.append(arg)
+        def _deep_copy(data):
+            if isinstance(data, torch.Tensor):
+                return torch.clone(data)
+            elif isinstance(data, (list, tuple)):
+                return type(data)(_deep_copy(x) for x in data)
+            return data
 
-        for key, value in self.torch_kwargs.items():
-            if isinstance(value, torch.Tensor):
-                kwargs[key] = torch.clone(value)
-            elif isinstance(value, (list, tuple)):
-                kwargs[key] = [
-                    torch.clone(x) if isinstance(x, torch.Tensor) else x
-                    for x in value
-                ]
-            else:
-                kwargs[key] = value
-
+        args = [_deep_copy(arg) for arg in self.torch_args]
+        kwargs = collections.OrderedDict(
+            (k, _deep_copy(v)) for k, v in self.torch_kwargs.items()
+        )
         return args, kwargs
+
+
     def _handle_list_or_tuple_torch(self, config_items, is_tuple=False):
         """处理 list 或 tuple """
         tmp = []
@@ -749,6 +717,7 @@ class APITestBase:
                     is_tuple=is_nested_tuple)
             elif isinstance(item, TensorConfig):
                 processed_item = item.get_torch_tensor(self.api_config)
+                item.clear_torch_tensor()
             else:
                 processed_item = item
             tmp.append(processed_item)
@@ -760,20 +729,20 @@ class APITestBase:
         for arg_config in self.torch_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.torch_args.append(arg_config.get_torch_tensor(self.api_config))
-            elif isinstance(arg_config, list):
-                self.torch_args.append(self._handle_list_or_tuple_torch(arg_config))
-            elif isinstance(arg_config, tuple):
-                self.torch_args.append(self._handle_list_or_tuple_torch(arg_config, is_tuple=True))
+                arg_config.clear_torch_tensor()
+            elif isinstance(arg_config, (list, tuple)):
+                is_tuple = isinstance(arg_config, tuple)
+                self.torch_args.append(self._handle_list_or_tuple_torch(arg_config, is_tuple))
             else:
                 self.torch_args.append(arg_config)
 
         for key, arg_config in self.torch_kwargs_config.items():
             if isinstance(arg_config, TensorConfig):
                 self.torch_kwargs[key] = arg_config.get_torch_tensor(self.api_config)
-            elif isinstance(arg_config, list):
-                self.torch_kwargs[key] = self._handle_list_or_tuple_torch(arg_config)
-            elif isinstance(arg_config, tuple):
-                self.torch_kwargs[key] = self._handle_list_or_tuple_torch(arg_config, is_tuple=True)
+                arg_config.clear_torch_tensor()
+            elif isinstance(arg_config, (list, tuple)):
+                is_tuple = isinstance(arg_config, tuple)
+                self.torch_kwargs[key] = self._handle_list_or_tuple_torch(arg_config, is_tuple)
             else:
                 self.torch_kwargs[key] = arg_config
 
@@ -781,7 +750,7 @@ class APITestBase:
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 self.torch_args, self.torch_kwargs = self.copy_torch_input()
 
-        self.clear_torch_tensor()
+        torch.cuda.empty_cache()
         return True
 
     def np_assert_accuracy(

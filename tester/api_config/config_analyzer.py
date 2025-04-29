@@ -1733,19 +1733,14 @@ class TensorConfig:
                         self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
         return self.numpy_tensor
 
-    def get_paddle_tensor(self, api_config, index=None, key=None, **kwargs):
-        if index is not None:
-            self.index = index
-        if key is not None:
-            self.key = key
-
+    def get_paddle_tensor(self, api_config):
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
 
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
-                self.get_numpy_tensor(api_config, index, key, **kwargs),
+                self.get_numpy_tensor(api_config),
                 dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
                 place=self.place
             )

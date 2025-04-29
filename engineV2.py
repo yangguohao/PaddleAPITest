@@ -7,7 +7,9 @@ from concurrent.futures import TimeoutError, as_completed
 from datetime import datetime
 from multiprocessing import Lock, Manager, set_start_method
 
+import paddle
 import psutil
+import torch
 from pebble import ProcessPool
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
@@ -112,7 +114,9 @@ def run_test_case(api_config_str, test_class, test_amp):
     except Exception as err:
         print(f"[test error] {api_config_str} {str(err)}", flush=True)
     finally:
-        case.clear_tensor()
+        del case
+        torch.cuda.empty_cache()
+        paddle.device.cuda.empty_cache()
 
 
 def main():
@@ -169,9 +173,9 @@ def main():
         except Exception as err:
             print(f"[test error] {options.api_config}: {err}", flush=True)
         finally:
-            case.clear_tensor()
             del case
-            del api_config
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
     elif options.api_config_file:
         # Batch execution
         finish_configs = read_log("checkpoint")

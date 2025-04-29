@@ -108,23 +108,21 @@ class APITestAccuracy(APITestBase):
             return
 
         if self.need_check_grad():
-            inputs_list = self.get_torch_input_list()
-            result_outputs, result_outputs_grads = self.gen_torch_output_and_output_grad(torch_output)
             try:
-                if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
-                    del self.torch_args
-                    del self.torch_kwargs
-                    torch_out_grads = torch.autograd.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads)
+                inputs_list = self.get_torch_input_list()
+                result_outputs, result_outputs_grads = self.gen_torch_output_and_output_grad(torch_output)
+                del self.torch_args, self.torch_kwargs
+                if inputs_list and result_outputs and result_outputs_grads:
+                    torch_out_grads = torch.autograd.grad(
+                        outputs=result_outputs,
+                        inputs=inputs_list,
+                        grad_outputs=result_outputs_grads
+                    )
                     torch_grad_success = True
                 else:
-                    torch_grad_success = False
                     torch_out_grads = None
-                    del self.torch_args
-                    del self.torch_kwargs
-
-                del inputs_list
-                del result_outputs
-                del result_outputs_grads
+                    torch_grad_success = False
+                del inputs_list, result_outputs, result_outputs_grads
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 print(str(err), flush=True)
@@ -132,8 +130,7 @@ class APITestAccuracy(APITestBase):
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise Exception(err)
         else:
-            del self.torch_args
-            del self.torch_kwargs
+            del self.torch_args, self.torch_kwargs
 
         if isinstance(torch_output, torch.Tensor):
             if torch_output.dtype == torch.bfloat16:
@@ -172,7 +169,6 @@ class APITestAccuracy(APITestBase):
                             torch_out_grads[i] = torch_out_grads[i].to(dtype=torch.float32)
                         torch_out_grads[i] = torch_out_grads[i].cpu().detach()
 
-        self.clear_torch_tensor()
         gc.collect()
         torch.cuda.empty_cache()
 
@@ -281,17 +277,14 @@ class APITestAccuracy(APITestBase):
                         return
 
         if self.need_check_grad() and torch_grad_success:
-            paddle_out_grads = None
-            inputs_list = self.get_paddle_input_list()
-            result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
             try:
-                if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
-                    del self.paddle_args
-                    del self.paddle_kwargs
+                paddle_out_grads = None
+                inputs_list = self.get_paddle_input_list()
+                result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
+                del self.paddle_args, self.paddle_kwargs
+                if inputs_list and result_outputs and result_outputs_grads:
                     paddle_out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
-                del inputs_list
-                del result_outputs
-                del result_outputs_grads
+                del inputs_list, result_outputs, result_outputs_grads
             except Exception as err:
                 print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
