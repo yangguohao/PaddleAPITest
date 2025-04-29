@@ -987,6 +987,20 @@ else:
 
 
 # l
+class LcmRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x, y = torch.broadcast_tensors(x, y)
+x_abs = torch.abs(x)
+y_abs = torch.abs(y)
+gcd = torch.gcd(x_abs, y_abs)
+lcm = torch.zeros_like(gcd)
+nonzero_mask = gcd != 0
+lcm[nonzero_mask] = (x_abs[nonzero_mask] * y_abs[nonzero_mask]) // gcd[nonzero_mask]
+result = torch.abs(lcm)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # m
@@ -1110,7 +1124,15 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
-
+class NumelRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+num_elements = x.numel()
+result = torch.tensor(num_elements, dtype=torch.int64)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
 # o
 
 
@@ -1295,7 +1317,17 @@ else:
 
 # z
 
-
+# __
+class __Pow__Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+tensor = locals().get('self')
+other = locals().get('y')
+result = tensor.__pow__(other)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
