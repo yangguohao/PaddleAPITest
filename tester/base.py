@@ -45,6 +45,7 @@ rand_apis = [
     "paddle.Tensor.uniform_",
     "paddle.empty",
     "paddle.empty_like",
+    "paddle.Tensor.__dir__",
 ]
 
 stochastic_behavior_apis =[
