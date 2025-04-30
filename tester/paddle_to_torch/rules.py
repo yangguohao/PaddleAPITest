@@ -944,6 +944,15 @@ result = window
 
 
 # i
+
+class IsEmptyRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.numel() == 0
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1296,6 +1305,30 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class SortRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+axis = locals().get('axis', -1)
+descending = locals().get('descending', False)  
+stable = locals().get('stable', False)  
+axis = axis if axis >= 0 else x.dim() + axis
+result, _ = torch.sort(x, dim=axis, descending=descending, stable=stable)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+class SortTensorRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('self')
+axis = locals().get('axis', -1)
+descending = locals().get('descending', False)  
+stable = locals().get('stable', False)  
+axis = axis if axis >= 0 else x.dim() + axis
+result, _ = torch.sort(x, dim=axis, descending=descending, stable=stable)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # t
 

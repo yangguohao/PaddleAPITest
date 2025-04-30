@@ -157,6 +157,12 @@
         }
     },       
     "g": "API started with 'g' should be placed here",
+    "paddle.gammaln": {
+        "torch_api": "torch.special.gammaln",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
     },
@@ -193,6 +199,9 @@
     },
     "h": "API started with 'h' should be placed here",
     "i": "API started with 'i' should be placed here",
+    "paddle.is_empty": {
+        "Rule": "IsEmptyRule"
+    },
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
     },
@@ -5682,6 +5691,12 @@
         },
         "min_input_args": 2
     },
+    "paddle.round": {
+        "torch_api": "torch.round",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.rot90": {
         "torch_api": "torch.rot90",
         "paddle_torch_args_map": {
@@ -5780,6 +5795,12 @@
         },
         "min_input_args": 1
     },
+    "paddle.sort": {
+        "Rule": "SortRule"
+    },
+    "paddle.Tensor.sort": {
+        "Rule": "SortRule"
+    },    
     "paddle.sparse.addmm": {
         "torch_api": "torch.sparse.addmm",
         "paddle_torch_args_map": {
