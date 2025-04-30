@@ -114,6 +114,15 @@
     "paddle.Tensor.dim":{
         "torch_api": "torch.Tensor.dim"
     },
+    "paddle.nn.functional.dropout": {
+        "Rule": "DropoutRule"
+    },
+    "paddle.nn.functional.dropout2d": {
+        "Rule": "Dropout2dRule"
+    },
+    "paddle.nn.functional.dropout3d": {
+        "Rule": "Dropout3dRule"
+    },
     "e": "API started with 'e' should be placed here",
     "paddle.equal_all": {
         "torch_api": "torch.equal",
@@ -4855,36 +4864,6 @@
             "eps": "eps"
         },
         "min_input_args": 2
-    },
-    "paddle.nn.functional.dropout": {
-        "torch_api": "torch.nn.functional.dropout",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "p": "p",
-            "training": "training",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.dropout2d": {
-        "torch_api": "torch.nn.functional.dropout2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "p": "p",
-            "training": "training",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.dropout3d": {
-        "torch_api": "torch.nn.functional.dropout3d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "p": "p",
-            "training": "training",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
     },
     "paddle.nn.functional.elu": {
         "torch_api": "torch.nn.functional.elu",

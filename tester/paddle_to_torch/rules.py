@@ -627,6 +627,70 @@ if locals().get('data_format') == 'NHWC':
         )
         return ConvertResult.success(paddle_api, code)
 
+class DropoutRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+def axis_dropout(x, p, axis, training=True, mode='upscale_in_train'):
+    if isinstance(axis, int):
+        axis = [axis]
+    mask_shape = [x.shape[i] if i in axis else 1 for i in range(x.dim())]
+    mask = torch.bernoulli(torch.full(mask_shape, 1-p)).to(x.device)
+    if mode == 'upscale_in_train':
+        if training:
+            return x * mask / (1.0 - p)
+        else:
+            return x
+    elif mode == 'downscale_in_infer':
+        if training:
+            return x * mask
+        else:
+            return x * (1.0 - p)
+    else:
+        raise ValueError(f"Invalid mode: {mode}")
+        
+x = locals().get('x')
+p = locals().get('p')
+axis = locals().get('axis')
+training = locals().get('training')
+mode = locals().get('mode')
+result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
+class Dropout2dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('x')
+p = locals().get('p')
+training = locals().get('training')
+data_format = locals().get('data_format')
+
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+result = torch.nn.functional.dropout(input=x, p=float(p), training=training)
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
+class Dropout3dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('x')
+p = locals().get('p')
+training = locals().get('training')
+data_format = locals().get('data_format')
+
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
+result = torch.nn.functional.dropout3d(input=x, p=float(p), training=training)
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 
 # e
 class EmptyRule(BaseRule):
