@@ -501,6 +501,17 @@ if data_format == 'NDHWC':
 
 
 # b
+
+class BroadcastShapeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x_shape = locals().get('x_shape')
+y_shape = locals().get('y_shape')
+result = torch.broadcast_shapes(x_shape, y_shape)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
 class BroadcastTensorsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = ["result = torch.broadcast_tensors(*input)"]

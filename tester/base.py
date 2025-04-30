@@ -564,6 +564,8 @@ class APITestBase:
         result_outputs = []
         if isinstance(outputs, torch.Tensor):
             result_outputs.append(outputs)
+        elif isinstance(outputs, torch.Size):
+            result_outputs.append(torch.tensor(outputs))
         elif isinstance(outputs, list) and len(outputs) > 0 and isinstance(outputs[0], torch.Tensor):
             result_outputs = outputs
         elif isinstance(outputs, tuple):

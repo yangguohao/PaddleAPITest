@@ -1,6 +1,5 @@
 log.log
-tester/__pycache__/
-tester/api_config/__pycache__/
-tester/paddle_to_torch/__pycache__/
+__pycache__
 tester/api_config/test_log/
-.vscode/
+.vscode
+.mypy_cache
