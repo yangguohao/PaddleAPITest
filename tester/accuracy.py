@@ -179,15 +179,11 @@ class APITestAccuracy(APITestBase):
                 return
             if "paddle.Tensor." in self.api_config.api_name:
                 api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
-                args = []
-                if len(self.paddle_args) > 1:
-                    args = self.paddle_args[1:]
-
                 if self.test_amp:
                     with paddle.amp.auto_cast():
-                        paddle_output = api(*tuple(args), **self.paddle_kwargs)
+                        paddle_output = api(*self.paddle_args[1:], **self.paddle_kwargs)
                 else:
-                    paddle_output = api(*tuple(args), **self.paddle_kwargs)
+                    paddle_output = api(*self.paddle_args[1:], **self.paddle_kwargs)
             else:
                 if self.test_amp:
                     with paddle.amp.auto_cast():

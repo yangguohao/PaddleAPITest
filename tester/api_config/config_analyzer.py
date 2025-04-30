@@ -1,15 +1,11 @@
-import random
-import re
 import collections
-import paddle
-import numpy
-import math
-import json
-import paddle
-import inspect
-import torch
 import copy
+import math
+import re
 
+import numpy
+import paddle
+import torch
 
 USE_CACHED_NUMPY = False
 cached_numpy = {}
