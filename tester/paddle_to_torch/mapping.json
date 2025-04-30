@@ -707,6 +707,15 @@
     "paddle.Tensor.__setitem__": {
         "torch_api": "torch.Tensor.__setitem__"
     },
+    "paddle.Tensor.__abs__": {
+        "torch_api": "torch.Tensor.__abs__"
+    },
+    "paddle.Tensor.__and__": {
+        "torch_api": "torch.Tensor.__and__"
+    },
+    "paddle.Tensor.__dir__": {
+        "torch_api": "torch.Tensor.__dir__"
+    },
     "migrated": "APIs migrated are placed here",
     "paddle.Tensor.addmm": {
         "torch_api": "torch.Tensor.addmm",
