@@ -78,6 +78,7 @@ class APITestAccuracy(APITestBase):
 
             output_var = convert_result.output_var or "result"
             torch_output = exec_locals[output_var]
+            del exec_globals, exec_locals, output_var, convert_result
 
             # if "paddle.Tensor." in self.api_config.api_name:
             #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])
