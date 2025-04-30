@@ -66,7 +66,7 @@ def estimate_timeout(api_config) -> float:
     return TIMEOUT_STEPS[-1][1]
 
 
-def init_worker(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
+def init_worker_gpu(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
     set_engineV2()
     my_pid = os.getpid()
 
@@ -250,7 +250,7 @@ def main():
 
             pool = ProcessPool(
                 max_workers=total_workers,
-                initializer=init_worker,
+                initializer=init_worker_gpu,
                 initargs=[gpu_worker_list, lock, num_gpus, num_workers_per_gpu],
             )
 
@@ -307,6 +307,13 @@ def main():
                 aggregate_logs()
         # elif options.num_cpus > 0:
         #     # Multi CPUs
+        #     from tester import (
+        #         APIConfig,
+        #         APITestAccuracy,
+        #         APITestCINNVSDygraph,
+        #         APITestPaddleOnly,
+        #     )
+  
         #     BATCH_SIZE = 16384
         #     num_cpus = options.num_cpus
         #     print(f"Using {num_cpus} CPU(s).", flush=True)
@@ -328,7 +335,7 @@ def main():
         #                 timeout = estimate_timeout(config)
         #                 future = pool.schedule(
         #                     run_test_case,
-        #                     [config, test_class, options.test_amp],
+        #                     [config, options],
         #                     timeout=timeout,
         #                 )
         #                 futures[future] = config
