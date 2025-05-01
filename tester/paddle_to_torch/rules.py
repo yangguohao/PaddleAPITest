@@ -164,6 +164,7 @@ class GenericRule(BaseRule):
         code = []
         if self.direct_mapping:  # 直接映射)
             for import_statement in self.imports:
+                print(import_statement)
                 code.append(f"import {import_statement}")
             code.append("")
             for default_name, default_value in self.defaults.items():
@@ -686,7 +687,6 @@ for i in range(num_level):
             restore_ind[j] = index
             index += 1
           
-print(rois_num_per_level)
 result = (multi_rois, restore_ind, rois_num_per_level)
 """
         code = impl.splitlines()
@@ -869,7 +869,169 @@ for batch in range(batch_size):
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+class GenerateProposalsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """    
+import torchvision
+import math
+def nms(box1, box2, normaloized):
+    if box2[0] > box1[2] or box2[2] < box1[0] or box2[1] > box1[3] or box2[3] < box1[1]:
+        return 0
+    if normaloized:
+        norm = 0
+    else:
+        norm = 1
+    x_min = max(box1[0], box2[0])
+    y_min = max(box1[1], box2[1])
+    x_max = min(box1[2], box2[2])
+    y_max = min(box1[3], box2[3])
+    w = x_max - x_min + norm
+    h = y_max - y_min + norm
+    area = w * h
+    if box1[0] > box1[2] or box1[1] > box1[3]:
+        area1 = 0
+    else:
+        area1 = (box1[2] - box1[0] + norm) * (box1[3] - box1[1] + norm)
+    if box2[0] > box2[2] or box2[1] > box2[3]:
+        area2 = 0
+    else:
+        area2 = (box2[2] - box2[0] + norm) * (box2[3] - box2[1] + norm)
+    return area / (area1 + area2 - area)
+    
+pre_nms_top_n = locals().get('pre_nms_top_n', 6000)
+post_nms_top_n = locals().get('post_nms_top_n', 1000)
+nms_thresh = locals().get('nms_thresh', 0.5)
+min_size = locals().get('min_size', 0.1)
+eta = locals().get('eta', 1.0)
+pixel_offset = locals().get('pixel_offset', False)
+return_rois_num = locals().get('return_rois_num', False)
 
+# 初始化结果
+rpn_rois = []
+rpn_roi_probs = []
+
+# 调整大小
+scores = scores.permute(0,2,3,1)
+bbox_deltas = bbox_deltas.permute(0,2,3,1)
+scores = scores.reshape([scores.shape[0],-1, 1])
+bbox_deltas = bbox_deltas.reshape([bbox_deltas.shape[0],-1, 4])
+anchors = anchors.reshape([-1,4])
+variances = variances.reshape([-1,4])
+proposal = torch.empty([scores.shape[0], scores.shape[1],4])
+
+#逐张图片进行处理
+for ii in range(scores.shape[0]):
+    scores_i = scores[ii]
+    bbox_deltas_i = bbox_deltas[ii]
+    img_size_i = img_size[ii]
+    proposal_i = proposal[ii]
+
+    class cls:
+        def __init__(self, scores, index):
+            self.scores = scores
+            self.index = index
+    def cmp(self, item):
+        return item.scores
+    ind = []
+    for j in range(scores_i.numel()):
+        c = cls(scores_i[j,0], j)
+        ind.append(c)    
+    ind = sorted(ind, key = lambda x : x.scores, reverse = True)   
+    for j in range(len(ind)):
+        ind[j] = ind[j].index    
+    if pre_nms_top_n < scores_i.numel():
+        ind = torch.tensor(ind[:pre_nms_top_n]).squeeze()
+    else:
+        ind = torch.tensor(ind).squeeze()
+    scores_i = scores_i.index_select(0, ind)
+    bbox_deltas_i = bbox_deltas_i.index_select(0, ind)
+    anchors_i = anchors.index_select(0, ind)
+    variances_i = variances.index_select(0, ind)
+    proposal_i = proposal_i.index_select(0, ind)
+
+    #计算候选框的位置 
+    if pixel_offset == True:
+        offset = 1
+    else:
+        offset = 0
+    for i in range(anchors_i.shape[0]):
+        anchor_width = anchors_i[i][2] - anchors_i[i][0] + offset
+        anchor_height = anchors_i[i][3] - anchors_i[i][1] + offset
+        anchor_center_x = anchors_i[i][0] + 0.5 * anchor_width
+        anchor_center_y = anchors_i[i][1] + 0.5 * anchor_height
+        bbox_center_x = variances_i[i][0] * bbox_deltas_i[i, 0] * anchor_width + anchor_center_x
+        bbox_center_y = variances_i[i][1] * bbox_deltas_i[i, 1] * anchor_height + anchor_center_y
+        bbox_width = anchor_width * torch.exp(min(variances_i[i][2] * bbox_deltas_i[i, 2], math.log(1000.0 / 16.0)))
+        bbox_height = anchor_height * torch.exp(min(variances_i[i][3] * bbox_deltas_i[i, 3], math.log(1000.0 / 16.0)))
+
+        proposal_i[i,0] = bbox_center_x - 0.5 * bbox_width
+        proposal_i[i,1] = bbox_center_y - 0.5 * bbox_height
+        proposal_i[i,2] = bbox_center_x + 0.5 * bbox_width - offset
+        proposal_i[i,3] = bbox_center_y + 0.5 * bbox_height - offset
+
+    # 将检测框的坐标限定到图像尺寸范围内。
+    for i in range(proposal_i.shape[0]):
+        proposal_i[i,0] = max(min(float(proposal_i[i,0]), img_size_i[1]), 0)
+        proposal_i[i,1] = max(min(float(proposal_i[i,1]), img_size_i[0]), 0)
+        proposal_i[i,2] = max(min(float(proposal_i[i,2]), img_size_i[1]), 0)
+        proposal_i[i,3] = max(min(float(proposal_i[i,3]), img_size_i[0]), 0)
+
+    min_size = max(min_size,1.)
+    #删除面积较小的候选框
+    proposal_i = proposal_i.reshape([-1, 4])
+    keep = []
+    for i in range(proposal_i.shape[0]):
+        w = proposal_i[i,2] - proposal_i[i,0]
+        h = proposal_i[i,3] - proposal_i[i,1]
+        if pixel_offset:
+            x_cen = proposal_i[i,0] + 0.5 * w
+            y_cen = proposal_i[i,1] + 0.5 * h
+            if w >= min_size and h >= min_size and x_cen <= img_size_i[1] and y_cen <= img_size_i[0]:
+                keep.append(i)
+        elif w >= min_size and h >= min_size:
+            keep.append(i)
+    keep = torch.tensor(keep).squeeze()
+    proposal_i = proposal_i.index_select(0,keep)
+    scores_i = scores_i.index_select(0,keep)
+
+    # 通过非极大抑制，选出合适的候选框
+    adaptive_threshold = nms_thresh
+    nomormalized = not pixel_offset
+    selected_index = []
+    selected_num = 0
+    for num in range(proposal_i.shape[0]):
+        flag =True
+        for i in selected_index:
+            if flag:
+                overlap = nms(proposal_i[i], proposal_i[num], nomormalized)
+                flag = overlap <= adaptive_threshold
+            else:
+                break
+        if flag:
+            selected_index.append(num)
+            selected_num += 1
+        if flag and eta < 1 and adaptive_threshold > 0.5:
+            adaptive_threshold = adaptive_threshold * eta
+    if selected_num > post_nms_top_n:
+        selected_index = selected_index[:post_nms_top_n]
+    proposal_i = proposal_i.index_select(0,torch.tensor(selected_index).squeeze())
+    scores_i = scores_i.index_select(0,torch.tensor(selected_index).squeeze())
+
+    #汇集结果
+    rpn_rois.append(proposal_i)
+    rpn_roi_probs.append(scores_i)
+
+# 返回结果
+if return_rois_num:
+    num = []
+    for i in range(len(rpn_rois)):
+        num.append(rpn_rois[i].numel()//4)
+    result = (torch.stack(rpn_rois).squeeze(), torch.stack(rpn_roi_probs).squeeze(0), torch.tensor(num).squeeze())
+else:
+    result = (torch.stack(rpn_rois).squeeze(), torch.stack(rpn_roi_probs).squeeze())
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)   
 
 class GetWindowRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

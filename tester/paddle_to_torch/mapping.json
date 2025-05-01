@@ -172,6 +172,9 @@
     "paddle.nn.functional.gather_tree":{
         "Rule": "Gather_treeRule"
     },
+    "paddle.vision.ops.generate_proposals":{
+        "Rule": "GenerateProposalsRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {
@@ -6469,6 +6472,7 @@
         "min_input_args": 0
     },
     "paddle.vision.ops.nms": {
+        "import": ["torchvision"],
         "torch_api": "torchvision.ops.nms",
         "paddle_torch_args_map": {
             "boxes": "boxes",
