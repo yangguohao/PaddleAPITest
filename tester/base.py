@@ -384,40 +384,18 @@ class APITestBase:
         return True
 
     def copy_paddle_input(self):
-        args = []
-        kwargs = collections.OrderedDict()
 
-        for i in range(len(self.paddle_args)):
-            if isinstance(self.paddle_args[i], paddle.Tensor):
-                args.append(paddle.assign(self.paddle_args[i]))
-            elif isinstance(self.paddle_args[i], list) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                tmp = []
-                for j in range(len(self.paddle_args[i])):
-                    tmp.append(paddle.assign(self.paddle_args[i][j]))
-                args.append(tmp)
-            elif isinstance(self.paddle_args[i], tuple) and len(self.paddle_args[i]) > 0 and isinstance(self.paddle_args[i][0], paddle.Tensor):
-                tmp = []
-                for j in range(len(self.paddle_args[i])):
-                    tmp.append(paddle.assign(self.paddle_args[i][j]))
-                args.append(tmp)
-            else:
-                args.append(self.paddle_args[i])
+        def _deep_copy(data):
+            if isinstance(data, paddle.Tensor):
+                return paddle.assign(data)
+            elif isinstance(data, (list, tuple)):
+                return type(data)(_deep_copy(x) for x in data)
+            return data
 
-        for key, value in self.paddle_kwargs.items():
-            if isinstance(value, paddle.Tensor):
-                kwargs[key] = paddle.assign(value)
-            elif isinstance(value, list):
-                tmp = []
-                for j in range(len(value)):
-                    tmp.append(paddle.assign(value[j]))
-                kwargs[key] = tmp
-            elif isinstance(value, tuple):
-                tmp = []
-                for j in range(len(value)):
-                    tmp.append(paddle.assign(value[j]))
-                kwargs[key] = tmp
-            else:
-                kwargs[key] = value
+        args = [_deep_copy(arg) for arg in self.paddle_args]
+        kwargs = collections.OrderedDict(
+            (k, _deep_copy(v)) for k, v in self.paddle_kwargs.items()
+        )
         return args, kwargs
 
     def get_paddle_input_list(self):
@@ -685,32 +663,21 @@ class APITestBase:
         return True
 
     def copy_torch_input(self):
-        args = []
-        kwargs = collections.OrderedDict()
 
-        for arg in self.torch_args:
-            if isinstance(arg, torch.Tensor):
-                args.append(torch.clone(arg))
-            elif isinstance(arg, (list, tuple)):
-                args.append([
-                    torch.clone(x) if isinstance(x, torch.Tensor) else x
-                    for x in arg
-                ])
-            else:
-                args.append(arg)
+        def _deep_copy(data):
+            if isinstance(data, torch.Tensor):
+                return torch.clone(data)
+            elif isinstance(data, (list, tuple)):
+                return type(data)(_deep_copy(x) for x in data)
+            return data
 
-        for key, value in self.torch_kwargs.items():
-            if isinstance(value, torch.Tensor):
-                kwargs[key] = torch.clone(value)
-            elif isinstance(value, (list, tuple)):
-                kwargs[key] = [
-                    torch.clone(x) if isinstance(x, torch.Tensor) else x
-                    for x in value
-                ]
-            else:
-                kwargs[key] = value
-
+        args = [_deep_copy(arg) for arg in self.torch_args]
+        kwargs = collections.OrderedDict(
+            (k, _deep_copy(v)) for k, v in self.torch_kwargs.items()
+        )
         return args, kwargs
+
+
     def _handle_list_or_tuple_torch(self, config_items, is_tuple=False):
         """处理 list 或 tuple """
         tmp = []
