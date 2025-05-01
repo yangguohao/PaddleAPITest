@@ -19,12 +19,8 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
     )
 
-from tester.api_config.log_writer import (
-    aggregate_logs,
-    read_log,
-    set_engineV2,
-    write_to_log,
-)
+from tester.api_config.log_writer import (aggregate_logs, read_log,
+                                          set_engineV2, write_to_log)
 
 
 def cleanup(pool):
@@ -96,17 +92,26 @@ def init_worker_gpu(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
 
         os.environ["CUDA_VISIBLE_DEVICES"] = str(assigned_gpu)
 
-        from tester import (
-            APIConfig,
-            APITestAccuracy,
-            APITestCINNVSDygraph,
-            APITestPaddleOnly,
-        )
+        import paddle
+        import torch
 
+        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                            APITestPaddleOnly)
+
+        globals()["torch"] = torch
+        globals()["paddle"] = paddle
         globals()["APIConfig"] = APIConfig
         globals()["APITestAccuracy"] = APITestAccuracy
         globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
         globals()["APITestPaddleOnly"] = APITestPaddleOnly
+
+        def signal_handler(*args):
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
 
         print(
             f"{datetime.now()} Worker PID: {my_pid}, Assigned GPU ID: {assigned_gpu}",
@@ -183,12 +188,8 @@ def main():
 
     if options.api_config:
         # Single config execution
-        from tester import (
-            APIConfig,
-            APITestAccuracy,
-            APITestCINNVSDygraph,
-            APITestPaddleOnly,
-        )
+        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                            APITestPaddleOnly)
 
         print(f"Test begin: {options.api_config}", flush=True)
         try:
@@ -254,9 +255,7 @@ def main():
                 initargs=[gpu_worker_list, lock, num_gpus, num_workers_per_gpu],
             )
 
-            from tester import (
-                APIConfig,
-            )
+            from tester import APIConfig
 
             def cleanup_handler(*args):
                 cleanup(pool)
@@ -313,7 +312,7 @@ def main():
         #         APITestCINNVSDygraph,
         #         APITestPaddleOnly,
         #     )
-  
+
         #     BATCH_SIZE = 16384
         #     num_cpus = options.num_cpus
         #     print(f"Using {num_cpus} CPU(s).", flush=True)
@@ -369,12 +368,8 @@ def main():
         #         aggregate_logs()
         else:
             # Single worker
-            from tester import (
-                APIConfig,
-                APITestAccuracy,
-                APITestCINNVSDygraph,
-                APITestPaddleOnly,
-            )
+            from tester import (APIConfig, APITestAccuracy,
+                                APITestCINNVSDygraph, APITestPaddleOnly)
 
             test_class = APITestAccuracy
             if options.paddle_only:
@@ -387,6 +382,7 @@ def main():
             for config in api_configs:
                 run_test_case(config, options)
             print(f"{all_case} cases tested.", flush=True)
+    print("Done.")
 
 
 if __name__ == "__main__":
