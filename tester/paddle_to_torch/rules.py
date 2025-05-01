@@ -595,10 +595,14 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class ConvTranspose(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         impl1 = """
+out_channels = weight.size(1) * groups
+if bias is not None:
+    bias = bias.expand(out_channels)
 if isinstance(stride, (list, tuple)):
     stride = stride[0]
 if isinstance(output_padding, (list, tuple)):
@@ -623,11 +627,11 @@ elif isinstance(padding, (list, tuple)):
         padding = padding[0]
     elif len(padding) == 2:
         x = torch.nn.functional.pad(x, padding)
-        padding = 0
+        padding = sum(padding)
     elif len(padding) == 3:
         pad = [val for sublist in reversed(padding) for val in sublist]
         x = torch.nn.functional.pad(x, pad)
-        padding = 0
+        padding = sum(pad)
 if output_size is not None:
     input_length = x.size(2)
     kernel_size = weight.size(2)
@@ -649,6 +653,8 @@ if data_format == 'NLC':
             + impl2.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
+
+
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

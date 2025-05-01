@@ -285,3 +285,7 @@ paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float32"), 
 paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float64"), output_size=list[3,3,3,], random_u=0.3, )
 paddle.nn.functional.fractional_max_pool3d(x=Tensor([2, 3, 7, 7, 7],"float64"), output_size=list[3,3,3,], random_u=None, )
 paddle.audio.functional.get_window("triang", 512, )
+paddle.nn.functional.conv1d_transpose(Tensor([4, 16, 6],"float32"), Tensor([6, 8, 3],"float32"), bias=Tensor([8],"float32"), output_size=18, output_padding=0, padding=0, stride=list[1,], dilation=list[1,], groups=1, data_format="NLC", )
+paddle.nn.functional.conv1d_transpose(Tensor([4, 6, 16],"float32"), Tensor([6, 8, 3],"float32"), bias=Tensor([8],"float32"), output_size=None, output_padding=0, padding=list[1,2,], stride=list[1,], dilation=list[1,], groups=1, data_format="NCL", )
+paddle.nn.functional.conv1d_transpose(x=Tensor([2, 3, 8],"float64"), weight=Tensor([3, 2, 3],"float64"), bias=Tensor([2],"float64"), stride=1, padding=list[list[0,0,],list[0,0,],list[3,4,],], output_padding=0, groups=1, dilation=1, output_size=None, data_format="NCL", )
+paddle.nn.functional.conv1d_transpose(x=Tensor([2, 8, 3],"float64"), weight=Tensor([3, 2, 3],"float64"), bias=Tensor([2],"float64"), stride=1, padding=list[list[0,0,],list[3,4,],list[0,0,],], output_padding=0, groups=1, dilation=1, output_size=None, data_format="NLC", )
