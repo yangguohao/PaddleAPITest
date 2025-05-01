@@ -68,13 +68,11 @@ class Paddle2TorchConverter:
                 self.mapping[key] = value
                 rule_name = value.get("Rule")
                 if rule_name is None:
-                    self.rules[key] = GenericRule()
+                    self.rules[key] = GenericRule
                 elif rule_name in rule_cls_map:
-                    self.rules[key] = rule_cls_map[rule_name]()
+                    self.rules[key] = rule_cls_map[rule_name]
                 else:
-                    self.rules[key] = ErrorRule(
-                        f"{rule_name} for {key} is not implemented"
-                    )
+                    self.rules[key] = ErrorRule
 
     def convert(self, paddle_api: str) -> ConvertResult:
         """
@@ -100,7 +98,7 @@ class Paddle2TorchConverter:
             return result
 
         try:
-            rule = self.rules[paddle_api]
+            rule = self.rules[paddle_api]()
         except KeyError:
             result = ConvertResult.error(
                 paddle_api, f"Rule for {paddle_api} is not implemented"

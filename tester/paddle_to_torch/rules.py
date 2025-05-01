@@ -233,7 +233,7 @@ class GenericRule(BaseRule):
 
 
 class ErrorRule(BaseRule):
-    def __init__(self, message: str):
+    def __init__(self, message: str = "Error Rule"):
         super().__init__()
         self.message = message
 
@@ -346,6 +346,8 @@ result = [output, loss]
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
+
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -1038,6 +1040,7 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class MultiplexRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1051,6 +1054,8 @@ result = torch.stack(temp)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1124,6 +1129,7 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class NumelRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1132,7 +1138,8 @@ result = torch.tensor(num_elements, dtype=torch.int64)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 # o
 
 
@@ -1317,6 +1324,7 @@ else:
 
 # z
 
+
 # __
 class __Pow__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1327,7 +1335,8 @@ result = tensor.__pow__(other)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
