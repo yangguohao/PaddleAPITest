@@ -457,7 +457,7 @@ class TensorConfig:
                 elif api_config.api_name == "paddle.nn.functional.dropout" and self.check_arg(api_config, 2, "axis"):
                     self.numpy_tensor = self.get_random_axis_on_tensor(api_config, 0, "x")
 
-            elif api_config.api_name in ["paddle.empty"]:
+            elif api_config.api_name == "paddle.empty":
                 is_shape_param = False
                 if len(api_config.args) > 0:
                     if self.check_arg(api_config, 0, "shape"):
