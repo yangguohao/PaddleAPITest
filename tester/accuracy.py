@@ -43,8 +43,8 @@ class APITestAccuracy(APITestBase):
             return
 
         try:
-            if not self.gen_paddle_input():
-                print("gen_paddle_input failed")
+            if not self.gen_numpy_input():
+                print("gen_numpy_input failed")
                 return
         except Exception as err:
             print("[paddle error]", self.api_config.config, "\n", str(err))
@@ -78,6 +78,7 @@ class APITestAccuracy(APITestBase):
 
             output_var = convert_result.output_var or "result"
             torch_output = exec_locals[output_var]
+            del exec_globals, exec_locals, output_var, convert_result
 
             # if "paddle.Tensor." in self.api_config.api_name:
             #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])
@@ -108,23 +109,21 @@ class APITestAccuracy(APITestBase):
             return
 
         if self.need_check_grad():
-            inputs_list = self.get_torch_input_list()
-            result_outputs, result_outputs_grads = self.gen_torch_output_and_output_grad(torch_output)
             try:
-                if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
-                    del self.torch_args
-                    del self.torch_kwargs
-                    torch_out_grads = torch.autograd.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads)
+                inputs_list = self.get_torch_input_list()
+                result_outputs, result_outputs_grads = self.gen_torch_output_and_output_grad(torch_output)
+                del self.torch_args, self.torch_kwargs
+                if inputs_list and result_outputs and result_outputs_grads:
+                    torch_out_grads = torch.autograd.grad(
+                        outputs=result_outputs,
+                        inputs=inputs_list,
+                        grad_outputs=result_outputs_grads
+                    )
                     torch_grad_success = True
                 else:
-                    torch_grad_success = False
                     torch_out_grads = None
-                    del self.torch_args
-                    del self.torch_kwargs
-
-                del inputs_list
-                del result_outputs
-                del result_outputs_grads
+                    torch_grad_success = False
+                del inputs_list, result_outputs, result_outputs_grads
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 print(str(err), flush=True)
@@ -132,8 +131,7 @@ class APITestAccuracy(APITestBase):
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise Exception(err)
         else:
-            del self.torch_args
-            del self.torch_kwargs
+            del self.torch_args, self.torch_kwargs
 
         if isinstance(torch_output, torch.Tensor):
             if torch_output.dtype == torch.bfloat16:
@@ -172,22 +170,20 @@ class APITestAccuracy(APITestBase):
                             torch_out_grads[i] = torch_out_grads[i].to(dtype=torch.float32)
                         torch_out_grads[i] = torch_out_grads[i].cpu().detach()
 
-        self.clear_torch_tensor()
         gc.collect()
         torch.cuda.empty_cache()
 
         try:
+            if not self.gen_paddle_input():
+                print("gen_paddle_input failed")
+                return
             if "paddle.Tensor." in self.api_config.api_name:
                 api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
-                args = []
-                if len(self.paddle_args) > 1:
-                    args = self.paddle_args[1:]
-
                 if self.test_amp:
                     with paddle.amp.auto_cast():
-                        paddle_output = api(*tuple(args), **self.paddle_kwargs)
+                        paddle_output = api(*self.paddle_args[1:], **self.paddle_kwargs)
                 else:
-                    paddle_output = api(*tuple(args), **self.paddle_kwargs)
+                    paddle_output = api(*self.paddle_args[1:], **self.paddle_kwargs)
             else:
                 if self.test_amp:
                     with paddle.amp.auto_cast():
@@ -258,37 +254,58 @@ class APITestAccuracy(APITestBase):
                 write_to_log("accuracy_error", self.api_config.config)
                 return
             for i in range(len(paddle_output)):
-                if not isinstance(paddle_output[i], paddle.Tensor):
-                    print("[not compare] ", paddle_output[i], torch_output[i], flush=True)
-                    write_to_log("accuracy_error", self.api_config.config)
-                    return
-                elif not isinstance(torch_output[i], torch.Tensor):
-                    print("[accuracy error]", self.api_config.config, "\n[output type diff error3], ", type(torch_output[i]), flush=True)
-                    write_to_log("accuracy_error", self.api_config.config)
-                    return
-                else:
+                flag = False
+                if isinstance(paddle_output[i], list) and isinstance(torch_output[i], list):
+                    flag =True
+                    for item in paddle_output[i]:
+                        if not isinstance(item, paddle.Tensor):
+                            flag = False
+                            break
+                    for item in torch_output[i]:
+                        if not isinstance(item, torch.Tensor):
+                            flag = False
+                            break
+                if flag:
                     try:
-                        if paddle_output[i].dtype == paddle.bfloat16:
-                            paddle_output[i] = paddle.cast(paddle_output[i], dtype="float32")
-                            torch_output[i] = torch_output[i].to(dtype=torch.float32)
-                        self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].numpy(), 1e-2, 1e-2, self.api_config)
+                        for index, item_paddle in enumerate(paddle_output[i]):
+                            item_torch = torch_output[i][index]
+                            if item_paddle.dtype == paddle.bfloat16:
+                                item_paddle = paddle.cast(item_paddle, dtype="float32")
+                                item_torch = item_torch.to(dtype=torch.float32)
+                            self.np_assert_accuracy(item_paddle.numpy(), item_torch.cpu().detach().numpy(), 1e-2, 1e-2, self.api_config)
                     except Exception as err:
                         print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
                         write_to_log("accuracy_error", self.api_config.config)
+                        return                    
+                else:
+                    if not isinstance(paddle_output[i], paddle.Tensor):
+                        print("[not compare] ", paddle_output[i], torch_output[i], flush=True)
+                        write_to_log("accuracy_error", self.api_config.config)
                         return
+                    elif not isinstance(torch_output[i], torch.Tensor):
+                        print("[accuracy error]", self.api_config.config, "\n[output type diff error3], ", type(torch_output[i]), flush=True)
+                        write_to_log("accuracy_error", self.api_config.config)
+                        return
+                    else:
+                        try:
+                            if paddle_output[i].dtype == paddle.bfloat16:
+                                paddle_output[i] = paddle.cast(paddle_output[i], dtype="float32")
+                                torch_output[i] = torch_output[i].to(dtype=torch.float32)
+                            self.np_assert_accuracy(paddle_output[i].numpy(), torch_output[i].numpy(), 1e-2, 1e-2, self.api_config)
+                        except Exception as err:
+                            print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
+                            write_to_log("accuracy_error", self.api_config.config)
+                            return
 
         if self.need_check_grad() and torch_grad_success:
-            paddle_out_grads = None
-            inputs_list = self.get_paddle_input_list()
-            result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
             try:
-                if len(inputs_list) != 0 and len(result_outputs) != 0 and len(result_outputs_grads) != 0:
-                    del self.paddle_args
-                    del self.paddle_kwargs
+                paddle_out_grads = None
+                inputs_list = self.get_paddle_input_list()
+                result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
+                del self.paddle_args, self.paddle_kwargs
+                if inputs_list and result_outputs and result_outputs_grads:
                     paddle_out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
-                del inputs_list
-                del result_outputs
-                del result_outputs_grads
+                del inputs_list, result_outputs, result_outputs_grads
             except Exception as err:
                 print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
