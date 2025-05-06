@@ -724,7 +724,7 @@ if output_size is not None:
         kernel_size = weight.size(2 + i)
         stride_i = stride[i] if isinstance(stride, tuple) else stride
         padding_i = padding[i] if isinstance(padding, tuple) else padding
-        dialation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+        dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
         L_out = (L_in - 1) * stride_i - 2 * padding_i + dilation_i * (kernel_size - 1) + 1
         output_padding.append(output_size[i] - L_out)
     output_padding = tuple(output_padding)
@@ -766,6 +766,7 @@ if isinstance(padding, str):
             dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
             kernel_size = weight.size(2 + i)
             padding.append((dilation_i * (kernel_size - 1)) // 2)
+        padding = tuple(padding)
     elif padding.upper() == "VALID":
         padding = 0
 elif isinstance(padding, (list, tuple)):

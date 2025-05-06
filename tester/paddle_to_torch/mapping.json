@@ -596,7 +596,7 @@
             "padding": 0,
             "output_padding": 0,
             "groups": 1,
-            "dialation": 1,
+            "dilation": 1,
             "output_size": "None",
             "data_format": "'NCHW'"
         },
