@@ -6472,14 +6472,7 @@
         "min_input_args": 0
     },
     "paddle.vision.ops.nms": {
-        "import": ["torchvision"],
-        "torch_api": "torchvision.ops.nms",
-        "paddle_torch_args_map": {
-            "boxes": "boxes",
-            "scores": "scores",
-            "iou_threshold": "iou_threshold"
-        },
-        "min_input_args": 0
+        "Rule": "NmsRule"
     },
     "paddle.vision.transforms.CenterCrop": {
         "torch_api": "torchvision.transforms.CenterCrop",

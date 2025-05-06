@@ -164,7 +164,6 @@ class GenericRule(BaseRule):
         code = []
         if self.direct_mapping:  # 直接映射)
             for import_statement in self.imports:
-                print(import_statement)
                 code.append(f"import {import_statement}")
             code.append("")
             for default_name, default_value in self.defaults.items():
@@ -930,8 +929,6 @@ for ii in range(scores.shape[0]):
         def __init__(self, scores, index):
             self.scores = scores
             self.index = index
-    def cmp(self, item):
-        return item.scores
     ind = []
     for j in range(scores_i.numel()):
         c = cls(scores_i[j,0], j)
@@ -1356,6 +1353,56 @@ else:
         output_shape = [1 if i in axes else x.shape[i] for i in range(x.ndim)]
         median = median.reshape(output_shape)
 result = median
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
+class NmsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+class scores_pair:
+    def __init__(self, scores, index):
+        self.scores = scores
+        self.index = index
+scores = locals().get('scores', None)
+top_k = locals().get('top_k', None)
+category_idxs = locals().get('category_idxs', None)
+category = locals().get('categories', None)
+iou_threshold = locals().get('iou_threshold', 0.3)
+
+# 没有scores时自行生成scores
+if scores is None:
+    scores = torch.arange(1,0,(0.-1.)/boxes.shape[0])
+    scores = scores[:boxes.shape[0]]
+
+# 存在category时, 按照类别进行nms
+if category_idxs is not None:
+    result = []
+    for cls in category:
+        sele = []
+        for i in range(len(category_idxs)):
+            if category_idxs[i] == cls:
+                sele.append(i)
+        box = boxes.index_select(0, torch.tensor(sele))
+        score = scores.index_select(0, torch.tensor(sele))
+        result.append(torchvision.ops.nms(box, score, iou_threshold))
+    result = torch.concat(result) 
+else:
+    result = torchvision.ops.nms(boxes, scores, iou_threshold)
+
+# 对结果从大到小进行排序输出
+ind = []
+scores = scores.index_select(0,result)
+for j in range(scores.numel()):
+    tmp = scores_pair(scores[j], j)
+    ind.append(tmp)
+ind = sorted(ind, key = lambda x : x.scores, reverse = True)
+for j in range(len(ind)):
+    ind[j] = ind[j].index
+result = result.index_select(0, torch.tensor(ind))
+if top_k is not None:
+    result = result[:top_k]
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
