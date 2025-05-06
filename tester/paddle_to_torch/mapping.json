@@ -520,6 +520,33 @@
             "_random_samples": "random_u"
         }
     },
+    "paddle.nn.functional.margin_ranking_loss": {
+        "torch_api": "torch.nn.functional.margin_ranking_loss",
+        "paddle_torch_args_map": {
+            "input": "input1",
+            "other": "input2",
+            "margin": "margin",
+            "reduction": "reduction"
+        },
+        "torch_kwargs": {
+            "target": "torch.broadcast_to({label}, {input}.shape)"
+        }
+    },
+    "paddle.nn.functional.class_center_sample": {
+        "Rule": "ClassCenterSampleRule"
+    },
+    "paddle.nn.functional.gelu": {
+        "torch_api": "torch.nn.functional.gelu",
+        "set_defaults": {
+            "approximate": false
+        },
+        "paddle_torch_args_map": {
+              "x": "input"
+        },
+        "torch_kwargs": {
+            "approximate": "'tanh' if {approximate} else 'none'"
+        }
+  },
     "paddle.nonzero": {
         "torch_api": "torch.argwhere",
         "paddle_torch_args_map": {
