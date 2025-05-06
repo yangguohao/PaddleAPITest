@@ -371,13 +371,10 @@ def main():
             from tester import (APIConfig, APITestAccuracy,
                                 APITestCINNVSDygraph, APITestPaddleOnly)
 
-            test_class = APITestAccuracy
-            if options.paddle_only:
-                test_class = APITestPaddleOnly
-            elif options.paddle_cinn:
-                test_class = APITestCINNVSDygraph
-            elif options.accuracy:
-                test_class = APITestAccuracy
+            globals()["APIConfig"] = APIConfig
+            globals()["APITestAccuracy"] = APITestAccuracy
+            globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
+            globals()["APITestPaddleOnly"] = APITestPaddleOnly
 
             for config in api_configs:
                 run_test_case(config, options)

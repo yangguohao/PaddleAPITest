@@ -631,48 +631,41 @@ class ConvTranspose(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         impl1 = """
-out_channels = weight.size(1) * groups
+crop = None
 if bias is not None:
+    out_channels = weight.size(1) * groups
     bias = bias.expand(out_channels)
-if isinstance(stride, (list, tuple)):
-    stride = stride[0]
-if isinstance(output_padding, (list, tuple)):
-    output_padding = output_padding[0]
-if isinstance(dilation, (list, tuple)):
-    dilation = dilation[0]
-if isinstance(output_size, (list, tuple)):
-    output_size = output_size[0]
+stride = stride[0] if isinstance(stride, (list, tuple)) else stride
+output_padding = output_padding[0] if isinstance(output_padding, (list, tuple)) else output_padding
+dilation = dilation[0] if isinstance(dilation, (list, tuple)) else dilation
+output_size = output_size[0] if isinstance(output_size, (list, tuple)) else output_size
+if data_format == "NLC":
+    x = x.transpose(1, 2)
 if isinstance(padding, str):
     if padding.upper() == "SAME":
-        input_length = x.size(2)
-        if output_size is not None:
-            total_padding = stride * (input_length - 1) + output_padding + (weight.size(2) - 1) * dilation + 1 - output_size
-            padding = max((total_padding + 1) // 2, 0)
-        else:
-            total_padding = max((input_length * stride - 1) * stride + (weight.size(2) - 1) * dilation + 1 - input_length, 0)
-            padding = (total_padding + 1) // 2
+        kernel_size = weight.size(-1)
+        padding = (dilation * (kernel_size - 1)) // 2
     elif padding.upper() == "VALID":
         padding = 0
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 1:
         padding = padding[0]
     elif len(padding) == 2:
-        x = torch.nn.functional.pad(x, padding)
-        padding = sum(padding)
+        crop = padding
+        padding = 0
     elif len(padding) == 3:
-        pad = [val for sublist in reversed(padding) for val in sublist]
-        x = torch.nn.functional.pad(x, pad)
-        padding = sum(pad)
+        crop = padding[1] if data_format == "NLC" else padding[2]
+        padding = 0
 if output_size is not None:
-    input_length = x.size(2)
-    kernel_size = weight.size(2)
-    output_length = (input_length - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + 1
-    output_padding = output_size - output_length
-if data_format == "NLC":
-    x = x.transpose(1, 2)
+    L_in = x.size(-1)
+    kernel_size = weight.size(-1)
+    L_out = (L_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + 1
+    output_padding = output_size - L_out
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-1) - crop[1]]
 if data_format == 'NLC':
     result = result.transpose(1, 2)
 """

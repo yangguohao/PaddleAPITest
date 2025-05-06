@@ -612,7 +612,18 @@
         }
     },
     "paddle.nn.functional.conv3d_transpose": {
+        "Rule": "ConvTranspose",
         "torch_api": "torch.nn.functional.conv_transpose3d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "output_padding": 0,
+            "groups": 1,
+            "dialation": 1,
+            "output_size": "None",
+            "data_format": "'NCDHW'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "weight": "weight",
@@ -622,8 +633,7 @@
             "output_padding": "output_padding",
             "groups": "groups",
             "dilation": "dilation"
-        },
-        "min_input_args": 2
+        }
     },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
