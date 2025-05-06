@@ -74,7 +74,7 @@ no_signature_api_mappings = {
 int_too_big_fail_api = [
     "paddle.Tensor.cumprod",
     "paddle.pow",
-    "paddle.Tensor.pow",
+    #"paddle.Tensor.pow",
     "paddle.lcm",
     "paddle.Tensor.lcm",
     "paddle.Tensor.prod",

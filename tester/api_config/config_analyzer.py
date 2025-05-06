@@ -1721,7 +1721,7 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
             
-            elif api_config.api_name in ["paddle.Tensor.__pow__"]:
+            elif api_config.api_name in ["paddle.Tensor.__pow__","paddle.Tensor.pow"]:
                 # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other
                 if self.check_arg(api_config, 0, "self"):
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)

@@ -383,6 +383,17 @@
             "as_tuple": "as_tuple"
         }
     },
+    "paddle.Tensor.norm": {
+        "torch_api": "torch.Tensor.norm",
+        "paddle_torch_args_map": {
+            "p": "p",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dtype": "None"
+        }
+    },
     "paddle.Tensor.normal_": {
         "torch_api": "torch.Tensor.normal_",
         "paddle_torch_args_map": {
@@ -594,6 +605,16 @@
     "paddle.vision.ops.roi_align":{
         "Rule": "Roi_aignRule"
     },
+    "paddle.Tensor.rad2deg":{
+        "torch_api":"torch.Tensor.rad2deg"
+    },
+    "paddle.Tensor.real":{
+        "torch_api":"torch.Tensor.real",
+        "is_attribute": true
+    },
+    "paddle.Tensor.rsqrt":{
+        "torch_api":"torch.Tensor.rsqrt"
+    },
     "paddle.vision.ops.roi_pool": {
         "torch_api":"torchvision.ops.roi_pool",
         "Rule": "Roi_poolRule"
@@ -624,6 +645,9 @@
     },
     "paddle.Tensor.sign":{
         "torch_api":"torch.Tensor.sign"
+    },
+    "paddle.Tensor.sin":{
+        "torch_api":"torch.Tensor.sin"
     },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
