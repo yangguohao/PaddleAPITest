@@ -94,6 +94,13 @@
     "paddle.Tensor.cos":{
         "torch_api": "torch.Tensor.cos"
     },
+    "paddle.Tensor.cumprod": {
+        "torch_api": "torch.Tensor.cumprod",
+        "paddle_torch_args_map": {
+            "dim": "dim",
+            "dtype": "dtype"
+        }
+    },
     "d": "API started with 'd' should be placed here",
     "paddle.divide": {
         "torch_api": "torch.divide",
@@ -111,6 +118,12 @@
     "paddle.Tensor.dim":{
         "torch_api": "torch.Tensor.dim"
     },
+    "paddle.Tensor.divide": {
+        "torch_api": "torch.Tensor.true_divide",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },  
     "e": "API started with 'e' should be placed here",
     "paddle.equal_all": {
         "torch_api": "torch.equal",
@@ -134,6 +147,27 @@
     },
     "paddle.expand_as": {
         "Rule": "ExpandasRule"
+    },
+    "paddle.Tensor.equal_all": {
+        "torch_api": "torch.Tensor.equal",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.erfinv": {
+        "torch_api": "torch.Tensor.erfinv"
+    },
+    "paddle.Tensor.exp": {
+        "torch_api": "torch.Tensor.exp"
+    },
+    "paddle.Tensor.exponential_": {
+        "torch_api": "torch.Tensor.exponential_",
+        "paddle_torch_args_map": {
+            "lam": "lambd"
+        },
+        "torch_kwargs": {
+            "generator": "None"
+        }
     },
     "f": "API started with 'f' should be placed here",
     "paddle.floor_divide": {
@@ -349,6 +383,22 @@
             "as_tuple": "as_tuple"
         }
     },
+    "paddle.Tensor.normal_": {
+        "torch_api": "torch.Tensor.normal_",
+        "paddle_torch_args_map": {
+            "mean": "mean",
+            "std": "std"
+        },
+        "torch_kwargs": {
+            "generator": "None"
+        }
+    },
+    "paddle.Tensor.not_equal": {
+        "torch_api": "torch.Tensor.not_equal",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
+    },
     "paddle.nn.functional.avg_pool1d": {
         "Rule": "AvgPoolRule",
         "torch_api": "torch.nn.functional.avg_pool1d",
@@ -541,6 +591,12 @@
             "size": "locals().get('{shape}') or ({source}.size() if locals().get('{source}') is not None else [])",
             "storage_offset": "(locals().get('{offset}') or 0) // _tmp_tensor.itemsize"
         }
+    },
+    "paddle.Tensor.sigmoid":{
+        "torch_api":"torch.Tensor.sigmoid"
+    },
+    "paddle.Tensor.sign":{
+        "torch_api":"torch.Tensor.sign"
     },
     "t": "API started with 't' should be placed here",
     "u": "API started with 'u' should be placed here",
@@ -1080,14 +1136,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.Tensor.exponential_": {
-        "torch_api": "torch.Tensor.exponential_",
-        "paddle_torch_args_map": {
-            "lam": "lambd",
-            "generator": "generator"
-        },
-        "min_input_args": 0
-    },
     "paddle.Tensor.fill_": {
         "torch_api": "torch.Tensor.fill_",
         "paddle_torch_args_map": {
@@ -1563,15 +1611,6 @@
             "y": "other"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.normal_": {
-        "torch_api": "torch.Tensor.normal_",
-        "paddle_torch_args_map": {
-            "mean": "mean",
-            "std": "std",
-            "generator": "generator"
-        },
-        "min_input_args": 0
     },
     "paddle.Tensor.numpy": {
         "torch_api": "torch.Tensor.numpy",
