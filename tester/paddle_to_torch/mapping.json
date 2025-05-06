@@ -389,9 +389,6 @@
             "p": "p",
             "axis": "dim",
             "keepdim": "keepdim"
-        },
-        "torch_kwargs": {
-            "dtype": "None"
         }
     },
     "paddle.Tensor.normal_": {
