@@ -1556,6 +1556,64 @@ for i in range(boxnum.shape[0]):
 
 
 # s
+class SampleNeighborsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+eids = locals().get('eids', None)
+sample_size = locals().get('sample_size', -1)
+return_ids = locals().get('return_eids', False)
+out_neighbors = []
+out_count = []
+out_eids = []
+for node in input_nodes:
+    start = colptr[node]
+    end = colptr[node + 1]        
+    neighbors = row[start:end]
+    num_neighbors = neighbors.numel()
+    edge_ids = torch.arange(start,end,dtype=torch.int64)
+
+    if num_neighbors == 0:
+        sampled = torch.tensor([], dtype=row.dtype)
+        sampled_eids = torch.tensor([], dtype=torch.int64)
+    elif sample_size == -1 or num_neighbors <= sample_size:
+        sampled = neighbors
+        sampled_eids = edge_ids
+    else:
+        sampled = neighbors[:sample_size]
+        sampled_eids = edge_ids[:sample_size]
+
+    out_neighbors.append(sampled)
+    out_count.append(sampled.numel())
+    out_eids.append(sampled_eids)
+
+out_neighbors = torch.cat(out_neighbors) if out_neighbors else torch.tensor([], dtype=row.dtype)
+out_count = torch.tensor(out_count, dtype=torch.int64)
+if return_ids:
+    out_eids = eids.index_select(0,torch.cat(out_eids)) if out_eids else torch.tensor([], dtype=eids.dtype)
+
+if return_ids:
+    result = (out_neighbors, out_count, out_eids)
+else:
+    result = (out_neighbors, out_count)
+
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+class SegmentMaxRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+num = int(segment_ids.max().item()) + 1
+ans = torch.full((num,)+data.shape[1:], float('-inf'), dtype = data.dtype)
+for idx in range(data.shape[0]): 
+    seg_id = segment_ids[idx]
+    val = data[idx]
+    ans[seg_id][val > ans[seg_id]] = val[val > ans[seg_id]]
+ans[ans == float('-inf')] = 0
+result = ans
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 class ScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

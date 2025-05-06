@@ -209,6 +209,12 @@
     "paddle.vision.ops.generate_proposals":{
         "Rule": "GenerateProposalsRule"
     },
+    "paddle.geometric.sample_neighbors":{
+        "Rule": "SampleNeighborsRule"
+    },
+    "paddle.geometric.segment_max": {
+        "Rule":"SegmentMaxRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {
