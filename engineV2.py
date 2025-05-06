@@ -6,13 +6,20 @@ import sys
 from concurrent.futures import TimeoutError, as_completed
 from datetime import datetime
 from multiprocessing import Lock, Manager, set_start_method
+from typing import TYPE_CHECKING
 
 import psutil
 from pebble import ProcessPool
 
-from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                    APITestPaddleOnly)
-from tester.api_config.log_writer import (DIR_PATH, aggregate_logs, read_log,
+if TYPE_CHECKING:
+    from tester import (
+        APIConfig,
+        APITestAccuracy,
+        APITestCINNVSDygraph,
+        APITestPaddleOnly,
+    )
+
+from tester.api_config.log_writer import (aggregate_logs, read_log,
                                           set_engineV2, write_to_log)
 
 
@@ -55,36 +62,57 @@ def estimate_timeout(api_config) -> float:
     return TIMEOUT_STEPS[-1][1]
 
 
-def init_worker(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
+def init_worker_gpu(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
     set_engineV2()
     my_pid = os.getpid()
-    assigned_gpu = -1
 
     try:
         with lock:
+            min_workers = float("inf")
+            assigned_gpu = -1
             for gpu_id in range(num_gpus):
                 workers = gpu_worker_list[gpu_id]
-                if len(workers) < num_workers_per_gpu:
-                    workers.append(my_pid)
+                if len(workers) < min_workers:
+                    min_workers = len(workers)
                     assigned_gpu = gpu_id
-                    break
-        if assigned_gpu == -1:
-            with lock:
+
+            if assigned_gpu != -1 and min_workers < num_workers_per_gpu:
+                gpu_worker_list[assigned_gpu].append(my_pid)
+            else:
                 for gpu_id in range(num_gpus):
                     workers = gpu_worker_list[gpu_id]
-                    dead_workers = [
-                        pid for pid in workers if not psutil.pid_exists(pid)
-                    ]
-                    if dead_workers:
-                        for pid in dead_workers:
-                            workers.remove(pid)
+                    workers[:] = [pid for pid in workers if psutil.pid_exists(pid)]
+                    if len(workers) < num_workers_per_gpu:
                         workers.append(my_pid)
                         assigned_gpu = gpu_id
                         break
+
         if assigned_gpu == -1:
             raise RuntimeError(f"Worker {my_pid} could not be assigned a GPU.")
 
         os.environ["CUDA_VISIBLE_DEVICES"] = str(assigned_gpu)
+
+        import paddle
+        import torch
+
+        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                            APITestPaddleOnly)
+
+        globals()["torch"] = torch
+        globals()["paddle"] = paddle
+        globals()["APIConfig"] = APIConfig
+        globals()["APITestAccuracy"] = APITestAccuracy
+        globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
+        globals()["APITestPaddleOnly"] = APITestPaddleOnly
+
+        def signal_handler(*args):
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+
         print(
             f"{datetime.now()} Worker PID: {my_pid}, Assigned GPU ID: {assigned_gpu}",
             flush=True,
@@ -96,23 +124,35 @@ def init_worker(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
         raise
 
 
-def run_test_case(api_config_str, test_class, test_amp):
+def run_test_case(api_config_str, options):
     """Run a single test case for the given API configuration."""
     write_to_log("checkpoint", api_config_str)
-    print(f"{datetime.now()} {os.getpid()} test begin: {api_config_str}", flush=True)
+    print(
+        f"{datetime.now()} GPU {os.environ.get('CUDA_VISIBLE_DEVICES')} {os.getpid()} test begin: {api_config_str}",
+        flush=True,
+    )
     try:
         api_config = APIConfig(api_config_str)
     except Exception as err:
         print(f"[config parse error] {api_config_str} {str(err)}", flush=True)
         return
 
-    case = test_class(api_config, test_amp)
+    test_class = APITestAccuracy
+    if options.paddle_only:
+        test_class = APITestPaddleOnly
+    elif options.paddle_cinn:
+        test_class = APITestCINNVSDygraph
+    elif options.accuracy:
+        test_class = APITestAccuracy
+
+    case = test_class(api_config, options.test_amp)
     try:
         case.test()
     except Exception as err:
         print(f"[test error] {api_config_str} {str(err)}", flush=True)
     finally:
         case.clear_tensor()
+        del case
 
 
 def main():
@@ -146,22 +186,25 @@ def main():
     # if options.num_gpus > 0 and options.num_cpus > 0:
     #     raise ValueError("Cannot use both --num_gpus and --num_cpus at the same time.")
 
-    test_class = APITestAccuracy
-    if options.paddle_only:
-        test_class = APITestPaddleOnly
-    elif options.paddle_cinn:
-        test_class = APITestCINNVSDygraph
-    elif options.accuracy:
-        test_class = APITestAccuracy
-
     if options.api_config:
         # Single config execution
+        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                            APITestPaddleOnly)
+
         print(f"Test begin: {options.api_config}", flush=True)
         try:
             api_config = APIConfig(options.api_config)
         except Exception as err:
             print(f"[config parse error] {options.api_config} {str(err)}", flush=True)
             return
+
+        test_class = APITestAccuracy
+        if options.paddle_only:
+            test_class = APITestPaddleOnly
+        elif options.paddle_cinn:
+            test_class = APITestCINNVSDygraph
+        elif options.accuracy:
+            test_class = APITestAccuracy
 
         case = test_class(api_config, options.test_amp)
         try:
@@ -171,7 +214,6 @@ def main():
         finally:
             case.clear_tensor()
             del case
-            del api_config
     elif options.api_config_file:
         # Batch execution
         finish_configs = read_log("checkpoint")
@@ -209,9 +251,11 @@ def main():
 
             pool = ProcessPool(
                 max_workers=total_workers,
-                initializer=init_worker,
+                initializer=init_worker_gpu,
                 initargs=[gpu_worker_list, lock, num_gpus, num_workers_per_gpu],
             )
+
+            from tester import APIConfig
 
             def cleanup_handler(*args):
                 cleanup(pool)
@@ -228,7 +272,7 @@ def main():
                         timeout = estimate_timeout(config)
                         future = pool.schedule(
                             run_test_case,
-                            [config, test_class, options.test_amp],
+                            [config, options],
                             timeout=timeout,
                         )
                         futures[future] = config
@@ -262,6 +306,13 @@ def main():
                 aggregate_logs()
         # elif options.num_cpus > 0:
         #     # Multi CPUs
+        #     from tester import (
+        #         APIConfig,
+        #         APITestAccuracy,
+        #         APITestCINNVSDygraph,
+        #         APITestPaddleOnly,
+        #     )
+
         #     BATCH_SIZE = 16384
         #     num_cpus = options.num_cpus
         #     print(f"Using {num_cpus} CPU(s).", flush=True)
@@ -283,7 +334,7 @@ def main():
         #                 timeout = estimate_timeout(config)
         #                 future = pool.schedule(
         #                     run_test_case,
-        #                     [config, test_class, options.test_amp],
+        #                     [config, options],
         #                     timeout=timeout,
         #                 )
         #                 futures[future] = config
@@ -317,9 +368,21 @@ def main():
         #         aggregate_logs()
         else:
             # Single worker
+            from tester import (APIConfig, APITestAccuracy,
+                                APITestCINNVSDygraph, APITestPaddleOnly)
+
+            test_class = APITestAccuracy
+            if options.paddle_only:
+                test_class = APITestPaddleOnly
+            elif options.paddle_cinn:
+                test_class = APITestCINNVSDygraph
+            elif options.accuracy:
+                test_class = APITestAccuracy
+
             for config in api_configs:
-                run_test_case(config, test_class, options.test_amp)
+                run_test_case(config, options)
             print(f"{all_case} cases tested.", flush=True)
+    print("Done.")
 
 
 if __name__ == "__main__":
