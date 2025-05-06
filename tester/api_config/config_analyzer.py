@@ -1091,7 +1091,10 @@ class TensorConfig:
                     min_dim_len = min(x_shape)
                     self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, \
                         min=0, max=min_dim_len)
-                    
+            elif api_config.api_name in ["paddle.nn.functional.class_center_sample"]:
+                if self.check_arg(api_config, 0, "label"):
+                    num_classes = self.get_arg(api_config, 1, "num_classes")
+                    self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
             elif api_config.api_name in ["paddle.prod"]:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)

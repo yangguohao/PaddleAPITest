@@ -346,6 +346,8 @@ result = [output, loss]
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
+
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -594,6 +596,37 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
         return ConvertResult.success(paddle_api, code)
 
 
+class ClassCenterSampleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+unique_pos_classes = torch.unique(label)
+num_pos_classes = unique_pos_classes.size(0)
+if num_pos_classes >= num_samples:
+    sampled_classes = unique_pos_classes
+    remapped_label = torch.zeros_like(label)
+    for new_idx, old_class in enumerate(sampled_classes):
+        remapped_label[label == old_class] = new_idx
+else:
+    all_classes = torch.arange(num_classes, device=label.device)
+    neg_classes = all_classes[~torch.isin(all_classes, unique_pos_classes)]
+    num_neg_needed = num_samples - num_pos_classes
+    if num_neg_needed > 0:
+        if neg_classes.numel() >= num_neg_needed:
+            selected_neg = neg_classes[torch.randperm(neg_classes.size(0))[:num_neg_needed]]
+        else:
+            selected_neg = neg_classes
+        sampled_classes = torch.cat([unique_pos_classes, selected_neg])
+    else:
+        sampled_classes = unique_pos_classes
+    remapped_label = torch.zeros_like(label)
+    for new_idx, old_class in enumerate(sampled_classes):
+        remapped_label[label == old_class] = new_idx
+result = (remapped_label, sampled_classes)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -685,7 +718,7 @@ for i in range(num_level):
         if target_level[j] == i + min_level:
             restore_ind[j] = index
             index += 1
-          
+
 result = (multi_rois, restore_ind, rois_num_per_level)
 """
         code = impl.splitlines()
@@ -1271,6 +1304,7 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class MultiplexRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1284,6 +1318,8 @@ result = torch.stack(temp)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

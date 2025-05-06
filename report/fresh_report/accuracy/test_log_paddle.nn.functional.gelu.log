@@ -1,0 +1,30 @@
+paddle.nn.functional.gelu(Tensor([128, 96, 96, 768],"float32"), False, None, )
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   egr::Grad(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+1   egr::RunBackward(std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&, bool, std::vector<paddle::Tensor, std::allocator<paddle::Tensor> > const&)
+2   GeluGradNode::operator()(paddle::small_vector<std::vector<paddle::Tensor, std::allocator<paddle::Tensor> >, 15u>&, bool, bool)
+3   paddle::experimental::gelu_grad(paddle::Tensor const&, paddle::Tensor const&, bool, paddle::Tensor*)
+4   void phi::GeluGradKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, bool, phi::DenseTensor*)
+5   float* phi::DeviceContext::Alloc<float>(phi::TensorBase*, unsigned long, bool) const
+6   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  paddle::memory::allocation::Allocator::Allocate(unsigned long)
+11  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+12  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 3.375000GB memory on GPU 0, 21.214966GB memory has been allocated and available memory is only 1.160706GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at ../paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
