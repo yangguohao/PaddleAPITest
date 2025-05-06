@@ -627,7 +627,7 @@ result = (remapped_label, sampled_classes)
         return ConvertResult.success(paddle_api, code)
 
 
-class ConvTranspose(BaseRule):
+class Conv1dTransposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         impl1 = """
@@ -666,8 +666,126 @@ if output_size is not None:
         impl2 = """
 if crop:
     result = result[:, :, crop[0]:result.size(-1) - crop[1]]
-if data_format == 'NLC':
+if data_format == "NLC":
     result = result.transpose(1, 2)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv2dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = stride[0] if isinstance(stride, (list, tuple)) else stride
+output_padding = output_padding[0] if isinstance(output_padding, (list, tuple)) else output_padding
+dilation = dilation[0] if isinstance(dilation, (list, tuple)) else dilation
+output_size = output_size[0] if isinstance(output_size, (list, tuple)) else output_size
+if data_format == "NHWC":
+    x = x.permute(0, 2, 3, 1)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        kernel_size = weight.size(-1)
+        padding = (dilation * (kernel_size - 1)) // 2
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 1:
+        padding = padding[0]
+    elif len(padding) == 2:
+        crop = padding
+        padding = 0
+    elif len(padding) == 3:
+        crop = padding[1] if data_format == "NLC" else padding[2]
+        padding = 0
+if output_size is not None:
+    L_in = x.size(-1)
+    kernel_size = weight.size(-1)
+    L_out = (L_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + 1
+    output_padding = output_size - L_out
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-1) - crop[1]]
+if data_format == "NHWC":
+    result = result.permute(0, 3, 1, 2)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv3dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = tuple(stride) if isinstance(stride, list) else stride
+output_padding = tuple(output_padding) if isinstance(output_padding, list) else output_padding
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        padding = []
+        for i in range(3):
+            dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+            kernel_size = weight.size(2 + i)
+            padding.append((dilation_i * (kernel_size - 1)) // 2)
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:
+        padding = tuple(padding)
+    elif len(padding) == 6:
+        crop = padding
+        padding = 0
+    elif len(padding) == 5:
+        crop = []
+        if data_format == "NDHWC":
+            for i in range(1, 4):
+                crop.extend(padding[i])
+        else:
+            for i in range(2, 5):
+                crop.extend(padding[i])
+        padding = 0
+if output_size is not None:
+    output_padding = []
+    for i in range(3):
+        L_in = x.size(2 + i)
+        kernel_size = weight.size(2 + i)
+        stride_i = stride[i] if isinstance(stride, tuple) else stride
+        padding_i = padding[i] if isinstance(padding, tuple) else padding[i]
+        dialation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+        L_out = (L_in - 1) * stride_i - 2 * padding_i + dilation_i * (kernel_size - 1) + 1
+        output_padding.append(output_size[i] - L_out)
+    output_padding = tuple(output_padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-3) - crop[1], crop[2]:result.size(-2) - crop[3], crop[4]:result.size(-1) - crop[5]]
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
 """
         code = (
             head_code

@@ -564,7 +564,7 @@
         "Rule": "NumelRule"
     },
     "paddle.nn.functional.conv1d_transpose": {
-        "Rule": "ConvTranspose",
+        "Rule": "Conv1dTransposeRule",
         "torch_api": "torch.nn.functional.conv_transpose1d",
         "set_defaults": {
             "bias": "None",
@@ -588,7 +588,7 @@
         }
     },
     "paddle.nn.functional.conv2d_transpose": {
-        "Rule": "ConvTranspose",
+        "Rule": "Conv2dTransposeRule",
         "torch_api": "torch.nn.functional.conv_transpose2d",
         "set_defaults": {
             "bias": "None",
@@ -612,7 +612,7 @@
         }
     },
     "paddle.nn.functional.conv3d_transpose": {
-        "Rule": "ConvTranspose",
+        "Rule": "Conv3dTransposeRule",
         "torch_api": "torch.nn.functional.conv_transpose3d",
         "set_defaults": {
             "bias": "None",
