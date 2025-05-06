@@ -803,6 +803,21 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__sub__(other=y)"
     },
+    "paddle.Tensor.__getitem__": {
+        "torch_api": "torch.Tensor.__getitem__"
+    },
+    "paddle.Tensor.__setitem__": {
+        "torch_api": "torch.Tensor.__setitem__"
+    },
+    "paddle.Tensor.__abs__": {
+        "torch_api": "torch.Tensor.__abs__"
+    },
+    "paddle.Tensor.__and__": {
+        "torch_api": "torch.Tensor.__and__"
+    },
+    "paddle.Tensor.__dir__": {
+        "torch_api": "torch.Tensor.__dir__"
+    },
     "migrated": "APIs migrated are placed here",
     "paddle.Tensor.addmm": {
         "torch_api": "torch.Tensor.addmm",
@@ -6938,23 +6953,6 @@
             "arr": "input",
             "indices": "indices",
             "axis": "dim"
-        },
-        "min_input_args": 3
-    },
-    "paddle.Tensor.__getitem__": {
-        "torch_api": "torch.Tensor.__getitem__",
-        "paddle_torch_args_map": {
-            "self": "input",
-            "item": "key"
-        },
-        "min_input_args": 2
-    },
-    "paddle.Tensor.__setitem__": {
-        "torch_api": "torch.Tensor.__setitem__",
-        "paddle_torch_args_map": {
-            "self": "input",
-            "item": "key",
-            "value": "value"
         },
         "min_input_args": 3
     }

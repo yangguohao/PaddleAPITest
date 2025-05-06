@@ -320,6 +320,10 @@ class APITestAccuracy(APITestBase):
                 write_to_log("paddle_error", self.api_config.config)
                 return
 
+            if self.api_config.api_name == "paddle.Tensor.__setitem__":
+                torch_out_grads = torch_out_grads[0]
+                paddle_out_grads = paddle_out_grads[0]
+
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:

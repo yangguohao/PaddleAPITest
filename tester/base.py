@@ -45,6 +45,7 @@ rand_apis = [
     "paddle.Tensor.uniform_",
     "paddle.empty",
     "paddle.empty_like",
+    "paddle.Tensor.__dir__",
 ]
 
 stochastic_behavior_apis =[
@@ -191,18 +192,23 @@ class APITestBase:
         self.torch_kwargs_config = collections.OrderedDict()
         self.paddle_merged_kwargs_config = collections.OrderedDict()
 
-        if self.api_config.api_name in ["paddle.Tensor.__getitem__", "paddle.Tensor.__setitem__"]:
+        api_name = self.api_config.api_name
+        if (
+            api_name.startswith("paddle.Tensor.__")
+            and api_name.endswith("__")
+            and api_name not in no_signature_api_mappings
+        ):
             self.torch_args_config = self.api_config.args
             return True
 
-        if self.api_config.api_name not in no_signature_api_mappings:
+        if api_name not in no_signature_api_mappings:
             # For APIs with signatures, use paddle_sig.bind to get arguments
             paddle_sig = inspect.signature(self.paddle_api)
             paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
             paddle_args_dict = paddle_bound_args.arguments
         else:
             # For APIs without signatures, use the external mapping dict
-            mapping = no_signature_api_mappings[self.api_config.api_name]
+            mapping = no_signature_api_mappings[api_name]
             paddle_args_dict = {}
             for key, get_value_func in mapping.items():
                 paddle_args_dict[key] = get_value_func(self.api_config)
