@@ -1006,7 +1006,8 @@ for ii in range(scores.shape[0]):
         proposal_i[i,2] = max(min(float(proposal_i[i,2]), img_size_i[1]), 0)
         proposal_i[i,3] = max(min(float(proposal_i[i,3]), img_size_i[0]), 0)
 
-    min_size = max(min_size,1.)
+    # 源码将这里限制为1 如果取消注释 这里将和源码一样
+    # min_size = max(min_size,1.)
     #删除面积较小的候选框
     proposal_i = proposal_i.reshape([-1, 4])
     keep = []
