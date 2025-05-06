@@ -3,7 +3,7 @@
 # 配置参数
 INPUT_FILE="tester/api_config/api_config_temp.txt"
 LOG_DIR="tester/api_config/test_log"
-NUM_GPUS=0
+NUM_GPUS=8
 NUM_WORKERS_PER_GPU=1
 
 mkdir -p "$LOG_DIR" || { echo "无法创建日志目录 $LOG_DIR"; exit 1; }
@@ -24,3 +24,5 @@ echo -e "3. 终止任务:  kill $PYTHON_PID"
 echo -e "\n进程已在后台运行，关闭终端不会影响进程执行。"
 
 exit 0
+
+# watch -n 1 nvidia-smi --query-compute-apps=pid,process_name,used_memory,gpu_uuid --format=csv
