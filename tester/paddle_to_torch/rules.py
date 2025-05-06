@@ -346,6 +346,8 @@ result = [output, loss]
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
+
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -605,6 +607,37 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
         return ConvertResult.success(paddle_api, code)
 
 
+class ClassCenterSampleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+unique_pos_classes = torch.unique(label)
+num_pos_classes = unique_pos_classes.size(0)
+if num_pos_classes >= num_samples:
+    sampled_classes = unique_pos_classes
+    remapped_label = torch.zeros_like(label)
+    for new_idx, old_class in enumerate(sampled_classes):
+        remapped_label[label == old_class] = new_idx
+else:
+    all_classes = torch.arange(num_classes, device=label.device)
+    neg_classes = all_classes[~torch.isin(all_classes, unique_pos_classes)]
+    num_neg_needed = num_samples - num_pos_classes
+    if num_neg_needed > 0:
+        if neg_classes.numel() >= num_neg_needed:
+            selected_neg = neg_classes[torch.randperm(neg_classes.size(0))[:num_neg_needed]]
+        else:
+            selected_neg = neg_classes
+        sampled_classes = torch.cat([unique_pos_classes, selected_neg])
+    else:
+        sampled_classes = unique_pos_classes
+    remapped_label = torch.zeros_like(label)
+    for new_idx, old_class in enumerate(sampled_classes):
+        remapped_label[label == old_class] = new_idx
+result = (remapped_label, sampled_classes)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -625,6 +658,81 @@ if locals().get('data_format') == 'NHWC':
             + core.splitlines()
             + impl2.splitlines()
         )
+        return ConvertResult.success(paddle_api, code)
+
+class Distribute_fpn_proposalsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import math
+        
+def BBoxArea(box, pixel_offset):
+    w = box[2] - box[0]
+    h = box[3] - box[1]
+    if pixel_offset:
+        return (w+1) * (h+1)
+    else:
+        return w * h     
+
+pixel_offset = locals().get('pixel_offset',False)
+rois_num = locals().get('rois_num', None)
+num_level = max_level - min_level + 1
+if rois_num is not None:
+    for i in range(1, rois_num.numel()):
+        rois_num[i] += rois_num[i-1]
+    fpn_rois_lod = torch.concat([torch.tensor([0]), rois_num])
+else:
+    fpn_rois_lod = torch.tensor([0, fpn_rois.shape[0]])   
+
+size = fpn_rois_lod.numel() - 1
+fpn_rois_num = (int)(fpn_rois_lod[size])
+# 计算roi所属的level
+num_rois_level = torch.zeros([num_level])
+target_level = []
+for i in range(fpn_rois_lod.numel() - 1):
+    fpn_rois_slice = fpn_rois[fpn_rois_lod[i]:fpn_rois_lod[i+1]]
+    for rois_data in fpn_rois_slice:
+        roi_scale = math.sqrt(BBoxArea(rois_data, pixel_offset))
+        tgt_lvl = math.floor(math.log2(roi_scale / refer_scale) + refer_level)
+        tgt_lvl = min(max_level, max(tgt_lvl, min_level))
+        target_level.append(tgt_lvl)
+        num_rois_level[tgt_lvl - min_level] += 1 
+# 初始化结果
+multi_rois = []
+for i in range(num_level):
+    multi_rois.append([])
+restore_ind = torch.empty(fpn_rois.shape[0], 1)
+rois_num_per_level = []
+for i in range(num_level):
+    rois_num_per_level.append(
+        torch.zeros([rois_num.numel()])
+    )
+# 计算结果
+index = 0
+for i in range(fpn_rois_lod.numel() - 1):
+    fpn_rois_slice = fpn_rois[fpn_rois_lod[i]:fpn_rois_lod[i+1]]
+    for rois_data in fpn_rois_slice:
+        level = target_level[index]
+        if multi_rois[level-min_level] == []:
+            multi_rois[level-min_level].append(rois_data)
+        else:
+            multi_rois[level-min_level].append(rois_data)
+        rois_num_per_level[level - min_level][i] += 1
+        index += 1
+for i in range(num_level):
+    if multi_rois[i] == []:
+        multi_rois[i] = torch.zeros([0,4])
+    else:
+        multi_rois[i] = torch.stack(multi_rois[i])
+index = 0
+for i in range(num_level):
+    for j in range(fpn_rois.shape[0]):
+        if target_level[j] == i + min_level:
+            restore_ind[j] = index
+            index += 1
+
+result = (multi_rois, restore_ind, rois_num_per_level)
+"""
+        code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
 class DropoutRule(BaseRule):
@@ -1113,6 +1221,7 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class MultiplexRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1126,6 +1235,8 @@ result = torch.stack(temp)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1379,8 +1490,13 @@ else:
 
 
 # v
-
-
+class ViewRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.view(shape_or_dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 # w
 
 
