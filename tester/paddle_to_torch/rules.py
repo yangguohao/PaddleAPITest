@@ -177,7 +177,7 @@ class GenericRule(BaseRule):
                         paddle_api,
                         "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                     )
-                code.append("_tmp_tensor = next(iter(kwargs.values()))")
+                code.append("_tmp_tensor = args[0] if args else next(iter(kwargs.values()))")
                 if self.is_attribute:
                     code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
                     return ConvertResult.success(paddle_api, code)
@@ -185,7 +185,7 @@ class GenericRule(BaseRule):
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
 
-            code.append("_args = []")
+            code.append("_args = args[1:]")
             if self.torch_args:
                 for arg in self.torch_args:
                     code.append(f"_args.extend([{self._format_arg(arg)}])")
@@ -233,7 +233,7 @@ class GenericRule(BaseRule):
 
 
 class ErrorRule(BaseRule):
-    def __init__(self, message: str):
+    def __init__(self, message: str = "Error Rule"):
         super().__init__()
         self.message = message
 
@@ -1443,6 +1443,7 @@ if top_k is not None:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class NumelRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1451,7 +1452,8 @@ result = torch.tensor(num_elements, dtype=torch.int64)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 # o
 
 
@@ -1699,6 +1701,7 @@ result = x.view(shape_or_dtype)
 
 # z
 
+
 # __
 class __Pow__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1709,7 +1712,8 @@ result = tensor.__pow__(other)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
