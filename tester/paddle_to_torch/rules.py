@@ -379,7 +379,7 @@ elif isinstance(padding, (list, tuple)):
 """
         func2 = """
 if data_format == 'NHWC':
-    x = x.permute(0, 2, 3, 1)
+    x = x.permute(0, 3, 1, 2)
             
 def _get_same_padding_2d(input_size, kernel_size, stride):
     if isinstance(kernel_size, int):
@@ -475,7 +475,7 @@ elif isinstance(padding, (list, tuple)):
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
 if data_format == 'NHWC':
-    result = result.permute(0, 3, 1, 2)
+    result = result.permute(0, 2, 3, 1)
 """
         impl3 = """
 if data_format == 'NDHWC':
@@ -691,7 +691,7 @@ stride = tuple(stride) if isinstance(stride, list) else stride
 output_padding = tuple(output_padding) if isinstance(output_padding, list) else output_padding
 dilation = tuple(dilation) if isinstance(dilation, list) else dilation
 if data_format == "NHWC":
-    x = x.permute(0, 2, 3, 1)
+    x = x.permute(0, 3, 1, 2)
 if isinstance(padding, str):
     if padding.upper() == "SAME":
         padding = []
@@ -734,7 +734,7 @@ if output_size is not None:
 if crop:
     result = result[:, :, crop[0]:result.size(-1) - crop[1], crop[2]:result.size(-2) - crop[3]]
 if data_format == "NHWC":
-    result = result.permute(0, 3, 1, 2)
+    result = result.permute(0, 2, 3, 1)
 """
         code = (
             head_code
