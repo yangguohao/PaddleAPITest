@@ -65,16 +65,30 @@ class ConvertResult:
 
     @classmethod
     def success(
-        cls, paddle_api: str, code: Union[Code, List[str]], output_var: str = "result"
+        cls,
+        paddle_api: str,
+        code: Union[Code, List[str]],
+        output_var: str = "result",
+        is_torch_corresponding: bool = True,
     ) -> "ConvertResult":
         code_obj = Code(core=code) if isinstance(code, list) else code
         if code_obj.preprocess:
             code_obj.preprocess_compiled = Code.compile(code_obj.preprocess)
         if code_obj.core:
+            if len(code_obj.core) > 2:
+                print(
+                    f"Warning: The core code of {paddle_api} is too complex.",
+                    flush=True,
+                )
             code_obj.core_compiled = Code.compile(code_obj.core)
         if code_obj.postprocess:
             code_obj.postprocess_compiled = Code.compile(code_obj.postprocess)
-        return cls(paddle_api, code=code_obj, output_var=output_var)
+        return cls(
+            paddle_api,
+            code=code_obj,
+            output_var=output_var,
+            is_torch_corresponding=is_torch_corresponding,
+        )
 
     @classmethod
     def error(cls, paddle_api: str, message: str) -> "ConvertResult":
