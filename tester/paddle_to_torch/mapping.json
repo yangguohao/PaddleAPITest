@@ -486,7 +486,7 @@
             "divisor_override": "divisor_override"
         },
         "torch_kwargs": {
-            "count_include_pad": "not {exclusive} "
+            "count_include_pad": "not {exclusive}"
         }
     },
     "paddle.nn.functional.batch_norm": {

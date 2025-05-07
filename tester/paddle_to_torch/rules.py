@@ -516,7 +516,9 @@ if data_format == "NDHWC":
                 + impl3.splitlines()
             )
         else:
-            return ConvertResult.error(paddle_api, f"Unsupported pooling api: {paddle_api}")
+            return ConvertResult.error(
+                paddle_api, f"Unsupported pooling api: {paddle_api}"
+            )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1731,7 +1733,6 @@ result = torch.stack(temp)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-
 
 
 # n
