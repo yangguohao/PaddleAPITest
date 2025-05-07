@@ -1,6 +1,6 @@
 import gc
 import traceback
-
+import numpy
 import paddle
 import torch
 from func_timeout import func_set_timeout
@@ -278,7 +278,9 @@ class APITestAccuracy(APITestBase):
                         write_to_log("accuracy_error", self.api_config.config)
                         return                    
                 else:
-                    if not isinstance(paddle_output[i], paddle.Tensor):
+                    if isinstance(paddle_output[i], int):
+                        self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
+                    elif not isinstance(paddle_output[i], paddle.Tensor):
                         print("[not compare] ", paddle_output[i], torch_output[i], flush=True)
                         write_to_log("accuracy_error", self.api_config.config)
                         return
@@ -320,6 +322,10 @@ class APITestAccuracy(APITestBase):
                 write_to_log("paddle_error", self.api_config.config)
                 return
 
+            if self.api_config.api_name == "paddle.Tensor.__setitem__":
+                torch_out_grads = torch_out_grads[0]
+                paddle_out_grads = paddle_out_grads[0]
+
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:
@@ -348,7 +354,9 @@ class APITestAccuracy(APITestBase):
                     write_to_log("accuracy_error", self.api_config.config)
                     return
                 for i in range(len(paddle_out_grads)):
-                    if not isinstance(paddle_out_grads[i], paddle.Tensor):
+                    if isinstance(paddle_out_grads[i], int):
+                        self.np_assert_accuracy(numpy.array(paddle_out_grads[i]), numpy.array(torch_out_grads[i]), 1e-2, 1e-2, self.api_config)
+                    elif not isinstance(paddle_out_grads[i], paddle.Tensor):
                         print("[not compare] ", paddle_out_grads[i], torch_out_grads[i], flush=True)
                         write_to_log("accuracy_error", self.api_config.config)
                         return

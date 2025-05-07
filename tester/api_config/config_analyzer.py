@@ -143,6 +143,14 @@ class TensorConfig:
             f"Expected a 0-D or 1-D Tensor, but got shape {self.shape}."
         )
 
+    def get_random_axis_on_tensor(self, api_config, arg_pos, kwargs_name):
+        cfg = self.get_arg(api_config, arg_pos, kwargs_name)
+        if isinstance(cfg, TensorConfig):
+            max_idx = len(cfg.shape)
+            return self.get_random_numpy_tensor([], data_type=self.dtype, min=0, max=max_idx)
+        else:
+            raise ValueError(f"Invalid axis config={cfg} in {api_config.api_name}")
+
     def get_numpy_tensor(self, api_config, index=None, key=None, **kwargs):
         if index is not None:
             self.index = index
@@ -435,6 +443,14 @@ class TensorConfig:
                         num = num - self.numpy_tensor[i]
                         re -= 1
                     self.numpy_tensor[self.shape[0]-1] = num
+            elif api_config.api_name in ["paddle.nn.functional.dropout", "paddle.nn.functional.dropout2d", "paddle.nn.functional.dropout3d"]:
+                if self.check_arg(api_config, 1, "p"):
+                    eps = 0.1
+                    self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, min=0, max=1+eps)
+                    # include 1 in numpy tensor
+                    self.numpy_tensor = numpy.where(self.numpy_tensor > 1, 1, self.numpy_tensor)
+                elif api_config.api_name == "paddle.nn.functional.dropout" and self.check_arg(api_config, 2, "axis"):
+                    self.numpy_tensor = self.get_random_axis_on_tensor(api_config, 0, "x")
             elif api_config.api_name == "paddle.empty":
                 is_shape_param = False
                 if len(api_config.args) > 0:
@@ -1717,7 +1733,7 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
             
-            elif api_config.api_name == "paddle.Tensor.__pow__":
+            elif api_config.api_name in {"paddle.Tensor.__pow__","paddle.Tensor.pow"}:
                 # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other
                 if self.check_arg(api_config, 0, "self"):
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
@@ -1885,6 +1901,9 @@ class TensorConfig:
             raise ValueError(f"argument at position {arg_pos} or name '{arg_name}' is not of type TensorConfig.")
         
     def get_random_numpy_tensor(self, shape=None, data_type=None, min=None, max=None):
+        """
+        generate a random numpy tensor with data in [min, max) given shape and data_type
+        """
         # extract default init logic 
         if USE_CACHED_NUMPY:
             dtype = "float32" if data_type == "bfloat16" else data_type
