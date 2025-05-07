@@ -1985,12 +1985,12 @@ result, _ = torch.sort(x, dim=axis, descending=descending, stable=stable)
 class SortTensorRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
-x = locals().get('self')
+# x = locals().get('self')
 axis = locals().get('axis', -1)
 descending = locals().get('descending', False)  
 stable = locals().get('stable', False)  
 axis = axis if axis >= 0 else x.dim() + axis
-result, _ = torch.sort(x, dim=axis, descending=descending, stable=stable)
+result, _ = x.sort(dim=axis, descending=descending, stable=stable)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)

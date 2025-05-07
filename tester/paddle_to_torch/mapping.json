@@ -5941,7 +5941,7 @@
         "Rule": "SortRule"
     },
     "paddle.Tensor.sort": {
-        "Rule": "SortRule"
+        "Rule": "SortTensorRule"
     },    
     "paddle.sparse.addmm": {
         "torch_api": "torch.sparse.addmm",
