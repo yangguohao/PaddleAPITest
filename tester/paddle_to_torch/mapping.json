@@ -688,6 +688,14 @@
     "paddle.nn.functional.conv2d": {
         "Rule": "Conv2dRule",
         "torch_api": "torch.nn.functional.conv2d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCHW'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "weight": "weight",
@@ -701,6 +709,14 @@
     "paddle.nn.functional.conv3d": {
         "Rule": "Conv3dRule",
         "torch_api": "torch.nn.functional.conv3d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCDHW'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "weight": "weight",
