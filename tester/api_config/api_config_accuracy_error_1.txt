@@ -21,3 +21,4 @@ paddle.nn.functional.conv2d(Tensor([8, 1, 69, 453],"float32"), Tensor([64, 1, 7,
 paddle.nn.functional.conv2d(Tensor([8, 1, 69, 485],"float32"), Tensor([64, 1, 7, 7],"float32"), None, list[2,2,], 0, list[1,1,], 1, )
 paddle.nn.functional.conv2d(Tensor([8, 128, 256, 256],"float32"), Tensor([128, 128, 3, 3],"float32"), bias=None, stride=1, padding=1, )
 paddle.nn.functional.conv2d(Tensor([8, 3, 256, 256],"float32"), Tensor([128, 3, 1, 1],"float32"), bias=None, stride=1, padding=0, )
+paddle.nn.functional.conv2d_transpose(Tensor([8, 2048, 16, 16],"float16"), Tensor([2048, 128, 4, 4],"float16"), bias=None, padding=1, output_padding=0, stride=list[2,2,], dilation=list[1,1,], groups=1, output_size=None, data_format="NCHW", )
