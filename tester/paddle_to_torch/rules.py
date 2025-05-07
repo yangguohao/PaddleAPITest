@@ -177,7 +177,9 @@ class GenericRule(BaseRule):
                         paddle_api,
                         "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                     )
-                code.append("_tmp_tensor = args[0] if args else next(iter(kwargs.values()))")
+                code.append(
+                    "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
+                )
                 if self.is_attribute:
                     code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
                     return ConvertResult.success(paddle_api, code)
@@ -379,7 +381,7 @@ elif isinstance(padding, (list, tuple)):
 """
         func2 = """
 if data_format == 'NHWC':
-    x = x.permute(0, 2, 3, 1)
+    x = x.permute(0, 3, 1, 2)
             
 def _get_same_padding_2d(input_size, kernel_size, stride):
     if isinstance(kernel_size, int):
@@ -455,7 +457,13 @@ elif padding == "SAME":
         padding = 0
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-        padding = tuple(padding)
+        max_pad = [kernel_size[i] // 2 for i in range(3)]
+        if any(p > m for p, m in zip(padding, max_pad)):
+            pad_d, pad_h, pad_w = padding
+            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+            padding = 0
+        else:
+            padding = tuple(padding)
     elif len(padding) == 6:  # [front, back, top, bottom, left, right]
         pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
@@ -475,7 +483,7 @@ elif isinstance(padding, (list, tuple)):
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
 if data_format == 'NHWC':
-    result = result.permute(0, 3, 1, 2)
+    result = result.permute(0, 2, 3, 1)
 """
         impl3 = """
 if data_format == 'NDHWC':
@@ -504,6 +512,7 @@ if data_format == 'NDHWC':
 
 # b
 
+
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -513,6 +522,7 @@ result = torch.broadcast_shapes(x_shape, y_shape)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
 
 class BroadcastTensorsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -651,6 +661,192 @@ result = (remapped_label, sampled_classes)
         return ConvertResult.success(paddle_api, code)
 
 
+class Conv1dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = stride[0] if isinstance(stride, (list, tuple)) else stride
+output_padding = output_padding[0] if isinstance(output_padding, (list, tuple)) else output_padding
+dilation = dilation[0] if isinstance(dilation, (list, tuple)) else dilation
+output_size = output_size[0] if isinstance(output_size, (list, tuple)) else output_size
+if data_format == "NLC":
+    x = x.transpose(1, 2)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        kernel_size = weight.size(-1)
+        padding = (dilation * (kernel_size - 1)) // 2
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 1:
+        padding = padding[0]
+    elif len(padding) == 2:
+        crop = padding
+        padding = 0
+    elif len(padding) == 3:
+        crop = padding[1] if data_format == "NLC" else padding[2]
+        padding = 0
+if output_size is not None:
+    L_in = x.size(-1)
+    kernel_size = weight.size(-1)
+    L_out = (L_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + 1
+    output_padding = output_size - L_out
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-1) - crop[1]]
+if data_format == "NLC":
+    result = result.transpose(1, 2)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv2dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = tuple(stride) if isinstance(stride, list) else stride
+output_padding = tuple(output_padding) if isinstance(output_padding, list) else output_padding
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        padding = []
+        for i in range(2):
+            dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+            kernel_size = weight.size(2 + i)
+            padding.append((dilation_i * (kernel_size - 1)) // 2)
+        padding = tuple(padding)
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:
+        padding = tuple(padding)
+    elif len(padding) == 4 and all(isinstance(pad, int) for pad in padding):
+        crop = padding
+        padding = 0
+    elif len(padding) == 4:
+        crop = []
+        if data_format == "NHWC":
+            for i in range(1, 3):
+                crop.extend(padding[i])
+        else:
+            for i in range(2, 4):
+                crop.extend(padding[i])
+        padding = 0
+if output_size is not None:
+    output_padding = []
+    for i in range(2):
+        L_in = x.size(2 + i)
+        kernel_size = weight.size(2 + i)
+        stride_i = stride[i] if isinstance(stride, tuple) else stride
+        padding_i = padding[i] if isinstance(padding, tuple) else padding
+        dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+        L_out = (L_in - 1) * stride_i - 2 * padding_i + dilation_i * (kernel_size - 1) + 1
+        output_padding.append(output_size[i] - L_out)
+    output_padding = tuple(output_padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-1) - crop[1], crop[2]:result.size(-2) - crop[3]]
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv3dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = tuple(stride) if isinstance(stride, list) else stride
+output_padding = tuple(output_padding) if isinstance(output_padding, list) else output_padding
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        padding = []
+        for i in range(3):
+            dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+            kernel_size = weight.size(2 + i)
+            padding.append((dilation_i * (kernel_size - 1)) // 2)
+        padding = tuple(padding)
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:
+        padding = tuple(padding)
+    elif len(padding) == 6:
+        crop = padding
+        padding = 0
+    elif len(padding) == 5:
+        crop = []
+        if data_format == "NDHWC":
+            for i in range(1, 4):
+                crop.extend(padding[i])
+        else:
+            for i in range(2, 5):
+                crop.extend(padding[i])
+        padding = 0
+if output_size is not None:
+    output_padding = []
+    for i in range(3):
+        L_in = x.size(2 + i)
+        kernel_size = weight.size(2 + i)
+        stride_i = stride[i] if isinstance(stride, tuple) else stride
+        padding_i = padding[i] if isinstance(padding, tuple) else padding
+        dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+        L_out = (L_in - 1) * stride_i - 2 * padding_i + dilation_i * (kernel_size - 1) + 1
+        output_padding.append(output_size[i] - L_out)
+    output_padding = tuple(output_padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-3) - crop[1], crop[2]:result.size(-2) - crop[3], crop[4]:result.size(-1) - crop[5]]
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -672,6 +868,7 @@ if locals().get('data_format') == 'NHWC':
             + impl2.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
+
 
 class Distribute_fpn_proposalsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -748,6 +945,7 @@ result = (multi_rois, restore_ind, rois_num_per_level)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class DropoutRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -779,6 +977,7 @@ result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
 
+
 class Dropout2dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -796,6 +995,7 @@ if data_format == "NHWC":
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
 
+
 class Dropout3dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -812,6 +1012,7 @@ if data_format == "NDHWC":
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
 
 # e
 class EmptyRule(BaseRule):
@@ -991,6 +1192,8 @@ for batch in range(batch_size):
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 class GenerateProposalsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """    
@@ -1152,7 +1355,8 @@ else:
     result = (torch.stack(rpn_rois).squeeze(), torch.stack(rpn_roi_probs).squeeze())
 """
         code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)   
+        return ConvertResult.success(paddle_api, code)
+
 
 class GetWindowRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1491,7 +1695,8 @@ result = median
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class NmsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1710,6 +1915,7 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SegmentMaxRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1724,6 +1930,8 @@ result = ans
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 class ScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1817,6 +2025,8 @@ result = x.view(shape_or_dtype)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 # w
 
 
