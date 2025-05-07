@@ -638,18 +638,143 @@ result = (remapped_label, sampled_classes)
         return ConvertResult.success(paddle_api, code)
 
 
+class Conv1dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)
+stride = tuple(stride) if isinstance(stride, list) else stride
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if isinstance(padding, str):
+    if padding.lower() == "same":
+        padding = "same"
+    elif padding.lower() == "valid":
+        padding = "valid"
+elif isinstance(padding, list):
+    if len(padding) == 2:
+        x = torch.nn.functional.pad(x, padding[0], padding[1])
+        padding = 0
+    else:
+        padding = tuple(padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if data_format == "NLC":
+    result = result.permute(0, 2, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv2dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+stride = tuple(stride) if isinstance(stride, list) else stride
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if isinstance(padding, str):
+    if padding.lower() == "same":
+        padding = "same"
+    elif padding.lower() == "valid":
+        padding = "valid"
+elif isinstance(padding, list):
+    if len(padding) == 2:  # [pad_height, pad_width]
+        padding = tuple(padding)
+    elif len(padding) == 4:
+        if all(isinstance(pad, int) for pad in padding): # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+            pad_top, pad_bottom, pad_left, pad_right = padding
+        else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
+            if data_format == "NCHW":
+                pad_top, pad_bottom = padding[2][0], padding[2][1]
+                pad_left, pad_right = padding[3][0], padding[3][1]
+            else:  # NHWC
+                pad_top, pad_bottom = padding[1][0], padding[1][1]
+                pad_left, pad_right = padding[2][0], padding[2][1]
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
+        padding = 0
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+    
+
+class Conv3dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
+stride = tuple(stride) if isinstance(stride, list) else stride
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if isinstance(padding, str):
+    if padding.lower() == "same":
+        padding = "same"
+    elif padding.lower() == "valid":
+        padding = "valid"
+elif isinstance(padding, list):
+    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+        padding = tuple(padding)
+    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+    elif len(padding) == 5: # Paddle 的 5D 填充格式
+        if data_format == "NCDHW":
+            pad_front, pad_back = padding[2][0], padding[2][1]
+            pad_top, pad_bottom = padding[3][0], padding[3][1]
+            pad_left, pad_right = padding[4][0], padding[4][1]
+        else: # NDHWC
+            pad_front, pad_back = padding[1][0], padding[1][1]
+            pad_top, pad_bottom = padding[2][0], padding[2][1]
+            pad_left, pad_right = padding[3][0], padding[3][1]
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         impl1 = """
-if locals().get('data_format') == 'NHWC':
-    x = x.permute(0, 3, 1, 2)
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
-if locals().get('data_format') == 'NHWC':
-    result = result.permute(0, 2, 3, 1)
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
 """
         code = (
             head_code
