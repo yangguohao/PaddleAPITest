@@ -1791,7 +1791,40 @@ result = tensor.__pow__(other)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class __rshift__Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+tensor = locals().get('x')
+other = locals().get('y')
+is_arithmetic = locals().get('is_arithmetic')
+# setting default value for is_arithmetic
+if is_arithmetic is None:
+    is_arithmetic = True
 
+def logical_right_shift(x: torch.Tensor, shift: torch.Tensor) -> torch.Tensor:
+    if x.dtype == torch.int8 or x.dtype == torch.uint8:
+        unsigned_dtype = numpy.uint8
+    elif x.dtype == torch.int16 or x.dtype == torch.uint16:
+        unsigned_dtype = numpy.uint16
+    elif x.dtype == torch.int32 or x.dtype == torch.uint32:
+        unsigned_dtype = numpy.uint32
+    elif x.dtype == torch.int64 or x.dtype == torch.uint64:
+        unsigned_dtype = numpy.uint64
+    x_np = x.cpu().numpy().astype(unsigned_dtype)
+    shift_np = shift.cpu().numpy().astype(unsigned_dtype)
+    # use numpy to do unsigned right shift
+    result_np = x_np >> shift_np
+    return torch.from_numpy(result_np).to(x.dtype)
+    
+if is_arithmetic:
+    result = tensor.__rshift__(other)
+else:
+    # logical right shift 
+    result = logical_right_shift(tensor, other)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()

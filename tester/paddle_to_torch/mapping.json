@@ -817,6 +817,9 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rsub__(other=y)"
     },
+    "paddle.Tensor.__rshift__": {
+        "Rule": "__rshift__Rule"
+    },
     "paddle.Tensor.__rtruediv__": {
         "torch_api": "torch.Tensor.__rtruediv__",
         "paddle_torch_args_map": {
