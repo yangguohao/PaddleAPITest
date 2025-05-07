@@ -1,5 +1,16 @@
 {
     "a": "API started with 'a' should be placed here",
+    "paddle.Tensor.abs": {
+        "torch_api": "torch.Tensor.abs",
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.abs()"
+    },
+    "paddle.Tensor.add": {
+        "torch_api": "torch.Tensor.add",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.add(other=y)"
+    },
     "paddle.add": {
         "torch_api": "torch.add",
         "paddle_torch_args_map": {
@@ -60,6 +71,10 @@
             "offset": "storage_offset"
         },
         "description": "result = torch.as_strided(input=x, size=shape, stride=stride, storage_offset=offset)"
+    },
+    "paddle.Tensor.atanh": {
+        "torch_api": "torch.Tensor.atanh",
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.atanh()"
     },
     "b": "API started with 'b' should be placed here",
     "paddle.broadcast_shape": {
