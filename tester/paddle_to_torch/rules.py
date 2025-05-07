@@ -455,7 +455,13 @@ elif padding == "SAME":
         padding = 0
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-        padding = tuple(padding)
+        max_pad = [kernel_size[i] // 2 for i in range(3)]
+        if any(p > m for p, m in zip(padding, max_pad)):
+            pad_d, pad_h, pad_w = padding
+            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+            padding = 0
+        else:
+            padding = tuple(padding)
     elif len(padding) == 6:  # [front, back, top, bottom, left, right]
         pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
