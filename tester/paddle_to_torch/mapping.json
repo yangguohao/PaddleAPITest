@@ -592,6 +592,78 @@
     "paddle.numel": {
         "Rule": "NumelRule"
     },
+    "paddle.nn.functional.conv1d_transpose": {
+        "Rule": "Conv1dTransposeRule",
+        "torch_api": "torch.nn.functional.conv_transpose1d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "output_padding": 0,
+            "groups": 1,
+            "dialation": 1,
+            "output_size": "None",
+            "data_format": "'NCL'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "output_padding": "output_padding",
+            "groups": "groups",
+            "dilation": "dilation"
+        }
+    },
+    "paddle.nn.functional.conv2d_transpose": {
+        "Rule": "Conv2dTransposeRule",
+        "torch_api": "torch.nn.functional.conv_transpose2d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "output_padding": 0,
+            "groups": 1,
+            "dilation": 1,
+            "output_size": "None",
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "output_padding": "output_padding",
+            "groups": "groups",
+            "dilation": "dilation"
+        }
+    },
+    "paddle.nn.functional.conv3d_transpose": {
+        "Rule": "Conv3dTransposeRule",
+        "torch_api": "torch.nn.functional.conv_transpose3d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "output_padding": 0,
+            "groups": 1,
+            "dialation": 1,
+            "output_size": "None",
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "output_padding": "output_padding",
+            "groups": "groups",
+            "dilation": "dilation"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.Tensor.pow":{
@@ -4940,48 +5012,6 @@
             "padding": "padding",
             "dilation": "dilation",
             "groups": "groups"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv1d_transpose": {
-        "torch_api": "torch.nn.functional.conv_transpose1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "output_padding": "output_padding",
-            "groups": "groups",
-            "dilation": "dilation"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv2d_transpose": {
-        "torch_api": "torch.nn.functional.conv_transpose2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "output_padding": "output_padding",
-            "groups": "groups",
-            "dilation": "dilation"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv3d_transpose": {
-        "torch_api": "torch.nn.functional.conv_transpose3d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "output_padding": "output_padding",
-            "groups": "groups",
-            "dilation": "dilation"
         },
         "min_input_args": 2
     },
