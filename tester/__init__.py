@@ -1,10 +1,76 @@
-from . import paddle_to_torch
-from .accuracy import APITestAccuracy
-from .api_config import (USE_CACHED_NUMPY, APIConfig, TensorConfig,
-                         analyse_configs, cached_numpy)
-from .base import APITestBase
-from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
-from .paddle_only import APITestPaddleOnly
-from .config import get_cfg, set_cfg
+# tester/__init__.py
 
-__all__ = ['APITestBase', 'APITestAccuracy', 'APITestPaddleOnly', 'APITestCINNVSDygraph', 'paddle_to_torch','TensorConfig', 'APIConfig', 'analyse_configs', 'USE_CACHED_NUMPY', 'cached_numpy', 'get_cfg', 'set_cfg']
+from typing import TYPE_CHECKING, Any
+
+__all__ = [
+    'APITestBase', 
+    'APITestAccuracy', 
+    'APITestPaddleOnly',
+    'APITestCINNVSDygraph', 
+    'paddle_to_torch',
+    'TensorConfig', 
+    'APIConfig', 
+    'analyse_configs', 
+    'USE_CACHED_NUMPY',
+    'cached_numpy', 
+    'get_cfg', 
+    'set_cfg'
+]
+
+if TYPE_CHECKING:
+    from .base import APITestBase
+    from .accuracy import APITestAccuracy
+    from .paddle_only import APITestPaddleOnly
+    from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
+    from . import paddle_to_torch
+    from .api_config import (
+        TensorConfig,
+        APIConfig,
+        analyse_configs,
+        USE_CACHED_NUMPY,
+        cached_numpy
+    )
+    from .config import get_cfg, set_cfg
+
+def __getattr__(name: str) -> Any:
+    if name not in __all__:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+    if name == 'APITestBase':
+        from .base import APITestBase
+        return APITestBase
+    elif name == 'APITestAccuracy':
+        from .accuracy import APITestAccuracy
+        return APITestAccuracy
+    elif name == 'APITestPaddleOnly':
+        from .paddle_only import APITestPaddleOnly
+        return APITestPaddleOnly
+    elif name == 'APITestCINNVSDygraph':
+        from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
+        return APITestCINNVSDygraph
+    elif name == 'paddle_to_torch':
+        from . import paddle_to_torch
+        return paddle_to_torch
+    elif name == 'TensorConfig':
+        from .api_config import TensorConfig
+        return TensorConfig
+    elif name == 'APIConfig':
+        from .api_config import APIConfig
+        return APIConfig
+    elif name == 'analyse_configs':
+        from .api_config import analyse_configs
+        return analyse_configs
+    elif name == 'USE_CACHED_NUMPY':
+        from .api_config import USE_CACHED_NUMPY
+        return USE_CACHED_NUMPY
+    elif name == 'cached_numpy':
+        from .api_config import cached_numpy
+        return cached_numpy
+    elif name == 'get_cfg':
+        from .config import get_cfg
+        return get_cfg
+    elif name == 'set_cfg':
+        from .config import set_cfg
+        return set_cfg
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

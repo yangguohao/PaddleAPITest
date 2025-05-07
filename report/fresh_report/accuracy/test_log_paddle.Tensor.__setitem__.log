@@ -1,0 +1,98 @@
+paddle.Tensor.__setitem__(Tensor([11661],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
+paddle.Tensor.__setitem__(Tensor([128, 128, 64],"float32"), tuple(Tensor([128],"int64"),Tensor([128],"int64"),), Tensor([128, 64],"float32"), )
+paddle.Tensor.__setitem__(Tensor([15548],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
+paddle.Tensor.__setitem__(Tensor([26736],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), )
+paddle.Tensor.__setitem__(Tensor([3029],"int64"), Tensor([458],"int64"), Tensor([458],"int64"), )
+paddle.Tensor.__setitem__(Tensor([3887],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
+paddle.Tensor.__setitem__(Tensor([6684],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), )
+
+2025-05-01 07:00:26.009033 18507 test begin: paddle.Tensor.__setitem__(Tensor([11661],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([11661],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 30 / 11661 (0.257%)
+Max absolute difference among violations: 9557
+Max relative difference among violations: 470.85714286
+ ACTUAL: array([24027, 59015,  7549, ...,  1966, 20606, 46564], shape=(11661,))
+ DESIRED: array([24027, 59015,  7549, ...,  1966, 20606, 46564], shape=(11661,))
+
+2025-05-01 07:00:26.178197 18507 test begin: paddle.Tensor.__setitem__(Tensor([128, 128, 64],"float32"), tuple(Tensor([128],"int64"),Tensor([128],"int64"),), Tensor([128, 64],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([128, 128, 64],"float32"), tuple(Tensor([128],"int64"),Tensor([128],"int64"),), Tensor([128, 64],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 128 / 1048576 (0.0122%)
+Max absolute difference among violations: 60.
+Max relative difference among violations: 24.5
+ ACTUAL: array([[[-2.357241e-01,  3.913893e-01,  3.734969e-02, ...,
+          4.957587e-02,  4.546640e-01,  4.903009e-01],
+        [ 2.543675e-01, -3.404739e-01, -1.878943e-01, ...,...
+ DESIRED: array([[[-2.357241e-01,  3.913893e-01,  3.734969e-02, ...,
+          4.957587e-02,  4.546640e-01,  4.903009e-01],
+        [ 2.543675e-01, -3.404739e-01, -1.878943e-01, ...,...
+
+2025-05-01 07:00:26.437633 18507 test begin: paddle.Tensor.__setitem__(Tensor([15548],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([15548],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 21 / 15548 (0.135%)
+Max absolute difference among violations: 11219
+Max relative difference among violations: 3.51803073
+ ACTUAL: array([ 30709, -63160,   4352, ...,  55421,   5925,   -139],
+      shape=(15548,))
+ DESIRED: array([ 30709, -63160,   4352, ...,  55421,   5925,   -139],
+      shape=(15548,))
+
+2025-05-01 07:00:31.155746 18507 test begin: paddle.Tensor.__setitem__(Tensor([26736],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([26736],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 72 / 26736 (0.269%)
+Max absolute difference among violations: 25711
+Max relative difference among violations: 43.35750422
+ ACTUAL: array([-40462,  47833,   6399, ...,   2831,  10738,  18520],
+      shape=(26736,))
+ DESIRED: array([-40462,  47833,   6399, ...,   2831,  10738,  18520],
+      shape=(26736,))
+
+2025-05-01 07:01:11.813846 18507 test begin: paddle.Tensor.__setitem__(Tensor([3029],"int64"), Tensor([458],"int64"), Tensor([458],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([3029],"int64"), Tensor([458],"int64"), Tensor([458],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 13 / 3029 (0.429%)
+Max absolute difference among violations: 2364
+Max relative difference among violations: 2.68053492
+ ACTUAL: array([ 54061,  24421, -24672, ..., -30876, -36167, -31161], shape=(3029,))
+ DESIRED: array([ 54061,  24421, -24672, ..., -30876, -36167, -31161], shape=(3029,))
+
+2025-05-01 07:01:30.946625 18507 test begin: paddle.Tensor.__setitem__(Tensor([3887],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([3887],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 84 / 3887 (2.16%)
+Max absolute difference among violations: 3286
+Max relative difference among violations: 33.69444444
+ ACTUAL: array([-31030,  58418,   2530, ...,    805, -42213, -63581], shape=(3887,))
+ DESIRED: array([-31030,  58418,   2530, ...,    805, -42213, -63581], shape=(3887,))
+
+2025-05-01 07:01:31.585860 18507 test begin: paddle.Tensor.__setitem__(Tensor([6684],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([6684],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 261 / 6684 (3.9%)
+Max absolute difference among violations: 6012
+Max relative difference among violations: 3291.
+ ACTUAL: array([52985,  9198,  3443, ...,  3031,   176, 26934], shape=(6684,))
+ DESIRED: array([52985,  9198,  3443, ...,   387,   738, 26934], shape=(6684,))

@@ -395,6 +395,14 @@
             "as_tuple": "as_tuple"
         }
     },
+    "paddle.Tensor.norm": {
+        "torch_api": "torch.Tensor.norm",
+        "paddle_torch_args_map": {
+            "p": "p",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        }
+    },
     "paddle.Tensor.normal_": {
         "torch_api": "torch.Tensor.normal_",
         "paddle_torch_args_map": {
@@ -606,6 +614,16 @@
     "paddle.vision.ops.roi_align":{
         "Rule": "Roi_aignRule"
     },
+    "paddle.Tensor.rad2deg":{
+        "torch_api":"torch.Tensor.rad2deg"
+    },
+    "paddle.Tensor.real":{
+        "torch_api":"torch.Tensor.real",
+        "is_attribute": true
+    },
+    "paddle.Tensor.rsqrt":{
+        "torch_api":"torch.Tensor.rsqrt"
+    },
     "paddle.vision.ops.roi_pool": {
         "torch_api":"torchvision.ops.roi_pool",
         "Rule": "Roi_poolRule"
@@ -636,6 +654,9 @@
     },
     "paddle.Tensor.sign":{
         "torch_api":"torch.Tensor.sign"
+    },
+    "paddle.Tensor.sin":{
+        "torch_api":"torch.Tensor.sin"
     },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
@@ -814,6 +835,21 @@
             "y": "other"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__sub__(other=y)"
+    },
+    "paddle.Tensor.__getitem__": {
+        "torch_api": "torch.Tensor.__getitem__"
+    },
+    "paddle.Tensor.__setitem__": {
+        "torch_api": "torch.Tensor.__setitem__"
+    },
+    "paddle.Tensor.__abs__": {
+        "torch_api": "torch.Tensor.__abs__"
+    },
+    "paddle.Tensor.__and__": {
+        "torch_api": "torch.Tensor.__and__"
+    },
+    "paddle.Tensor.__dir__": {
+        "torch_api": "torch.Tensor.__dir__"
     },
     "migrated": "APIs migrated are placed here",
     "paddle.Tensor.addmm": {
@@ -6920,23 +6956,6 @@
             "arr": "input",
             "indices": "indices",
             "axis": "dim"
-        },
-        "min_input_args": 3
-    },
-    "paddle.Tensor.__getitem__": {
-        "torch_api": "torch.Tensor.__getitem__",
-        "paddle_torch_args_map": {
-            "self": "input",
-            "item": "key"
-        },
-        "min_input_args": 2
-    },
-    "paddle.Tensor.__setitem__": {
-        "torch_api": "torch.Tensor.__setitem__",
-        "paddle_torch_args_map": {
-            "self": "input",
-            "item": "key",
-            "value": "value"
         },
         "min_input_args": 3
     }
