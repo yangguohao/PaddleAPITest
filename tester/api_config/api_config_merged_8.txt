@@ -24,7 +24,6 @@ paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 4, 5],"float64"), tuple
 paddle.tensordot(Tensor([5, 0, 5, 0],"float32"), Tensor([5, 0, 5, 0],"float32"), list[list[],list[],], )
 paddle.tensordot(Tensor([5, 5, 0, 5],"float32"), Tensor([5, 5, 0, 5],"float32"), list[list[],list[],], )
 paddle.tensordot(Tensor([5, 5, 5, 0],"float32"), Tensor([5, 5, 5, 0],"float32"), list[list[],list[],], )
-paddle.vision.ops.nms(Tensor([64, 4],"float32"), 0.5, Tensor([64],"float32"), Tensor([64],"int64"), list[0,1,2,3,], 20, )
 paddle.Tensor.reshape(Tensor([1, 1, 512],"float32"), list[Tensor([],"int64"),Tensor([],"int64"),8,Tensor([1],"int64"),], )
 paddle.Tensor.reshape(Tensor([1, 10, 512],"float32"), list[Tensor([],"int64"),Tensor([],"int64"),8,Tensor([1],"int64"),], )
 paddle.Tensor.reshape(Tensor([1, 100, 512],"float32"), list[Tensor([],"int64"),Tensor([],"int64"),8,Tensor([1],"int64"),], )

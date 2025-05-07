@@ -218,6 +218,15 @@
     "paddle.nn.functional.gather_tree":{
         "Rule": "Gather_treeRule"
     },
+    "paddle.vision.ops.generate_proposals":{
+        "Rule": "GenerateProposalsRule"
+    },
+    "paddle.geometric.sample_neighbors":{
+        "Rule": "SampleNeighborsRule"
+    },
+    "paddle.geometric.segment_max": {
+        "Rule":"SegmentMaxRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {
@@ -6553,13 +6562,7 @@
         "min_input_args": 0
     },
     "paddle.vision.ops.nms": {
-        "torch_api": "torchvision.ops.nms",
-        "paddle_torch_args_map": {
-            "boxes": "boxes",
-            "scores": "scores",
-            "iou_threshold": "iou_threshold"
-        },
-        "min_input_args": 0
+        "Rule": "NmsRule"
     },
     "paddle.vision.transforms.CenterCrop": {
         "torch_api": "torchvision.transforms.CenterCrop",
