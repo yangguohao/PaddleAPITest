@@ -15,6 +15,7 @@ Max relative difference among violations: 5.75
  DESIRED: array([[[[[ 6.486736e-03, -1.545241e-03,  1.737659e-02, -1.698629e-03,
             7.024251e-03,  3.777076e-04,  4.608686e-02,  4.539596e-02],
           [-1.608161e-02, -5.127781e-02, -2.375686e-02, -5.469127e-02,...
+
 2025-05-07 09:55:07.724881 GPU None 16809 test begin: paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, )
 [accuracy error] paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, ) 
  

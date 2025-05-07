@@ -765,7 +765,8 @@
         "torch_api": "torch.nn.functional.max_pool3d",
         "set_defaults": {
             "stride":"None",
-            "padding": 0
+            "padding": 0,
+            "data_format": "'NCDHW'"
         },
         "paddle_torch_args_map": {
             "x": "input",
