@@ -429,7 +429,7 @@
         }
     },
     "paddle.nn.functional.avg_pool1d": {
-        "Rule": "AvgPoolRule",
+        "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.avg_pool1d",
         "set_defaults": {
             "padding": 0,
@@ -448,7 +448,7 @@
         }
     },
     "paddle.nn.functional.avg_pool2d": {
-        "Rule": "AvgPoolRule",
+        "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.avg_pool2d",
         "set_defaults": {
             "padding": 0,
@@ -469,7 +469,7 @@
         }
     },
     "paddle.nn.functional.avg_pool3d": {
-        "Rule": "AvgPoolRule",
+        "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.avg_pool3d",
         "set_defaults": {
             "padding": 0,
@@ -725,6 +725,55 @@
             "padding": "padding",
             "dilation": "dilation",
             "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.max_pool1d": {
+        "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.max_pool1d",
+        "set_defaults": {
+            "stride":"None",
+            "padding": 0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "return_mask": "return_indices"
+        }
+    },
+    "paddle.nn.functional.max_pool2d": {
+        "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.max_pool2d",
+        "set_defaults": {
+            "stride":"None",
+            "padding": 0,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "return_mask": "return_indices"
+        }
+    },
+    "paddle.nn.functional.max_pool3d": {
+        "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.max_pool3d",
+        "set_defaults": {
+            "stride":"None",
+            "padding": 0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "return_mask": "return_indices"
         }
     },
     "o": "API started with 'o' should be placed here",
@@ -5264,42 +5313,6 @@
             "ceil_mode": "ceil_mode"
         },
         "min_input_args": 2
-    },
-    "paddle.nn.functional.max_pool1d": {
-        "torch_api": "torch.nn.functional.max_pool1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "padding": "padding",
-            "ceil_mode": "ceil_mode",
-            "return_mask": "return_indices"
-        },
-        "min_input_args": 0
-    },
-    "paddle.nn.functional.max_pool2d": {
-        "torch_api": "torch.nn.functional.max_pool2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "padding": "padding",
-            "ceil_mode": "ceil_mode",
-            "return_mask": "return_indices"
-        },
-        "min_input_args": 0
-    },
-    "paddle.nn.functional.max_pool3d": {
-        "torch_api": "torch.nn.functional.max_pool3d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "padding": "padding",
-            "ceil_mode": "ceil_mode",
-            "return_mask": "return_indices"
-        },
-        "min_input_args": 0
     },
     "paddle.nn.functional.max_unpool1d": {
         "torch_api": "torch.nn.functional.max_unpool1d",
