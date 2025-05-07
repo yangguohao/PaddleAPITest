@@ -201,7 +201,13 @@
         "paddle_torch_args_map": {
             "x": "input"
         }
-    },       
+    },   
+    "paddle.Tensor.floor": {
+        "torch_api": "torch.Tensor.floor"
+    },    
+    "paddle.Tensor.frexp": {
+        "torch_api": "torch.Tensor.frexp"
+    }, 
     "g": "API started with 'g' should be placed here",
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
@@ -214,6 +220,15 @@
     },
     "paddle.Tensor.gather_nd":{
         "Rule": "Gather_ndRule"
+    },
+    "paddle.Tensor.geometric_": {
+        "torch_api": "torch.Tensor.geometric_",
+        "paddle_torch_args_map": {
+            "probs": "p"
+        },
+        "torch_kwargs": {
+            "generator": "None"
+        }
     },
     "paddle.nn.functional.gather_tree":{
         "Rule": "Gather_treeRule"
@@ -764,6 +779,15 @@
     "paddle.Tensor.real":{
         "torch_api":"torch.Tensor.real",
         "is_attribute": true
+    },
+    "paddle.Tensor.reciprocal":{
+        "torch_api":"torch.Tensor.reciprocal"
+    },
+    "paddle.Tensor.round":{
+        "torch_api":"torch.Tensor.round",
+        "torch_kwargs": {
+            "decimals": 0
+        }
     },
     "paddle.Tensor.rsqrt":{
         "torch_api":"torch.Tensor.rsqrt"
@@ -1429,13 +1453,6 @@
         "torch_api": "torch.Tensor.gcd_",
         "paddle_torch_args_map": {
             "y": "other"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.geometric_": {
-        "torch_api": "torch.Tensor.geometric_",
-        "paddle_torch_args_map": {
-            "probs": "p"
         },
         "min_input_args": 1
     },
