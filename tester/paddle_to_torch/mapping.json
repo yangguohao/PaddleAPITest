@@ -348,6 +348,47 @@
             "get_infos": "get_infos"
         }
     },
+    "paddle.linalg.matrix_transpose":{
+        "Rule": "Matrix_transposeRule"
+    },
+    "paddle.linalg.qr":{
+        "Rule": "QrRule"
+    },
+    "paddle.linalg.slogdet":{
+        "Rule": "SlogdetRule"
+    },
+    "paddle.linalg.svd":{
+        "torch_api":"torch.linalg.svd",
+        "paddle_torch_args_map":{
+            "x": "A",
+            "full_matrices": "full_matrices"
+        }
+    },
+    "paddle.linalg.triangular_solve":{
+        "Rule": "TriangularSolveRule"
+    },
+    "paddle.linalg.eigh":{
+        "torch_api":"torch.linalg.eigh",
+        "paddle_torch_args_map":{
+            "x": "input",
+            "UPLO": "UPLO"
+        }
+    },
+    "paddle.linalg.svdvals": {
+        "torch_api":"torch.linalg.svdvals",
+        "paddle_torch_args_map":{
+            "x": "A"
+        }
+    },
+    "paddle.linalg.lu_unpack":{
+        "torch_api": "torch.lu_unpack",
+        "paddle_torch_args_map": {
+            "x": "LU_data",
+            "y": "LU_pivots",
+            "unpack_data": "unpack_ludata",
+            "unpack_pivots": "unpack_pivots"
+        }
+    },
     "paddle.Tensor.log": {
         "torch_api": "torch.Tensor.log"
     },
