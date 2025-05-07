@@ -247,6 +247,15 @@
         "Rule": "GetWindowRule"
     },
     "h": "API started with 'h' should be placed here",
+    "paddle.histogram":{
+        "torch_api": "torch.histc",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "bins": "bins",
+            "min": "min",
+            "max": "max"
+        }
+    },
     "i": "API started with 'i' should be placed here",
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
@@ -321,6 +330,23 @@
     },
     "paddle.Tensor.lgamma": {
         "torch_api": "torch.Tensor.lgamma"
+    },
+    "paddle.linalg.corrcoef":{
+        "Rule": "CorrcoefRule"
+    },
+    "paddle.linalg.eig":{
+        "torch_api": "torch.linalg.eig",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
+    "paddle.linalg.lu":{
+        "torch_api": "torch.lu",
+        "paddle_torch_args_map": {
+            "x": "A",
+            "pivot": "pivot",
+            "get_infos": "get_infos"
+        }
     },
     "paddle.Tensor.log": {
         "torch_api": "torch.Tensor.log"

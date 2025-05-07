@@ -547,6 +547,19 @@ if locals().get('data_format') == 'NHWC':
 
 
 # c
+class CorrcoefRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+rowvar = locals().get('rowvar',True)
+if rowvar:
+    result = torch.corrcoef(x)
+else:
+    x = x.t()
+    result = torch.corrcoef(x).t()
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
