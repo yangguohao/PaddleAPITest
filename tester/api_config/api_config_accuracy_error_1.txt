@@ -9,3 +9,4 @@ paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float32"), Tensor([8],"fl
 paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, )
 paddle.nn.functional.batch_norm(Tensor([8, 8, 16, 16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), Tensor([16],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, )
 paddle.nn.functional.gelu(Tensor([128, 96, 96, 768],"float32"), False, None, )
+paddle.nn.functional.conv2d_transpose(Tensor([8, 2048, 16, 16],"float16"), Tensor([2048, 128, 4, 4],"float16"), bias=None, padding=1, output_padding=0, stride=list[2,2,], dilation=list[1,1,], groups=1, output_size=None, data_format="NCHW", )
