@@ -849,7 +849,8 @@ if isinstance(padding, str):
         padding = "valid"
 elif isinstance(padding, list):
     if len(padding) == 2:
-        x = torch.nn.functional.pad(x, padding[0], padding[1])
+        pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))
         padding = 0
     else:
         padding = tuple(padding)
