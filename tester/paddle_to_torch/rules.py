@@ -2008,7 +2008,7 @@ transpose = locals().get('transpose', False)
 upper = locals().get('upper', True)
 unitriangular = locals().get('unitriangular', False)
 if transpose:
-    x = x.t()
+    x = x.transpose(-1,-2)
 result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=unitriangular)
 """
         code = impl.splitlines()
