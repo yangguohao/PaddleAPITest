@@ -69,6 +69,9 @@ class APITestAccuracy(APITestBase):
                 "result": None,
                 **self.torch_kwargs
             }
+
+            # convert_result.is_torch_corresponding 为 True 时代表有对应的 Torch API
+            # 执行 *_compiled 编译好的代码速度更快
             code = convert_result.code
             if code.preprocess_compiled:
                 exec(code.preprocess_compiled, exec_globals, exec_locals)
