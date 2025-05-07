@@ -1,0 +1,31 @@
+paddle.nn.functional.avg_pool3d(Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], ceil_mode=False, exclusive=True, divisor_override=None, data_format="NCDHW", name=None, )
+paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, )
+
+2025-05-07 09:54:27.582825 GPU None 16809 test begin: paddle.nn.functional.avg_pool3d(Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], ceil_mode=False, exclusive=True, divisor_override=None, data_format="NCDHW", name=None, )
+[accuracy error] paddle.nn.functional.avg_pool3d(Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], ceil_mode=False, exclusive=True, divisor_override=None, data_format="NCDHW", name=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 375 / 720 (52.1%)
+Max absolute difference among violations: 0.30063999
+Max relative difference among violations: 5.75
+ ACTUAL: array([[[[[ 4.378547e-02, -6.953585e-03,  7.819464e-02, -7.643832e-03,
+            3.160913e-02,  1.699684e-03,  2.073909e-01,  3.064227e-01],
+          [-3.618362e-02, -7.691672e-02, -3.563529e-02, -8.203690e-02,...
+ DESIRED: array([[[[[ 6.486736e-03, -1.545241e-03,  1.737659e-02, -1.698629e-03,
+            7.024251e-03,  3.777076e-04,  4.608686e-02,  4.539596e-02],
+          [-1.608161e-02, -5.127781e-02, -2.375686e-02, -5.469127e-02,...
+2025-05-07 09:55:07.724881 GPU None 16809 test begin: paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, )
+[accuracy error] paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 380 / 720 (52.8%)
+Max absolute difference among violations: 0.22989442
+Max relative difference among violations: 5.75
+ ACTUAL: array([[[[[ 0.038127,  0.062971,  0.023463,  0.02831 ,  0.070177,
+            0.146518,  0.038584, -0.061252],
+          [-0.098984, -0.011029,  0.032962,  0.078488,  0.074133,...
+ DESIRED: array([[[[[ 5.648493e-03,  1.399346e-02,  5.213959e-03,  6.291187e-03,
+            1.559490e-02,  3.255956e-02,  8.574250e-03, -9.074424e-03],
+          [-4.399305e-02, -7.352597e-03,  2.197465e-02,  5.232537e-02,...

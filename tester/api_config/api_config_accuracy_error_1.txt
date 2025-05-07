@@ -22,3 +22,5 @@ paddle.nn.functional.conv2d(Tensor([8, 1, 69, 485],"float32"), Tensor([64, 1, 7,
 paddle.nn.functional.conv2d(Tensor([8, 128, 256, 256],"float32"), Tensor([128, 128, 3, 3],"float32"), bias=None, stride=1, padding=1, )
 paddle.nn.functional.conv2d(Tensor([8, 3, 256, 256],"float32"), Tensor([128, 3, 1, 1],"float32"), bias=None, stride=1, padding=0, )
 paddle.nn.functional.conv2d_transpose(Tensor([8, 2048, 16, 16],"float16"), Tensor([2048, 128, 4, 4],"float16"), bias=None, padding=1, output_padding=0, stride=list[2,2,], dilation=list[1,1,], groups=1, output_size=None, data_format="NCHW", )
+paddle.nn.functional.avg_pool3d(Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], ceil_mode=False, exclusive=True, divisor_override=None, data_format="NCDHW", name=None, )
+paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, )
