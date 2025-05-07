@@ -377,7 +377,7 @@ if isinstance(padding, str):
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 1:  # [pad]
         padding = tuple(padding)
-    if len(padding) == 2:  # [pad_left, pad_right]
+    elif len(padding) == 2:  # [pad_left, pad_right]
         pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right))
         padding = 0
@@ -416,7 +416,7 @@ if isinstance(padding, str):
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 2: # [pad_height, pad_width]
         padding = tuple(padding)
-    if len(padding) == 4:
+    elif len(padding) == 4:
         if all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 4D 填充格式(NCHW 或 NHWC)
             if data_format == "NCHW":
                 pad_top, pad_bottom = padding[2]
