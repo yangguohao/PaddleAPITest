@@ -289,18 +289,19 @@ def main():
                 worker_idx = task_id_to_worker_idx.get(tid)
                 if worker_idx is not None:
                     p = workers.get(worker_idx)
-                    if p and p.is_alive():
+                    # if p and p.is_alive():
+                    if p:
                         print(f"[Master] Killing Worker {worker_idx} (PID={p.pid}) due to task timeout...")
                         kill_worker(p)
                         workers[worker_idx] = spawn_worker(gpu_list, concurrency, worker_idx, task_queue, result_queue, selected_mode)
                         worker_last_task_time[worker_idx] = time.time()
 
-        # 检查worker意外挂掉
-        for idx, p in list(workers.items()):
-            if not p.is_alive():
-                print(f"[Master] Worker {idx} (PID={p.pid}) died unexpectedly, restarting...")
-                workers[idx] = spawn_worker(gpu_list, concurrency, idx, task_queue, result_queue, selected_mode)
-                worker_last_task_time[idx] = time.time()
+        # 检查worker意外挂掉  这里之前有个bug，就是如果hang了，很多时候进程会自己kill，然后到超时的时候任务会二次kill进程，导致正常任务被杀死，所以禁用了这个检测
+        # for idx, p in list(workers.items()):
+        #     if not p.is_alive():
+        #         print(f"[Master] Worker {idx} (PID={p.pid}) died unexpectedly, restarting...")
+        #         workers[idx] = spawn_worker(gpu_list, concurrency, idx, task_queue, result_queue, selected_mode)
+        #         worker_last_task_time[idx] = time.time()
 
     # 收尾
     for _ in range(total_worker_num):
