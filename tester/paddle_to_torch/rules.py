@@ -177,7 +177,9 @@ class GenericRule(BaseRule):
                         paddle_api,
                         "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                     )
-                code.append("_tmp_tensor = next(iter(kwargs.values()))")
+                code.append(
+                    "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
+                )
                 if self.is_attribute:
                     code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
                     return ConvertResult.success(paddle_api, code)
@@ -185,7 +187,7 @@ class GenericRule(BaseRule):
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
 
-            code.append("_args = []")
+            code.append("_args = args[1:]")
             if self.torch_args:
                 for arg in self.torch_args:
                     code.append(f"_args.extend([{self._format_arg(arg)}])")
@@ -233,7 +235,7 @@ class GenericRule(BaseRule):
 
 
 class ErrorRule(BaseRule):
-    def __init__(self, message: str):
+    def __init__(self, message: str = "Error Rule"):
         super().__init__()
         self.message = message
 
@@ -346,6 +348,8 @@ result = [output, loss]
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
+
 class AvgPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -377,7 +381,7 @@ elif isinstance(padding, (list, tuple)):
 """
         func2 = """
 if data_format == 'NHWC':
-    x = x.permute(0, 2, 3, 1)
+    x = x.permute(0, 3, 1, 2)
             
 def _get_same_padding_2d(input_size, kernel_size, stride):
     if isinstance(kernel_size, int):
@@ -453,7 +457,13 @@ elif padding == "SAME":
         padding = 0
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-        padding = tuple(padding)
+        max_pad = [kernel_size[i] // 2 for i in range(3)]
+        if any(p > m for p, m in zip(padding, max_pad)):
+            pad_d, pad_h, pad_w = padding
+            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+            padding = 0
+        else:
+            padding = tuple(padding)
     elif len(padding) == 6:  # [front, back, top, bottom, left, right]
         pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
@@ -473,7 +483,7 @@ elif isinstance(padding, (list, tuple)):
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
 if data_format == 'NHWC':
-    result = result.permute(0, 3, 1, 2)
+    result = result.permute(0, 2, 3, 1)
 """
         impl3 = """
 if data_format == 'NDHWC':
@@ -501,6 +511,19 @@ if data_format == 'NDHWC':
 
 
 # b
+
+
+class BroadcastShapeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x_shape = locals().get('x_shape')
+y_shape = locals().get('y_shape')
+result = torch.broadcast_shapes(x_shape, y_shape)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
+
 class BroadcastTensorsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = ["result = torch.broadcast_tensors(*input)"]
@@ -594,6 +617,223 @@ result = torch.cumprod(input=x, dim=dim, dtype=dtype)
         return ConvertResult.success(paddle_api, code)
 
 
+class ClassCenterSampleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+unique_pos_classes = torch.unique(label)
+num_pos_classes = unique_pos_classes.size(0)
+if num_pos_classes >= num_samples:
+    sampled_classes = unique_pos_classes
+    remapped_label = torch.zeros_like(label)
+    for new_idx, old_class in enumerate(sampled_classes):
+        remapped_label[label == old_class] = new_idx
+else:
+    all_classes = torch.arange(num_classes, device=label.device)
+    neg_classes = all_classes[~torch.isin(all_classes, unique_pos_classes)]
+    num_neg_needed = num_samples - num_pos_classes
+    if num_neg_needed > 0:
+        if neg_classes.numel() >= num_neg_needed:
+            selected_neg = neg_classes[torch.randperm(neg_classes.size(0))[:num_neg_needed]]
+        else:
+            selected_neg = neg_classes
+        sampled_classes = torch.cat([unique_pos_classes, selected_neg])
+    else:
+        sampled_classes = unique_pos_classes
+    remapped_label = torch.zeros_like(label)
+    for new_idx, old_class in enumerate(sampled_classes):
+        remapped_label[label == old_class] = new_idx
+result = (remapped_label, sampled_classes)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv1dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = stride[0] if isinstance(stride, (list, tuple)) else stride
+output_padding = output_padding[0] if isinstance(output_padding, (list, tuple)) else output_padding
+dilation = dilation[0] if isinstance(dilation, (list, tuple)) else dilation
+output_size = output_size[0] if isinstance(output_size, (list, tuple)) else output_size
+if data_format == "NLC":
+    x = x.transpose(1, 2)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        kernel_size = weight.size(-1)
+        padding = (dilation * (kernel_size - 1)) // 2
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 1:
+        padding = padding[0]
+    elif len(padding) == 2:
+        crop = padding
+        padding = 0
+    elif len(padding) == 3:
+        crop = padding[1] if data_format == "NLC" else padding[2]
+        padding = 0
+if output_size is not None:
+    L_in = x.size(-1)
+    kernel_size = weight.size(-1)
+    L_out = (L_in - 1) * stride - 2 * padding + dilation * (kernel_size - 1) + 1
+    output_padding = output_size - L_out
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-1) - crop[1]]
+if data_format == "NLC":
+    result = result.transpose(1, 2)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv2dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = tuple(stride) if isinstance(stride, list) else stride
+output_padding = tuple(output_padding) if isinstance(output_padding, list) else output_padding
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        padding = []
+        for i in range(2):
+            dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+            kernel_size = weight.size(2 + i)
+            padding.append((dilation_i * (kernel_size - 1)) // 2)
+        padding = tuple(padding)
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 2:
+        padding = tuple(padding)
+    elif len(padding) == 4 and all(isinstance(pad, int) for pad in padding):
+        crop = padding
+        padding = 0
+    elif len(padding) == 4:
+        crop = []
+        if data_format == "NHWC":
+            for i in range(1, 3):
+                crop.extend(padding[i])
+        else:
+            for i in range(2, 4):
+                crop.extend(padding[i])
+        padding = 0
+if output_size is not None:
+    output_padding = []
+    for i in range(2):
+        L_in = x.size(2 + i)
+        kernel_size = weight.size(2 + i)
+        stride_i = stride[i] if isinstance(stride, tuple) else stride
+        padding_i = padding[i] if isinstance(padding, tuple) else padding
+        dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+        L_out = (L_in - 1) * stride_i - 2 * padding_i + dilation_i * (kernel_size - 1) + 1
+        output_padding.append(output_size[i] - L_out)
+    output_padding = tuple(output_padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-1) - crop[1], crop[2]:result.size(-2) - crop[3]]
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class Conv3dTransposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        head_code, map_code = self.apply_generic()
+        impl1 = """
+crop = None
+if bias is not None:
+    out_channels = weight.size(1) * groups
+    bias = bias.expand(out_channels)
+stride = tuple(stride) if isinstance(stride, list) else stride
+output_padding = tuple(output_padding) if isinstance(output_padding, list) else output_padding
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
+if isinstance(padding, str):
+    if padding.upper() == "SAME":
+        padding = []
+        for i in range(3):
+            dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+            kernel_size = weight.size(2 + i)
+            padding.append((dilation_i * (kernel_size - 1)) // 2)
+        padding = tuple(padding)
+    elif padding.upper() == "VALID":
+        padding = 0
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:
+        padding = tuple(padding)
+    elif len(padding) == 6:
+        crop = padding
+        padding = 0
+    elif len(padding) == 5:
+        crop = []
+        if data_format == "NDHWC":
+            for i in range(1, 4):
+                crop.extend(padding[i])
+        else:
+            for i in range(2, 5):
+                crop.extend(padding[i])
+        padding = 0
+if output_size is not None:
+    output_padding = []
+    for i in range(3):
+        L_in = x.size(2 + i)
+        kernel_size = weight.size(2 + i)
+        stride_i = stride[i] if isinstance(stride, tuple) else stride
+        padding_i = padding[i] if isinstance(padding, tuple) else padding
+        dilation_i = dilation[i] if isinstance(dilation, tuple) else dilation
+        L_out = (L_in - 1) * stride_i - 2 * padding_i + dilation_i * (kernel_size - 1) + 1
+        output_padding.append(output_size[i] - L_out)
+    output_padding = tuple(output_padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        impl2 = """
+if crop:
+    result = result[:, :, crop[0]:result.size(-3) - crop[1], crop[2]:result.size(-2) - crop[3], crop[4]:result.size(-1) - crop[5]]
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        code = (
+            head_code
+            + impl1.splitlines()
+            + map_code
+            + core.splitlines()
+            + impl2.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -615,6 +855,150 @@ if locals().get('data_format') == 'NHWC':
             + impl2.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
+
+
+class Distribute_fpn_proposalsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import math
+        
+def BBoxArea(box, pixel_offset):
+    w = box[2] - box[0]
+    h = box[3] - box[1]
+    if pixel_offset:
+        return (w+1) * (h+1)
+    else:
+        return w * h     
+
+pixel_offset = locals().get('pixel_offset',False)
+rois_num = locals().get('rois_num', None)
+num_level = max_level - min_level + 1
+if rois_num is not None:
+    for i in range(1, rois_num.numel()):
+        rois_num[i] += rois_num[i-1]
+    fpn_rois_lod = torch.concat([torch.tensor([0]), rois_num])
+else:
+    fpn_rois_lod = torch.tensor([0, fpn_rois.shape[0]])   
+
+size = fpn_rois_lod.numel() - 1
+fpn_rois_num = (int)(fpn_rois_lod[size])
+# 计算roi所属的level
+num_rois_level = torch.zeros([num_level])
+target_level = []
+for i in range(fpn_rois_lod.numel() - 1):
+    fpn_rois_slice = fpn_rois[fpn_rois_lod[i]:fpn_rois_lod[i+1]]
+    for rois_data in fpn_rois_slice:
+        roi_scale = math.sqrt(BBoxArea(rois_data, pixel_offset))
+        tgt_lvl = math.floor(math.log2(roi_scale / refer_scale) + refer_level)
+        tgt_lvl = min(max_level, max(tgt_lvl, min_level))
+        target_level.append(tgt_lvl)
+        num_rois_level[tgt_lvl - min_level] += 1 
+# 初始化结果
+multi_rois = []
+for i in range(num_level):
+    multi_rois.append([])
+restore_ind = torch.empty(fpn_rois.shape[0], 1)
+rois_num_per_level = []
+for i in range(num_level):
+    rois_num_per_level.append(
+        torch.zeros([rois_num.numel()])
+    )
+# 计算结果
+index = 0
+for i in range(fpn_rois_lod.numel() - 1):
+    fpn_rois_slice = fpn_rois[fpn_rois_lod[i]:fpn_rois_lod[i+1]]
+    for rois_data in fpn_rois_slice:
+        level = target_level[index]
+        if multi_rois[level-min_level] == []:
+            multi_rois[level-min_level].append(rois_data)
+        else:
+            multi_rois[level-min_level].append(rois_data)
+        rois_num_per_level[level - min_level][i] += 1
+        index += 1
+for i in range(num_level):
+    if multi_rois[i] == []:
+        multi_rois[i] = torch.zeros([0,4])
+    else:
+        multi_rois[i] = torch.stack(multi_rois[i])
+index = 0
+for i in range(num_level):
+    for j in range(fpn_rois.shape[0]):
+        if target_level[j] == i + min_level:
+            restore_ind[j] = index
+            index += 1
+
+result = (multi_rois, restore_ind, rois_num_per_level)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class DropoutRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+def axis_dropout(x, p, axis, training=True, mode='upscale_in_train'):
+    if isinstance(axis, int):
+        axis = [axis]
+    mask_shape = [x.shape[i] if i in axis else 1 for i in range(x.dim())]
+    mask = torch.bernoulli(torch.full(mask_shape, 1-p)).to(x.device)
+    if mode == 'upscale_in_train':
+        if training:
+            return x * mask / (1.0 - p)
+        else:
+            return x
+    elif mode == 'downscale_in_infer':
+        if training:
+            return x * mask
+        else:
+            return x * (1.0 - p)
+    else:
+        raise ValueError(f"Invalid mode: {mode}")
+        
+x = locals().get('x')
+p = locals().get('p')
+axis = locals().get('axis')
+training = locals().get('training')
+mode = locals().get('mode')
+result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
+
+class Dropout2dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('x')
+p = locals().get('p')
+training = locals().get('training')
+data_format = locals().get('data_format')
+
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+result = torch.nn.functional.dropout(input=x, p=float(p), training=training)
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
+
+class Dropout3dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('x')
+p = locals().get('p')
+training = locals().get('training')
+data_format = locals().get('data_format')
+
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
+result = torch.nn.functional.dropout3d(input=x, p=float(p), training=training)
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 
 
 # e
@@ -792,6 +1176,170 @@ for batch in range(batch_size):
         for step in range(max_time-2,-1,-1):
             result[step,batch,beam] = ids[step,batch,pa]
             pa = parents[step,batch,pa]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class GenerateProposalsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """    
+import torchvision
+import math
+def nms(box1, box2, normaloized):
+    if box2[0] > box1[2] or box2[2] < box1[0] or box2[1] > box1[3] or box2[3] < box1[1]:
+        return 0
+    if normaloized:
+        norm = 0
+    else:
+        norm = 1
+    x_min = max(box1[0], box2[0])
+    y_min = max(box1[1], box2[1])
+    x_max = min(box1[2], box2[2])
+    y_max = min(box1[3], box2[3])
+    w = x_max - x_min + norm
+    h = y_max - y_min + norm
+    area = w * h
+    if box1[0] > box1[2] or box1[1] > box1[3]:
+        area1 = 0
+    else:
+        area1 = (box1[2] - box1[0] + norm) * (box1[3] - box1[1] + norm)
+    if box2[0] > box2[2] or box2[1] > box2[3]:
+        area2 = 0
+    else:
+        area2 = (box2[2] - box2[0] + norm) * (box2[3] - box2[1] + norm)
+    return area / (area1 + area2 - area)
+    
+pre_nms_top_n = locals().get('pre_nms_top_n', 6000)
+post_nms_top_n = locals().get('post_nms_top_n', 1000)
+nms_thresh = locals().get('nms_thresh', 0.5)
+min_size = locals().get('min_size', 0.1)
+eta = locals().get('eta', 1.0)
+pixel_offset = locals().get('pixel_offset', False)
+return_rois_num = locals().get('return_rois_num', False)
+
+# 初始化结果
+rpn_rois = []
+rpn_roi_probs = []
+
+# 调整大小
+scores = scores.permute(0,2,3,1)
+bbox_deltas = bbox_deltas.permute(0,2,3,1)
+scores = scores.reshape([scores.shape[0],-1, 1])
+bbox_deltas = bbox_deltas.reshape([bbox_deltas.shape[0],-1, 4])
+anchors = anchors.reshape([-1,4])
+variances = variances.reshape([-1,4])
+proposal = torch.empty([scores.shape[0], scores.shape[1],4])
+
+#逐张图片进行处理
+for ii in range(scores.shape[0]):
+    scores_i = scores[ii]
+    bbox_deltas_i = bbox_deltas[ii]
+    img_size_i = img_size[ii]
+    proposal_i = proposal[ii]
+
+    class cls:
+        def __init__(self, scores, index):
+            self.scores = scores
+            self.index = index
+    ind = []
+    for j in range(scores_i.numel()):
+        c = cls(scores_i[j,0], j)
+        ind.append(c)    
+    ind = sorted(ind, key = lambda x : x.scores, reverse = True)   
+    for j in range(len(ind)):
+        ind[j] = ind[j].index    
+    if pre_nms_top_n < scores_i.numel():
+        ind = torch.tensor(ind[:pre_nms_top_n]).squeeze()
+    else:
+        ind = torch.tensor(ind).squeeze()
+    scores_i = scores_i.index_select(0, ind)
+    bbox_deltas_i = bbox_deltas_i.index_select(0, ind)
+    anchors_i = anchors.index_select(0, ind)
+    variances_i = variances.index_select(0, ind)
+    proposal_i = proposal_i.index_select(0, ind)
+
+    #计算候选框的位置 
+    if pixel_offset == True:
+        offset = 1
+    else:
+        offset = 0
+    for i in range(anchors_i.shape[0]):
+        anchor_width = anchors_i[i][2] - anchors_i[i][0] + offset
+        anchor_height = anchors_i[i][3] - anchors_i[i][1] + offset
+        anchor_center_x = anchors_i[i][0] + 0.5 * anchor_width
+        anchor_center_y = anchors_i[i][1] + 0.5 * anchor_height
+        bbox_center_x = variances_i[i][0] * bbox_deltas_i[i, 0] * anchor_width + anchor_center_x
+        bbox_center_y = variances_i[i][1] * bbox_deltas_i[i, 1] * anchor_height + anchor_center_y
+        bbox_width = anchor_width * torch.exp(min(variances_i[i][2] * bbox_deltas_i[i, 2], math.log(1000.0 / 16.0)))
+        bbox_height = anchor_height * torch.exp(min(variances_i[i][3] * bbox_deltas_i[i, 3], math.log(1000.0 / 16.0)))
+
+        proposal_i[i,0] = bbox_center_x - 0.5 * bbox_width
+        proposal_i[i,1] = bbox_center_y - 0.5 * bbox_height
+        proposal_i[i,2] = bbox_center_x + 0.5 * bbox_width - offset
+        proposal_i[i,3] = bbox_center_y + 0.5 * bbox_height - offset
+
+    # 将检测框的坐标限定到图像尺寸范围内。
+    for i in range(proposal_i.shape[0]):
+        proposal_i[i,0] = max(min(float(proposal_i[i,0]), img_size_i[1]), 0)
+        proposal_i[i,1] = max(min(float(proposal_i[i,1]), img_size_i[0]), 0)
+        proposal_i[i,2] = max(min(float(proposal_i[i,2]), img_size_i[1]), 0)
+        proposal_i[i,3] = max(min(float(proposal_i[i,3]), img_size_i[0]), 0)
+
+    # 源码将这里限制为1 如果取消注释 这里将和源码一样
+    # min_size = max(min_size,1.)
+    #删除面积较小的候选框
+    proposal_i = proposal_i.reshape([-1, 4])
+    keep = []
+    for i in range(proposal_i.shape[0]):
+        w = proposal_i[i,2] - proposal_i[i,0]
+        h = proposal_i[i,3] - proposal_i[i,1]
+        if pixel_offset:
+            x_cen = proposal_i[i,0] + 0.5 * w
+            y_cen = proposal_i[i,1] + 0.5 * h
+            if w >= min_size and h >= min_size and x_cen <= img_size_i[1] and y_cen <= img_size_i[0]:
+                keep.append(i)
+        elif w >= min_size and h >= min_size:
+            keep.append(i)
+    keep = torch.tensor(keep).squeeze()
+    proposal_i = proposal_i.index_select(0,keep)
+    scores_i = scores_i.index_select(0,keep)
+
+    # 通过非极大抑制，选出合适的候选框
+    adaptive_threshold = nms_thresh
+    nomormalized = not pixel_offset
+    selected_index = []
+    selected_num = 0
+    for num in range(proposal_i.shape[0]):
+        flag =True
+        for i in selected_index:
+            if flag:
+                overlap = nms(proposal_i[i], proposal_i[num], nomormalized)
+                flag = overlap <= adaptive_threshold
+            else:
+                break
+        if flag:
+            selected_index.append(num)
+            selected_num += 1
+        if flag and eta < 1 and adaptive_threshold > 0.5:
+            adaptive_threshold = adaptive_threshold * eta
+    if selected_num > post_nms_top_n:
+        selected_index = selected_index[:post_nms_top_n]
+    proposal_i = proposal_i.index_select(0,torch.tensor(selected_index).squeeze())
+    scores_i = scores_i.index_select(0,torch.tensor(selected_index).squeeze())
+
+    #汇集结果
+    rpn_rois.append(proposal_i)
+    rpn_roi_probs.append(scores_i)
+
+# 返回结果
+if return_rois_num:
+    num = []
+    for i in range(len(rpn_rois)):
+        num.append(rpn_rois[i].numel()//4)
+    result = (torch.stack(rpn_rois).squeeze(), torch.stack(rpn_roi_probs).squeeze(0), torch.tensor(num).squeeze())
+else:
+    result = (torch.stack(rpn_rois).squeeze(), torch.stack(rpn_roi_probs).squeeze())
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
@@ -1047,6 +1595,7 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class MultiplexRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1060,6 +1609,8 @@ result = torch.stack(temp)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1133,6 +1684,58 @@ result = median
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
+class NmsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+import torchvision
+class scores_pair:
+    def __init__(self, scores, index):
+        self.scores = scores
+        self.index = index
+scores = locals().get('scores', None)
+top_k = locals().get('top_k', None)
+category_idxs = locals().get('category_idxs', None)
+category = locals().get('categories', None)
+iou_threshold = locals().get('iou_threshold', 0.3)
+
+# 没有scores时自行生成scores
+if scores is None:
+    scores = torch.arange(1,0,(0.-1.)/boxes.shape[0])
+    scores = scores[:boxes.shape[0]]
+
+# 存在category时, 按照类别进行nms
+if category_idxs is not None:
+    result = []
+    for cls in category:
+        sele = []
+        for i in range(len(category_idxs)):
+            if category_idxs[i] == cls:
+                sele.append(i)
+        box = boxes.index_select(0, torch.tensor(sele))
+        score = scores.index_select(0, torch.tensor(sele))
+        result.append(torchvision.ops.nms(box, score, iou_threshold))
+    result = torch.concat(result) 
+else:
+    result = torchvision.ops.nms(boxes, scores, iou_threshold)
+
+# 对结果从大到小进行排序输出
+ind = []
+scores = scores.index_select(0,result)
+for j in range(scores.numel()):
+    tmp = scores_pair(scores[j], j)
+    ind.append(tmp)
+ind = sorted(ind, key = lambda x : x.scores, reverse = True)
+for j in range(len(ind)):
+    ind[j] = ind[j].index
+result = result.index_select(0, torch.tensor(ind))
+if top_k is not None:
+    result = result[:top_k]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
 class NumelRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1141,7 +1744,8 @@ result = torch.tensor(num_elements, dtype=torch.int64)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 # o
 
 
@@ -1246,6 +1850,67 @@ for i in range(boxnum.shape[0]):
 
 
 # s
+class SampleNeighborsRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+eids = locals().get('eids', None)
+sample_size = locals().get('sample_size', -1)
+return_ids = locals().get('return_eids', False)
+out_neighbors = []
+out_count = []
+out_eids = []
+for node in input_nodes:
+    start = colptr[node]
+    end = colptr[node + 1]        
+    neighbors = row[start:end]
+    num_neighbors = neighbors.numel()
+    edge_ids = torch.arange(start,end,dtype=torch.int64)
+
+    if num_neighbors == 0:
+        sampled = torch.tensor([], dtype=row.dtype)
+        sampled_eids = torch.tensor([], dtype=torch.int64)
+    elif sample_size == -1 or num_neighbors <= sample_size:
+        sampled = neighbors
+        sampled_eids = edge_ids
+    else:
+        sampled = neighbors[:sample_size]
+        sampled_eids = edge_ids[:sample_size]
+
+    out_neighbors.append(sampled)
+    out_count.append(sampled.numel())
+    out_eids.append(sampled_eids)
+
+out_neighbors = torch.cat(out_neighbors) if out_neighbors else torch.tensor([], dtype=row.dtype)
+out_count = torch.tensor(out_count, dtype=torch.int64)
+if return_ids:
+    out_eids = eids.index_select(0,torch.cat(out_eids)) if out_eids else torch.tensor([], dtype=eids.dtype)
+
+if return_ids:
+    result = (out_neighbors, out_count, out_eids)
+else:
+    result = (out_neighbors, out_count)
+
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class SegmentMaxRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+num = int(segment_ids.max().item()) + 1
+ans = torch.full((num,)+data.shape[1:], float('-inf'), dtype = data.dtype)
+for idx in range(data.shape[0]): 
+    seg_id = segment_ids[idx]
+    val = data[idx]
+    ans[seg_id][val > ans[seg_id]] = val[val > ans[seg_id]]
+ans[ans == float('-inf')] = 0
+result = ans
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
 class ScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1337,6 +2002,13 @@ result, _ = torch.sort(x, dim=axis, descending=descending, stable=stable)
 
 
 # v
+class ViewRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.view(shape_or_dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 
 # w
@@ -1350,6 +2022,7 @@ result, _ = torch.sort(x, dim=axis, descending=descending, stable=stable)
 
 # z
 
+
 # __
 class __Pow__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1360,7 +2033,8 @@ result = tensor.__pow__(other)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()

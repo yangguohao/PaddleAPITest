@@ -15,11 +15,8 @@ PADDLE2TORCH_WRONG_CONFIG = frozenset(
         "paddle.nn.functional.adaptive_avg_pool2d",
         "paddle.nn.functional.adaptive_avg_pool3d",
         "paddle.nn.functional.conv1d",
-        "paddle.nn.functional.conv1d_transpose",
         "paddle.nn.functional.conv2d",
-        "paddle.nn.functional.conv2d_transpose",
         "paddle.nn.functional.conv3d",
-        "paddle.nn.functional.conv3d_transpose",
         "paddle.nn.functional.gaussian_nll_loss",
         "paddle.nn.functional.group_norm",
         "paddle.nn.functional.interpolate",
@@ -68,13 +65,11 @@ class Paddle2TorchConverter:
                 self.mapping[key] = value
                 rule_name = value.get("Rule")
                 if rule_name is None:
-                    self.rules[key] = GenericRule()
+                    self.rules[key] = GenericRule
                 elif rule_name in rule_cls_map:
-                    self.rules[key] = rule_cls_map[rule_name]()
+                    self.rules[key] = rule_cls_map[rule_name]
                 else:
-                    self.rules[key] = ErrorRule(
-                        f"{rule_name} for {key} is not implemented"
-                    )
+                    self.rules[key] = ErrorRule
 
     def convert(self, paddle_api: str) -> ConvertResult:
         """
@@ -100,7 +95,7 @@ class Paddle2TorchConverter:
             return result
 
         try:
-            rule = self.rules[paddle_api]
+            rule = self.rules[paddle_api]()
         except KeyError:
             result = ConvertResult.error(
                 paddle_api, f"Rule for {paddle_api} is not implemented"
