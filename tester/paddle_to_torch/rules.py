@@ -23,6 +23,10 @@ class Code:
     core: List[str] = field(default_factory=list)
     postprocess: List[str] = field(default_factory=list)
 
+    preprocess_compiled: Optional[types.CodeType] = None
+    core_compiled: Optional[types.CodeType] = None
+    postprocess_compiled: Optional[types.CodeType] = None
+
     @classmethod
     def compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
         """代码编译方法"""
@@ -32,18 +36,6 @@ class Code:
             return compile("\n".join(code_lines), "<string>", "exec")
         except SyntaxError:
             return None
-
-    @property
-    def preprocess_compiled(self) -> Optional[types.CodeType]:
-        return self.compile(self.preprocess)
-
-    @property
-    def core_compiled(self) -> Optional[types.CodeType]:
-        return self.compile(self.core)
-
-    @property
-    def postprocess_compiled(self) -> Optional[types.CodeType]:
-        return self.compile(self.postprocess)
 
 
 @dataclass
@@ -76,6 +68,12 @@ class ConvertResult:
         cls, paddle_api: str, code: Union[Code, List[str]], output_var: str = "result"
     ) -> "ConvertResult":
         code_obj = Code(core=code) if isinstance(code, list) else code
+        if code_obj.preprocess:
+            code_obj.preprocess_compiled = Code.compile(code_obj.preprocess)
+        if code_obj.core:
+            code_obj.core_compiled = Code.compile(code_obj.core)
+        if code_obj.postprocess:
+            code_obj.postprocess_compiled = Code.compile(code_obj.postprocess)
         return cls(paddle_api, code=code_obj, output_var=output_var)
 
     @classmethod
@@ -875,7 +873,7 @@ if data_format == "NDHWC":
 class Conv1dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
-        impl1 = """
+        pre = """
 if data_format == "NLC":
     x = x.permute(0, 2, 1)
 stride = tuple(stride) if isinstance(stride, list) else stride
@@ -894,16 +892,14 @@ elif isinstance(padding, list):
         padding = tuple(padding)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if data_format == "NLC":
     result = result.permute(0, 2, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=head_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 

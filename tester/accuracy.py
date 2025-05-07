@@ -69,16 +69,23 @@ class APITestAccuracy(APITestBase):
                 "result": None,
                 **self.torch_kwargs
             }
+            code = convert_result.code
+            if code.preprocess_compiled:
+                exec(code.preprocess_compiled, exec_globals, exec_locals)
 
-            if self.test_amp:
-                with torch.autocast(device_type="cuda"):
-                    exec(convert_result.compiled_code, exec_globals, exec_locals)
-            else:
-                exec(convert_result.compiled_code, exec_globals, exec_locals)
+            if code.core_compiled:
+                if self.test_amp:
+                    with torch.autocast(device_type="cuda"):
+                        exec(code.core_compiled, exec_globals, exec_locals)
+                else:
+                    exec(code.core_compiled, exec_globals, exec_locals)
+            
+            if code.postprocess_compiled:
+                exec(code.postprocess_compiled, exec_globals, exec_locals)
 
             output_var = convert_result.output_var or "result"
             torch_output = exec_locals[output_var]
-            del exec_globals, exec_locals, output_var, convert_result
+            del exec_globals, exec_locals, output_var, convert_result, code
 
             # if "paddle.Tensor." in self.api_config.api_name:
             #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])
