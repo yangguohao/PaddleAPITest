@@ -314,6 +314,9 @@
     "paddle.Tensor.is_complex": {
         "torch_api": "torch.Tensor.is_complex"
     },
+    "paddle.increment":{
+        "Rule": "IncrementRule"
+    },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "paddle.kthvalue":{
@@ -965,6 +968,33 @@
     },
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
+    },
+    "paddle.scale":{
+        "Rule": "ScaleRule",
+        "set_defaults": {
+            "scale": 1.0,
+            "bias": 0.0,
+            "bias_after_scale": true,
+            "out": "None"
+        }
+    },
+    "paddle.Tensor.scale":{
+        "Rule": "ScaleRule",
+        "set_defaults": {
+            "scale": 1.0,
+            "bias": 0.0,
+            "bias_after_scale": true,
+            "out": "None"
+        }
+    },
+    "paddle.searchsorted":{
+        "torch_api": "torch.searchsorted",
+        "paddle_torch_args_map": {
+            "sorted_sequence": "sorted_sequence",
+            "values": "value",
+            "out_int32": "out_int32",
+            "right": "right"
+        }
     },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{

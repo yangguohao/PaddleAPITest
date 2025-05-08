@@ -640,6 +640,7 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
 
+
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1730,6 +1731,14 @@ else:
         return ConvertResult.success(paddle_api, code)
 
 
+class IncrementRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = "value = locals().get('value', 1)"
+        core = "result = x + value"
+        code = Code(preprocess=[pre], core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
 # j
 
 
@@ -1761,7 +1770,8 @@ result = x.transpose(-1, -2)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-      
+
+
 class MedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2002,6 +2012,7 @@ if mode == "r":
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
 
+
 # r
 class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2180,6 +2191,7 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SlogdetRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2188,6 +2200,29 @@ result = torch.stack(result,0)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
+class ScaleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, _ = self.apply_generic()
+        core = """
+if bias_after_scale:
+    result = scale * x + bias
+else:
+    result = scale * (x + bias)
+if act is not None:
+    if act == 'tanh':
+        result = torch.tanh(result)
+    elif act == 'sigmoid':
+        result = torch.sigmoid(result)
+    elif act == 'relu':
+        result = torch.relu(result)
+    elif act == 'softmax':
+        result = torch.softmax(result, dim=-1)
+"""
+        code = Code(preprocess=defaults_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 # t
 class TriangularSolveRule(BaseRule):
@@ -2202,6 +2237,7 @@ result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=u
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 # u
 
@@ -2239,6 +2275,7 @@ result = tensor.__pow__(other)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class __rshift__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2264,7 +2301,8 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
