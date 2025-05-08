@@ -62,6 +62,19 @@
         "description": "result = torch.as_strided(input=x, size=shape, stride=stride, storage_offset=offset)"
     },
     "b": "API started with 'b' should be placed here",
+    "paddle.bincount": {
+        "Rule": "BincountRule",
+        "torch_api": "torch.bincount",
+        "set_defaults": {
+            "weights": "None",
+            "minlength": 0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weights": "weights",
+            "minlength": "minlength"
+        }
+    },
     "paddle.broadcast_shape": {
         "Rule": "BroadcastShapeRule"
     },
@@ -349,6 +362,16 @@
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
     },
+    "paddle.Tensor.log_normal_": {
+        "torch_api": "torch.Tensor.log_normal_",
+        "paddle_torch_args_map": {
+            "mean": "mean",
+            "std": "std"
+        },
+        "torch_kwargs": {
+            "generator": "None"
+        }
+    },
     "m": "API started with 'm' should be placed here",
     "paddle.median": {
         "Rule": "MedianRule"
@@ -396,6 +419,16 @@
     },
     "paddle.multiplex": {
         "Rule": "MultiplexRule"
+    },
+    "paddle.multiply": {
+        "torch_api": "torch.mul",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        },
+        "torch_kwargs": {
+            "out": "None"
+        }
     },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
@@ -776,6 +809,9 @@
     "paddle.Tensor.rad2deg":{
         "torch_api":"torch.Tensor.rad2deg"
     },
+    "paddle.Tensor.rank":{
+        "Rule": "RankRule"
+    },
     "paddle.Tensor.real":{
         "torch_api":"torch.Tensor.real",
         "is_attribute": true
@@ -835,6 +871,12 @@
             "axis": "dim",
             "largest": "largest",
             "sorted": "sorted"
+        }
+    },
+    "paddle.Tensor.tile":{
+        "torch_api":"torch.Tensor.tile",
+        "paddle_torch_args_map": {
+            "repeat_times": "dims"
         }
     },
     "u": "API started with 'u' should be placed here",
@@ -2408,15 +2450,6 @@
             "generator": "generator"
         },
         "min_input_args": 0
-    },
-    "paddle.bincount": {
-        "torch_api": "torch.bincount",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weights": "weights",
-            "minlength": "minlength"
-        },
-        "min_input_args": 1
     },
     "paddle.bitwise_and": {
         "torch_api": "torch.bitwise_and",
