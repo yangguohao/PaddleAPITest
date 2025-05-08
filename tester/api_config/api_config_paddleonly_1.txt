@@ -292,3 +292,6 @@ paddle.nn.functional.class_center_sample(Tensor([20],"int32"), num_classes=10, n
 paddle.nn.functional.class_center_sample(Tensor([20],"int64"), num_classes=10, num_samples=6, group=None, )
 paddle.nn.functional.class_center_sample(Tensor([5],"int32"), 10, 8, )
 paddle.Tensor.__dir__(Tensor([512, 1234],"float32"), )
+paddle.nn.functional.max_pool2d(Tensor([2, 256, 1, 1],"float32"), kernel_size=2, stride=2, padding=0, return_mask=False, ceil_mode=False, data_format="NCHW", name=None, )
+paddle.nn.functional.max_pool2d(Tensor([4, 256, 1, 1],"float16"), kernel_size=2, stride=2, padding=0, return_mask=False, ceil_mode=False, data_format="NCHW", name=None, )
+paddle.nn.functional.max_pool2d(Tensor([4, 256, 1, 1],"float32"), kernel_size=2, stride=2, padding=0, return_mask=False, ceil_mode=False, data_format="NCHW", name=None, )
