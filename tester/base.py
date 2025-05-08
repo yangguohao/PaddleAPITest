@@ -194,9 +194,8 @@ class APITestBase:
 
         api_name = self.api_config.api_name
         if (
-            api_name.startswith("paddle.Tensor.__")
-            and api_name.endswith("__")
-            and api_name not in no_signature_api_mappings
+            api_name == "paddle.Tensor.__getitem__"
+            or api_name == "paddle.Tensor.__setitem__"
         ):
             self.torch_args_config = self.api_config.args
             return True
