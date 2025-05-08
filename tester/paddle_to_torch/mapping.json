@@ -96,7 +96,7 @@
             "weights": "weights"
         },
         "torch_kwargs": {
-            "minlength": "int({minlength}.item()) if torch.is_tensor({minlength}) else {minlength}"
+            "minlength": "{minlength}.item() if torch.is_tensor({minlength}) else {minlength}"
         }
     },
     "paddle.broadcast_shape": {
