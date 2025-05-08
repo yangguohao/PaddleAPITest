@@ -2003,10 +2003,8 @@ if mode == "r":
 # r
 class RankRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = f"tensor_for_rank = next(iter(kwargs.values()))"
-        core = f"result = torch.tensor(tensor_for_rank.ndim, dtype=torch.int32)"
+        core = f"result = torch.tensor(input.dim(),dtype=torch.int64)"
         code = Code(
-            preprocess=pre.splitlines(),
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
