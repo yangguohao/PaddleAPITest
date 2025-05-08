@@ -76,6 +76,9 @@
         }
     },
     "c": "API started with 'c' should be placed here",
+    "paddle.Tensor.coalesce":{
+        "torch_api": "torch.Tensor.coalesce"
+    },
     "paddle.crop": {
         "Rule": "CropRule"
     },
@@ -272,6 +275,9 @@
     },
     "paddle.Tensor.inverse": {
         "torch_api": "torch.Tensor.inverse"
+    },
+    "paddle.Tensor.is_coalesced":{
+        "torch_api": "torch.Tensor.is_coalesced"
     },
     "paddle.Tensor.is_complex": {
         "torch_api": "torch.Tensor.is_complex"
@@ -732,7 +738,16 @@
         }
     },
     "o": "API started with 'o' should be placed here",
+    "paddle.ones":{
+        "Rule": "OnesRule"
+    },
     "p": "API started with 'p' should be placed here",
+    "paddle.polar":{
+        "Rule": "PolarRule"
+    },
+    "paddle.positive":{
+        "Rule":"PositiveRule"
+    },
     "paddle.Tensor.pow":{
         "torch_api":"torch.Tensor.pow",
         "paddle_torch_args_map": {
@@ -759,6 +774,22 @@
     },
     "q": "API started with 'q' should be placed here",
     "r": "API started with 'r' should be placed here",
+    "paddle.rank":{
+        "Rule": "RankRule"
+    },
+    "paddle.reduce_as":{
+        "Rule": "Reduce_asRule"
+    },
+    "paddle.remainder":{
+        "torch_api": "torch.remainder",
+        "paddle_torch_args_map":{
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.reverse":{
+        "Rule":"ReverseRule"
+    },
     "paddle.vision.ops.roi_align":{
         "Rule": "Roi_aignRule"
     },
@@ -796,6 +827,9 @@
             "size": "locals().get('{shape}') or ({source}.size() if locals().get('{source}') is not None else [])",
             "storage_offset": "(locals().get('{offset}') or 0) // _tmp_tensor.itemsize"
         }
+    },
+    "paddle.shard_index":{
+        "Rule": "ShardIndex"
     },
     "paddle.Tensor.sigmoid":{
         "torch_api":"torch.Tensor.sigmoid"
@@ -5656,19 +5690,7 @@
         "min_input_args": 0
     },
     "paddle.normal": {
-        "torch_api": "torch.normal",
-        "paddle_torch_args_map": {
-            "mean": "mean",
-            "std": "std",
-            "shape": "size",
-            "generator": "generator",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "pin_memory": "pin_memory",
-            "requires_grad": "requires_grad"
-        },
-        "min_input_args": 1
+        "Rule": "NormalRule"
     },
     "paddle.ones_like": {
         "torch_api": "torch.ones_like",
@@ -5762,8 +5784,7 @@
     "paddle.poisson": {
         "torch_api": "torch.poisson",
         "paddle_torch_args_map": {
-            "x": "input",
-            "generator": "generator"
+            "x": "input"
         },
         "min_input_args": 1
     },
@@ -5776,14 +5797,7 @@
         "min_input_args": 2
     },
     "paddle.prod": {
-        "torch_api": "torch.prod",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
+        "Rule": "ProdRule"
     },
     "paddle.profiler.make_scheduler": {
         "torch_api": "torch.profiler.schedule",
