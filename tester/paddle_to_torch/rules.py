@@ -406,10 +406,12 @@ result = [output, loss]
         return ConvertResult.success(paddle_api, code, "result")
 
 
-class AvgPoolRule(BaseRule):
+class PoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
         func1 = """
+kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
+stride = tuple(stride) if isinstance(stride, list) else stride
 
 def _get_same_padding_1d(input_size, kernel_size, stride):
     if stride is None:
@@ -420,23 +422,28 @@ def _get_same_padding_1d(input_size, kernel_size, stride):
     pad_right = total_pad - pad_left
     return pad_left, pad_right
 
-if padding == "VALID":
-    padding = 0
-elif padding == "SAME":
-    input_size = x.shape[2]
-    pad_left, pad_right = _get_same_padding_1d(input_size, kernel_size, stride)
-    padding = pad_left # 对称填充
-    if pad_left != pad_right:
-        x = torch.nn.functional.pad(x, (pad_left, pad_right))  # 非对称填充
+if isinstance(padding, str):
+    if padding.upper() == "VALID":
         padding = 0
+    elif padding.upper() == "SAME":
+        input_size = x.shape[2]
+        pad_left, pad_right = _get_same_padding_1d(input_size, kernel_size, stride)
+        padding = pad_left # 对称填充
+        if pad_left != pad_right:  # 非对称填充
+            x = torch.nn.functional.pad(x, (pad_left, pad_right))
+            padding = 0
 elif isinstance(padding, (list, tuple)):
-    if len(padding) == 2:  # [pad_left, pad_right]
+    if len(padding) == 1:  # [pad]
+        padding = tuple(padding)
+    elif len(padding) == 2:  # [pad_left, pad_right]
         pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right))
         padding = 0
 """
         func2 = """
-if data_format == 'NHWC':
+kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
+stride = tuple(stride) if isinstance(stride, list) else stride
+if data_format == "NHWC":
     x = x.permute(0, 3, 1, 2)
             
 def _get_same_padding_2d(input_size, kernel_size, stride):
@@ -454,32 +461,35 @@ def _get_same_padding_2d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_h, pad_w
 
-if padding == "VALID":
-    padding = 0
-elif padding == "SAME":
-    x_size = (x.shape[2], x.shape[3])
-    pad_h, pad_w = _get_same_padding_2d(x_size, kernel_size, stride)
-    padding = (pad_h[0], pad_w[0])
-    if pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
-        x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1]))
+if isinstance(padding, str):
+    if padding == "VALID":
         padding = 0
+    elif padding == "SAME":
+        input_size = (x.shape[2], x.shape[3])
+        pad_h, pad_w = _get_same_padding_2d(input_size, kernel_size, stride)
+        padding = (pad_h[0], pad_w[0]) # 对称填充
+        if pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
+            x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1]))
+            padding = 0
 elif isinstance(padding, (list, tuple)):
-    if len(padding) == 2:  # [pad_height, pad_width]
+    if len(padding) == 2: # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
         if all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 4D 填充格式(NCHW 或 NHWC)
             if data_format == "NCHW":
-                pad_top, pad_bottom = padding[2][0], padding[2][1]
-                pad_left, pad_right = padding[3][0], padding[3][1]
+                pad_top, pad_bottom = padding[2]
+                pad_left, pad_right = padding[3]
             else:  # NHWC
-                pad_top, pad_bottom = padding[1][0], padding[1][1]
-                pad_left, pad_right = padding[2][0], padding[2][1]
+                pad_top, pad_bottom = padding[1]
+                pad_left, pad_right = padding[2]
         else: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
             pad_top, pad_bottom, pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
         padding = 0
 """
         func3 = """
+kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
+stride = tuple(stride) if isinstance(stride, list) else stride
 if data_format == 'NDHWC':
     x = x.permute(0, 4, 1, 2, 3)
         
@@ -496,21 +506,21 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     total_pad_d = max(0, (output_size_d - 1) * stride[0] + kernel_size[0] - input_size[0])
     total_pad_h = max(0, (output_size_h - 1) * stride[1] + kernel_size[1] - input_size[1])
     total_pad_w = max(0, (output_size_w - 1) * stride[2] + kernel_size[2] - input_size[2])
-    
     pad_d = (total_pad_d // 2, total_pad_d - total_pad_d // 2)
     pad_h = (total_pad_h // 2, total_pad_h - total_pad_h // 2)
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if padding == "VALID":
-    padding = 0
-elif padding == "SAME":
-    input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
-    pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
-    padding = (pad_d[0], pad_h[0], pad_w[0])  # 对称填充
-    if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]:
-        x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+if isinstance(padding, str):
+    if padding == "VALID":
         padding = 0
+    elif padding == "SAME":
+        input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+        pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+        padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
+        if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
+            x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+            padding = 0
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
         max_pad = [kernel_size[i] // 2 for i in range(3)]
@@ -524,30 +534,30 @@ elif isinstance(padding, (list, tuple)):
         pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
         padding = 0
-    elif len(padding) == 5 and all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 5D 填充格式
+    elif len(padding) == 5: # Paddle 的 5D 填充格式
         if data_format == "NCDHW":
-            pad_front, pad_back = padding[2][0], padding[2][1]
-            pad_top, pad_bottom = padding[3][0], padding[3][1]
-            pad_left, pad_right = padding[4][0], padding[4][1]
+            pad_front, pad_back = padding[2]
+            pad_top, pad_bottom = padding[3]
+            pad_left, pad_right = padding[4]
         else: # NDHWC
-            pad_front, pad_back = padding[1][0], padding[1][1]
-            pad_top, pad_bottom = padding[2][0], padding[2][1]
-            pad_left, pad_right = padding[3][0], padding[3][1]
+            pad_front, pad_back = padding[1]
+            pad_top, pad_bottom = padding[2]
+            pad_left, pad_right = padding[3]
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
         padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         impl2 = """
-if data_format == 'NHWC':
+if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
         impl3 = """
-if data_format == 'NDHWC':
+if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
-        if paddle_api == "paddle.nn.functional.avg_pool1d":
+        if paddle_api.endswith("_pool1d"):
             code = head_code + func1.splitlines() + map_code + core.splitlines()
-        elif paddle_api == "paddle.nn.functional.avg_pool2d":
+        elif paddle_api.endswith("_pool2d"):
             code = (
                 head_code
                 + func2.splitlines()
@@ -555,13 +565,17 @@ if data_format == 'NDHWC':
                 + core.splitlines()
                 + impl2.splitlines()
             )
-        else:
+        elif paddle_api.endswith("_pool3d"):
             code = (
                 head_code
                 + func3.splitlines()
                 + map_code
                 + core.splitlines()
                 + impl3.splitlines()
+            )
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported pooling api: {paddle_api}"
             )
         return ConvertResult.success(paddle_api, code)
 
@@ -1300,14 +1314,8 @@ if isinstance(output_size, (list, tuple)):
 
 
 # g
-# class GetItemRule(BaseRule):
-#     def apply(self, paddle_api: str) -> ConvertResult:
-#         generic_rule = GenericRule()
-#         generic_rule.read_mapping(self.mapping)
-#         result = generic_rule.apply(paddle_api)
-#         if result.is_supported and result.code:
-#             result.code.append("result = result.item()")
-#         return result
+
+
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         # 抽取对应维度的tensor直接进行stack操作
