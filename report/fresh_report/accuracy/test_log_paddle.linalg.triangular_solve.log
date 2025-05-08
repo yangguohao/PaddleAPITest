@@ -1,0 +1,38 @@
+paddle.linalg.triangular_solve(x=Tensor([4, 4],"float64"), y=Tensor([4, 4],"float64"), upper=False, transpose=True, )
+paddle.linalg.triangular_solve(x=Tensor([4, 4],"float64"), y=Tensor([4, 4],"float64"), upper=False, transpose=True, unitriangular=True, )
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-07 08:44:04.540129 test begin: paddle.linalg.triangular_solve(x=Tensor([4, 4],"float64"), y=Tensor([4, 4],"float64"), upper=False, transpose=True, )
+W0507 08:44:11.603906 17604 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0507 08:44:11.605275 17604 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] paddle.linalg.triangular_solve(x=Tensor([4, 4],"float64"), y=Tensor([4, 4],"float64"), upper=False, transpose=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 16 / 16 (100%)
+Max absolute difference: 132.25983185
+Max relative difference: 182.58594406
+ x: array([[ 2.211193e-02,  4.152060e+00, -2.178710e+00,  3.237970e+00],
+       [-1.091017e+02,  4.987319e+01, -3.039231e+01,  2.446646e+01],
+       [-4.108288e+01,  1.916844e+01, -1.182137e+01,  9.209457e+00],
+       [-4.623260e+01,  2.367990e+01, -1.505374e+01,  1.270064e+01]])
+ y: array([[ 9.375876e-01,  1.388528e+00,  1.441099e-01,  1.397022e+00],
+       [ 1.023977e+00, -1.257961e+00,  1.731672e+00, -1.347376e-01],
+       [-2.774669e+00, -4.316297e+00, -3.731910e-01, -5.545151e+00],
+       [ 6.161802e+01,  6.589529e+01,  7.029097e+01,  1.449605e+02]])
+2025-05-07 08:44:48.017380 test begin: paddle.linalg.triangular_solve(x=Tensor([4, 4],"float64"), y=Tensor([4, 4],"float64"), upper=False, transpose=True, unitriangular=True, )
+[accuracy error] paddle.linalg.triangular_solve(x=Tensor([4, 4],"float64"), y=Tensor([4, 4],"float64"), upper=False, transpose=True, unitriangular=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 15 / 16 (93.8%)
+Max absolute difference: 0.27730855
+Max relative difference: 17.03279297
+ x: array([[ 0.223717, -0.041937,  0.249039, -0.215288],
+       [ 0.227796, -0.308415,  0.39956 ,  0.36921 ],
+       [ 0.21335 ,  0.392122,  0.328319, -0.154328],
+       [-0.346984, -0.23936 , -0.184213,  0.456065]])
+ y: array([[-0.053591, -0.307011, -0.015533,  0.041746],
+       [ 0.248887, -0.275433,  0.387783,  0.333698],
+       [ 0.148925,  0.602559,  0.212292, -0.253113],
+       [-0.541054, -0.419036, -0.460908,  0.401402]])

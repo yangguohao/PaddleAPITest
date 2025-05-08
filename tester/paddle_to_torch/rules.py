@@ -3,20 +3,67 @@ import types
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
-import paddle
+
+@dataclass
+class Code:
+    """Paddle2PyTorch 转换代码数据类，封装转换后的可执行代码，自动预编译
+
+    Attributes:
+        preprocess: 预处理代码，在核心逻辑前执行
+        core: 核心逻辑代码，应包含 Torch API
+        postprocess: 后处理代码，在核心逻辑后执行
+        preprocess_compiled: 预编译的预处理代码
+        core_compiled: 预编译的核心逻辑代码
+        postprocess_compiled: 预编译的后处理代码
+    """
+
+    preprocess: List[str] = field(default_factory=list)
+    core: List[str] = field(default_factory=list)
+    postprocess: List[str] = field(default_factory=list)
+
+    preprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
+    core_compiled: Optional[types.CodeType] = field(init=False, default=None)
+    postprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
+
+    def __post_init__(self):
+        """自动编译代码"""
+        self.preprocess_compiled = self._compile(self.preprocess)
+        self.core_compiled = self._compile(self.core)
+        self.postprocess_compiled = self._compile(self.postprocess)
+
+    @classmethod
+    def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
+        """代码编译方法"""
+        if not code_lines:
+            return None
+        try:
+            return compile("\n".join(code_lines), "<string>", "exec")
+        except SyntaxError as e:
+            return None
+
+    def is_valid(self) -> bool:
+        """检查代码是否编译成功"""
+        return all(
+            compiled is not None or not code
+            for compiled, code in [
+                (self.preprocess_compiled, self.preprocess),
+                (self.core_compiled, self.core),
+                (self.postprocess_compiled, self.postprocess),
+            ]
+        )
 
 
 @dataclass
 class ConvertResult:
-    """Paddle2PyTorch 的转换结果数据类, 封装 API 转换结果，提供成功/失败的构造方法
+    """Paddle2PyTorch 转换结果数据类, 封装 API 转换结果，提供成功/失败的构造方法
 
     Attributes:
         paddle_api (str): Paddle API 名称
         is_supported (bool): 是否支持转换, 默认为 True
-        code (Optional[List[str]]): 转换后的代码列表
-        compiled_code (Optional[types.CodeType]): 预编译后的代码对象
+        is_torch_corresponding: 是否与 Torch API 对应，默认为 True
+        code (Optional[Code]): 转换后的代码数据对象
         output_var (Optional[str]): 输出变量名，默认值 None 表示 result 保存最后的输出值
         error_message (Optional[str]): 错误信息, 仅当 is_supported = False 时有效
 
@@ -27,22 +74,40 @@ class ConvertResult:
 
     paddle_api: str
     is_supported: bool = True
-    code: Optional[List[str]] = (
-        None  # ["_tmp_0 = torch.add(x, y)", "_tmp_1 = torch.mul(_tmp_0, z)"]
-    )
-    compiled_code: Optional[types.CodeType] = field(default=None, repr=False)
-    output_var: Optional[str] = None  # "_tmp_1"
+    is_torch_corresponding: bool = True
+
+    code: Optional[Code] = None
+    output_var: Optional[str] = None
     error_message: Optional[str] = None
 
-    @staticmethod
+    @classmethod
     def success(
-        paddle_api: str, code: List[str], output_var: Optional[str] = None
+        cls,
+        paddle_api: str,
+        code: Union[Code, List[str]],
+        output_var: str = "result",
+        is_torch_corresponding: bool = True,
     ) -> "ConvertResult":
-        return ConvertResult(paddle_api, code=code, output_var=output_var)
+        code_obj = Code(core=code) if isinstance(code, list) else code
+        if not code_obj.is_valid():
+            return cls.error(paddle_api, "Invalid code.")
 
-    @staticmethod
-    def error(paddle_api: str, message: str) -> "ConvertResult":
-        return ConvertResult(paddle_api, is_supported=False, error_message=message)
+        if len(code_obj.core) > 4:
+            print(
+                f"Warning: The core code of {paddle_api} is too complex.",
+                flush=True,
+            )
+
+        return cls(
+            paddle_api,
+            code=code_obj,
+            output_var=output_var,
+            is_torch_corresponding=is_torch_corresponding,
+        )
+
+    @classmethod
+    def error(cls, paddle_api: str, message: str) -> "ConvertResult":
+        return cls(paddle_api, is_supported=False, error_message=message)
 
 
 class BaseRule(ABC):
@@ -62,7 +127,8 @@ class BaseRule(ABC):
         """
         pass
 
-    def _format_arg(self, arg) -> str:
+    @classmethod
+    def _format_arg(cls, arg) -> str:
         """
         将参数格式化为调用字符串的辅助方法
 
@@ -110,7 +176,6 @@ class BaseRule(ABC):
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
             self.is_attribute: bool = mapping.get("is_attribute", False)
-            self.imports: List = mapping.get("import", [])
             self.defaults: Dict = mapping.get("set_defaults", {})
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
@@ -121,19 +186,13 @@ class BaseRule(ABC):
                     )
 
     def apply_generic(self):
-        head_code = []
         # if "torch_api" in self.mapping:
         #     self.torch_api: str = self.mapping.get("torch_api", "")
-        if "import" in self.mapping:
-            head_code.append("")
-            imports = self.mapping.get("import", [])
-            for import_statement in imports:
-                head_code.append(f"import {import_statement}")
-            head_code.append("")
+        defaults_code = []
         if "set_defaults" in self.mapping:
             defaults = self.mapping.get("set_defaults", {})
             for default_name, default_value in defaults.items():
-                head_code.append(
+                defaults_code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
                 )
         map_code = []
@@ -156,16 +215,13 @@ class BaseRule(ABC):
             map_code.append("}.items():")
             map_code.append("    if paddle_param in locals():")
             map_code.append("        _kwargs[torch_param] = locals()[paddle_param]")
-        return head_code, map_code
+        return defaults_code, map_code
 
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
-        if self.direct_mapping:  # 直接映射)
-            for import_statement in self.imports:
-                code.append(f"import {import_statement}")
-            code.append("")
+        if self.direct_mapping:  # 直接映射
             for default_name, default_value in self.defaults.items():
                 code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
@@ -575,6 +631,19 @@ if locals().get('data_format') == 'NHWC':
 
 
 # c
+class CorrcoefRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+rowvar = locals().get('rowvar',True)
+if rowvar:
+    result = torch.corrcoef(x)
+else:
+    x = x.t()
+    result = torch.corrcoef(x).t()
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -854,8 +923,8 @@ if data_format == "NDHWC":
 
 class Conv1dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 if data_format == "NLC":
     x = x.permute(0, 2, 1)
 stride = tuple(stride) if isinstance(stride, list) else stride
@@ -874,16 +943,14 @@ elif isinstance(padding, list):
         padding = tuple(padding)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if data_format == "NLC":
     result = result.permute(0, 2, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -1697,6 +1764,14 @@ result = torch.abs(lcm)
 
 
 # m
+class Matrix_transposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.transpose(-1, -2)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+      
 class MedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1926,7 +2001,16 @@ else:
 
 
 # q
-
+class QrRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+mode = locals().get('mode', 'reduced')
+result = torch.linalg.qr(x, mode)
+if mode == "r":
+    result = result[1]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 
 # r
 
@@ -2118,9 +2202,28 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class SlogdetRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = torch.linalg.slogdet(x)
+result = torch.stack(result,0)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # t
-
+class TriangularSolveRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+transpose = locals().get('transpose', False)
+upper = locals().get('upper', True)
+unitriangular = locals().get('unitriangular', False)
+if transpose:
+    x = x.transpose(-1,-2)
+result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=unitriangular)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # u
 
@@ -2158,7 +2261,32 @@ result = tensor.__pow__(other)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class __rshift__Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+tensor = locals().get('x')
+other = locals().get('y')
+is_arithmetic = locals().get('is_arithmetic')
+# setting default value for is_arithmetic
+if is_arithmetic is None:
+    is_arithmetic = True
 
+def logical_right_shift(x: torch.Tensor, y: torch.Tensor):
+    mask = (1 << (x.element_size() * 8 - 1)) - 1
+    x_arithmetic, mask = x >> y, mask >> (y - 1)
+    shifted = torch.where(y >= 1, x_arithmetic & mask, x)
+    shifted = torch.where(y < 0, torch.zeros_like(x), shifted)
+    return shifted
+    
+if is_arithmetic:
+    result = tensor.__rshift__(other)
+else:
+    # logical right shift 
+    result = logical_right_shift(tensor, other)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
