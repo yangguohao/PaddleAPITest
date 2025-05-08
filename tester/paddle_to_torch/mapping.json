@@ -458,9 +458,6 @@
         "paddle_torch_args_map": {
             "mean": "mean",
             "std": "std"
-        },
-        "torch_kwargs": {
-            "generator": "None"
         }
     },
     "m": "API started with 'm' should be placed here",
