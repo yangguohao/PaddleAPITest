@@ -1736,7 +1736,7 @@ class IncrementRule(BaseRule):
         pre = "value = locals().get('value', 1)"
         core = "result = x + value"
         code = Code(preprocess=[pre], core=[core])
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 # j

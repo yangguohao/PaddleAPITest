@@ -975,7 +975,7 @@
             "scale": 1.0,
             "bias": 0.0,
             "bias_after_scale": true,
-            "out": "None"
+            "act": "None"
         }
     },
     "paddle.Tensor.scale":{
@@ -984,14 +984,14 @@
             "scale": 1.0,
             "bias": 0.0,
             "bias_after_scale": true,
-            "out": "None"
+            "act": "None"
         }
     },
     "paddle.searchsorted":{
         "torch_api": "torch.searchsorted",
         "paddle_torch_args_map": {
             "sorted_sequence": "sorted_sequence",
-            "values": "value",
+            "values": "input",
             "out_int32": "out_int32",
             "right": "right"
         }
