@@ -15,10 +15,10 @@ class APITestAccuracy(APITestBase):
         super().__init__(api_config)
         self.test_amp = test_amp
         self.converter = get_converter()
-    
+
     @func_set_timeout(600)
     def test(self):
-        
+
         if self.need_skip():
             print("[Skip]", flush=True)
             return
@@ -37,7 +37,7 @@ class APITestAccuracy(APITestBase):
             print(f"[paddle_to_torch] Unsupported API {self.api_config.api_name}: {convert_result.error_message}", flush=True)
             write_to_log("paddle_to_torch_failed", self.api_config.config)
             return
-        if not convert_result.code or not convert_result.compiled_code:
+        if not convert_result.code or not convert_result.code.is_valid():
             print(f"[paddle_to_torch] No code generated for {self.api_config.api_name}", flush=True)
             write_to_log("paddle_to_torch_failed", self.api_config.config)
             return
@@ -57,7 +57,7 @@ class APITestAccuracy(APITestBase):
             if not self.gen_torch_input():
                 print("gen_torch_input failed", flush=True)
                 return
-        
+
             # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensors）
             # 以下代码等价于:
             # torch_output = Paddle2TorchConverter.execute(convert_result, self.torch_args, self.torch_kwargs)
@@ -67,18 +67,28 @@ class APITestAccuracy(APITestBase):
                 "args": self.torch_args,
                 "kwargs": self.torch_kwargs,
                 "result": None,
-                **self.torch_kwargs
+                **self.torch_kwargs,
             }
 
-            if self.test_amp:
-                with torch.autocast(device_type="cuda"):
-                    exec(convert_result.compiled_code, exec_globals, exec_locals)
-            else:
-                exec(convert_result.compiled_code, exec_globals, exec_locals)
+            # convert_result.is_torch_corresponding 为 True 时代表有对应的 Torch API
+            # 执行 *_compiled 编译好的代码速度更快
+            code = convert_result.code
+            if code.preprocess_compiled:
+                exec(code.preprocess_compiled, exec_globals, exec_locals)
+
+            if code.core_compiled:
+                if self.test_amp:
+                    with torch.autocast(device_type="cuda"):
+                        exec(code.core_compiled, exec_globals, exec_locals)
+                else:
+                    exec(code.core_compiled, exec_globals, exec_locals)
+
+            if code.postprocess_compiled:
+                exec(code.postprocess_compiled, exec_globals, exec_locals)
 
             output_var = convert_result.output_var or "result"
             torch_output = exec_locals[output_var]
-            del exec_globals, exec_locals, output_var, convert_result
+            del exec_globals, exec_locals, output_var, convert_result, code
 
             # if "paddle.Tensor." in self.api_config.api_name:
             #     api = getattr(self.torch_args[0], self.torch_api_str[self.torch_api_str.rindex(".")+1:])
@@ -99,6 +109,7 @@ class APITestAccuracy(APITestBase):
             #         torch_output = self.torch_api(*tuple(self.torch_args), **self.torch_kwargs)
             # if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
             #     torch_output = self.torch_args[0] if len(self.torch_args) > 0 else next(iter(self.torch_kwargs.values()))
+
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
             print("[torch error]", self.api_config.config, flush=True)
