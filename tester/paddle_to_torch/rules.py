@@ -23,9 +23,15 @@ class Code:
     core: List[str] = field(default_factory=list)
     postprocess: List[str] = field(default_factory=list)
 
-    preprocess_compiled: Optional[types.CodeType] = None
-    core_compiled: Optional[types.CodeType] = None
-    postprocess_compiled: Optional[types.CodeType] = None
+    preprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
+    core_compiled: Optional[types.CodeType] = field(init=False, default=None)
+    postprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
+
+    def __post_init__(self):
+        """自动编译代码"""
+        self.preprocess_compiled = self.compile(self.preprocess)
+        self.core_compiled = self.compile(self.core)
+        self.postprocess_compiled = self.compile(self.postprocess)
 
     @classmethod
     def compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
@@ -34,8 +40,19 @@ class Code:
             return None
         try:
             return compile("\n".join(code_lines), "<string>", "exec")
-        except SyntaxError:
+        except SyntaxError as e:
             return None
+
+    def is_valid(self) -> bool:
+        """检查代码是否编译成功"""
+        return all(
+            compiled is not None or not code
+            for compiled, code in [
+                (self.preprocess_compiled, self.preprocess),
+                (self.core_compiled, self.core),
+                (self.postprocess_compiled, self.postprocess),
+            ]
+        )
 
 
 @dataclass
@@ -72,17 +89,15 @@ class ConvertResult:
         is_torch_corresponding: bool = True,
     ) -> "ConvertResult":
         code_obj = Code(core=code) if isinstance(code, list) else code
-        if code_obj.preprocess:
-            code_obj.preprocess_compiled = Code.compile(code_obj.preprocess)
-        if code_obj.core:
-            if len(code_obj.core) > 2:
-                print(
-                    f"Warning: The core code of {paddle_api} is too complex.",
-                    flush=True,
-                )
-            code_obj.core_compiled = Code.compile(code_obj.core)
-        if code_obj.postprocess:
-            code_obj.postprocess_compiled = Code.compile(code_obj.postprocess)
+        if not code_obj.is_valid():
+            return cls.error(paddle_api, "Invalid code.")
+
+        if len(code_obj.core) > 2:
+            print(
+                f"Warning: The core code of {paddle_api} is too complex.",
+                flush=True,
+            )
+
         return cls(
             paddle_api,
             code=code_obj,
