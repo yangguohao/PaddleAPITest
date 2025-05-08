@@ -2138,20 +2138,12 @@ is_arithmetic = locals().get('is_arithmetic')
 if is_arithmetic is None:
     is_arithmetic = True
 
-def logical_right_shift(x: torch.Tensor, shift: torch.Tensor) -> torch.Tensor:
-    if x.dtype == torch.int8 or x.dtype == torch.uint8:
-        unsigned_dtype = numpy.uint8
-    elif x.dtype == torch.int16 or x.dtype == torch.uint16:
-        unsigned_dtype = numpy.uint16
-    elif x.dtype == torch.int32 or x.dtype == torch.uint32:
-        unsigned_dtype = numpy.uint32
-    elif x.dtype == torch.int64 or x.dtype == torch.uint64:
-        unsigned_dtype = numpy.uint64
-    x_np = x.cpu().numpy().astype(unsigned_dtype)
-    shift_np = shift.cpu().numpy().astype(unsigned_dtype)
-    # use numpy to do unsigned right shift
-    result_np = x_np >> shift_np
-    return torch.from_numpy(result_np).to(x.dtype)
+def logical_right_shift(x: torch.Tensor, y: torch.Tensor):
+    mask = (1 << (x.element_size() * 8 - 1)) - 1
+    x_arithmetic, mask = x >> y, mask >> (y - 1)
+    shifted = torch.where(y >= 1, x_arithmetic & mask, x)
+    shifted = torch.where(y < 0, torch.zeros_like(x), shifted)
+    return shifted
     
 if is_arithmetic:
     result = tensor.__rshift__(other)
