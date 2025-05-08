@@ -86,7 +86,6 @@
     },
     "b": "API started with 'b' should be placed here",
     "paddle.bincount": {
-        "Rule": "BincountRule",
         "torch_api": "torch.bincount",
         "set_defaults": {
             "weights": "None",
@@ -94,8 +93,10 @@
         },
         "paddle_torch_args_map": {
             "x": "input",
-            "weights": "weights",
-            "minlength": "minlength"
+            "weights": "weights"
+        },
+        "torch_kwargs": {
+            "minlength": "int({minlength}.item()) if torch.is_tensor({minlength}) else {minlength}"
         }
     },
     "paddle.broadcast_shape": {

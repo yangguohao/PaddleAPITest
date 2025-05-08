@@ -567,26 +567,6 @@ if data_format == 'NDHWC':
 
 
 # b
-
-
-class BincountRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
-if isinstance(_kwargs['minlength'], torch.Tensor):
-    _kwargs['minlength'] = _kwargs['minlength'].item()  
-torch_input_tensor = _kwargs.pop('input')
-""" 
-        core = f"result = {self.torch_api}(torch_input_tensor, **_kwargs)"
-        code = (
-            head_code 
-            + map_code 
-            + impl1.splitlines()
-            + core.splitlines()
-        )
-        return ConvertResult.success(paddle_api, code)
-
-
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2013,15 +1993,14 @@ if mode == "r":
         return ConvertResult.success(paddle_api, code, "result")
 
 # r
-
-
 class RankRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
-tensor_for_rank = next(iter(kwargs.values()))
-result = torch.tensor(tensor_for_rank.ndim, dtype=torch.int32)
-"""
-        code = impl.splitlines()
+        pre = f"tensor_for_rank = next(iter(kwargs.values()))"
+        core = f"result = torch.tensor(tensor_for_rank.ndim, dtype=torch.int32)"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 

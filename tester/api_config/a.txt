@@ -1,6 +1,0 @@
-paddle.Tensor.log_normal_(Tensor([1000, 784],"float32"), )
-paddle.Tensor.log_normal_(Tensor([1000, 784],"float32"), -1, 1, )
-paddle.Tensor.log_normal_(Tensor([1000, 784],"float32"), mean=-2.0, std=2.0, )
-paddle.Tensor.log_normal_(Tensor([1000, 784],"float64"), )
-paddle.Tensor.log_normal_(Tensor([0, 200],"float32"), )
-paddle.Tensor.log_normal_(Tensor([200, 0],"float32"), )
