@@ -216,7 +216,13 @@
         "paddle_torch_args_map": {
             "x": "input"
         }
-    },       
+    },   
+    "paddle.Tensor.floor": {
+        "torch_api": "torch.Tensor.floor"
+    },    
+    "paddle.Tensor.frexp": {
+        "torch_api": "torch.Tensor.frexp"
+    }, 
     "g": "API started with 'g' should be placed here",
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
@@ -229,6 +235,15 @@
     },
     "paddle.Tensor.gather_nd":{
         "Rule": "Gather_ndRule"
+    },
+    "paddle.Tensor.geometric_": {
+        "torch_api": "torch.Tensor.geometric_",
+        "paddle_torch_args_map": {
+            "probs": "p"
+        },
+        "torch_kwargs": {
+            "generator": "None"
+        }
     },
     "paddle.nn.functional.gather_tree":{
         "Rule": "Gather_treeRule"
@@ -679,6 +694,69 @@
             "dilation": "dilation"
         }
     },
+    "paddle.nn.functional.conv1d": {
+        "Rule": "Conv1dRule",
+        "torch_api": "torch.nn.functional.conv1d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCL'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.conv2d": {
+        "Rule": "Conv2dRule",
+        "torch_api": "torch.nn.functional.conv2d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.conv3d": {
+        "Rule": "Conv3dRule",
+        "torch_api": "torch.nn.functional.conv3d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.Tensor.pow":{
@@ -716,6 +794,15 @@
     "paddle.Tensor.real":{
         "torch_api":"torch.Tensor.real",
         "is_attribute": true
+    },
+    "paddle.Tensor.reciprocal":{
+        "torch_api":"torch.Tensor.reciprocal"
+    },
+    "paddle.Tensor.round":{
+        "torch_api":"torch.Tensor.round",
+        "torch_kwargs": {
+            "decimals": 0
+        }
     },
     "paddle.Tensor.rsqrt":{
         "torch_api":"torch.Tensor.rsqrt"
@@ -1384,13 +1471,6 @@
         "torch_api": "torch.Tensor.gcd_",
         "paddle_torch_args_map": {
             "y": "other"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.geometric_": {
-        "torch_api": "torch.Tensor.geometric_",
-        "paddle_torch_args_map": {
-            "probs": "p"
         },
         "min_input_args": 1
     },
@@ -4993,45 +5073,6 @@
             "inplace": "inplace"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.conv1d": {
-        "torch_api": "torch.nn.functional.conv1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "dilation": "dilation",
-            "groups": "groups"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv2d": {
-        "torch_api": "torch.nn.functional.conv2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "dilation": "dilation",
-            "groups": "groups"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv3d": {
-        "torch_api": "torch.nn.functional.conv3d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "dilation": "dilation",
-            "groups": "groups"
-        },
-        "min_input_args": 2
     },
     "paddle.nn.functional.cosine_similarity": {
         "torch_api": "torch.nn.functional.cosine_similarity",
