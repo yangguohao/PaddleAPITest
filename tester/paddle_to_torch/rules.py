@@ -2231,7 +2231,32 @@ result = tensor.__pow__(other)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class __rshift__Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+tensor = locals().get('x')
+other = locals().get('y')
+is_arithmetic = locals().get('is_arithmetic')
+# setting default value for is_arithmetic
+if is_arithmetic is None:
+    is_arithmetic = True
 
+def logical_right_shift(x: torch.Tensor, y: torch.Tensor):
+    mask = (1 << (x.element_size() * 8 - 1)) - 1
+    x_arithmetic, mask = x >> y, mask >> (y - 1)
+    shifted = torch.where(y >= 1, x_arithmetic & mask, x)
+    shifted = torch.where(y < 0, torch.zeros_like(x), shifted)
+    return shifted
+    
+if is_arithmetic:
+    result = tensor.__rshift__(other)
+else:
+    # logical right shift 
+    result = logical_right_shift(tensor, other)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
