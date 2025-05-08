@@ -3,20 +3,67 @@ import types
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
-import paddle
+
+@dataclass
+class Code:
+    """Paddle2PyTorch 转换代码数据类，封装转换后的可执行代码，自动预编译
+
+    Attributes:
+        preprocess: 预处理代码，在核心逻辑前执行
+        core: 核心逻辑代码，应包含 Torch API
+        postprocess: 后处理代码，在核心逻辑后执行
+        preprocess_compiled: 预编译的预处理代码
+        core_compiled: 预编译的核心逻辑代码
+        postprocess_compiled: 预编译的后处理代码
+    """
+
+    preprocess: List[str] = field(default_factory=list)
+    core: List[str] = field(default_factory=list)
+    postprocess: List[str] = field(default_factory=list)
+
+    preprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
+    core_compiled: Optional[types.CodeType] = field(init=False, default=None)
+    postprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
+
+    def __post_init__(self):
+        """自动编译代码"""
+        self.preprocess_compiled = self._compile(self.preprocess)
+        self.core_compiled = self._compile(self.core)
+        self.postprocess_compiled = self._compile(self.postprocess)
+
+    @classmethod
+    def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
+        """代码编译方法"""
+        if not code_lines:
+            return None
+        try:
+            return compile("\n".join(code_lines), "<string>", "exec")
+        except SyntaxError as e:
+            return None
+
+    def is_valid(self) -> bool:
+        """检查代码是否编译成功"""
+        return all(
+            compiled is not None or not code
+            for compiled, code in [
+                (self.preprocess_compiled, self.preprocess),
+                (self.core_compiled, self.core),
+                (self.postprocess_compiled, self.postprocess),
+            ]
+        )
 
 
 @dataclass
 class ConvertResult:
-    """Paddle2PyTorch 的转换结果数据类, 封装 API 转换结果，提供成功/失败的构造方法
+    """Paddle2PyTorch 转换结果数据类, 封装 API 转换结果，提供成功/失败的构造方法
 
     Attributes:
         paddle_api (str): Paddle API 名称
         is_supported (bool): 是否支持转换, 默认为 True
-        code (Optional[List[str]]): 转换后的代码列表
-        compiled_code (Optional[types.CodeType]): 预编译后的代码对象
+        is_torch_corresponding: 是否与 Torch API 对应，默认为 True
+        code (Optional[Code]): 转换后的代码数据对象
         output_var (Optional[str]): 输出变量名，默认值 None 表示 result 保存最后的输出值
         error_message (Optional[str]): 错误信息, 仅当 is_supported = False 时有效
 
@@ -27,22 +74,40 @@ class ConvertResult:
 
     paddle_api: str
     is_supported: bool = True
-    code: Optional[List[str]] = (
-        None  # ["_tmp_0 = torch.add(x, y)", "_tmp_1 = torch.mul(_tmp_0, z)"]
-    )
-    compiled_code: Optional[types.CodeType] = field(default=None, repr=False)
-    output_var: Optional[str] = None  # "_tmp_1"
+    is_torch_corresponding: bool = True
+
+    code: Optional[Code] = None
+    output_var: Optional[str] = None
     error_message: Optional[str] = None
 
-    @staticmethod
+    @classmethod
     def success(
-        paddle_api: str, code: List[str], output_var: Optional[str] = None
+        cls,
+        paddle_api: str,
+        code: Union[Code, List[str]],
+        output_var: str = "result",
+        is_torch_corresponding: bool = True,
     ) -> "ConvertResult":
-        return ConvertResult(paddle_api, code=code, output_var=output_var)
+        code_obj = Code(core=code) if isinstance(code, list) else code
+        if not code_obj.is_valid():
+            return cls.error(paddle_api, "Invalid code.")
 
-    @staticmethod
-    def error(paddle_api: str, message: str) -> "ConvertResult":
-        return ConvertResult(paddle_api, is_supported=False, error_message=message)
+        if len(code_obj.core) > 4:
+            print(
+                f"Warning: The core code of {paddle_api} is too complex.",
+                flush=True,
+            )
+
+        return cls(
+            paddle_api,
+            code=code_obj,
+            output_var=output_var,
+            is_torch_corresponding=is_torch_corresponding,
+        )
+
+    @classmethod
+    def error(cls, paddle_api: str, message: str) -> "ConvertResult":
+        return cls(paddle_api, is_supported=False, error_message=message)
 
 
 class BaseRule(ABC):
@@ -850,7 +915,7 @@ if data_format == "NDHWC":
 class Conv1dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
-        impl1 = """
+        pre = """
 if data_format == "NLC":
     x = x.permute(0, 2, 1)
 stride = tuple(stride) if isinstance(stride, list) else stride
@@ -869,16 +934,14 @@ elif isinstance(padding, list):
         padding = tuple(padding)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if data_format == "NLC":
     result = result.permute(0, 2, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=head_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
