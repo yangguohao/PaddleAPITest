@@ -2331,8 +2331,6 @@ paddle.roll(Tensor([16, 64, 10, 6],"complex64"), Tensor([1],"int64"), list[-2,],
 paddle.roll(Tensor([16, 64, 19, 10],"complex64"), Tensor([1],"int64"), list[-2,], name=None, )
 paddle.roll(Tensor([16, 96, 20, 11],"complex64"), Tensor([1],"int64"), list[-2,], name=None, )
 paddle.roll(Tensor([39],"float32"), -19, name=None, )
-paddle.scale(Tensor([16, 32, 20, 20],"float32"), scale=1.1111111111111112, )
-paddle.scale(Tensor([64, 32, 20, 20],"float32"), scale=1.1111111111111112, )
 paddle.shape(Tensor([16, 128, 10, 6],"complex64"), )
 paddle.shape(Tensor([16, 32, 16, 9],"complex64"), )
 paddle.shape(Tensor([16, 32, 19, 10],"complex64"), )
