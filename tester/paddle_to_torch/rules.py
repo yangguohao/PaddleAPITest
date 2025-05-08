@@ -557,6 +557,19 @@ if locals().get('data_format') == 'NHWC':
 
 
 # c
+class CorrcoefRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+rowvar = locals().get('rowvar',True)
+if rowvar:
+    result = torch.corrcoef(x)
+else:
+    x = x.t()
+    result = torch.corrcoef(x).t()
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
+
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1679,6 +1692,14 @@ result = torch.abs(lcm)
 
 
 # m
+class Matrix_transposeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = x.transpose(-1, -2)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+      
 class MedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1908,7 +1929,16 @@ else:
 
 
 # q
-
+class QrRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+mode = locals().get('mode', 'reduced')
+result = torch.linalg.qr(x, mode)
+if mode == "r":
+    result = result[1]
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code, "result")
 
 # r
 class Roi_aignRule(BaseRule):
@@ -2088,9 +2118,28 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class SlogdetRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+result = torch.linalg.slogdet(x)
+result = torch.stack(result,0)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # t
-
+class TriangularSolveRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+transpose = locals().get('transpose', False)
+upper = locals().get('upper', True)
+unitriangular = locals().get('unitriangular', False)
+if transpose:
+    x = x.transpose(-1,-2)
+result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=unitriangular)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
 
 # u
 

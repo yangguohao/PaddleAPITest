@@ -262,6 +262,15 @@
         "Rule": "GetWindowRule"
     },
     "h": "API started with 'h' should be placed here",
+    "paddle.histogram":{
+        "torch_api": "torch.histc",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "bins": "bins",
+            "min": "min",
+            "max": "max"
+        }
+    },
     "i": "API started with 'i' should be placed here",
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
@@ -336,6 +345,64 @@
     },
     "paddle.Tensor.lgamma": {
         "torch_api": "torch.Tensor.lgamma"
+    },
+    "paddle.linalg.corrcoef":{
+        "Rule": "CorrcoefRule"
+    },
+    "paddle.linalg.eig":{
+        "torch_api": "torch.linalg.eig",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
+    "paddle.linalg.lu":{
+        "torch_api": "torch.lu",
+        "paddle_torch_args_map": {
+            "x": "A",
+            "pivot": "pivot",
+            "get_infos": "get_infos"
+        }
+    },
+    "paddle.linalg.matrix_transpose":{
+        "Rule": "Matrix_transposeRule"
+    },
+    "paddle.linalg.qr":{
+        "Rule": "QrRule"
+    },
+    "paddle.linalg.slogdet":{
+        "Rule": "SlogdetRule"
+    },
+    "paddle.linalg.svd":{
+        "torch_api":"torch.linalg.svd",
+        "paddle_torch_args_map":{
+            "x": "A",
+            "full_matrices": "full_matrices"
+        }
+    },
+    "paddle.linalg.triangular_solve":{
+        "Rule": "TriangularSolveRule"
+    },
+    "paddle.linalg.eigh":{
+        "torch_api":"torch.linalg.eigh",
+        "paddle_torch_args_map":{
+            "x": "input",
+            "UPLO": "UPLO"
+        }
+    },
+    "paddle.linalg.svdvals": {
+        "torch_api":"torch.linalg.svdvals",
+        "paddle_torch_args_map":{
+            "x": "A"
+        }
+    },
+    "paddle.linalg.lu_unpack":{
+        "torch_api": "torch.lu_unpack",
+        "paddle_torch_args_map": {
+            "x": "LU_data",
+            "y": "LU_pivots",
+            "unpack_data": "unpack_ludata",
+            "unpack_pivots": "unpack_pivots"
+        }
     },
     "paddle.Tensor.log": {
         "torch_api": "torch.Tensor.log"
