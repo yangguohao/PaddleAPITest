@@ -127,7 +127,8 @@ class BaseRule(ABC):
         """
         pass
 
-    def _format_arg(self, arg) -> str:
+    @classmethod
+    def _format_arg(cls, arg) -> str:
         """
         将参数格式化为调用字符串的辅助方法
 
@@ -175,7 +176,6 @@ class BaseRule(ABC):
             self.torch_args: List = mapping.get("torch_args", [])
             self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
             self.is_attribute: bool = mapping.get("is_attribute", False)
-            self.imports: List = mapping.get("import", [])
             self.defaults: Dict = mapping.get("set_defaults", {})
         else:
             self.composite_steps: List = mapping.get("composite_steps", [])
@@ -186,19 +186,13 @@ class BaseRule(ABC):
                     )
 
     def apply_generic(self):
-        head_code = []
         # if "torch_api" in self.mapping:
         #     self.torch_api: str = self.mapping.get("torch_api", "")
-        if "import" in self.mapping:
-            head_code.append("")
-            imports = self.mapping.get("import", [])
-            for import_statement in imports:
-                head_code.append(f"import {import_statement}")
-            head_code.append("")
+        defaults_code = []
         if "set_defaults" in self.mapping:
             defaults = self.mapping.get("set_defaults", {})
             for default_name, default_value in defaults.items():
-                head_code.append(
+                defaults_code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
                 )
         map_code = []
@@ -221,16 +215,13 @@ class BaseRule(ABC):
             map_code.append("}.items():")
             map_code.append("    if paddle_param in locals():")
             map_code.append("        _kwargs[torch_param] = locals()[paddle_param]")
-        return head_code, map_code
+        return defaults_code, map_code
 
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
-        if self.direct_mapping:  # 直接映射)
-            for import_statement in self.imports:
-                code.append(f"import {import_statement}")
-            code.append("")
+        if self.direct_mapping:  # 直接映射
             for default_name, default_value in self.defaults.items():
                 code.append(
                     f"{default_name} = locals().get('{default_name}', {default_value})"
@@ -901,7 +892,7 @@ if data_format == "NDHWC":
 
 class Conv1dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
+        defaults_code, map_code = self.apply_generic()
         pre = """
 if data_format == "NLC":
     x = x.permute(0, 2, 1)
@@ -926,7 +917,7 @@ if data_format == "NLC":
     result = result.permute(0, 2, 1)
 """
         code = Code(
-            preprocess=head_code + pre.splitlines() + map_code,
+            preprocess=defaults_code + pre.splitlines() + map_code,
             core=core.splitlines(),
             postprocess=post.splitlines(),
         )
