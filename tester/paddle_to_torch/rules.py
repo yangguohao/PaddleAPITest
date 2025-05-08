@@ -2227,12 +2227,12 @@ kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_si
 stride = tuple(stride) if isinstance(stride, list) else stride
 padding = tuple(padding) if isinstance(padding, list) else padding
 output_size = list(output_size) if isinstance(output_size, tuple) else output_size
-indices.to(torch.int64)
+indices = indices.to(torch.int64)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post_1d = """
 if data_format == "NLC":
-    x = x.permute(0, 2, 1)
+    result = result.permute(0, 2, 1)
 """
         post_2d = """
 if data_format == "NHWC":
