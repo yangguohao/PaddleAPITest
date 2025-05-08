@@ -193,13 +193,12 @@ class APITestBase:
         self.paddle_merged_kwargs_config = collections.OrderedDict()
 
         api_name = self.api_config.api_name
-        # if (
-        #     api_name.startswith("paddle.Tensor.__")
-        #     and api_name.endswith("__")
-        #     and api_name not in no_signature_api_mappings
-        # ):
-        #     self.torch_args_config = self.api_config.args
-        #     return True
+        if (
+            api_name == "paddle.Tensor.__getitem__"
+            or api_name == "paddle.Tensor.__setitem__"
+        ):
+            self.torch_args_config = self.api_config.args
+            return True
 
         if api_name not in no_signature_api_mappings:
             # For APIs with signatures, use paddle_sig.bind to get arguments

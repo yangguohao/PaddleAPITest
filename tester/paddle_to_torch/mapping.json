@@ -23,6 +23,14 @@
         },
         "description": "result = torch.add(input=x, other=y, alpha=1)"
     },
+    "paddle.Tensor.all": {
+        "torch_api": "torch.Tensor.all",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.all(dim=dim, keepdim=keepdim)"
+    },
     "paddle.add_n": {
         "composite_steps": [
             {
