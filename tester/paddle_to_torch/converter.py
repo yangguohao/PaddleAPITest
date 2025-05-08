@@ -18,8 +18,6 @@ PADDLE2TORCH_WRONG_CONFIG = frozenset(
         "paddle.nn.functional.group_norm",
         "paddle.nn.functional.interpolate",
         "paddle.nn.functional.local_response_norm",
-        "paddle.nn.functional.lp_pool1d",
-        "paddle.nn.functional.lp_pool2d",
         "paddle.nn.functional.max_pool1d",
         "paddle.nn.functional.max_pool2d",
         "paddle.nn.functional.max_pool3d",
