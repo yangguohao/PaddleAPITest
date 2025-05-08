@@ -516,9 +516,6 @@
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
-        },
-        "torch_kwargs": {
-            "out": "None"
         }
     },
     "n": "API started with 'n' should be placed here",
