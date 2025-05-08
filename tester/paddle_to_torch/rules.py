@@ -29,12 +29,12 @@ class Code:
 
     def __post_init__(self):
         """自动编译代码"""
-        self.preprocess_compiled = self.compile(self.preprocess)
-        self.core_compiled = self.compile(self.core)
-        self.postprocess_compiled = self.compile(self.postprocess)
+        self.preprocess_compiled = self._compile(self.preprocess)
+        self.core_compiled = self._compile(self.core)
+        self.postprocess_compiled = self._compile(self.postprocess)
 
     @classmethod
-    def compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
+    def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
         """代码编译方法"""
         if not code_lines:
             return None
@@ -92,7 +92,7 @@ class ConvertResult:
         if not code_obj.is_valid():
             return cls.error(paddle_api, "Invalid code.")
 
-        if len(code_obj.core) > 2:
+        if len(code_obj.core) > 4:
             print(
                 f"Warning: The core code of {paddle_api} is too complex.",
                 flush=True,
