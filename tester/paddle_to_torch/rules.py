@@ -11,13 +11,18 @@ class Code:
     """Paddle2PyTorch 转换代码数据类，封装转换后的可执行代码，自动预编译
 
     Attributes:
+        valid: 是否有效，默认为 True
+
         preprocess: 预处理代码，在核心逻辑前执行
         core: 核心逻辑代码，应包含 Torch API
         postprocess: 后处理代码，在核心逻辑后执行
+
         preprocess_compiled: 预编译的预处理代码
         core_compiled: 预编译的核心逻辑代码
         postprocess_compiled: 预编译的后处理代码
     """
+
+    valid: bool = True
 
     preprocess: List[str] = field(default_factory=list)
     core: List[str] = field(default_factory=list)
@@ -29,9 +34,16 @@ class Code:
 
     def __post_init__(self):
         """自动编译代码"""
-        self.preprocess_compiled = self._compile(self.preprocess)
-        self.core_compiled = self._compile(self.core)
-        self.postprocess_compiled = self._compile(self.postprocess)
+        try:
+            self.preprocess_compiled = self._compile(self.preprocess)
+            self.core_compiled = self._compile(self.core)
+            self.postprocess_compiled = self._compile(self.postprocess)
+        except Exception as e:
+            self.preprocess_compiled = None
+            self.core_compiled = None
+            self.postprocess_compiled = None
+            self.valid = False
+            self.error_message = str(e)
 
     @classmethod
     def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
@@ -41,18 +53,11 @@ class Code:
         try:
             return compile("\n".join(code_lines), "<string>", "exec")
         except SyntaxError as e:
-            return None
+            raise SyntaxError(f"Syntax error in code: {e.msg}") from e
 
     def is_valid(self) -> bool:
         """检查代码是否编译成功"""
-        return all(
-            compiled is not None or not code
-            for compiled, code in [
-                (self.preprocess_compiled, self.preprocess),
-                (self.core_compiled, self.core),
-                (self.postprocess_compiled, self.postprocess),
-            ]
-        )
+        return self.valid
 
 
 @dataclass
@@ -90,7 +95,7 @@ class ConvertResult:
     ) -> "ConvertResult":
         code_obj = Code(core=code) if isinstance(code, list) else code
         if not code_obj.is_valid():
-            return cls.error(paddle_api, "Invalid code.")
+            return cls.error(paddle_api, f"Invalid code: {code_obj.error_message}")
 
         if len(code_obj.core) > 4:
             print(
@@ -98,8 +103,8 @@ class ConvertResult:
                 flush=True,
             )
 
-        return cls(
-            paddle_api,
+        return ConvertResult(
+            paddle_api=paddle_api,
             code=code_obj,
             output_var=output_var,
             is_torch_corresponding=is_torch_corresponding,
@@ -107,7 +112,7 @@ class ConvertResult:
 
     @classmethod
     def error(cls, paddle_api: str, message: str) -> "ConvertResult":
-        return cls(paddle_api, is_supported=False, error_message=message)
+        return ConvertResult(paddle_api, is_supported=False, error_message=message)
 
 
 class BaseRule(ABC):
@@ -625,6 +630,7 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
+
 
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1753,7 +1759,8 @@ result = x.transpose(-1, -2)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-      
+
+
 class MedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1994,6 +2001,7 @@ if mode == "r":
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
 
+
 # r
 class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2172,6 +2180,7 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SlogdetRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2180,6 +2189,7 @@ result = torch.stack(result,0)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 # t
 class TriangularSolveRule(BaseRule):
@@ -2195,7 +2205,62 @@ result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=u
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 # u
+class UnpoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre_1d = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)        
+"""
+        pre_2d = """
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)     
+"""
+        pre_3d = """
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)      
+"""
+        pre = """
+kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
+stride = tuple(stride) if isinstance(stride, list) else stride
+padding = tuple(padding) if isinstance(padding, list) else padding
+output_size = list(output_size) if isinstance(output_size, tuple) else output_size
+indices.to(torch.int64)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post_1d = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)
+"""
+        post_2d = """
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        post_3d = """
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        if self.torch_api.endswith("1d"):
+            pre = pre_1d + pre
+            post = post_1d
+        elif self.torch_api.endswith("2d"):
+            pre = pre_2d + pre
+            post = post_2d
+        elif self.torch_api.endswith("3d"):
+            pre = pre_3d + pre
+            post = post_3d
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported unpool api: {paddle_api}"
+            )
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # v
@@ -2231,6 +2296,7 @@ result = tensor.__pow__(other)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class __rshift__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2256,7 +2322,8 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 __all__ = [  # type: ignore
     cls.__name__
     for cls in globals().values()
