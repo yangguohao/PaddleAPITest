@@ -1695,14 +1695,8 @@ result = window
 
 class IsEmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        post = """
-result = x.numel() == 0
-"""
-        code = Code(
-
-            postprocess=post.splitlines(),
-        )
+        core = "result = x.numel() == 0"
+        code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 class IndexSelectRule(BaseRule):
