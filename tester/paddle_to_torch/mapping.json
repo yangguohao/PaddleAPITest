@@ -1,5 +1,16 @@
 {
     "a": "API started with 'a' should be placed here",
+    "paddle.Tensor.abs": {
+        "torch_api": "torch.Tensor.abs",
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.abs()"
+    },
+    "paddle.Tensor.add": {
+        "torch_api": "torch.Tensor.add",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.add(other=y)"
+    },
     "paddle.add": {
         "torch_api": "torch.add",
         "paddle_torch_args_map": {
@@ -11,6 +22,14 @@
             "alpha": 1
         },
         "description": "result = torch.add(input=x, other=y, alpha=1)"
+    },
+    "paddle.Tensor.all": {
+        "torch_api": "torch.Tensor.all",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.all(dim=dim, keepdim=keepdim)"
     },
     "paddle.add_n": {
         "composite_steps": [
@@ -61,7 +80,25 @@
         },
         "description": "result = torch.as_strided(input=x, size=shape, stride=stride, storage_offset=offset)"
     },
+    "paddle.Tensor.atanh": {
+        "torch_api": "torch.Tensor.atanh",
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.atanh()"
+    },
     "b": "API started with 'b' should be placed here",
+    "paddle.bincount": {
+        "torch_api": "torch.bincount",
+        "set_defaults": {
+            "weights": "None",
+            "minlength": 0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weights": "weights"
+        },
+        "torch_kwargs": {
+            "minlength": "{minlength}.item() if torch.is_tensor({minlength}) else {minlength}"
+        }
+    },
     "paddle.broadcast_shape": {
         "Rule": "BroadcastShapeRule"
     },
@@ -201,7 +238,13 @@
         "paddle_torch_args_map": {
             "x": "input"
         }
-    },       
+    },   
+    "paddle.Tensor.floor": {
+        "torch_api": "torch.Tensor.floor"
+    },    
+    "paddle.Tensor.frexp": {
+        "torch_api": "torch.Tensor.frexp"
+    }, 
     "g": "API started with 'g' should be placed here",
     "paddle.gammaln": {
         "torch_api": "torch.special.gammaln",
@@ -220,6 +263,15 @@
     },
     "paddle.Tensor.gather_nd":{
         "Rule": "Gather_ndRule"
+    },
+    "paddle.Tensor.geometric_": {
+        "torch_api": "torch.Tensor.geometric_",
+        "paddle_torch_args_map": {
+            "probs": "p"
+        },
+        "torch_kwargs": {
+            "generator": "None"
+        }
     },
     "paddle.nn.functional.gather_tree":{
         "Rule": "Gather_treeRule"
@@ -253,6 +305,15 @@
         "Rule": "GetWindowRule"
     },
     "h": "API started with 'h' should be placed here",
+    "paddle.histogram":{
+        "torch_api": "torch.histc",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "bins": "bins",
+            "min": "min",
+            "max": "max"
+        }
+    },
     "i": "API started with 'i' should be placed here",
     "paddle.is_empty": {
         "Rule": "IsEmptyRule"
@@ -331,6 +392,64 @@
     "paddle.Tensor.lgamma": {
         "torch_api": "torch.Tensor.lgamma"
     },
+    "paddle.linalg.corrcoef":{
+        "Rule": "CorrcoefRule"
+    },
+    "paddle.linalg.eig":{
+        "torch_api": "torch.linalg.eig",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
+    "paddle.linalg.lu":{
+        "torch_api": "torch.lu",
+        "paddle_torch_args_map": {
+            "x": "A",
+            "pivot": "pivot",
+            "get_infos": "get_infos"
+        }
+    },
+    "paddle.linalg.matrix_transpose":{
+        "Rule": "Matrix_transposeRule"
+    },
+    "paddle.linalg.qr":{
+        "Rule": "QrRule"
+    },
+    "paddle.linalg.slogdet":{
+        "Rule": "SlogdetRule"
+    },
+    "paddle.linalg.svd":{
+        "torch_api":"torch.linalg.svd",
+        "paddle_torch_args_map":{
+            "x": "A",
+            "full_matrices": "full_matrices"
+        }
+    },
+    "paddle.linalg.triangular_solve":{
+        "Rule": "TriangularSolveRule"
+    },
+    "paddle.linalg.eigh":{
+        "torch_api":"torch.linalg.eigh",
+        "paddle_torch_args_map":{
+            "x": "input",
+            "UPLO": "UPLO"
+        }
+    },
+    "paddle.linalg.svdvals": {
+        "torch_api":"torch.linalg.svdvals",
+        "paddle_torch_args_map":{
+            "x": "A"
+        }
+    },
+    "paddle.linalg.lu_unpack":{
+        "torch_api": "torch.lu_unpack",
+        "paddle_torch_args_map": {
+            "x": "LU_data",
+            "y": "LU_pivots",
+            "unpack_data": "unpack_ludata",
+            "unpack_pivots": "unpack_pivots"
+        }
+    },
     "paddle.Tensor.log": {
         "torch_api": "torch.Tensor.log"
     },
@@ -342,6 +461,13 @@
     },
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
+    },
+    "paddle.Tensor.log_normal_": {
+        "torch_api": "torch.Tensor.log_normal_",
+        "paddle_torch_args_map": {
+            "mean": "mean",
+            "std": "std"
+        }
     },
     "m": "API started with 'm' should be placed here",
     "paddle.median": {
@@ -391,6 +517,13 @@
     "paddle.multiplex": {
         "Rule": "MultiplexRule"
     },
+    "paddle.multiply": {
+        "torch_api": "torch.mul",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
         "Rule": "NanmedianRule"
@@ -438,7 +571,7 @@
         }
     },
     "paddle.nn.functional.avg_pool1d": {
-        "Rule": "AvgPoolRule",
+        "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.avg_pool1d",
         "set_defaults": {
             "padding": 0,
@@ -457,7 +590,7 @@
         }
     },
     "paddle.nn.functional.avg_pool2d": {
-        "Rule": "AvgPoolRule",
+        "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.avg_pool2d",
         "set_defaults": {
             "padding": 0,
@@ -478,7 +611,7 @@
         }
     },
     "paddle.nn.functional.avg_pool3d": {
-        "Rule": "AvgPoolRule",
+        "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.avg_pool3d",
         "set_defaults": {
             "padding": 0,
@@ -495,7 +628,7 @@
             "divisor_override": "divisor_override"
         },
         "torch_kwargs": {
-            "count_include_pad": "not {exclusive} "
+            "count_include_pad": "not {exclusive}"
         }
     },
     "paddle.nn.functional.batch_norm": {
@@ -673,6 +806,119 @@
             "dilation": "dilation"
         }
     },
+    "paddle.nn.functional.conv1d": {
+        "Rule": "Conv1dRule",
+        "torch_api": "torch.nn.functional.conv1d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCL'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.conv2d": {
+        "Rule": "Conv2dRule",
+        "torch_api": "torch.nn.functional.conv2d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.conv3d": {
+        "Rule": "Conv3dRule",
+        "torch_api": "torch.nn.functional.conv3d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
+    "paddle.nn.functional.max_pool1d": {
+        "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.max_pool1d",
+        "set_defaults": {
+            "stride":"None",
+            "padding": 0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "return_mask": "return_indices"
+        }
+    },
+    "paddle.nn.functional.max_pool2d": {
+        "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.max_pool2d",
+        "set_defaults": {
+            "stride":"None",
+            "padding": 0,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "return_mask": "return_indices"
+        }
+    },
+    "paddle.nn.functional.max_pool3d": {
+        "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.max_pool3d",
+        "set_defaults": {
+            "stride":"None",
+            "padding": 0,
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "padding": "padding",
+            "ceil_mode": "ceil_mode",
+            "return_mask": "return_indices"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "p": "API started with 'p' should be placed here",
     "paddle.Tensor.pow":{
@@ -707,9 +953,21 @@
     "paddle.Tensor.rad2deg":{
         "torch_api":"torch.Tensor.rad2deg"
     },
+    "paddle.Tensor.rank":{
+        "Rule": "RankRule"
+    },
     "paddle.Tensor.real":{
         "torch_api":"torch.Tensor.real",
         "is_attribute": true
+    },
+    "paddle.Tensor.reciprocal":{
+        "torch_api":"torch.Tensor.reciprocal"
+    },
+    "paddle.Tensor.round":{
+        "torch_api":"torch.Tensor.round",
+        "torch_kwargs": {
+            "decimals": 0
+        }
     },
     "paddle.Tensor.rsqrt":{
         "torch_api":"torch.Tensor.rsqrt"
@@ -757,6 +1015,12 @@
             "axis": "dim",
             "largest": "largest",
             "sorted": "sorted"
+        }
+    },
+    "paddle.Tensor.tile":{
+        "torch_api":"torch.Tensor.tile",
+        "paddle_torch_args_map": {
+            "repeat_times": "dims"
         }
     },
     "u": "API started with 'u' should be placed here",
@@ -897,6 +1161,9 @@
             "y": "other"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rsub__(other=y)"
+    },
+    "paddle.Tensor.__rshift__": {
+        "Rule": "__rshift__Rule"
     },
     "paddle.Tensor.__rtruediv__": {
         "torch_api": "torch.Tensor.__rtruediv__",
@@ -1375,13 +1642,6 @@
         "torch_api": "torch.Tensor.gcd_",
         "paddle_torch_args_map": {
             "y": "other"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.geometric_": {
-        "torch_api": "torch.Tensor.geometric_",
-        "paddle_torch_args_map": {
-            "probs": "p"
         },
         "min_input_args": 1
     },
@@ -2337,15 +2597,6 @@
             "generator": "generator"
         },
         "min_input_args": 0
-    },
-    "paddle.bincount": {
-        "torch_api": "torch.bincount",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weights": "weights",
-            "minlength": "minlength"
-        },
-        "min_input_args": 1
     },
     "paddle.bitwise_and": {
         "torch_api": "torch.bitwise_and",
@@ -4985,45 +5236,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.nn.functional.conv1d": {
-        "torch_api": "torch.nn.functional.conv1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "dilation": "dilation",
-            "groups": "groups"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv2d": {
-        "torch_api": "torch.nn.functional.conv2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "dilation": "dilation",
-            "groups": "groups"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.conv3d": {
-        "torch_api": "torch.nn.functional.conv3d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight",
-            "bias": "bias",
-            "stride": "stride",
-            "padding": "padding",
-            "dilation": "dilation",
-            "groups": "groups"
-        },
-        "min_input_args": 2
-    },
     "paddle.nn.functional.cosine_similarity": {
         "torch_api": "torch.nn.functional.cosine_similarity",
         "paddle_torch_args_map": {
@@ -5249,42 +5461,6 @@
             "ceil_mode": "ceil_mode"
         },
         "min_input_args": 2
-    },
-    "paddle.nn.functional.max_pool1d": {
-        "torch_api": "torch.nn.functional.max_pool1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "padding": "padding",
-            "ceil_mode": "ceil_mode",
-            "return_mask": "return_indices"
-        },
-        "min_input_args": 0
-    },
-    "paddle.nn.functional.max_pool2d": {
-        "torch_api": "torch.nn.functional.max_pool2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "padding": "padding",
-            "ceil_mode": "ceil_mode",
-            "return_mask": "return_indices"
-        },
-        "min_input_args": 0
-    },
-    "paddle.nn.functional.max_pool3d": {
-        "torch_api": "torch.nn.functional.max_pool3d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "padding": "padding",
-            "ceil_mode": "ceil_mode",
-            "return_mask": "return_indices"
-        },
-        "min_input_args": 0
     },
     "paddle.nn.functional.max_unpool1d": {
         "torch_api": "torch.nn.functional.max_unpool1d",

@@ -1,0 +1,16 @@
+paddle.Tensor.tile(Tensor([29151, 1, 32],"float16"), list[1,100,1,], )
+
+2025-05-08 16:48:04.783304 test begin: paddle.Tensor.tile(Tensor([29151, 1, 32],"float16"), list[1,100,1,], )
+[accuracy error] backward  paddle.Tensor.tile(Tensor([29151, 1, 32],"float16"), list[1,100,1,], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 103 / 932832 (0.011%)
+Max absolute difference among violations: 0.02441
+Max relative difference among violations: 10.88
+ ACTUAL: array([[[ 0.1809 ,  6.164  ,  1.355  , ..., -1.445  , -0.1475 ,
+         -0.458  ]],
+...
+ DESIRED: array([[[ 0.1846 ,  6.164  ,  1.358  , ..., -1.444  , -0.1461 ,
+         -0.4595 ]],
+...

@@ -1,0 +1,138 @@
+paddle.linalg.eigvals(Tensor([128, 128],"complex128"), name="large_x", )
+paddle.linalg.eigvals(Tensor([128, 128],"complex64"), name="large_x", )
+paddle.linalg.eigvals(Tensor([128, 128],"float32"), name="large_x", )
+paddle.linalg.eigvals(Tensor([128, 128],"float64"), name="large_x", )
+paddle.linalg.eigvals(Tensor([6, 6],"complex128"), name="small_x", )
+paddle.linalg.eigvals(Tensor([6, 6],"complex64"), name="small_x", )
+paddle.linalg.eigvals(Tensor([6, 6],"float32"), name="small_x", )
+paddle.linalg.eigvals(x=Tensor([2, 4, 4],"float64"), )
+paddle.linalg.eigvals(x=Tensor([4, 4],"float32"), )
+
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-07 08:08:07.743824 test begin: paddle.linalg.eigvals(Tensor([128, 128],"complex128"), name="large_x", )
+W0507 08:08:13.404963  9311 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0507 08:08:13.405963  9311 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] paddle.linalg.eigvals(Tensor([128, 128],"complex128"), name="large_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 101 / 128 (78.9%)
+Max absolute difference: 6.31680991
+Max relative difference: 3.83779426
+ x: array([ 1.423792+3.035569e+00j,  1.423792-3.035569e+00j,
+       -3.2135  +5.827397e-01j, -3.2135  -5.827397e-01j,
+       -0.549221+3.158405e+00j, -1.05784 +2.949162e+00j,...
+ y: array([ 1.423792-3.035569e+00j,  1.423792+3.035569e+00j,
+       -3.2135  -5.827397e-01j, -3.2135  +5.827397e-01j,
+       -0.549221-3.158405e+00j,  3.236818-3.010521e-01j,...
+2025-05-07 08:08:44.721140 test begin: paddle.linalg.eigvals(Tensor([128, 128],"complex64"), name="large_x", )
+[accuracy error] paddle.linalg.eigvals(Tensor([128, 128],"complex64"), name="large_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 110 / 128 (85.9%)
+Max absolute difference: 6.264465
+Max relative difference: 2.1165943
+ x: array([-3.514982-1.311302e-06j,  1.228082+3.132232e+00j,
+        1.228083-3.132235e+00j, -1.469324-2.812167e+00j,
+       -1.469325+2.812161e+00j, -1.272215-2.850759e+00j,...
+ y: array([-3.514982+0.000000e+00j,  1.228077-3.132232e+00j,
+        1.228081+3.132224e+00j,  0.418026-3.083053e+00j,
+       -1.469328-2.812165e+00j, -1.27222 -2.850763e+00j,...
+2025-05-07 08:08:45.080988 test begin: paddle.linalg.eigvals(Tensor([128, 128],"float32"), name="large_x", )
+[accuracy error] paddle.linalg.eigvals(Tensor([128, 128],"float32"), name="large_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 78 / 128 (60.9%)
+Max absolute difference: 5.995053
+Max relative difference: 2.0120327
+ x: array([ 3.234774+0.207339j,  3.234774-0.207339j,  3.027482+0.919197j,
+        3.027482-0.919197j, -1.746336+2.947483j, -1.746336-2.947483j,
+       -2.879765+1.594799j, -2.879765-1.594799j, -2.240332+2.351797j,...
+ y: array([ 3.234781+0.207341j,  3.234781-0.207341j,  3.027486+0.919196j,
+        3.027486-0.919196j, -1.746337+2.947487j, -1.746337-2.947487j,
+       -2.879766+1.5948j  , -2.879766-1.5948j  , -2.240335+2.3518j  ,...
+2025-05-07 08:08:45.290923 test begin: paddle.linalg.eigvals(Tensor([128, 128],"float64"), name="large_x", )
+[accuracy error] paddle.linalg.eigvals(Tensor([128, 128],"float64"), name="large_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 101 / 128 (78.9%)
+Max absolute difference: 5.74096355
+Max relative difference: 2.61917506
+ x: array([ 3.080535e+00+1.47281j ,  3.080535e+00-1.47281j ,
+       -3.298424e+00+0.768678j, -3.298424e+00-0.768678j,
+        2.875569e-01+3.268718j,  2.875569e-01-3.268718j,...
+ y: array([ 3.080535e+00+1.47281j ,  3.080535e+00-1.47281j ,
+       -3.298424e+00+0.768678j, -3.298424e+00-0.768678j,
+        2.875569e-01+3.268718j,  2.875569e-01-3.268718j,...
+2025-05-07 08:08:45.508133 test begin: paddle.linalg.eigvals(Tensor([6, 6],"complex128"), name="small_x", )
+[accuracy error] paddle.linalg.eigvals(Tensor([6, 6],"complex128"), name="small_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2 / 6 (33.3%)
+Max absolute difference: 0.06015795
+Max relative difference: 0.08185651
+ x: array([-0.397277+0.634437j, -0.397277-0.634437j,  0.057521+0.j      ,
+        0.312183+0.j      ,  0.795078+0.j      ,  0.73492 +0.j      ])
+ y: array([-0.397277+0.634437j, -0.397277-0.634437j,  0.057521+0.j      ,
+        0.312183+0.j      ,  0.73492 +0.j      ,  0.795078+0.j      ])
+2025-05-07 08:08:45.638248 test begin: paddle.linalg.eigvals(Tensor([6, 6],"complex64"), name="small_x", )
+[accuracy error] paddle.linalg.eigvals(Tensor([6, 6],"complex64"), name="small_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 6 / 6 (100%)
+Max absolute difference: 1.0706364
+Max relative difference: 4.150612
+ x: array([ 0.490292+4.491890e-01j,  0.490292-4.491889e-01j,
+        0.522004-6.686610e-09j,  0.163985+3.896324e-09j,
+       -0.51258 +7.434259e-02j, -0.51258 -7.434251e-02j], dtype=complex64)
+ y: array([-0.51258 +0.074343j, -0.51258 -0.074343j,  0.490292+0.449189j,
+        0.490292-0.449189j,  0.163985+0.j      ,  0.522005+0.j      ],
+      dtype=complex64)
+2025-05-07 08:08:45.780802 test begin: paddle.linalg.eigvals(Tensor([6, 6],"float32"), name="small_x", )
+[accuracy error] paddle.linalg.eigvals(Tensor([6, 6],"float32"), name="small_x", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2 / 6 (33.3%)
+Max absolute difference: 0.4213178
+Max relative difference: 7.277177
+ x: array([ 0.133789+0.651844j,  0.133789-0.651844j, -0.370145+0.412312j,
+       -0.370145-0.412312j, -0.057896+0.j      , -0.479213+0.j      ],
+      dtype=complex64)
+ y: array([ 0.133789+0.651844j,  0.133789-0.651844j, -0.370145+0.412312j,
+       -0.370145-0.412312j, -0.479213+0.j      , -0.057896+0.j      ],
+      dtype=complex64)
+2025-05-07 08:08:45.909503 test begin: paddle.linalg.eigvals(x=Tensor([2, 4, 4],"float64"), )
+[accuracy error] paddle.linalg.eigvals(x=Tensor([2, 4, 4],"float64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 8 (50%)
+Max absolute difference: 0.84311821
+Max relative difference: 2.93960619
+ x: array([[ 0.561656+0.274402j,  0.561656-0.274402j, -0.265149+0.109352j,
+        -0.265149-0.109352j],
+       [-0.464782+0.j      ,  0.28477 +0.285812j,  0.28477 -0.285812j,
+        -0.014247+0.j      ]])
+ y: array([[-0.265149+0.109352j, -0.265149-0.109352j,  0.561656+0.274402j,
+         0.561656-0.274402j],
+       [-0.464782+0.j      ,  0.28477 +0.285812j,  0.28477 -0.285812j,
+        -0.014247+0.j      ]])
+2025-05-07 08:08:46.050727 test begin: paddle.linalg.eigvals(x=Tensor([4, 4],"float32"), )
+[accuracy error] paddle.linalg.eigvals(x=Tensor([4, 4],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 4 (100%)
+Max absolute difference: 0.8231266
+Max relative difference: 2.581495
+ x: array([0.665133+0.j      , 0.23216 +0.j      , 0.081009+0.579945j,
+       0.081009-0.579945j], dtype=complex64)
+ y: array([0.081009+0.579945j, 0.081009-0.579945j, 0.23216 +0.j      ,
+       0.665133+0.j      ], dtype=complex64)
