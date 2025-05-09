@@ -6017,9 +6017,6 @@
     },
     "paddle.round": {
         "torch_api": "torch.round",
-        "set_defaults":{
-            "name":"None"
-        },
         "paddle_torch_args_map": {
             "x": "input"
         }
