@@ -581,6 +581,25 @@ if data_format == "NDHWC":
 
 
 # b
+class BinaryCrossEntropyRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+_kwargs = {}
+for paddle_param, torch_param in {
+    "input": "input",
+    "label": "target",
+    "weight": "weight",
+    "reduction": "reduction"
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]
+if "weight" in _kwargs and _kwargs["weight"] is not None :
+    _kwargs["weight"] = _kwargs["weight"].detach()
+"""
+        core = "result = torch.nn.functional.binary_cross_entropy(**_kwargs)"
+        code = Code(preprocess = pre.splitlines(),core = core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+    
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

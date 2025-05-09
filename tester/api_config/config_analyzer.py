@@ -948,10 +948,7 @@ class TensorConfig:
                     self.numpy_tensor = numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
             
             elif api_config.api_name == 'paddle.nn.functional.binary_cross_entropy':
-                if index==0 or key=='input':
-                    self.numpy_tensor = numpy.random.rand(*self.shape).astype(self.dtype)
-                elif index==1 or key=='label':
-                    self.numpy_tensor = numpy.random.randint(0,2,size=self.shape).astype(self.dtype)
+                self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
             
             elif api_config.api_name == "paddle.nn.functional.embedding":
                 if self.check_arg(api_config, 0, "x") or self.check_arg(api_config, 0, "ids"):
