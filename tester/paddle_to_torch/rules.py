@@ -236,6 +236,7 @@ class GenericRule(BaseRule):
                 code.append(
                     "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
                 )
+                code.append("_args = list(args[1:])")
                 if self.is_attribute:
                     code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
                     return ConvertResult.success(paddle_api, code)
@@ -243,7 +244,8 @@ class GenericRule(BaseRule):
                 paddle_api.endswith("_") and not paddle_api.endswith("__")
             ) or paddle_api == "paddle.Tensor.__setitem__"
 
-            code.append("_args = args[1:]")
+            if not is_tensor_method:
+                code.append("_args = []")
             if self.torch_args:
                 for arg in self.torch_args:
                     code.append(f"_args.extend([{self._format_arg(arg)}])")
@@ -2221,6 +2223,13 @@ if act is not None:
         result = torch.softmax(result, dim=-1)
 """
         code = Code(preprocess=defaults_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class ShapeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = torch.tensor(input.shape)"
+        code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 

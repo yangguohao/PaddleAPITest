@@ -314,7 +314,7 @@
     "paddle.Tensor.is_complex": {
         "torch_api": "torch.Tensor.is_complex"
     },
-    "paddle.increment":{
+    "paddle.increment": {
         "Rule": "IncrementRule"
     },
     "j": "API started with 'j' should be placed here",
@@ -489,6 +489,36 @@
     },
     "paddle.multiplex": {
         "Rule": "MultiplexRule"
+    },
+    "paddle.max": {
+        "torch_api": "torch.max",
+        "set_defaults": {
+            "axis": "None"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "tuple(axis) if isinstance(axis, list) else axis"
+        }
+    },
+    "paddle.min": {
+        "torch_api": "torch.min",
+        "set_defaults": {
+            "axis": "None"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "tuple(axis) if isinstance(axis, list) else axis"
+        }
+    },
+    "paddle.meshgrid": {
+        "torch_api": "torch.meshgrid",
+        "torch_args": ["*args"]
     },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
@@ -683,7 +713,7 @@
         "torch_kwargs": {
             "approximate": "'tanh' if {approximate} else 'none'"
         }
-  },
+    },
     "paddle.nonzero": {
         "torch_api": "torch.argwhere",
         "paddle_torch_args_map": {
@@ -969,7 +999,7 @@
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
     },
-    "paddle.scale":{
+    "paddle.scale": {
         "Rule": "ScaleRule",
         "set_defaults": {
             "scale": 1.0,
@@ -978,7 +1008,7 @@
             "act": "None"
         }
     },
-    "paddle.Tensor.scale":{
+    "paddle.Tensor.scale": {
         "Rule": "ScaleRule",
         "set_defaults": {
             "scale": 1.0,
@@ -987,7 +1017,7 @@
             "act": "None"
         }
     },
-    "paddle.searchsorted":{
+    "paddle.searchsorted": {
         "torch_api": "torch.searchsorted",
         "paddle_torch_args_map": {
             "sorted_sequence": "sorted_sequence",
@@ -995,6 +1025,9 @@
             "out_int32": "out_int32",
             "right": "right"
         }
+    },
+    "paddle.shape": {
+        "Rule": "ShapeRule"
     },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
