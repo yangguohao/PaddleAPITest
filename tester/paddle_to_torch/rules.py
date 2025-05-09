@@ -5,8 +5,6 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Union
 
-from PaddleAPITest.tester.paddle_to_torch.rules import ConvertResult
-
 
 @dataclass
 class Code:
@@ -2485,7 +2483,7 @@ if isinstance(shape,torch.Tensor):
             li.append(i.item())
         shape = li
 if dtype is None:
-    result = torch.ones(shape)
+    result = torch.zeros(shape)
 else:
     if isinstance(dtype, str):
         dtype = getattr(torch, dtype)
