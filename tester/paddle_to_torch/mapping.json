@@ -888,6 +888,9 @@
             "y": "other"
         }
     },
+    "paddle.Tensor.reshape": {
+        "Rule": "ReshapeRule"
+    },   
     "paddle.reverse":{
         "Rule":"ReverseRule"
     },
@@ -950,7 +953,19 @@
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
     },
+    "paddle.slice":{
+        "Rule": "SliceRule"
+    },
+    "paddle.split":{
+       "Rule": "SplitRule"
+    },
     "t": "API started with 't' should be placed here",
+    "paddle.tanh":{
+        "torch_api": "torch.tanh",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.topk":{
         "torch_api": "torch.topk",
         "paddle_torch_args_map": {
@@ -970,9 +985,15 @@
         "Rule": "Distribute_fpn_proposalsRule"
     },
     "w": "API started with 'w' should be placed here",
+    "paddle.where":{
+        "Rule":"WhereRule"
+    },
     "x": "API started with 'x' should be placed here",
     "y": "API started with 'y' should be placed here",
     "z": "API started with 'z' should be placed here",
+    "paddle.zeros":{
+        "Rule": "ZerosRule"
+    },
     "paddle.Tensor.zero_":{
         "torch_api": "torch.Tensor.zero_"
     },

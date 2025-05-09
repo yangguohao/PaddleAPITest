@@ -1,0 +1,2 @@
+paddle.prod(Tensor([10, 10, 5],"float32"), axis=1, dtype="int64", )
+paddle.prod(Tensor([10, 10, 5],"float32"), axis=1, keepdim=True, dtype="int64", )
