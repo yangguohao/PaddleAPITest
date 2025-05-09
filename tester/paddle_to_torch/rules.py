@@ -2135,11 +2135,11 @@ if mode == "r":
 # r
 class RankRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
-result = torch.tensor(input.dim(),dtype=torch.int64)
-"""
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code, "result")
+        core = f"result = torch.tensor(input.dim(),dtype=torch.int64)"
+        code = Code(
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class Reduce_asRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2179,11 +2179,6 @@ result = torch.flip(x,dim)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
-        core = f"result = torch.tensor(input.dim(),dtype=torch.int64)"
-        code = Code(
-            core=core.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
 
 class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
