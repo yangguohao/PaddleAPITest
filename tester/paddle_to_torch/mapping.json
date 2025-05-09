@@ -316,10 +316,7 @@
     },
     "i": "API started with 'i' should be placed here",
     "paddle.is_empty": {
-        "Rule": "IsEmptyRule",
-        "set_defaults":{
-            "name":"None"
-        }
+        "Rule": "IsEmptyRule"
     },
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
