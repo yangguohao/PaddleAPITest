@@ -1,0 +1,16 @@
+paddle.nn.functional.max_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], )
+
+2025-05-07 10:41:56.145206 GPU 3 22779 test begin: paddle.nn.functional.max_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], )
+[accuracy error] paddle.nn.functional.max_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2 / 720 (0.278%)
+Max absolute difference among violations: 0.04839565
+Max relative difference among violations: inf
+ ACTUAL: array([[[[[ 0.439378,  0.439378,  0.102114,  0.168007,  0.454375,
+            0.454375,  0.454375,  0.362019],
+          [ 0.439378,  0.439378,  0.388349,  0.463277,  0.463277,...
+ DESIRED: array([[[[[0.439378, 0.439378, 0.102114, 0.168007, 0.454375, 0.454375,
+           0.454375, 0.362019],
+          [0.439378, 0.439378, 0.388349, 0.463277, 0.463277, 0.463277,...
