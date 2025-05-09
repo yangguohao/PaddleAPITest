@@ -248,9 +248,6 @@
     "g": "API started with 'g' should be placed here",
     "paddle.gammaln": {
         "torch_api": "torch.special.gammaln",
-        "set_defaults":{
-            "name":"None"
-        },
         "paddle_torch_args_map": {
             "x": "input"
         }
