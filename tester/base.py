@@ -24,7 +24,7 @@ rand_apis = [
     "paddle.log_normal",
     "paddle.log_normal_",
     "paddle.multinomial",
-    "paddle.normal"
+    "paddle.normal",
     "paddle.normal_",
     "paddle.poisson",
     "paddle.rand",
@@ -74,7 +74,7 @@ no_signature_api_mappings = {
 # Todo: check paddle.prod paddle.cumprod @cangtianhuang
 int_too_big_fail_api = [
     "paddle.Tensor.cumprod",
-    "paddle.pow"
+    "paddle.pow",
     "paddle.Tensor.pow",
     "paddle.lcm",
     "paddle.Tensor.lcm",
