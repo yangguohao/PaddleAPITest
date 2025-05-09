@@ -583,8 +583,6 @@ if data_format == "NDHWC":
 
 
 # b
-
-
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2016,6 +2014,15 @@ if mode == "r":
 
 
 # r
+class RankRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = f"result = torch.tensor(input.dim(),dtype=torch.int64)"
+        code = Code(
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
