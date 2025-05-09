@@ -342,7 +342,6 @@ class APITestBase:
             tmp.append(item.get_numpy_tensor(self.api_config))
         return tuple(tmp) if is_tuple else tmp
 
-
     def gen_numpy_input(self):
         for i, arg_config in enumerate(self.paddle_args_config):
             if isinstance(arg_config, (list, tuple)):
@@ -380,6 +379,12 @@ class APITestBase:
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
 
+        # reuse gen_numpy_input() to initialize paddle tensors, which has three considerations: @xuyimeng
+        # 1. Tensor initialization is based on passing index and key when calling get_numpy_tensor function. Currently, gen_numpy_input passes at least one of index and key to ensure that the tensor of the api can be initialized correctly, but gen_paddle_input and gen_torch_input do not pass, and cannot ensure that the tensor is initialized correctly
+        # 2. Because gen_paddle_input and gen_torch_input naturally rely on the initialized numpy_tensor as the initialization input, gen_paddle_input and gen_torch_input can be considered as the encapsulation of gen_numpy_input, and the details of passing index and key to the upper layer are shielded. 
+        # 3. At the same time, this also avoids the need to change the index and key passing to gen_paddle_input and gen_torch_input at present
+        self.gen_numpy_input()
+        
         for arg_config in self.paddle_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config))
@@ -731,6 +736,10 @@ class APITestBase:
         return tuple(tmp) if is_tuple else tmp
 
     def gen_torch_input(self):
+        # TODO: @xuyimeng
+        # check whether to add self.gen_numpy_input() in gen_torch_input()
+        # curently gen_torch_input() is only used in accuracy.py, which has gen_numpy_input() before self.gen_torch_input(). torch_args_config are only used for paddle.Tensor.__getitem__ and paddle.Tensor.__setitem__, while torch_kwargs_config are used for other apis. The main difference between gen_torch_input() and gen_paddle_input() is that gen_torch_input() init by torch_args_config instead of paddle_args_config which is used in gen_paddle_input() and gen_numpy_input().
+        
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
         for arg_config in self.torch_args_config:
