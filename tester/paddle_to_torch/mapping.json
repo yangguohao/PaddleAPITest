@@ -6134,8 +6134,7 @@
         "set_defaults": {
             "axis": "-1",
             "stable": "False",
-            "descending": "False",
-            "name": "None"
+            "descending": "False"
         },
         "paddle_torch_args_map": {
             "axis": "dim",
