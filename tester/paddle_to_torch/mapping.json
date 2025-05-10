@@ -1027,6 +1027,12 @@
             "sorted": "sorted"
         }
     },
+    "paddle.Tensor.transpose": {
+        "torch_api": "torch.Tensor.permute",
+        "paddle_torch_args_map": {
+            "perm": "dims"
+        }
+    },
     "paddle.Tensor.tile":{
         "torch_api":"torch.Tensor.tile",
         "paddle_torch_args_map": {
