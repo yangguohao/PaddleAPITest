@@ -36382,3 +36382,1056 @@ DESIRED: array(221., dtype=float16)
 2025-04-26 23:54:39.803613 test begin: paddle.concat(x=tuple(Tensor([2, 3, 1, 64],"float16"),Tensor([2, 3, 256, 64],"float32"),), axis=-2, )
 [paddle error] paddle.concat(x=tuple(Tensor([2, 3, 1, 64],"float16"),Tensor([2, 3, 256, 64],"float32"),), axis=-2, )
 (InvalidArgument) The data_type of input tensor in list isn't consistent, the first tensor is float16, but 1th tensor is float32. (at /paddle/paddle/phi/api/lib/kernel_dispatch.cc:128)
+2025-05-04 09:08:53.700802 test begin: paddle.Tensor.__getitem__(Tensor([6, 5, 4],"int64"), list[list[0,2,0,1,3,],list[0,0,1,2,0,],], )
+[accuracy error] paddle.Tensor.__getitem__(Tensor([6, 5, 4],"int64"), list[list[0,2,0,1,3,],list[0,0,1,2,0,],], )
+Not equal to tolerance rtol=0.01, atol=0.01
+(shapes (2, 5, 5, 4), (5, 4) mismatch)
+ACTUAL: array([[[[-26847,  57167,  57652, -19216],
+[ 18158, -34145,  64619, -63900],
+[  5242, -25569,  35810, -54127],...
+DESIRED: array([[-26847,  57167,  57652, -19216],
+[  5191,  16593,  35825,  38279],
+[ 18158, -34145,  64619, -63900],...
+2025-05-04 01:34:37.705010 test begin: paddle.Tensor.__getitem__(Tensor([6, 5, 4],"int64"), list[Tensor([5],"int64"),Tensor([5],"int64"),], )
+[accuracy error] paddle.Tensor.__getitem__(Tensor([6, 5, 4],"int64"), list[Tensor([5],"int64"),Tensor([5],"int64"),], )
+Not equal to tolerance rtol=0.01, atol=0.01
+(shapes (2, 5, 5, 4), (5, 4) mismatch)
+ACTUAL: array([[[[ 41063, -62829,  62731, -63134],
+[-14309, -13952, -23215,  65404],
+[-40902,  33227,  11407, -65276],...
+DESIRED: array([[ 41063, -62829,  62731, -63134],
+[-43177,  60131, -36502, -10020],
+[ 34134,  36452,   4154,  11421],...
+2025-05-04 03:11:53.843809 test begin: paddle.Tensor.__setitem__(Tensor([200, 4],"float32"), Tensor([100],"int64"), Tensor([100, 4],"float32"), )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.Tensor.__setitem__(Tensor([200, 4],"float32"), Tensor([100],"int64"), Tensor([100, 4],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 6 / 800 (0.75%)
+Max absolute difference among violations: 2.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 0.000000e+00,  2.000000e+00,  2.000000e+00,  3.000000e+00],
+[ 2.000000e+00,  0.000000e+00,  1.000000e+00,  2.000000e+00],
+[ 0.000000e+00,  0.000000e+00,  1.000000e+00,  3.000000e+00],...
+DESIRED: array([[ 0.000000e+00,  0.000000e+00,  3.000000e+00,  2.000000e+00],
+[ 1.000000e+00,  2.000000e+00,  3.000000e+00,  2.000000e+00],
+[ 0.000000e+00,  0.000000e+00,  1.000000e+00,  3.000000e+00],...
+2025-05-04 03:11:54.348233 test begin: paddle.Tensor.__setitem__(Tensor([200],"int64"), Tensor([100],"int64"), Tensor([100],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([200],"int64"), Tensor([100],"int64"), Tensor([100],"int64"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 5 / 200 (2.5%)
+Max absolute difference among violations: 114
+Max relative difference among violations: 1.83870968
+ACTUAL: array([    54,     33,     31,     65,     26, -64986,  20139,     17,
+90, -38524, -28887,     96,  27315,    136,    163,  58522,
+-52704, -47709, -45362,  -3796,    146,     23,    147,  54683,...
+DESIRED: array([    54,     33,     31,     65,     26, -64986,  20139,     17,
+90, -38524, -28887,     96,  27315,    136,    163,  58522,
+-52704, -47709, -45362,  -3796,    146,     23,    147,  54683,...
+2025-05-04 03:13:04.050617 test begin: paddle.Tensor.__setitem__(Tensor([3, 3, 5],"float32"), Tensor([3],"int64"), Tensor([3, 3, 1],"float32"), )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.Tensor.__setitem__(Tensor([3, 3, 5],"float32"), Tensor([3],"int64"), Tensor([3, 3, 1],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 2 / 45 (4.44%)
+Max absolute difference among violations: 1.
+Max relative difference among violations: 1.
+ACTUAL: array([[[-0.142444, -0.431725,  0.122944,  0.304467,  0.293337],
+[-0.192258, -0.474809, -0.343436,  0.217491, -0.431284],
+[-0.081457, -0.331211,  0.117439, -0.086468,  0.402458]],...
+DESIRED: array([[[-0.142444, -0.431725,  0.122944,  0.304467,  0.293337],
+[-0.192258, -0.474809, -0.343436,  0.217491, -0.431284],
+[-0.081457, -0.331211,  0.117439, -0.086468,  0.402458]],...
+2025-05-04 03:18:04.077262 test begin: paddle.Tensor.__setitem__(Tensor([4, 8, 16, 32],"float32"), Tensor([2],"int64"), Tensor([2, 8, 16, 32],"float32"), )
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.Tensor.__setitem__(Tensor([4, 8, 16, 32],"float32"), Tensor([2],"int64"), Tensor([2, 8, 16, 32],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 872 / 16384 (5.32%)
+Max absolute difference among violations: 3.
+Max relative difference among violations: 2.
+ACTUAL: array([[[[-3.766463e-01,  1.665981e-01,  4.036773e-01, ...,
+1.391638e-01, -1.738789e-01, -2.631164e-01],
+[ 9.319185e-02, -4.213132e-01,  4.856414e-01, ...,...
+DESIRED: array([[[[-3.766463e-01,  1.665981e-01,  4.036773e-01, ...,
+1.391638e-01, -1.738789e-01, -2.631164e-01],
+[ 9.319185e-02, -4.213132e-01,  4.856414e-01, ...,...
+2025-05-04 03:18:22.210125 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([100],"int64"),slice(None,None,None),), Tensor([100, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([100],"int64"),slice(None,None,None),), Tensor([100, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 40 / 368480 (0.0109%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 2.      ,  1.      ,  5.      , ...,  4.      ,  2.      ,
+0.      ],
+[ 2.      ,  0.      ,  6.      , ...,  2.      ,  2.      ,...
+DESIRED: array([[ 1.      ,  1.      ,  4.      , ...,  5.      ,  0.      ,
+6.      ],
+[ 5.      ,  4.      ,  5.      , ...,  6.      ,  4.      ,...
+2025-05-04 03:18:22.406324 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([103],"int64"),slice(None,None,None),), Tensor([103, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([103],"int64"),slice(None,None,None),), Tensor([103, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 39 / 368480 (0.0106%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 2.      ,  6.      ,  5.      , ...,  6.      ,  1.      ,
+0.      ],
+[ 3.      ,  5.      ,  0.      , ...,  6.      ,  3.      ,...
+DESIRED: array([[ 0.      ,  1.      ,  5.      , ...,  0.      ,  3.      ,
+5.      ],
+[ 0.      ,  1.      ,  0.      , ...,  6.      ,  6.      ,...
+2025-05-04 03:18:22.603220 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([108],"int64"),slice(None,None,None),), Tensor([108, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([108],"int64"),slice(None,None,None),), Tensor([108, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 40 / 368480 (0.0109%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 4.      ,  4.      ,  0.      , ...,  3.      ,  6.      ,
+3.      ],
+[ 5.      ,  0.      ,  1.      , ...,  1.      ,  0.      ,...
+DESIRED: array([[ 4.      ,  4.      ,  5.      , ...,  3.      ,  3.      ,
+2.      ],
+[ 4.      ,  0.      ,  6.      , ...,  5.      ,  6.      ,...
+2025-05-04 03:18:22.798568 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([10],"int64"),slice(None,None,None),), Tensor([10, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([10],"int64"),slice(None,None,None),), Tensor([10, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 13 / 368480 (0.00353%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 1.000000e+00,  1.000000e+00,  6.000000e+00, ...,  3.000000e+00,
+0.000000e+00,  1.000000e+00],
+[ 3.820147e-01,  3.090889e-01, -3.013190e-01, ...,  2.643481e-02,...
+DESIRED: array([[ 3.000000e+00,  1.000000e+00,  6.000000e+00, ...,  3.000000e+00,
+0.000000e+00,  1.000000e+00],
+[ 3.820147e-01,  3.090889e-01, -3.013190e-01, ...,  2.643481e-02,...
+2025-05-04 03:18:22.994387 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([111],"int64"),slice(None,None,None),), Tensor([111, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([111],"int64"),slice(None,None,None),), Tensor([111, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 43 / 368480 (0.0117%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.      ,  6.      ,  0.      , ...,  4.      ,  6.      ,
+1.      ],
+[ 3.      ,  6.      ,  5.      , ...,  5.      ,  5.      ,...
+DESIRED: array([[ 1.      ,  1.      ,  2.      , ...,  2.      ,  2.      ,
+2.      ],
+[ 1.      ,  6.      ,  3.      , ...,  2.      ,  2.      ,...
+2025-05-04 03:18:23.188427 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([11],"int64"),slice(None,None,None),), Tensor([11, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([11],"int64"),slice(None,None,None),), Tensor([11, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 7 / 368480 (0.0019%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 5.      ,  0.      ,  0.      , ...,  5.      ,  2.      ,
+5.      ],
+[ 6.      ,  5.      ,  2.      , ...,  1.      ,  1.      ,...
+DESIRED: array([[ 6.      ,  6.      ,  5.      , ...,  6.      ,  1.      ,
+3.      ],
+[ 6.      ,  5.      ,  2.      , ...,  1.      ,  1.      ,...
+2025-05-04 03:18:23.567856 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([13],"int64"),slice(None,None,None),), Tensor([13, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([13],"int64"),slice(None,None,None),), Tensor([13, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 22 / 368480 (0.00597%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 1.      ,  6.      ,  4.      , ...,  5.      ,  5.      ,
+5.      ],
+[ 0.      ,  4.      ,  3.      , ...,  6.      ,  0.      ,...
+DESIRED: array([[ 4.      ,  1.      ,  4.      , ...,  0.      ,  1.      ,
+3.      ],
+[ 0.      ,  1.      ,  4.      , ...,  3.      ,  1.      ,...
+2025-05-04 03:18:23.757754 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([14],"int64"),slice(None,None,None),), Tensor([14, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([14],"int64"),slice(None,None,None),), Tensor([14, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 5 / 368480 (0.00136%)
+Max absolute difference among violations: 4.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 2.000000e+00,  6.000000e+00,  5.000000e+00, ...,  1.000000e+00,
+5.000000e+00,  3.000000e+00],
+[ 4.000000e+00,  4.000000e+00,  0.000000e+00, ...,  3.000000e+00,...
+DESIRED: array([[ 2.000000e+00,  6.000000e+00,  5.000000e+00, ...,  1.000000e+00,
+5.000000e+00,  3.000000e+00],
+[ 4.000000e+00,  4.000000e+00,  0.000000e+00, ...,  3.000000e+00,...
+2025-05-04 03:18:23.948052 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([15],"int64"),slice(None,None,None),), Tensor([15, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([15],"int64"),slice(None,None,None),), Tensor([15, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 7 / 368480 (0.0019%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 0.      ,  6.      ,  6.      , ...,  4.      ,  3.      ,
+0.      ],
+[ 4.      ,  0.      ,  2.      , ...,  2.      ,  1.      ,...
+DESIRED: array([[ 0.      ,  6.      ,  6.      , ...,  5.      ,  3.      ,
+2.      ],
+[ 4.      ,  0.      ,  2.      , ...,  2.      ,  1.      ,...
+2025-05-04 03:18:24.140820 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([16],"int64"),slice(None,None,None),), Tensor([16, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([16],"int64"),slice(None,None,None),), Tensor([16, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 24 / 368480 (0.00651%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.      ,  4.      ,  3.      , ...,  3.      ,  0.      ,
+4.      ],
+[ 0.341356, -0.17101 ,  0.047919, ...,  0.335381,  0.408037,...
+DESIRED: array([[ 6.      ,  4.      ,  3.      , ...,  3.      ,  0.      ,
+4.      ],
+[ 0.341356, -0.17101 ,  0.047919, ...,  0.335381,  0.408037,...
+2025-05-04 03:18:24.255521 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([17],"int64"),slice(None,None,None),), Tensor([17, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([17],"int64"),slice(None,None,None),), Tensor([17, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 8 / 368480 (0.00217%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.000000e+00,  4.000000e+00,  0.000000e+00, ...,  2.000000e+00,
+2.000000e+00,  2.000000e+00],
+[ 0.000000e+00,  6.000000e+00,  6.000000e+00, ...,  2.000000e+00,...
+DESIRED: array([[ 4.000000e+00,  0.000000e+00,  0.000000e+00, ...,  0.000000e+00,
+2.000000e+00,  2.000000e+00],
+[ 5.000000e+00,  1.000000e+00,  2.000000e+00, ...,  5.000000e+00,...
+2025-05-04 03:18:24.440576 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([18],"int64"),slice(None,None,None),), Tensor([18, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([18],"int64"),slice(None,None,None),), Tensor([18, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 9 / 368480 (0.00244%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 3.      ,  1.      ,  0.      , ...,  0.      ,  3.      ,
+4.      ],
+[ 1.      ,  5.      ,  6.      , ...,  2.      ,  3.      ,...
+DESIRED: array([[ 3.      ,  1.      ,  0.      , ...,  0.      ,  3.      ,
+4.      ],
+[ 1.      ,  5.      ,  6.      , ...,  2.      ,  3.      ,...
+2025-05-04 03:18:24.627852 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([19],"int64"),slice(None,None,None),), Tensor([19, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([19],"int64"),slice(None,None,None),), Tensor([19, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 24 / 368480 (0.00651%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  5.      ,  4.      , ...,  1.      ,  4.      ,
+4.      ],
+[ 0.      ,  0.      ,  5.      , ...,  6.      ,  2.      ,...
+DESIRED: array([[ 4.      ,  1.      ,  4.      , ...,  1.      ,  4.      ,
+4.      ],
+[ 0.      ,  0.      ,  5.      , ...,  6.      ,  2.      ,...
+2025-05-04 03:18:24.989589 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([21],"int64"),slice(None,None,None),), Tensor([21, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([21],"int64"),slice(None,None,None),), Tensor([21, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 15 / 368480 (0.00407%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 4.      ,  2.      ,  6.      , ...,  2.      ,  2.      ,
+0.      ],
+[ 5.      ,  6.      ,  0.      , ...,  0.      ,  3.      ,...
+DESIRED: array([[ 4.      ,  2.      ,  4.      , ...,  1.      ,  5.      ,
+5.      ],
+[ 4.      ,  6.      ,  0.      , ...,  0.      ,  3.      ,...
+2025-05-04 03:18:25.171994 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([22],"int64"),slice(None,None,None),), Tensor([22, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([22],"int64"),slice(None,None,None),), Tensor([22, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 25 / 368480 (0.00678%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 1.      ,  6.      ,  1.      , ...,  2.      ,  2.      ,
+2.      ],
+[ 3.      ,  4.      ,  5.      , ...,  4.      ,  6.      ,...
+DESIRED: array([[ 3.      ,  0.      ,  1.      , ...,  2.      ,  2.      ,
+2.      ],
+[ 4.      ,  3.      ,  5.      , ...,  5.      ,  6.      ,...
+2025-05-04 03:18:25.360631 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([23],"int64"),slice(None,None,None),), Tensor([23, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([23],"int64"),slice(None,None,None),), Tensor([23, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 31 / 368480 (0.00841%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 1.000000e+00,  4.000000e+00,  6.000000e+00, ...,  3.000000e+00,
+6.000000e+00,  2.000000e+00],
+[ 6.000000e+00,  0.000000e+00,  3.000000e+00, ...,  2.000000e+00,...
+DESIRED: array([[ 2.000000e+00,  0.000000e+00,  2.000000e+00, ...,  3.000000e+00,
+6.000000e+00,  3.000000e+00],
+[ 6.000000e+00,  0.000000e+00,  6.000000e+00, ...,  0.000000e+00,...
+2025-05-04 03:18:25.550616 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([24],"int64"),slice(None,None,None),), Tensor([24, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([24],"int64"),slice(None,None,None),), Tensor([24, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 27 / 368480 (0.00733%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 2.      ,  5.      ,  3.      , ...,  0.      ,  4.      ,
+5.      ],
+[ 5.      ,  0.      ,  0.      , ...,  5.      ,  0.      ,...
+DESIRED: array([[ 0.000000e+00,  3.000000e+00,  6.000000e+00, ...,  1.000000e+00,
+3.000000e+00,  3.000000e+00],
+[ 4.000000e+00,  5.000000e+00,  2.000000e+00, ...,  4.000000e+00,...
+2025-05-04 03:18:25.748597 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([25],"int64"),slice(None,None,None),), Tensor([25, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([25],"int64"),slice(None,None,None),), Tensor([25, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 16 / 368480 (0.00434%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 5.      ,  4.      ,  0.      , ...,  5.      ,  0.      ,
+1.      ],
+[ 4.      ,  4.      ,  2.      , ...,  2.      ,  5.      ,...
+DESIRED: array([[ 5.      ,  6.      ,  6.      , ...,  1.      ,  3.      ,
+2.      ],
+[ 4.      ,  4.      ,  2.      , ...,  2.      ,  5.      ,...
+2025-05-04 03:18:25.943574 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([26],"int64"),slice(None,None,None),), Tensor([26, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([26],"int64"),slice(None,None,None),), Tensor([26, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 21 / 368480 (0.0057%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 3.000000e+00,  2.000000e+00,  4.000000e+00, ...,  4.000000e+00,
+6.000000e+00,  3.000000e+00],
+[ 0.000000e+00,  5.000000e+00,  4.000000e+00, ...,  6.000000e+00,...
+DESIRED: array([[ 2.000000e+00,  6.000000e+00,  2.000000e+00, ...,  5.000000e+00,
+5.000000e+00,  0.000000e+00],
+[ 5.000000e+00,  2.000000e+00,  2.000000e+00, ...,  0.000000e+00,...
+2025-05-04 03:18:26.143119 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([27],"int64"),slice(None,None,None),), Tensor([27, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([27],"int64"),slice(None,None,None),), Tensor([27, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 11 / 368480 (0.00299%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 2.      ,  5.      ,  6.      , ...,  2.      ,  6.      ,
+2.      ],
+[ 1.      ,  0.      ,  2.      , ...,  4.      ,  2.      ,...
+DESIRED: array([[ 2.      ,  5.      ,  6.      , ...,  2.      ,  6.      ,
+2.      ],
+[ 1.      ,  0.      ,  2.      , ...,  4.      ,  2.      ,...
+2025-05-04 03:18:26.338060 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([28],"int64"),slice(None,None,None),), Tensor([28, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([28],"int64"),slice(None,None,None),), Tensor([28, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 12 / 368480 (0.00326%)
+Max absolute difference among violations: 4.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 6.      ,  5.      ,  4.      , ...,  2.      ,  0.      ,
+6.      ],
+[ 0.      ,  6.      ,  5.      , ...,  1.      ,  4.      ,...
+DESIRED: array([[ 6.      ,  1.      ,  3.      , ...,  1.      ,  0.      ,
+4.      ],
+[ 0.      ,  6.      ,  5.      , ...,  1.      ,  4.      ,...
+2025-05-04 03:18:26.530171 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([29],"int64"),slice(None,None,None),), Tensor([29, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([29],"int64"),slice(None,None,None),), Tensor([29, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 13 / 368480 (0.00353%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 0.      ,  5.      ,  3.      , ...,  4.      ,  1.      ,
+5.      ],
+[ 1.      ,  5.      ,  0.      , ...,  0.      ,  5.      ,...
+DESIRED: array([[ 0.      ,  5.      ,  3.      , ...,  4.      ,  1.      ,
+5.      ],
+[ 1.      ,  5.      ,  0.      , ...,  0.      ,  5.      ,...
+2025-05-04 03:18:26.917038 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([30],"int64"),slice(None,None,None),), Tensor([30, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([30],"int64"),slice(None,None,None),), Tensor([30, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 21 / 368480 (0.0057%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 2.      ,  4.      ,  2.      , ...,  2.      ,  0.      ,
+2.      ],
+[ 5.      ,  1.      ,  6.      , ...,  3.      ,  5.      ,...
+DESIRED: array([[ 5.      ,  2.      ,  4.      , ...,  1.      ,  1.      ,
+5.      ],
+[ 5.      ,  1.      ,  6.      , ...,  3.      ,  5.      ,...
+2025-05-04 03:18:27.152732 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([31],"int64"),slice(None,None,None),), Tensor([31, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([31],"int64"),slice(None,None,None),), Tensor([31, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 28 / 368480 (0.0076%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 4.      ,  1.      ,  4.      , ...,  3.      ,  0.      ,
+2.      ],
+[ 2.      ,  6.      ,  3.      , ...,  3.      ,  0.      ,...
+DESIRED: array([[ 4.      ,  1.      ,  4.      , ...,  3.      ,  0.      ,
+2.      ],
+[ 5.      ,  3.      ,  4.      , ...,  3.      ,  1.      ,...
+2025-05-04 03:18:27.349915 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([32],"int64"),slice(None,None,None),), Tensor([32, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([32],"int64"),slice(None,None,None),), Tensor([32, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 27 / 368480 (0.00733%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 5.      ,  5.      ,  6.      , ...,  1.      ,  6.      ,
+2.      ],
+[ 2.      ,  1.      ,  2.      , ...,  6.      ,  5.      ,...
+DESIRED: array([[ 5.      ,  5.      ,  1.      , ...,  2.      ,  2.      ,
+0.      ],
+[ 2.      ,  1.      ,  2.      , ...,  6.      ,  5.      ,...
+2025-05-04 03:18:27.549273 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([33],"int64"),slice(None,None,None),), Tensor([33, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([33],"int64"),slice(None,None,None),), Tensor([33, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 11 / 368480 (0.00299%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  1.      ,  2.      , ...,  0.      ,  3.      ,
+3.      ],
+[ 6.      ,  2.      ,  5.      , ...,  0.      ,  6.      ,...
+DESIRED: array([[ 3.      ,  1.      ,  2.      , ...,  0.      ,  3.      ,
+3.      ],
+[ 6.      ,  2.      ,  5.      , ...,  3.      ,  1.      ,...
+2025-05-04 03:18:27.937548 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([35],"int64"),slice(None,None,None),), Tensor([35, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([35],"int64"),slice(None,None,None),), Tensor([35, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 12 / 368480 (0.00326%)
+Max absolute difference among violations: 4.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 1.000000e+00,  3.000000e+00,  5.000000e+00, ...,  2.000000e+00,
+4.000000e+00,  4.000000e+00],
+[ 5.000000e+00,  5.000000e+00,  3.000000e+00, ...,  2.000000e+00,...
+DESIRED: array([[ 0.000000e+00,  3.000000e+00,  5.000000e+00, ...,  0.000000e+00,
+1.000000e+00,  3.000000e+00],
+[ 5.000000e+00,  5.000000e+00,  3.000000e+00, ...,  2.000000e+00,...
+2025-05-04 03:18:28.121740 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([36],"int64"),slice(None,None,None),), Tensor([36, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([36],"int64"),slice(None,None,None),), Tensor([36, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 7 / 368480 (0.0019%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 4.000000e+00,  4.000000e+00,  0.000000e+00, ...,  6.000000e+00,
+3.000000e+00,  5.000000e+00],
+[ 6.000000e+00,  1.000000e+00,  6.000000e+00, ...,  4.000000e+00,...
+DESIRED: array([[ 4.000000e+00,  4.000000e+00,  0.000000e+00, ...,  6.000000e+00,
+3.000000e+00,  5.000000e+00],
+[ 6.000000e+00,  1.000000e+00,  6.000000e+00, ...,  4.000000e+00,...
+2025-05-04 03:18:28.307470 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([37],"int64"),slice(None,None,None),), Tensor([37, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([37],"int64"),slice(None,None,None),), Tensor([37, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 11 / 368480 (0.00299%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 3.      ,  4.      ,  6.      , ...,  6.      ,  0.      ,
+5.      ],
+[ 5.      ,  1.      ,  3.      , ...,  3.      ,  5.      ,...
+DESIRED: array([[ 3.      ,  4.      ,  6.      , ...,  6.      ,  0.      ,
+5.      ],
+[ 5.      ,  1.      ,  3.      , ...,  3.      ,  5.      ,...
+2025-05-04 03:18:28.493988 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([38],"int64"),slice(None,None,None),), Tensor([38, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([38],"int64"),slice(None,None,None),), Tensor([38, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 12 / 368480 (0.00326%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 5.000000e+00,  6.000000e+00,  1.000000e+00, ...,  1.000000e+00,
+6.000000e+00,  4.000000e+00],
+[ 4.000000e+00,  1.000000e+00,  6.000000e+00, ...,  4.000000e+00,...
+DESIRED: array([[ 6.000000e+00,  6.000000e+00,  2.000000e+00, ...,  6.000000e+00,
+3.000000e+00,  0.000000e+00],
+[ 6.000000e+00,  6.000000e+00,  5.000000e+00, ...,  2.000000e+00,...
+2025-05-04 03:18:28.685164 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([39],"int64"),slice(None,None,None),), Tensor([39, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([39],"int64"),slice(None,None,None),), Tensor([39, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 12 / 368480 (0.00326%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 6.000000e+00,  5.000000e+00,  0.000000e+00, ...,  6.000000e+00,
+0.000000e+00,  5.000000e+00],
+[ 3.000000e+00,  1.000000e+00,  6.000000e+00, ...,  2.000000e+00,...
+DESIRED: array([[ 6.000000e+00,  5.000000e+00,  0.000000e+00, ...,  6.000000e+00,
+0.000000e+00,  5.000000e+00],
+[ 3.000000e+00,  2.000000e+00,  4.000000e+00, ...,  1.000000e+00,...
+2025-05-04 03:18:29.073711 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([40],"int64"),slice(None,None,None),), Tensor([40, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([40],"int64"),slice(None,None,None),), Tensor([40, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 17 / 368480 (0.00461%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 0.      ,  1.      ,  0.      , ...,  6.      ,  3.      ,
+5.      ],
+[ 3.      ,  0.      ,  5.      , ...,  4.      ,  3.      ,...
+DESIRED: array([[ 6.      ,  5.      ,  1.      , ...,  0.      ,  0.      ,
+2.      ],
+[ 3.      ,  0.      ,  5.      , ...,  0.      ,  2.      ,...
+2025-05-04 03:18:29.251878 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([41],"int64"),slice(None,None,None),), Tensor([41, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([41],"int64"),slice(None,None,None),), Tensor([41, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 7 / 368480 (0.0019%)
+Max absolute difference among violations: 4.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 6.      ,  6.      ,  3.      , ...,  4.      ,  5.      ,
+2.      ],
+[ 2.      ,  2.      ,  0.      , ...,  2.      ,  0.      ,...
+DESIRED: array([[ 6.      ,  6.      ,  3.      , ...,  4.      ,  5.      ,
+2.      ],
+[ 2.      ,  2.      ,  0.      , ...,  2.      ,  0.      ,...
+2025-05-04 03:18:29.444749 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([42],"int64"),slice(None,None,None),), Tensor([42, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([42],"int64"),slice(None,None,None),), Tensor([42, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 15 / 368480 (0.00407%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 5.      ,  6.      ,  4.      , ...,  1.      ,  3.      ,
+6.      ],
+[ 6.      ,  3.      ,  6.      , ...,  0.      ,  6.      ,...
+DESIRED: array([[ 5.      ,  6.      ,  4.      , ...,  1.      ,  3.      ,
+1.      ],
+[ 6.      ,  3.      ,  6.      , ...,  0.      ,  6.      ,...
+2025-05-04 03:18:29.622752 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([43],"int64"),slice(None,None,None),), Tensor([43, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([43],"int64"),slice(None,None,None),), Tensor([43, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 12 / 368480 (0.00326%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 5.      ,  3.      ,  1.      , ...,  3.      ,  3.      ,
+4.      ],
+[ 1.      ,  6.      ,  0.      , ...,  3.      ,  0.      ,...
+DESIRED: array([[ 5.      ,  5.      ,  5.      , ...,  4.      ,  0.      ,
+6.      ],
+[ 1.      ,  6.      ,  0.      , ...,  3.      ,  0.      ,...
+2025-05-04 03:18:29.786539 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([44],"int64"),slice(None,None,None),), Tensor([44, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([44],"int64"),slice(None,None,None),), Tensor([44, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 11 / 368480 (0.00299%)
+Max absolute difference among violations: 4.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 0.000000e+00,  1.000000e+00,  5.000000e+00, ...,  3.000000e+00,
+5.000000e+00,  5.000000e+00],
+[ 2.000000e+00,  0.000000e+00,  4.000000e+00, ...,  5.000000e+00,...
+DESIRED: array([[ 0.000000e+00,  1.000000e+00,  5.000000e+00, ...,  3.000000e+00,
+5.000000e+00,  5.000000e+00],
+[ 5.000000e+00,  1.000000e+00,  0.000000e+00, ...,  1.000000e+00,...
+2025-05-04 03:18:29.983104 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([45],"int64"),slice(None,None,None),), Tensor([45, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([45],"int64"),slice(None,None,None),), Tensor([45, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 11 / 368480 (0.00299%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  3.      ,  2.      , ...,  1.      ,  1.      ,
+4.      ],
+[ 2.      ,  4.      ,  4.      , ...,  2.      ,  6.      ,...
+DESIRED: array([[ 3.      ,  3.      ,  2.      , ...,  1.      ,  1.      ,
+4.      ],
+[ 2.      ,  4.      ,  4.      , ...,  2.      ,  6.      ,...
+2025-05-04 03:18:30.169530 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([46],"int64"),slice(None,None,None),), Tensor([46, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([46],"int64"),slice(None,None,None),), Tensor([46, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 10 / 368480 (0.00271%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 0.      ,  6.      ,  5.      , ...,  2.      ,  4.      ,
+0.      ],
+[ 4.      ,  2.      ,  5.      , ...,  4.      ,  4.      ,...
+DESIRED: array([[ 0.      ,  6.      ,  5.      , ...,  2.      ,  4.      ,
+0.      ],
+[ 1.      ,  1.      ,  5.      , ...,  4.      ,  4.      ,...
+2025-05-04 03:18:30.368836 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([47],"int64"),slice(None,None,None),), Tensor([47, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([47],"int64"),slice(None,None,None),), Tensor([47, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 17 / 368480 (0.00461%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  1.      ,  0.      , ...,  2.      ,  6.      ,
+6.      ],
+[ 4.      ,  2.      ,  1.      , ...,  5.      ,  6.      ,...
+DESIRED: array([[ 0.      ,  3.      ,  5.      , ...,  4.      ,  1.      ,
+3.      ],
+[ 4.      ,  2.      ,  1.      , ...,  1.      ,  3.      ,...
+2025-05-04 03:18:30.729278 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([49],"int64"),slice(None,None,None),), Tensor([49, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([49],"int64"),slice(None,None,None),), Tensor([49, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 17 / 368480 (0.00461%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 2.      ,  6.      ,  1.      , ...,  6.      ,  0.      ,
+5.      ],
+[ 6.      ,  3.      ,  0.      , ...,  6.      ,  4.      ,...
+DESIRED: array([[ 1.      ,  3.      ,  0.      , ...,  5.      ,  4.      ,
+0.      ],
+[ 2.      ,  1.      ,  1.      , ...,  4.      ,  4.      ,...
+2025-05-04 03:18:31.108727 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([50],"int64"),slice(None,None,None),), Tensor([50, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([50],"int64"),slice(None,None,None),), Tensor([50, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 11 / 368480 (0.00299%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 1.000000e+00,  2.000000e+00,  0.000000e+00, ...,  2.000000e+00,
+4.000000e+00,  2.000000e+00],
+[ 0.000000e+00,  2.000000e+00,  0.000000e+00, ...,  1.000000e+00,...
+DESIRED: array([[ 1.000000e+00,  2.000000e+00,  0.000000e+00, ...,  2.000000e+00,
+4.000000e+00,  2.000000e+00],
+[ 0.000000e+00,  2.000000e+00,  0.000000e+00, ...,  1.000000e+00,...
+2025-05-04 03:18:31.283246 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([51],"int64"),slice(None,None,None),), Tensor([51, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([51],"int64"),slice(None,None,None),), Tensor([51, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 25 / 368480 (0.00678%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.      ,  6.      ,  0.      , ...,  5.      ,  4.      ,
+5.      ],
+[ 6.      ,  5.      ,  6.      , ...,  1.      ,  6.      ,...
+DESIRED: array([[ 6.      ,  6.      ,  0.      , ...,  4.      ,  0.      ,
+2.      ],
+[ 6.      ,  5.      ,  6.      , ...,  1.      ,  6.      ,...
+2025-05-04 03:18:31.477436 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([52],"int64"),slice(None,None,None),), Tensor([52, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([52],"int64"),slice(None,None,None),), Tensor([52, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 25 / 368480 (0.00678%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 5.      ,  6.      ,  2.      , ...,  2.      ,  1.      ,
+2.      ],
+[ 3.      ,  0.      ,  2.      , ...,  3.      ,  5.      ,...
+DESIRED: array([[ 1.      ,  2.      ,  3.      , ...,  6.      ,  0.      ,
+4.      ],
+[ 3.      ,  5.      ,  6.      , ...,  0.      ,  4.      ,...
+2025-05-04 03:18:31.645812 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([54],"int64"),slice(None,None,None),), Tensor([54, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([54],"int64"),slice(None,None,None),), Tensor([54, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 24 / 368480 (0.00651%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 5.      ,  4.      ,  2.      , ...,  1.      ,  3.      ,
+1.      ],
+[ 0.      ,  2.      ,  5.      , ...,  1.      ,  0.      ,...
+DESIRED: array([[ 2.      ,  4.      ,  1.      , ...,  0.      ,  6.      ,
+4.      ],
+[ 6.      ,  5.      ,  5.      , ...,  4.      ,  5.      ,...
+2025-05-04 03:18:31.806139 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([55],"int64"),slice(None,None,None),), Tensor([55, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([55],"int64"),slice(None,None,None),), Tensor([55, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 18 / 368480 (0.00488%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 3.      ,  2.      ,  5.      , ...,  1.      ,  6.      ,
+5.      ],
+[ 5.      ,  3.      ,  5.      , ...,  3.      ,  2.      ,...
+DESIRED: array([[ 1.      ,  1.      ,  4.      , ...,  2.      ,  3.      ,
+5.      ],
+[ 5.      ,  3.      ,  5.      , ...,  1.      ,  2.      ,...
+2025-05-04 03:18:31.993145 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([56],"int64"),slice(None,None,None),), Tensor([56, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([56],"int64"),slice(None,None,None),), Tensor([56, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 3 / 368480 (0.000814%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 1.
+ACTUAL: array([[ 4.      ,  1.      ,  5.      , ...,  6.      ,  3.      ,
+1.      ],
+[ 2.      ,  4.      ,  5.      , ...,  3.      ,  0.      ,...
+DESIRED: array([[ 4.      ,  1.      ,  5.      , ...,  6.      ,  3.      ,
+1.      ],
+[ 2.      ,  4.      ,  5.      , ...,  3.      ,  0.      ,...
+2025-05-04 03:18:32.186560 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([57],"int64"),slice(None,None,None),), Tensor([57, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([57],"int64"),slice(None,None,None),), Tensor([57, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 30 / 368480 (0.00814%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  1.      ,  2.      , ...,  5.      ,  6.      ,
+2.      ],
+[ 5.      ,  5.      ,  6.      , ...,  5.      ,  3.      ,...
+DESIRED: array([[ 3.      ,  1.      ,  2.      , ...,  5.      ,  6.      ,
+2.      ],
+[ 6.      ,  4.      ,  0.      , ...,  5.      ,  6.      ,...
+2025-05-04 03:18:32.387061 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([59],"int64"),slice(None,None,None),), Tensor([59, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([59],"int64"),slice(None,None,None),), Tensor([59, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 3 / 368480 (0.000814%)
+Max absolute difference among violations: 4.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 4.      ,  4.      ,  3.      , ...,  5.      ,  3.      ,
+1.      ],
+[ 3.      ,  4.      ,  3.      , ...,  1.      ,  6.      ,...
+DESIRED: array([[ 2.      ,  6.      ,  3.      , ...,  5.      ,  3.      ,
+1.      ],
+[ 3.      ,  4.      ,  3.      , ...,  1.      ,  6.      ,...
+2025-05-04 03:18:32.582594 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([5],"int64"),slice(None,None,None),), Tensor([5, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([5],"int64"),slice(None,None,None),), Tensor([5, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 6 / 368480 (0.00163%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 2.      ,  1.      ,  2.      , ...,  6.      ,  0.      ,
+3.      ],
+[ 0.052434, -0.459873, -0.487341, ...,  0.399922, -0.321179,...
+DESIRED: array([[ 2.      ,  1.      ,  2.      , ...,  6.      ,  0.      ,
+3.      ],
+[ 0.052434, -0.459873, -0.487341, ...,  0.399922, -0.321179,...
+2025-05-04 03:18:32.781559 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([60],"int64"),slice(None,None,None),), Tensor([60, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([60],"int64"),slice(None,None,None),), Tensor([60, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 30 / 368480 (0.00814%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 5.      ,  0.      ,  6.      , ...,  1.      ,  6.      ,
+0.      ],
+[ 3.      ,  5.      ,  3.      , ...,  6.      ,  3.      ,...
+DESIRED: array([[ 5.      ,  0.      ,  6.      , ...,  1.      ,  6.      ,
+0.      ],
+[ 3.      ,  5.      ,  3.      , ...,  6.      ,  3.      ,...
+2025-05-04 03:18:32.977148 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([62],"int64"),slice(None,None,None),), Tensor([62, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([62],"int64"),slice(None,None,None),), Tensor([62, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 6 / 368480 (0.00163%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 4.      ,  2.      ,  5.      , ...,  3.      ,  3.      ,
+2.      ],
+[ 2.      ,  1.      ,  2.      , ...,  1.      ,  2.      ,...
+DESIRED: array([[ 4.      ,  2.      ,  5.      , ...,  3.      ,  3.      ,
+2.      ],
+[ 2.      ,  1.      ,  2.      , ...,  1.      ,  2.      ,...
+2025-05-04 03:18:33.164824 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([63],"int64"),slice(None,None,None),), Tensor([63, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([63],"int64"),slice(None,None,None),), Tensor([63, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 13 / 368480 (0.00353%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 0.      ,  5.      ,  4.      , ...,  1.      ,  5.      ,
+6.      ],
+[ 4.      ,  4.      ,  1.      , ...,  1.      ,  5.      ,...
+DESIRED: array([[ 0.      ,  5.      ,  4.      , ...,  1.      ,  5.      ,
+6.      ],
+[ 2.      ,  0.      ,  4.      , ...,  4.      ,  2.      ,...
+2025-05-04 03:18:33.360975 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([64],"int64"),slice(None,None,None),), Tensor([64, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([64],"int64"),slice(None,None,None),), Tensor([64, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 13 / 368480 (0.00353%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 0.      ,  6.      ,  2.      , ...,  1.      ,  3.      ,
+6.      ],
+[ 6.      ,  6.      ,  4.      , ...,  6.      ,  0.      ,...
+DESIRED: array([[ 5.      ,  3.      ,  4.      , ...,  4.      ,  6.      ,
+2.      ],
+[ 6.      ,  6.      ,  4.      , ...,  6.      ,  0.      ,...
+2025-05-04 03:18:33.558563 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([65],"int64"),slice(None,None,None),), Tensor([65, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([65],"int64"),slice(None,None,None),), Tensor([65, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 10 / 368480 (0.00271%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 6.      ,  0.      ,  2.      , ...,  2.      ,  5.      ,
+1.      ],
+[ 4.      ,  1.      ,  1.      , ...,  3.      ,  3.      ,...
+DESIRED: array([[ 6.      ,  0.      ,  2.      , ...,  2.      ,  5.      ,
+1.      ],
+[ 1.      ,  1.      ,  4.      , ...,  6.      ,  2.      ,...
+2025-05-04 03:18:33.755340 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([66],"int64"),slice(None,None,None),), Tensor([66, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([66],"int64"),slice(None,None,None),), Tensor([66, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 6 / 368480 (0.00163%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 2.      ,  5.      ,  4.      , ...,  0.      ,  5.      ,
+6.      ],
+[ 1.      ,  0.      ,  4.      , ...,  0.      ,  1.      ,...
+DESIRED: array([[ 2.      ,  5.      ,  4.      , ...,  0.      ,  5.      ,
+6.      ],
+[ 1.      ,  0.      ,  4.      , ...,  0.      ,  1.      ,...
+2025-05-04 03:18:33.952352 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([67],"int64"),slice(None,None,None),), Tensor([67, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([67],"int64"),slice(None,None,None),), Tensor([67, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 6 / 368480 (0.00163%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 6.000000e+00,  0.000000e+00,  2.000000e+00, ...,  1.000000e+00,
+1.000000e+00,  0.000000e+00],
+[ 6.000000e+00,  2.000000e+00,  3.000000e+00, ...,  4.000000e+00,...
+DESIRED: array([[ 6.000000e+00,  0.000000e+00,  2.000000e+00, ...,  1.000000e+00,
+1.000000e+00,  0.000000e+00],
+[ 6.000000e+00,  2.000000e+00,  1.000000e+00, ...,  4.000000e+00,...
+2025-05-04 03:18:34.137345 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([68],"int64"),slice(None,None,None),), Tensor([68, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([68],"int64"),slice(None,None,None),), Tensor([68, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 20 / 368480 (0.00543%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 0.000000e+00,  0.000000e+00,  0.000000e+00, ...,  5.000000e+00,
+4.000000e+00,  5.000000e+00],
+[ 0.000000e+00,  4.000000e+00,  6.000000e+00, ...,  3.000000e+00,...
+DESIRED: array([[ 4.000000e+00,  1.000000e+00,  0.000000e+00, ...,  0.000000e+00,
+4.000000e+00,  1.000000e+00],
+[ 1.000000e+00,  2.000000e+00,  6.000000e+00, ...,  6.000000e+00,...
+2025-05-04 03:18:34.337316 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([69],"int64"),slice(None,None,None),), Tensor([69, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([69],"int64"),slice(None,None,None),), Tensor([69, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 13 / 368480 (0.00353%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 0.      ,  1.      ,  1.      , ...,  0.      ,  5.      ,
+6.      ],
+[ 2.      ,  0.      ,  2.      , ...,  6.      ,  0.      ,...
+DESIRED: array([[ 5.      ,  0.      ,  3.      , ...,  6.      ,  2.      ,
+5.      ],
+[ 2.      ,  0.      ,  2.      , ...,  6.      ,  0.      ,...
+2025-05-04 03:18:34.528134 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([6],"int64"),slice(None,None,None),), Tensor([6, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([6],"int64"),slice(None,None,None),), Tensor([6, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 12 / 368480 (0.00326%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 1.
+ACTUAL: array([[-0.008693,  0.088026,  0.382328, ..., -0.232696, -0.379885,
+-0.095901],
+[ 5.      ,  0.      ,  5.      , ...,  2.      ,  6.      ,...
+DESIRED: array([[-0.008693,  0.088026,  0.382328, ..., -0.232696, -0.379885,
+-0.095901],
+[ 0.      ,  2.      ,  3.      , ...,  2.      ,  5.      ,...
+2025-05-04 03:18:34.715784 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([72],"int64"),slice(None,None,None),), Tensor([72, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([72],"int64"),slice(None,None,None),), Tensor([72, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 19 / 368480 (0.00516%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.      ,  4.      ,  3.      , ...,  4.      ,  5.      ,
+6.      ],
+[ 2.      ,  6.      ,  1.      , ...,  6.      ,  5.      ,...
+DESIRED: array([[ 6.      ,  4.      ,  3.      , ...,  4.      ,  5.      ,
+6.      ],
+[ 3.      ,  2.      ,  4.      , ...,  2.      ,  1.      ,...
+2025-05-04 03:18:34.828079 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([74],"int64"),slice(None,None,None),), Tensor([74, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([74],"int64"),slice(None,None,None),), Tensor([74, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 32 / 368480 (0.00868%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 1.000000e+00,  5.000000e+00,  5.000000e+00, ...,  6.000000e+00,
+0.000000e+00,  4.000000e+00],
+[ 2.000000e+00,  0.000000e+00,  4.000000e+00, ...,  4.000000e+00,...
+DESIRED: array([[ 4.000000e+00,  1.000000e+00,  2.000000e+00, ...,  4.000000e+00,
+5.000000e+00,  5.000000e+00],
+[ 2.000000e+00,  0.000000e+00,  4.000000e+00, ...,  4.000000e+00,...
+2025-05-04 03:18:34.920862 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([75],"int64"),slice(None,None,None),), Tensor([75, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([75],"int64"),slice(None,None,None),), Tensor([75, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 22 / 368480 (0.00597%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 1.000000e+00,  1.000000e+00,  3.000000e+00, ...,  1.000000e+00,
+5.000000e+00,  4.000000e+00],
+[ 1.000000e+00,  2.000000e+00,  0.000000e+00, ...,  3.000000e+00,...
+DESIRED: array([[ 1.000000e+00,  6.000000e+00,  0.000000e+00, ...,  5.000000e+00,
+2.000000e+00,  4.000000e+00],
+[ 1.000000e+00,  6.000000e+00,  0.000000e+00, ...,  1.000000e+00,...
+2025-05-04 03:18:35.020462 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([76],"int64"),slice(None,None,None),), Tensor([76, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([76],"int64"),slice(None,None,None),), Tensor([76, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 29 / 368480 (0.00787%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 2.      ,  4.      ,  5.      , ...,  6.      ,  6.      ,
+0.      ],
+[ 2.      ,  1.      ,  1.      , ...,  6.      ,  3.      ,...
+DESIRED: array([[ 4.      ,  5.      ,  5.      , ...,  2.      ,  0.      ,
+6.      ],
+[ 5.      ,  3.      ,  4.      , ...,  1.      ,  1.      ,...
+2025-05-04 03:18:35.127098 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([77],"int64"),slice(None,None,None),), Tensor([77, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([77],"int64"),slice(None,None,None),), Tensor([77, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 31 / 368480 (0.00841%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 5.      ,  5.      ,  0.      , ...,  2.      ,  6.      ,
+6.      ],
+[ 0.      ,  6.      ,  0.      , ...,  5.      ,  4.      ,...
+DESIRED: array([[ 3.      ,  5.      ,  0.      , ...,  1.      ,  5.      ,
+2.      ],
+[ 5.      ,  1.      ,  4.      , ...,  5.      ,  6.      ,...
+2025-05-04 03:18:35.276851 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([78],"int64"),slice(None,None,None),), Tensor([78, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([78],"int64"),slice(None,None,None),), Tensor([78, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 31 / 368480 (0.00841%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  6.      ,  4.      , ...,  2.      ,  6.      ,
+6.      ],
+[ 0.      ,  4.      ,  6.      , ...,  6.      ,  3.      ,...
+DESIRED: array([[ 3.      ,  6.      ,  4.      , ...,  2.      ,  6.      ,
+6.      ],
+[ 1.      ,  4.      ,  1.      , ...,  4.      ,  1.      ,...
+2025-05-04 03:18:35.457933 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([79],"int64"),slice(None,None,None),), Tensor([79, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([79],"int64"),slice(None,None,None),), Tensor([79, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 30 / 368480 (0.00814%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 4.000000e+00,  5.000000e+00,  0.000000e+00, ...,  5.000000e+00,
+4.000000e+00,  0.000000e+00],
+[ 3.000000e+00,  0.000000e+00,  0.000000e+00, ...,  0.000000e+00,...
+DESIRED: array([[ 5.000000e+00,  0.000000e+00,  0.000000e+00, ...,  4.000000e+00,
+5.000000e+00,  5.000000e+00],
+[ 3.000000e+00,  0.000000e+00,  0.000000e+00, ...,  0.000000e+00,...
+2025-05-04 03:18:35.835234 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([81],"int64"),slice(None,None,None),), Tensor([81, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([81],"int64"),slice(None,None,None),), Tensor([81, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 31 / 368480 (0.00841%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 3.      ,  6.      ,  1.      , ...,  0.      ,  0.      ,
+2.      ],
+[ 4.      ,  2.      ,  5.      , ...,  6.      ,  0.      ,...
+DESIRED: array([[ 4.      ,  3.      ,  4.      , ...,  4.      ,  3.      ,
+6.      ],
+[ 3.      ,  6.      ,  3.      , ...,  4.      ,  4.      ,...
+2025-05-04 03:18:36.014849 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([83],"int64"),slice(None,None,None),), Tensor([83, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([83],"int64"),slice(None,None,None),), Tensor([83, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 44 / 368480 (0.0119%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.      ,  4.      ,  6.      , ...,  5.      ,  5.      ,
+4.      ],
+[ 6.      ,  4.      ,  0.      , ...,  4.      ,  4.      ,...
+DESIRED: array([[ 3.      ,  3.      ,  0.      , ...,  1.      ,  5.      ,
+5.      ],
+[ 4.      ,  3.      ,  4.      , ...,  6.      ,  3.      ,...
+2025-05-04 03:18:36.212319 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([84],"int64"),slice(None,None,None),), Tensor([84, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([84],"int64"),slice(None,None,None),), Tensor([84, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 44 / 368480 (0.0119%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 6.      ,  2.      ,  3.      , ...,  3.      ,  3.      ,
+6.      ],
+[ 0.      ,  1.      ,  6.      , ...,  5.      ,  0.      ,...
+DESIRED: array([[ 1.      ,  1.      ,  1.      , ...,  4.      ,  2.      ,
+1.      ],
+[ 5.      ,  5.      ,  0.      , ...,  2.      ,  5.      ,...
+2025-05-04 03:18:36.399713 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([85],"int64"),slice(None,None,None),), Tensor([85, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([85],"int64"),slice(None,None,None),), Tensor([85, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 45 / 368480 (0.0122%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 5.000000e+00,  1.000000e+00,  5.000000e+00, ...,  3.000000e+00,
+5.000000e+00,  3.000000e+00],
+[ 5.000000e+00,  6.000000e+00,  1.000000e+00, ...,  0.000000e+00,...
+DESIRED: array([[ 4.000000e+00,  5.000000e+00,  5.000000e+00, ...,  1.000000e+00,
+1.000000e+00,  0.000000e+00],
+[ 4.000000e+00,  1.000000e+00,  3.000000e+00, ...,  2.000000e+00,...
+2025-05-04 03:18:36.583112 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([87],"int64"),slice(None,None,None),), Tensor([87, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([87],"int64"),slice(None,None,None),), Tensor([87, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 34 / 368480 (0.00923%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 4.
+ACTUAL: array([[ 5.      ,  4.      ,  5.      , ...,  5.      ,  4.      ,
+5.      ],
+[ 5.      ,  0.      ,  3.      , ...,  5.      ,  6.      ,...
+DESIRED: array([[ 2.      ,  4.      ,  4.      , ...,  6.      ,  5.      ,
+6.      ],
+[ 2.      ,  3.      ,  2.      , ...,  1.      ,  4.      ,...
+2025-05-04 03:18:36.770006 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([88],"int64"),slice(None,None,None),), Tensor([88, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([88],"int64"),slice(None,None,None),), Tensor([88, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 44 / 368480 (0.0119%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 3.      ,  1.      ,  2.      , ...,  3.      ,  6.      ,
+0.      ],
+[ 0.      ,  4.      ,  2.      , ...,  5.      ,  2.      ,...
+DESIRED: array([[ 3.      ,  1.      ,  3.      , ...,  5.      ,  0.      ,
+1.      ],
+[ 3.      ,  4.      ,  3.      , ...,  6.      ,  0.      ,...
+2025-05-04 03:18:36.960031 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([89],"int64"),slice(None,None,None),), Tensor([89, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([89],"int64"),slice(None,None,None),), Tensor([89, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 41 / 368480 (0.0111%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 4.      ,  3.      ,  6.      , ...,  2.      ,  0.      ,
+4.      ],
+[ 2.      ,  2.      ,  6.      , ...,  2.      ,  1.      ,...
+DESIRED: array([[ 4.      ,  1.      ,  0.      , ...,  6.      ,  0.      ,
+5.      ],
+[ 2.      ,  5.      ,  3.      , ...,  5.      ,  1.      ,...
+2025-05-04 03:18:37.081161 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([8],"int64"),slice(None,None,None),), Tensor([8, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([8],"int64"),slice(None,None,None),), Tensor([8, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 3 / 368480 (0.000814%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 2.      ,  4.      ,  6.      , ...,  6.      ,  3.      ,
+2.      ],
+[ 0.      ,  1.      ,  6.      , ...,  4.      ,  0.      ,...
+DESIRED: array([[ 2.      ,  4.      ,  6.      , ...,  6.      ,  3.      ,
+2.      ],
+[ 0.      ,  1.      ,  6.      , ...,  4.      ,  0.      ,...
+2025-05-04 03:18:37.251188 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([90],"int64"),slice(None,None,None),), Tensor([90, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([90],"int64"),slice(None,None,None),), Tensor([90, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 40 / 368480 (0.0109%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 5.000000e+00,  6.000000e+00,  5.000000e+00, ...,  4.000000e+00,
+5.000000e+00,  1.000000e+00],
+[ 5.000000e+00,  0.000000e+00,  5.000000e+00, ...,  3.000000e+00,...
+DESIRED: array([[ 4.000000e+00,  2.000000e+00,  6.000000e+00, ...,  5.000000e+00,
+6.000000e+00,  2.000000e+00],
+[ 6.000000e+00,  6.000000e+00,  0.000000e+00, ...,  6.000000e+00,...
+2025-05-04 03:18:37.447949 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([91],"int64"),slice(None,None,None),), Tensor([91, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([91],"int64"),slice(None,None,None),), Tensor([91, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 42 / 368480 (0.0114%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 2.      ,  4.      ,  2.      , ...,  6.      ,  2.      ,
+6.      ],
+[ 5.      ,  5.      ,  1.      , ...,  4.      ,  0.      ,...
+DESIRED: array([[ 3.      ,  2.      ,  6.      , ...,  5.      ,  4.      ,
+3.      ],
+[ 3.      ,  2.      ,  1.      , ...,  2.      ,  4.      ,...
+2025-05-04 03:18:37.641647 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([94],"int64"),slice(None,None,None),), Tensor([94, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([94],"int64"),slice(None,None,None),), Tensor([94, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 44 / 368480 (0.0119%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 1.5
+ACTUAL: array([[ 6.      ,  6.      ,  4.      , ...,  2.      ,  6.      ,
+4.      ],
+[ 3.      ,  1.      ,  0.      , ...,  6.      ,  0.      ,...
+DESIRED: array([[ 4.      ,  5.      ,  6.      , ...,  5.      ,  6.      ,
+0.      ],
+[ 6.      ,  5.      ,  2.      , ...,  4.      ,  1.      ,...
+2025-05-04 03:18:37.838132 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([95],"int64"),slice(None,None,None),), Tensor([95, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([95],"int64"),slice(None,None,None),), Tensor([95, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 44 / 368480 (0.0119%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 0.      ,  1.      ,  2.      , ...,  4.      ,  6.      ,
+1.      ],
+[ 0.      ,  4.      ,  0.      , ...,  1.      ,  3.      ,...
+DESIRED: array([[ 3.      ,  6.      ,  0.      , ...,  2.      ,  1.      ,
+4.      ],
+[ 4.      ,  2.      ,  6.      , ...,  3.      ,  2.      ,...
+2025-05-04 03:18:38.037731 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([96],"int64"),slice(None,None,None),), Tensor([96, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([96],"int64"),slice(None,None,None),), Tensor([96, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 41 / 368480 (0.0111%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 3.
+ACTUAL: array([[ 1.      ,  0.      ,  2.      , ...,  2.      ,  0.      ,
+4.      ],
+[ 4.      ,  0.      ,  4.      , ...,  6.      ,  6.      ,...
+DESIRED: array([[ 1.      ,  6.      ,  2.      , ...,  0.      ,  5.      ,
+1.      ],
+[ 2.      ,  1.      ,  2.      , ...,  0.      ,  6.      ,...
+2025-05-04 03:18:38.237841 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([98],"int64"),slice(None,None,None),), Tensor([98, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([98],"int64"),slice(None,None,None),), Tensor([98, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 43 / 368480 (0.0117%)
+Max absolute difference among violations: 6.
+Max relative difference among violations: 5.
+ACTUAL: array([[ 0.      ,  1.      ,  5.      , ...,  4.      ,  0.      ,
+4.      ],
+[ 2.      ,  3.      ,  2.      , ...,  3.      ,  3.      ,...
+DESIRED: array([[ 3.      ,  3.      ,  1.      , ...,  6.      ,  1.      ,
+2.      ],
+[ 6.      ,  5.      ,  4.      , ...,  4.      ,  3.      ,...
+2025-05-04 03:18:38.435153 test begin: paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([9],"int64"),slice(None,None,None),), Tensor([9, 7],"float32"), )
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640, 7],"float32"), tuple(Tensor([9],"int64"),slice(None,None,None),), Tensor([9, 7],"float32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 15 / 368480 (0.00407%)
+Max absolute difference among violations: 5.
+Max relative difference among violations: 2.
+ACTUAL: array([[ 1.      ,  5.      ,  5.      , ...,  1.      ,  3.      ,
+5.      ],
+[ 6.      ,  5.      ,  1.      , ...,  1.      ,  0.      ,...
+DESIRED: array([[ 1.      ,  5.      ,  5.      , ...,  1.      ,  3.      ,
+5.      ],
+[ 3.      ,  6.      ,  6.      , ...,  3.      ,  3.      ,...
+2025-05-04 03:18:39.158084 test begin: paddle.Tensor.__setitem__(Tensor([52640],"int32"), Tensor([103, 1],"int64"), Tensor([103, 1],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.__setitem__(Tensor([52640],"int32"), Tensor([103, 1],"int64"), Tensor([103, 1],"int32"), )
+Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 1 / 52640 (0.0019%)
+Max absolute difference among violations: 3401
+Max relative difference among violations: 0.0698472
+ACTUAL: array([-31574,  34307, -47665, ...,  -9159,  31897,    895], dtype=int32)
+DESIRED: array([-31574,  34307, -47665, ...,  -9159,  31897,    895], dtype=int32)
