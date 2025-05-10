@@ -1194,7 +1194,10 @@
         "torch_api": "torch.Tensor.__abs__"
     },
     "paddle.Tensor.__and__": {
-        "torch_api": "torch.Tensor.__and__"
+        "torch_api": "torch.Tensor.__and__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
     },
     "paddle.Tensor.__dir__": {
         "torch_api": "torch.Tensor.__dir__"
