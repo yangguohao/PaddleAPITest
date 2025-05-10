@@ -1033,6 +1033,9 @@
             "perm": "dims"
         }
     },
+    "paddle.Tensor.trunc": {
+        "torch_api": "torch.Tensor.trunc"
+    },
     "paddle.Tensor.tile":{
         "torch_api":"torch.Tensor.tile",
         "paddle_torch_args_map": {
@@ -6524,6 +6527,15 @@
             "shape": "sizes"
         },
         "min_input_args": 3
+    },
+    "paddle.unfold": {
+        "Rule": "UnfoldRule",
+        "torch_api": "torch.Tensor.unfold",
+        "paddle_torch_args_map": {
+            "axis": "dimension",
+            "size": "size",
+            "step": "step"
+        }
     },
     "paddle.unique": {
         "torch_api": "torch.unique",

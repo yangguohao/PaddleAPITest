@@ -2258,6 +2258,16 @@ class TolistRule(BaseRule):
     
 # u
 
+class UnfoldRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:        
+        defaults_code, map_code = self.apply_generic()
+        core = "result = x.unfold(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
 
 # v
 class ViewRule(BaseRule):
