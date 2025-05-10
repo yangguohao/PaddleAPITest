@@ -92,7 +92,7 @@ class ConvertResult:
         if not code_obj.is_valid():
             return cls.error(paddle_api, "Invalid code.")
 
-        if len(code_obj.core) > 4:
+        if is_torch_corresponding and len(code_obj.core) > 4:
             print(
                 f"Warning: The core code of {paddle_api} is too complex.",
                 flush=True,
