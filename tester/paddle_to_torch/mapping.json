@@ -6308,6 +6308,9 @@
         },
         "min_input_args": 1
     },
+    "paddle.Tensor.sqrt": {
+        "torch_api": "torch.Tensor.sqrt"
+    },    
     "paddle.square": {
         "torch_api": "torch.square",
         "paddle_torch_args_map": {
