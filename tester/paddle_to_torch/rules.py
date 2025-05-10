@@ -281,7 +281,7 @@ class AddNRule(BaseRule):
 inputs = [inputs] if torch.is_tensor(inputs) else inputs
 expanded_inputs = torch.broadcast_tensors(*inputs)
 """
-        core = "result = torch.sum(torch.stack(expanded_tensors), dim=0)"
+        core = "result = torch.sum(torch.stack(expanded_inputs), dim=0)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
