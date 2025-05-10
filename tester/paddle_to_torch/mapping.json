@@ -6142,6 +6142,17 @@
             "descending": "descending"
         }
     },    
+    "paddle.Tensor.split": {
+        "Rule": "SplitTensorRule",
+        "torch_api": "torch.Tensor.split",
+        "set_defaults": {
+            "axis": "0"
+        },
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "num_or_sections": "split_size"
+        }
+    },   
     "paddle.sparse.addmm": {
         "torch_api": "torch.sparse.addmm",
         "paddle_torch_args_map": {

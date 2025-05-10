@@ -2210,6 +2210,22 @@ axis = axis if axis >= 0 else x.dim() + axis
         )
         return ConvertResult.success(paddle_api, code)
     
+class SplitTensorRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+axis = axis if axis >= 0 else x.dim() + axis
+if isinstance(num_or_sections, int):
+    num_or_sections = x.shape[axis] // num_or_sections
+elif isinstance(num_or_sections, list) and -1 in num_or_sections:
+    num_or_sections[num_or_sections.index(-1)] = x.shape[axis] - sum(num_or_sections) - 1
+"""
+        core = "result = x.split(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class SlogdetRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
