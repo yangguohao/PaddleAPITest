@@ -1007,6 +1007,12 @@
         "torch_api":"torch.Tensor.sin"
     },
     "t": "API started with 't' should be placed here",
+    "paddle.Tensor.tanh":{
+        "torch_api": "torch.Tensor.tanh"
+    },
+    "paddle.Tensor.tolist":{
+        "torch_api": "torch.Tensor.tolist"
+    },   
     "paddle.topk":{
         "torch_api": "torch.topk",
         "paddle_torch_args_map": {

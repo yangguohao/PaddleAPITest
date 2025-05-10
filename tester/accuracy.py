@@ -291,6 +291,9 @@ class APITestAccuracy(APITestBase):
                 else:
                     if isinstance(paddle_output[i], int):
                         self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
+                    elif 'tolist' in self.api_config.api_name:
+                        if isinstance(paddle_output[i], list) and isinstance(torch_output[i], list):
+                            self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
                     elif not isinstance(paddle_output[i], paddle.Tensor):
                         print("[not compare] ", paddle_output[i], torch_output[i], flush=True)
                         write_to_log("accuracy_error", self.api_config.config)
@@ -367,6 +370,9 @@ class APITestAccuracy(APITestBase):
                 for i in range(len(paddle_out_grads)):
                     if isinstance(paddle_out_grads[i], int):
                         self.np_assert_accuracy(numpy.array(paddle_out_grads[i]), numpy.array(torch_out_grads[i]), 1e-2, 1e-2, self.api_config)
+                    elif 'tolist' in self.api_config.api_name:
+                        if isinstance(paddle_out_grads[i], list) and isinstance(torch_out_grads[i], list):
+                            self.np_assert_accuracy(numpy.array(paddle_out_grads[i]), numpy.array(torch_out_grads[i]), 1e-2, 1e-2, self.api_config)
                     elif not isinstance(paddle_out_grads[i], paddle.Tensor):
                         print("[not compare] ", paddle_out_grads[i], torch_out_grads[i], flush=True)
                         write_to_log("accuracy_error", self.api_config.config)
