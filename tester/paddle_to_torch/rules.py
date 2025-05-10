@@ -167,23 +167,14 @@ class BaseRule(ABC):
             if "torch_api" in mapping:
                 self.torch_api: str = mapping["torch_api"]
             return
-        self.direct_mapping: bool = not mapping.get("composite_steps")
-        if self.direct_mapping:
-            if "torch_api" not in mapping:
-                raise ValueError("Missing required field 'torch_api' in the mapping.")
-            self.torch_api: str = mapping.get("torch_api", "")
-            self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
-            self.torch_args: List = mapping.get("torch_args", [])
-            self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
-            self.is_attribute: bool = mapping.get("is_attribute", False)
-            self.defaults: Dict = mapping.get("set_defaults", {})
-        else:
-            self.composite_steps: List = mapping.get("composite_steps", [])
-            for step in self.composite_steps:
-                if "torch_api" not in step:
-                    raise ValueError(
-                        f"Missing required field 'torch_api' in composite step: {step}"
-                    )
+        if "torch_api" not in mapping:
+            raise ValueError("Missing required field 'torch_api' in the mapping.")
+        self.torch_api: str = mapping.get("torch_api", "")
+        self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
+        self.torch_args: List = mapping.get("torch_args", [])
+        self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
+        self.is_attribute: bool = mapping.get("is_attribute", False)
+        self.defaults: Dict = mapping.get("set_defaults", {})
 
     def apply_generic(self):
         # if "torch_api" in self.mapping:
@@ -221,73 +212,57 @@ class BaseRule(ABC):
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         code = []
-        if self.direct_mapping:  # 直接映射
-            for default_name, default_value in self.defaults.items():
-                code.append(
-                    f"{default_name} = locals().get('{default_name}', {default_value})"
+        for default_name, default_value in self.defaults.items():
+            code.append(
+                f"{default_name} = locals().get('{default_name}', {default_value})"
+            )
+        is_tensor_method = paddle_api.startswith("paddle.Tensor.")
+        if is_tensor_method:
+            if not self.torch_api.startswith("torch.Tensor."):
+                return ConvertResult.error(
+                    paddle_api,
+                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                 )
-            is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-            if is_tensor_method:
-                if not self.torch_api.startswith("torch.Tensor."):
-                    return ConvertResult.error(
-                        paddle_api,
-                        "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
-                    )
-                code.append(
-                    "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
-                )
-                if self.is_attribute:
-                    code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
-                    return ConvertResult.success(paddle_api, code)
-            is_inplace = (
-                paddle_api.endswith("_") and not paddle_api.endswith("__")
-            ) or paddle_api == "paddle.Tensor.__setitem__"
+            code.append(
+                "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
+            )
+            if self.is_attribute:
+                code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
+                return ConvertResult.success(paddle_api, code)
+        is_inplace = (
+            paddle_api.endswith("_") and not paddle_api.endswith("__")
+        ) or paddle_api == "paddle.Tensor.__setitem__"
 
-            code.append("_args = args[1:]")
-            if self.torch_args:
-                for arg in self.torch_args:
-                    code.append(f"_args.extend([{self._format_arg(arg)}])")
-            code.append("_kwargs = {}")
-            if self.torch_kwargs:
-                for key, value in self.torch_kwargs.items():
-                    code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
-            if self.args_map:
-                code.append("for paddle_param, torch_param in {")
-                for paddle_param, torch_param in self.args_map.items():
-                    code.append(f"    '{paddle_param}': '{torch_param}',")
-                code.append("}.items():")
-                code.append("    if paddle_param in locals():")
-                code.append("        _kwargs[torch_param] = locals()[paddle_param]")
+        code.append("_args = args[1:]")
+        if self.torch_args:
+            for arg in self.torch_args:
+                code.append(f"_args.extend([{self._format_arg(arg)}])")
+        code.append("_kwargs = {}")
+        if self.torch_kwargs:
+            for key, value in self.torch_kwargs.items():
+                code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+        if self.args_map:
+            code.append("for paddle_param, torch_param in {")
+            for paddle_param, torch_param in self.args_map.items():
+                code.append(f"    '{paddle_param}': '{torch_param}',")
+            code.append("}.items():")
+            code.append("    if paddle_param in locals():")
+            code.append("        _kwargs[torch_param] = locals()[paddle_param]")
 
-            if is_tensor_method:
-                torch_method = self.torch_api.replace("torch.Tensor.", "")
-                if is_inplace:
-                    code.append(f"_tmp_tensor.{torch_method}(*_args, **_kwargs)")
-                    code.append("result = _tmp_tensor")
-                else:
-                    code.append(
-                        f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)"
-                    )
+        if is_tensor_method:
+            torch_method = self.torch_api.replace("torch.Tensor.", "")
+            if is_inplace:
+                code.append(f"_tmp_tensor.{torch_method}(*_args, **_kwargs)")
+                code.append("result = _tmp_tensor")
             else:
-                if is_inplace:
-                    code.append(f"{self.torch_api}(*_args, **_kwargs)")
-                    code.append("result = next(iter(kwargs.values()))")
-                else:
-                    code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
-            return ConvertResult.success(paddle_api, code)
-        else:  # 简单组合映射
-            for i, step in enumerate(self.composite_steps):
-                code.append(f"_args_{i} = []")
-                for arg in step.get("torch_args", []):
-                    code.append(f"_args_{i}.extend([{self._format_arg(arg)}])")
-                code.append(f"_kwargs_{i} = {{}}")
-                for key, value in step.get("torch_kwargs", {}).items():
-                    code.append(f"_kwargs_{i}['{key}'] = {self._format_arg(value)}")
-                code.append(
-                    f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})"
-                )
-            code.append(f"result = _tmp_{len(self.composite_steps) - 1}")
-            return ConvertResult.success(paddle_api, code)
+                code.append(f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)")
+        else:
+            if is_inplace:
+                code.append(f"{self.torch_api}(*_args, **_kwargs)")
+                code.append("result = next(iter(kwargs.values()))")
+            else:
+                code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
+        return ConvertResult.success(paddle_api, code)
 
 
 class ErrorRule(BaseRule):
@@ -300,6 +275,17 @@ class ErrorRule(BaseRule):
 
 
 # a
+class AddNRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+inputs = [inputs] if torch.is_tensor(inputs) else inputs
+expanded_inputs = torch.broadcast_tensors(*inputs)
+"""
+        core = "result = torch.sum(torch.stack(expanded_tensors), dim=0)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class Adaptive_log_softmax_with_lossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
