@@ -1010,6 +1010,10 @@
     "paddle.Tensor.tanh":{
         "torch_api": "torch.Tensor.tanh"
     },
+    "paddle.tolist":{
+        "torch_api": "torch.Tensor.tolist",
+        "Rule": "TolistRule"
+    },   
     "paddle.Tensor.tolist":{
         "torch_api": "torch.Tensor.tolist"
     },   

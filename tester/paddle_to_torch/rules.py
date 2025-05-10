@@ -2250,6 +2250,12 @@ result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=u
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class TolistRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = x.tolist()"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code)
+    
 # u
 
 
