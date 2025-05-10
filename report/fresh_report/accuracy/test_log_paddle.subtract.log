@@ -1,0 +1,36 @@
+2025-05-10 09:08:37.655228 test begin: paddle.subtract(Tensor([4, 3, 2],"bool"), Tensor([4, 3, 2],"complex128"), )
+[torch error] paddle.subtract(Tensor([4, 3, 2],"bool"), Tensor([4, 3, 2],"complex128"), )
+Traceback (most recent call last):
+  File "/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 9, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 100, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: Subtraction, the `-` operator, with a bool tensor is not supported. If you are trying to invert a mask, use the `~` or `logical_not()` operator instead.
+2025-05-10 09:08:37.678115 test begin: paddle.subtract(Tensor([4, 3, 2],"bool"), Tensor([4, 3, 2],"complex64"), )
+[torch error] paddle.subtract(Tensor([4, 3, 2],"bool"), Tensor([4, 3, 2],"complex64"), )
+Traceback (most recent call last):
+  File "/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 9, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 100, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: Subtraction, the `-` operator, with a bool tensor is not supported. If you are trying to invert a mask, use the `~` or `logical_not()` operator instead.
+2025-05-10 09:08:37.826056 test begin: paddle.subtract(Tensor([4, 3, 2],"complex128"), Tensor([4, 3, 2],"bool"), )
+[torch error] paddle.subtract(Tensor([4, 3, 2],"complex128"), Tensor([4, 3, 2],"bool"), )
+Traceback (most recent call last):
+  File "/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 9, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 100, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: Subtraction, the `-` operator, with a bool tensor is not supported. If you are trying to invert a mask, use the `~` or `logical_not()` operator instead.
+2025-05-10 09:08:39.325222 test begin: paddle.subtract(Tensor([4, 3, 2],"complex64"), Tensor([4, 3, 2],"bool"), )
+[torch error] paddle.subtract(Tensor([4, 3, 2],"complex64"), Tensor([4, 3, 2],"bool"), )
+Traceback (most recent call last):
+  File "/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 9, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 100, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: Subtraction, the `-` operator, with a bool tensor is not supported. If you are trying to invert a mask, use the `~` or `logical_not()` operator instead.
