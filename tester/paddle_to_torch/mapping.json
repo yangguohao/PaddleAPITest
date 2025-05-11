@@ -67,6 +67,18 @@
             }
         ]
     },
+    "paddle.arange": {
+        "torch_api": "torch.arange",
+        "paddle_torch_args_map": {
+            "dtype": "dtype"
+        },
+        "torch_kwargs": {
+            "start": "0 if locals().get('start') is None else start.item() if isinstance(start, torch.Tensor) else start",
+            "end": "end.item() if isinstance(end, torch.Tensor) else end",
+            "step": "1 if locals().get('step') is None else step.item() if isinstance(step, torch.Tensor) else step"
+        },
+        "description": "result = torch.arange(start=start, end=end, step=step, dtype=dtype)"
+    },
     "paddle.atleast_1d": {
         "torch_api": "torch.atleast_1d",
         "torch_args": [

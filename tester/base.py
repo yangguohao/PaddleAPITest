@@ -205,6 +205,12 @@ class APITestBase:
             paddle_sig = inspect.signature(self.paddle_api)
             paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
             paddle_args_dict = paddle_bound_args.arguments
+            # fix paddle.arange wrong binding 
+            if self.api_config.api_name == "paddle.arange":
+                # if end is not provided, use the 'start' kwargs as end
+                if "end" not in paddle_args_dict:
+                    paddle_args_dict["end"] = paddle_args_dict["start"]
+                    paddle_args_dict["start"] = 0
         else:
             # For APIs without signatures, use the external mapping dict
             mapping = no_signature_api_mappings[api_name]
