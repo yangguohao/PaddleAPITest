@@ -1008,6 +1008,17 @@
             "rate":"rate"
         }
     },
+    "paddle.standard_normal":{
+        "torch_api": "torch.randn",
+        "Rule": "StandardNormalRule",
+        "paddle_torch_args_map": {
+            "shape": "size",
+            "dtype":"dtype"
+        },
+        "set_defaults":{
+            "dtype": "None"
+        }
+    },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
         "torch_api": "torch.topk",

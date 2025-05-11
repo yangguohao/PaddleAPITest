@@ -101,7 +101,6 @@ paddle.Tensor.clip(Tensor([2, 2],"int32"), Tensor([1],"int32"), Tensor([1],"int3
 paddle.Tensor.clip(Tensor([512],"float32"), Tensor([0],"float32"), Tensor([],"float32"), )
 paddle.quantile(Tensor([5, 3, 4],"float64"), q=Tensor([],"float32"), axis=list[1,2,], keepdim=True, )
 paddle.quantile(Tensor([5, 3, 4],"float64"), q=Tensor([2],"float32"), axis=list[1,2,], keepdim=True, )
-paddle.standard_normal(list[Tensor([],"int32"),Tensor([],"int32"),Tensor([],"int32"),], )
 paddle.nn.functional.binary_cross_entropy(Tensor([1, 1, 2],"float64"), label=Tensor([1, 1, 2],"float64"), weight=None, reduction="mean", name=None, )
 paddle.nn.functional.binary_cross_entropy(Tensor([1, 21504, 10],"float32"), Tensor([1, 21504, 10],"float32"), weight=Tensor([1, 21504, 10],"float32"), reduction="sum", )
 paddle.nn.functional.binary_cross_entropy(Tensor([1, 21504, 15],"float32"), Tensor([1, 21504, 15],"float32"), weight=Tensor([1, 21504, 15],"float32"), reduction="sum", )
