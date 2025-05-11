@@ -39,6 +39,13 @@
         },
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.any(dim=dim, keepdim=keepdim)"
     },
+    "paddle.Tensor.astype": {
+        "torch_api": "torch.Tensor.to",
+        "paddle_torch_args_map": {
+            "dtype": "dtype"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.to(dtype=dtype)"
+    },
     "paddle.add_n": {
         "composite_steps": [
             {
