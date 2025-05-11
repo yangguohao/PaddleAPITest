@@ -139,7 +139,7 @@ def check_gpu_memory(
                 used_memory = int(mem_info.used) / (1024**3)  # Bytes to GB
                 free_memory = total_memory - used_memory
 
-                max_workers = free_memory // required_memory
+                max_workers = int(free_memory // required_memory)
                 if max_workers >= 1:
                     available_gpus.append(gpu_id)
                     max_workers_per_gpu[gpu_id] = (

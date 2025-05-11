@@ -16,9 +16,10 @@ nohup python engineV2.py --accuracy=True \
         --api_config_file="$INPUT_FILE" \
         --num_gpus=$NUM_GPUS \
         --num_workers_per_gpu=$NUM_WORKERS_PER_GPU \
-        # --gpu_ids="$GPU_IDS" \
-        # --required_memory=$REQUIRED_MEMORY \
         >> "$LOG_DIR/log.log" 2>&1 &
+
+# --gpu_ids="$GPU_IDS" \
+# --required_memory=$REQUIRED_MEMORY \
 
 PYTHON_PID=$!
 
