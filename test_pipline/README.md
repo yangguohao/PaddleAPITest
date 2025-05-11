@@ -19,11 +19,11 @@
     请访问 [PaddlePaddle GPU每日构建版本链接](https://www.paddlepaddle.org.cn/packages/nightly/cu118/paddlepaddle-gpu/) 下载并安装最新的 `wheel` 包。
 
 *   **CPU 版本测试**：
-    请执行以下命令以安装 PaddlePaddle：
+    请执行以下命令安装 PaddlePaddle：
     ```bash
     python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
     ```
-    **请注意**：CPU 版本的 PaddlePaddle 目前并非每日更新。安装完成后，建议通过执行 `paddle.__git_commit__` 命令核实当前所安装版本的具体 commit id。
+    **注意**：目前 CPU 版本的 PaddlePaddle 并非每日更新。安装完成后，建议通过执行 `paddle.__git_commit__` 命令核实当前所安装版本的具体 commit id。
 
 
 ## 目录结构
