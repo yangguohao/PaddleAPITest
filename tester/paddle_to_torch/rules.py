@@ -11,18 +11,13 @@ class Code:
     """Paddle2PyTorch 转换代码数据类，封装转换后的可执行代码，自动预编译
 
     Attributes:
-        valid: 是否有效，默认为 True
-
         preprocess: 预处理代码，在核心逻辑前执行
         core: 核心逻辑代码，应包含 Torch API
         postprocess: 后处理代码，在核心逻辑后执行
-
         preprocess_compiled: 预编译的预处理代码
         core_compiled: 预编译的核心逻辑代码
         postprocess_compiled: 预编译的后处理代码
     """
-
-    valid: bool = True
 
     preprocess: List[str] = field(default_factory=list)
     core: List[str] = field(default_factory=list)
@@ -34,16 +29,9 @@ class Code:
 
     def __post_init__(self):
         """自动编译代码"""
-        try:
-            self.preprocess_compiled = self._compile(self.preprocess)
-            self.core_compiled = self._compile(self.core)
-            self.postprocess_compiled = self._compile(self.postprocess)
-        except Exception as e:
-            self.preprocess_compiled = None
-            self.core_compiled = None
-            self.postprocess_compiled = None
-            self.valid = False
-            self.error_message = str(e)
+        self.preprocess_compiled = self._compile(self.preprocess)
+        self.core_compiled = self._compile(self.core)
+        self.postprocess_compiled = self._compile(self.postprocess)
 
     @classmethod
     def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
@@ -53,11 +41,18 @@ class Code:
         try:
             return compile("\n".join(code_lines), "<string>", "exec")
         except SyntaxError as e:
-            raise SyntaxError(f"Syntax error in code: {e.msg}") from e
+            return None
 
     def is_valid(self) -> bool:
         """检查代码是否编译成功"""
-        return self.valid
+        return all(
+            compiled is not None or not code
+            for compiled, code in [
+                (self.preprocess_compiled, self.preprocess),
+                (self.core_compiled, self.core),
+                (self.postprocess_compiled, self.postprocess),
+            ]
+        )
 
 
 @dataclass
@@ -95,9 +90,9 @@ class ConvertResult:
     ) -> "ConvertResult":
         code_obj = Code(core=code) if isinstance(code, list) else code
         if not code_obj.is_valid():
-            return cls.error(paddle_api, f"Invalid code: {code_obj.error_message}")
+            return cls.error(paddle_api, "Invalid code.")
 
-        if is_torch_corresponding and len(code_obj.core) > 4:
+        if len(code_obj.core) > 4:
             print(
                 f"Warning: The core code of {paddle_api} is too complex.",
                 flush=True,
