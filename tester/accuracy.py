@@ -185,6 +185,8 @@ class APITestAccuracy(APITestBase):
         torch.cuda.empty_cache()
 
         try:
+            if 'standard_gamma' in self.api_config.api_name:
+                paddle.seed(42)
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed")
                 return

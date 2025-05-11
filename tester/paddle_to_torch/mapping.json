@@ -1000,6 +1000,14 @@
     "paddle.slice_scatter": {
         "Rule": "SliceScatterRule"
     },
+    "paddle.standard_gamma":{
+        "torch_api": "torch.distributions.Gamma",
+        "Rule": "StandardGammaRule",
+        "paddle_torch_args_map": {
+            "x": "concentration",
+            "rate":"rate"
+        }
+    },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
         "torch_api": "torch.topk",

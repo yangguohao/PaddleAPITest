@@ -32,7 +32,7 @@ rand_apis = [
     "paddle.randint",
     "paddle.randint_like",
     "paddle.randperm",
-    "paddle.standard_gamma",
+    # "paddle.standard_gamma",
     "paddle.standard_normal", 
     "paddle.uniform",
     "paddle.Tensor.bernoulli_",

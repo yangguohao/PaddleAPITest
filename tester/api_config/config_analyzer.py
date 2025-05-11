@@ -1477,6 +1477,9 @@ class TensorConfig:
                 
                 return self.numpy_tensor
             
+            elif api_config.api_name == "paddle.standard_gamma":
+                self.numpy_tensor =numpy.random.random(self.shape).astype(self.dtype)
+
             elif api_config.api_name == "paddle.standard_normal":
                 if index==0 or key=='shape': 
                     self.numpy_tensor =numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)

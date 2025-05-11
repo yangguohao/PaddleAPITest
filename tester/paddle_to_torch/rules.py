@@ -2213,7 +2213,24 @@ result[tuple(slices)] = value
 """
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-    
+
+class StandardGammaRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+rate = torch.ones_like(x)
+torch.manual_seed(42)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+result = result.sample()
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)    
 
 # t
 class TriangularSolveRule(BaseRule):
