@@ -1,4 +1,5 @@
 import argparse
+import errno
 import math
 import os
 import signal
@@ -6,9 +7,10 @@ import sys
 from concurrent.futures import TimeoutError, as_completed
 from datetime import datetime
 from multiprocessing import Lock, Manager, set_start_method
+import time
 from typing import TYPE_CHECKING
 
-import psutil
+import pynvml
 from pebble import ProcessPool
 
 if TYPE_CHECKING:
@@ -19,8 +21,12 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
     )
 
-from tester.api_config.log_writer import (aggregate_logs, read_log,
-                                          set_engineV2, write_to_log)
+from tester.api_config.log_writer import (
+    aggregate_logs,
+    read_log,
+    set_engineV2,
+    write_to_log,
+)
 
 
 def cleanup(pool):
@@ -62,41 +68,134 @@ def estimate_timeout(api_config) -> float:
     return TIMEOUT_STEPS[-1][1]
 
 
-def init_worker_gpu(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
+def validate_gpu_options(options) -> tuple:
+    """Validate and normalize GPU-related options."""
+    if options.num_gpus == 0 and not options.gpu_ids.strip():
+        return tuple()
+
+    if options.num_gpus < -1:
+        print(f"Invalid num_gpus: {options.num_gpus}, using all available.", flush=True)
+        options.num_gpus = -1
+
+    if options.gpu_ids:
+        try:
+            gpu_ids = [int(id) for id in options.gpu_ids.split(",") if id.strip()]
+            gpu_ids = sorted(list(set(gpu_ids)))
+            if not all(id >= 0 for id in gpu_ids) or -1 in gpu_ids:
+                gpu_ids = [-1]
+        except ValueError:
+            print(
+                f"Invalid gpu_ids: {options.gpu_ids}, using all available.", flush=True
+            )
+            gpu_ids = [-1]
+    else:
+        gpu_ids = [-1]
+
+    if options.num_gpus > 0:
+        if gpu_ids == [-1]:
+            gpu_ids = list(range(options.num_gpus))
+        elif len(gpu_ids) != options.num_gpus:
+            print(
+                f"num_gpus {options.num_gpus} mismatches gpu_ids length, using {len(gpu_ids)}.",
+                flush=True,
+            )
+            options.num_gpus = len(gpu_ids)
+
+    if options.num_workers_per_gpu <= 0 and options.num_workers_per_gpu != -1:
+        print(
+            f"Invalid num_workers_per_gpu: {options.num_workers_per_gpu}, using all available.",
+            flush=True,
+        )
+        options.num_workers_per_gpu = -1
+
+    if options.required_memory <= 0:
+        print(
+            f"Invalid required_memory: {options.required_memory}, setting to 10.0.",
+            flush=True,
+        )
+        options.required_memory = 10.0
+
+    return tuple(gpu_ids)
+
+
+def check_gpu_memory(
+    gpu_ids, num_workers_per_gpu, required_memory
+):  # required_memory in GB
+    assert isinstance(gpu_ids, tuple) and len(gpu_ids) > 0
+    available_gpus = []
+    max_workers_per_gpu = {}
+
+    pynvml.nvmlInit()
+    try:
+        device_count = pynvml.nvmlDeviceGetCount()
+        gpu_ids = tuple(range(device_count)) if gpu_ids[0] == -1 else gpu_ids
+
+        for gpu_id in gpu_ids:
+            try:
+                handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_id)
+                mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+
+                total_memory = int(mem_info.total) / (1024**3)  # Bytes to GB
+                used_memory = int(mem_info.used) / (1024**3)  # Bytes to GB
+                free_memory = total_memory - used_memory
+
+                max_workers = free_memory // required_memory
+                if max_workers >= 1:
+                    available_gpus.append(gpu_id)
+                    max_workers_per_gpu[gpu_id] = (
+                        max_workers
+                        if num_workers_per_gpu == -1
+                        else min(max_workers, num_workers_per_gpu)
+                    )
+            except pynvml.NVMLError as e:
+                print(f"[WARNING] Failed to check GPU {gpu_id}: {str(e)}", flush=True)
+                continue
+
+    finally:
+        pynvml.nvmlShutdown()
+
+    return available_gpus, max_workers_per_gpu
+
+
+def init_worker_gpu(gpu_worker_list, lock, available_gpus, max_workers_per_gpu):
     set_engineV2()
     my_pid = os.getpid()
 
+    def pid_exists(pid):
+        try:
+            os.kill(pid, 0)
+            return True
+        except OSError as e:
+            return e.errno == errno.EPERM
+
     try:
         with lock:
-            min_workers = float("inf")
             assigned_gpu = -1
-            for gpu_id in range(num_gpus):
+            max_available_slots = -1
+            for gpu_id in available_gpus:
                 workers = gpu_worker_list[gpu_id]
-                if len(workers) < min_workers:
-                    min_workers = len(workers)
+                workers[:] = [pid for pid in workers if pid_exists(pid)]
+                available_slots = max_workers_per_gpu[gpu_id] - len(workers)
+                if available_slots > max_available_slots:
+                    max_available_slots = available_slots
                     assigned_gpu = gpu_id
 
-            if assigned_gpu != -1 and min_workers < num_workers_per_gpu:
-                gpu_worker_list[assigned_gpu].append(my_pid)
-            else:
-                for gpu_id in range(num_gpus):
-                    workers = gpu_worker_list[gpu_id]
-                    workers[:] = [pid for pid in workers if psutil.pid_exists(pid)]
-                    if len(workers) < num_workers_per_gpu:
-                        workers.append(my_pid)
-                        assigned_gpu = gpu_id
-                        break
+            if assigned_gpu == -1:
+                raise RuntimeError(f"Worker {my_pid} could not be assigned a GPU.")
 
-        if assigned_gpu == -1:
-            raise RuntimeError(f"Worker {my_pid} could not be assigned a GPU.")
+            gpu_worker_list[assigned_gpu].append(my_pid)
 
         os.environ["CUDA_VISIBLE_DEVICES"] = str(assigned_gpu)
 
         import paddle
         import torch
 
-        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                            APITestPaddleOnly)
+        from tester import (
+            APIConfig,
+            APITestAccuracy,
+            APITestCINNVSDygraph,
+            APITestPaddleOnly,
+        )
 
         globals()["torch"] = torch
         globals()["paddle"] = paddle
@@ -126,9 +225,32 @@ def init_worker_gpu(gpu_worker_list, lock, num_gpus, num_workers_per_gpu):
 
 def run_test_case(api_config_str, options):
     """Run a single test case for the given API configuration."""
+    cuda_visible = os.environ.get("CUDA_VISIBLE_DEVICES", "0")
+    gpu_id = int(cuda_visible.split(",")[0])
+
+    pynvml.nvmlInit()
+    try:
+        while True:
+            handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_id)
+            mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+            free_memory = int(mem_info.free) / (1024**3)  # Bytes to GB
+
+            if free_memory >= options.required_memory:
+                break
+
+            print(
+                f"{datetime.now()} GPU {gpu_id} Free: {free_memory:.1f} GB, "
+                f"Required: {options.required_memory:.1f} GB. ",
+                "Waiting for available memory...",
+                flush=True,
+            )
+            time.sleep(60)
+    finally:
+        pynvml.nvmlShutdown()
+
     write_to_log("checkpoint", api_config_str)
     print(
-        f"{datetime.now()} GPU {os.environ.get('CUDA_VISIBLE_DEVICES')} {os.getpid()} test begin: {api_config_str}",
+        f"{datetime.now()} GPU {gpu_id} {os.getpid()} test begin: {api_config_str}",
         flush=True,
     )
     try:
@@ -178,8 +300,30 @@ def main():
         "--test_amp",
         default=False,
     )
-    parser.add_argument("--num_gpus", type=int, default=0)
-    parser.add_argument("--num_workers_per_gpu", type=int, default=1)
+    parser.add_argument(
+        "--num_gpus",
+        type=int,
+        default=0,
+        help="Number of GPUs to use, -1 to use all available",
+    )
+    parser.add_argument(
+        "--num_workers_per_gpu",
+        type=int,
+        default=1,
+        help="Workers per GPU, -1 to maximize based on memory",
+    )
+    parser.add_argument(
+        "--gpu_ids",
+        type=str,
+        default="",
+        help="Comma-separated list of GPU IDs to use (e.g., 0,1,2), -1 for all available",
+    )
+    parser.add_argument(
+        "--required_memory",
+        type=float,
+        default=10.0,
+        help="Required memory per worker in GB",
+    )
     # parser.add_argument("--num_cpus", type=int, default=0)
     options = parser.parse_args()
 
@@ -188,8 +332,12 @@ def main():
 
     if options.api_config:
         # Single config execution
-        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                            APITestPaddleOnly)
+        from tester import (
+            APIConfig,
+            APITestAccuracy,
+            APITestCINNVSDygraph,
+            APITestPaddleOnly,
+        )
 
         print(f"Test begin: {options.api_config}", flush=True)
         try:
@@ -233,26 +381,39 @@ def main():
         fail_case = 0
         print(all_case, "cases will be tested.", flush=True)
 
-        if options.num_gpus > 0:
+        if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
             set_engineV2()
-            BATCH_SIZE = 16384
-            num_gpus = options.num_gpus
-            num_workers_per_gpu = options.num_workers_per_gpu
-            total_workers = num_gpus * num_workers_per_gpu
+            BATCH_SIZE = 20000
+
+            gpu_ids = validate_gpu_options(options)
+
+            available_gpus, max_workers_per_gpu = check_gpu_memory(
+                gpu_ids, options.num_workers_per_gpu, options.required_memory
+            )
+            if not available_gpus:
+                print(
+                    f"No GPUs with sufficient memory available. Current memory constraint is {options.required_memory} GB.",
+                    flush=True,
+                )
+                return
+
+            total_workers = sum(max_workers_per_gpu.values())
             print(
-                f"Using {num_gpus} GPU(s) with {num_workers_per_gpu} worker(s) per GPU. Total workers: {total_workers}",
+                f"Using {len(available_gpus)} GPU(s) with max workers per GPU: {max_workers_per_gpu}. Total workers: {total_workers}.",
                 flush=True,
             )
 
             manager = Manager()
-            gpu_worker_list = manager.list([manager.list() for _ in range(num_gpus)])
+            gpu_worker_list = manager.dict(
+                {gpu_id: manager.list() for gpu_id in available_gpus}
+            )
             lock = Lock()
 
             pool = ProcessPool(
                 max_workers=total_workers,
                 initializer=init_worker_gpu,
-                initargs=[gpu_worker_list, lock, num_gpus, num_workers_per_gpu],
+                initargs=[gpu_worker_list, lock, available_gpus, max_workers_per_gpu],
             )
 
             from tester import APIConfig
@@ -368,8 +529,12 @@ def main():
         #         aggregate_logs()
         else:
             # Single worker
-            from tester import (APIConfig, APITestAccuracy,
-                                APITestCINNVSDygraph, APITestPaddleOnly)
+            from tester import (
+                APIConfig,
+                APITestAccuracy,
+                APITestCINNVSDygraph,
+                APITestPaddleOnly,
+            )
 
             globals()["APIConfig"] = APIConfig
             globals()["APITestAccuracy"] = APITestAccuracy
