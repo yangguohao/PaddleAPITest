@@ -997,6 +997,9 @@
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
     },
+    "paddle.slice_scatter": {
+        "Rule": "SliceScatterRule"
+    },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
         "torch_api": "torch.topk",
