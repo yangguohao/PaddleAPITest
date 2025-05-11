@@ -1017,13 +1017,13 @@ class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if data_format == "NDHWC":
-    x = x.permute(0, 4, 1, 2, 3)
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post = """
-if data_format == "NDHWC":
-    result = result.permute(0, 2, 3, 4, 1)
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
 """
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
