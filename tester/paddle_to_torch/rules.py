@@ -97,14 +97,14 @@ class ConvertResult:
         if not code_obj.is_valid():
             return cls.error(paddle_api, f"Invalid code: {code_obj.error_message}")
 
-        if len(code_obj.core) > 4:
+        if is_torch_corresponding and len(code_obj.core) > 4:
             print(
                 f"Warning: The core code of {paddle_api} is too complex.",
                 flush=True,
             )
 
-        return ConvertResult(
-            paddle_api=paddle_api,
+        return cls(
+            paddle_api,
             code=code_obj,
             output_var=output_var,
             is_torch_corresponding=is_torch_corresponding,
@@ -112,7 +112,7 @@ class ConvertResult:
 
     @classmethod
     def error(cls, paddle_api: str, message: str) -> "ConvertResult":
-        return ConvertResult(paddle_api, is_supported=False, error_message=message)
+        return cls(paddle_api, is_supported=False, error_message=message)
 
 
 class BaseRule(ABC):
