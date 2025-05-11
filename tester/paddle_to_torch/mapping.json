@@ -912,6 +912,12 @@
     },
     "paddle.nn.functional.lp_pool1d": {
         "torch_api": "torch.nn.functional.lp_pool1d",
+        "Rule": "PoolRule",        
+        "set_defaults": {
+            "stride": "None",
+            "padding": 0,
+            "data_format": "'NCL'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "norm_type": "norm_type",
@@ -922,6 +928,12 @@
     },
     "paddle.nn.functional.lp_pool2d": {
         "torch_api": "torch.nn.functional.lp_pool2d",
+        "Rule": "PoolRule",
+        "set_defaults": {
+            "stride": "None",
+            "padding": 0,
+            "data_format": "'NCHW'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "norm_type": "norm_type",
