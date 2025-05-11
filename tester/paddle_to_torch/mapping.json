@@ -1019,6 +1019,18 @@
             "dtype": "None"
         }
     },
+    "paddle.stanh":{
+        "torch_api": "torch.tanh",
+        "Rule": "StanhRule",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "set_defaults":{
+            "scale_a": "0.67",
+            "scale_b":"1.7159"
+        }
+
+    },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
         "torch_api": "torch.topk",
