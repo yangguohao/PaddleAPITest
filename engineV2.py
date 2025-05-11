@@ -4,10 +4,10 @@ import math
 import os
 import signal
 import sys
+import time
 from concurrent.futures import TimeoutError, as_completed
 from datetime import datetime
 from multiprocessing import Lock, Manager, set_start_method
-import time
 from typing import TYPE_CHECKING
 
 import pynvml
@@ -21,12 +21,8 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
     )
 
-from tester.api_config.log_writer import (
-    aggregate_logs,
-    read_log,
-    set_engineV2,
-    write_to_log,
-)
+from tester.api_config.log_writer import (aggregate_logs, read_log,
+                                          set_engineV2, write_to_log)
 
 
 def cleanup(pool):
@@ -190,12 +186,8 @@ def init_worker_gpu(gpu_worker_list, lock, available_gpus, max_workers_per_gpu):
         import paddle
         import torch
 
-        from tester import (
-            APIConfig,
-            APITestAccuracy,
-            APITestCINNVSDygraph,
-            APITestPaddleOnly,
-        )
+        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                            APITestPaddleOnly)
 
         globals()["torch"] = torch
         globals()["paddle"] = paddle
@@ -332,12 +324,8 @@ def main():
 
     if options.api_config:
         # Single config execution
-        from tester import (
-            APIConfig,
-            APITestAccuracy,
-            APITestCINNVSDygraph,
-            APITestPaddleOnly,
-        )
+        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
+                            APITestPaddleOnly)
 
         print(f"Test begin: {options.api_config}", flush=True)
         try:
@@ -529,12 +517,8 @@ def main():
         #         aggregate_logs()
         else:
             # Single worker
-            from tester import (
-                APIConfig,
-                APITestAccuracy,
-                APITestCINNVSDygraph,
-                APITestPaddleOnly,
-            )
+            from tester import (APIConfig, APITestAccuracy,
+                                APITestCINNVSDygraph, APITestPaddleOnly)
 
             globals()["APIConfig"] = APIConfig
             globals()["APITestAccuracy"] = APITestAccuracy
