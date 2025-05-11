@@ -406,6 +406,27 @@ result = [output, loss]
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class AllcloseRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if isinstance(x, tuple):
+    x = x[0] if len(x) > 0 else torch.tensor([])
+if isinstance(y, tuple):
+    y = y[0] if len(y) > 0 else torch.tensor([])
+if 'rtol' in locals():
+    rtol = max(0.0, rtol)
+if 'atol' in locals():
+    atol = max(0.0, atol)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"     
+        code = Code(
+            preprocess = defaults_code + pre.splitlines() + map_code,
+            core = core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class PoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         head_code, map_code = self.apply_generic()
@@ -1311,8 +1332,6 @@ if isinstance(output_size, (list, tuple)):
             code += func2.splitlines()
         code += impl.splitlines() + map_code + core.splitlines()
         return ConvertResult.success(paddle_api, code)
-
-
 # g
 
 
@@ -1748,6 +1767,25 @@ lcm[nonzero_mask] = (x_abs[nonzero_mask] * y_abs[nonzero_mask]) // gcd[nonzero_m
 result = torch.abs(lcm)
 """
         code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class LogaddexpRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+def to_float_if_needed(tensor):
+    if tensor.dtype in [torch.int32, torch.int64]:
+        return tensor.to(torch.float32)
+    return tensor
+x = to_float_if_needed(x)
+y = to_float_if_needed(y)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess = defaults_code + pre.splitlines() + map_code,
+            core = core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
