@@ -399,6 +399,9 @@ def main():
                 flush=True,
             )
 
+            if options.test_cpu:
+                print(f"Using {cpu_count()} CPU(s) for paddle in CPU mode.", flush=True)
+
             manager = Manager()
             gpu_worker_list = manager.dict(
                 {gpu_id: manager.list() for gpu_id in available_gpus}
