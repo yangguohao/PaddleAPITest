@@ -7,7 +7,7 @@ import sys
 import time
 from concurrent.futures import TimeoutError, as_completed
 from datetime import datetime
-from multiprocessing import Lock, Manager, set_start_method
+from multiprocessing import Lock, Manager, cpu_count, set_start_method
 from typing import TYPE_CHECKING
 
 import pynvml
@@ -153,7 +153,9 @@ def check_gpu_memory(
     return available_gpus, max_workers_per_gpu
 
 
-def init_worker_gpu(gpu_worker_list, lock, available_gpus, max_workers_per_gpu):
+def init_worker_gpu(
+    gpu_worker_list, lock, available_gpus, max_workers_per_gpu, test_cpu
+):
     set_engineV2()
     my_pid = os.getpid()
 
@@ -203,6 +205,9 @@ def init_worker_gpu(gpu_worker_list, lock, available_gpus, max_workers_per_gpu):
 
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
+
+        if test_cpu:
+            paddle.device.set_device("cpu")
 
         print(
             f"{datetime.now()} Worker PID: {my_pid}, Assigned GPU ID: {assigned_gpu}",
@@ -302,7 +307,7 @@ def main():
         "--num_workers_per_gpu",
         type=int,
         default=1,
-        help="Workers per GPU, -1 to maximize based on memory",
+        help="Number of workers per GPU, -1 to maximize based on memory",
     )
     parser.add_argument(
         "--gpu_ids",
@@ -316,11 +321,13 @@ def main():
         default=10.0,
         help="Required memory per worker in GB",
     )
-    # parser.add_argument("--num_cpus", type=int, default=0)
+    parser.add_argument(
+        "--test_cpu",
+        type=bool,
+        default=False,
+        help="Whether to test CPU mode",
+    )
     options = parser.parse_args()
-
-    # if options.num_gpus > 0 and options.num_cpus > 0:
-    #     raise ValueError("Cannot use both --num_gpus and --num_cpus at the same time.")
 
     if options.api_config:
         # Single config execution
@@ -401,7 +408,13 @@ def main():
             pool = ProcessPool(
                 max_workers=total_workers,
                 initializer=init_worker_gpu,
-                initargs=[gpu_worker_list, lock, available_gpus, max_workers_per_gpu],
+                initargs=[
+                    gpu_worker_list,
+                    lock,
+                    available_gpus,
+                    max_workers_per_gpu,
+                    options.test_cpu,
+                ],
             )
 
             from tester import APIConfig
@@ -453,68 +466,6 @@ def main():
                 cleanup(pool)
             finally:
                 aggregate_logs()
-        # elif options.num_cpus > 0:
-        #     # Multi CPUs
-        #     from tester import (
-        #         APIConfig,
-        #         APITestAccuracy,
-        #         APITestCINNVSDygraph,
-        #         APITestPaddleOnly,
-        #     )
-
-        #     BATCH_SIZE = 16384
-        #     num_cpus = options.num_cpus
-        #     print(f"Using {num_cpus} CPU(s).", flush=True)
-
-        #     pool = ProcessPool(max_workers=num_cpus)
-
-        #     def cleanup_handler(*args):
-        #         cleanup(pool)
-        #         sys.exit(1)
-
-        #     signal.signal(signal.SIGINT, cleanup_handler)
-        #     signal.signal(signal.SIGTERM, cleanup_handler)
-
-        #     try:
-        #         for batch_start in range(0, len(api_configs), BATCH_SIZE):
-        #             batch = api_configs[batch_start : batch_start + BATCH_SIZE]
-        #             futures = {}
-        #             for config in batch:
-        #                 timeout = estimate_timeout(config)
-        #                 future = pool.schedule(
-        #                     run_test_case,
-        #                     [config, options],
-        #                     timeout=timeout,
-        #                 )
-        #                 futures[future] = config
-
-        #             for future in as_completed(futures):
-        #                 config = futures[future]
-        #                 try:
-        #                     future.result()
-        #                 except TimeoutError as exc:
-        #                     write_to_log("timeout", config)
-        #                     print(
-        #                         f"[timeout] Test case timed out for {config}: {exc}",
-        #                         flush=True,
-        #                     )
-        #                     fail_case += 1
-        #                 except Exception as exc:
-        #                     write_to_log("crash", config)
-        #                     print(
-        #                         f"[fatal] Worker crashed for {config}: {exc}",
-        #                         flush=True,
-        #                     )
-        #                     fail_case += 1
-        #             aggregate_logs(mkdir=True)
-        #         print(f"{all_cases} cases tested, {fail_case} failed", flush=True)
-        #         pool.close()
-        #         pool.join()
-        #     except Exception as e:
-        #         print(f"Unexpected error: {e}", flush=True)
-        #         cleanup(pool)
-        #     finally:
-        #         aggregate_logs()
         else:
             # Single worker
             from tester import (APIConfig, APITestAccuracy,
