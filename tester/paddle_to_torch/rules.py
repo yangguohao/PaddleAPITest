@@ -2590,15 +2590,16 @@ class SegmentRule(BaseRule):
         pre = """
 num_segments = segment_ids.max().item() + 1
 output_shape = (num_segments,) + data.shape[1:]
+segment_ids = segment_ids.to(dtype=torch.int64)
 """
         core_max = """
 result = torch.full(output_shape, float('-inf'), dtype=data.dtype)
-result.scatter_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+result.scatter_reduce_(0, segment_ids.unsqueeze(-1).expand_as(data), data, 'amax')
 result = torch.where(result == float('-inf'), torch.tensor(0.0, dtype=data.dtype), result)
 """
         core_min = """
 result = torch.full(output_shape, float('inf'), dtype=data.dtype)
-result.scatter_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+result.scatter_reduce_(0, segment_ids.unsqueeze(-1).expand_as(data), data, 'amin')
 result = torch.where(result == float('inf'), torch.tensor(0.0, dtype=data.dtype), result)
 """
         core_sum = """
@@ -2610,18 +2611,19 @@ sum_result = torch.zeros(output_shape, dtype=data.dtype)
 sum_result.scatter_add_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
 count = torch.zeros(num_segments, dtype=torch.int64)
 count.scatter_add_(0, segment_ids, torch.ones_like(segment_ids, dtype=torch.int64))
-count = count.unsqueeze(-1).expand_as(sum_result).clamp(min=1)
+count = count.view(num_segments, *[1] * (data.dim() - 1))
+count = count.clamp(min=1)
 result = sum_result / count.to(sum_result.dtype)
-empty_mask = (count.squeeze(-1) == 1) & (sum_result == 0)
-result = torch.where(empty_mask.unsqueeze(-1), torch.tensor(0.0, dtype=result.dtype), result)
+empty_mask = (count == 1) & (sum_result == 0)
+result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
 """
-        if self.torch_api.endswith(".max"):
+        if paddle_api.endswith("max"):
             core = core_max
-        elif self.torch_api.endswith(".min"):
+        elif paddle_api.endswith("min"):
             core = core_min
-        elif self.torch_api.endswith(".sum"):
+        elif paddle_api.endswith("sum"):
             core = core_sum
-        elif self.torch_api.endswith(".mean"):
+        elif paddle_api.endswith("mean"):
             core = core_mean
         else:
             return ConvertResult.error(
