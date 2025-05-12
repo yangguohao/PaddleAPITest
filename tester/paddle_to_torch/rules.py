@@ -2681,6 +2681,57 @@ elif y.dtype == torch.bool:
         return ConvertResult.success(paddle_api, code)
 
 
+class SegmentRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+num_segments = segment_ids.max().item() + 1
+output_shape = (num_segments,) + data.shape[1:]
+segment_ids = segment_ids.to(dtype=torch.int64)
+"""
+        core_max = """
+result = torch.full(output_shape, float('-inf'), dtype=data.dtype)
+result.scatter_reduce_(0, segment_ids.unsqueeze(-1).expand_as(data), data, 'amax')
+result = torch.where(result == float('-inf'), torch.tensor(0.0, dtype=data.dtype), result)
+"""
+        core_min = """
+result = torch.full(output_shape, float('inf'), dtype=data.dtype)
+result.scatter_reduce_(0, segment_ids.unsqueeze(-1).expand_as(data), data, 'amin')
+result = torch.where(result == float('inf'), torch.tensor(0.0, dtype=data.dtype), result)
+"""
+        core_sum = """
+result = torch.zeros(output_shape, dtype=data.dtype)
+result.scatter_add_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+"""
+        core_mean = """
+sum_result = torch.zeros(output_shape, dtype=data.dtype)
+sum_result.scatter_add_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+count = torch.zeros(num_segments, dtype=torch.int64)
+count.scatter_add_(0, segment_ids, torch.ones_like(segment_ids, dtype=torch.int64))
+count = count.view(num_segments, *[1] * (data.dim() - 1))
+count = count.clamp(min=1)
+result = sum_result / count.to(sum_result.dtype)
+empty_mask = (count == 1) & (sum_result == 0)
+result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
+"""
+        if paddle_api.endswith("max"):
+            core = core_max
+        elif paddle_api.endswith("min"):
+            core = core_min
+        elif paddle_api.endswith("sum"):
+            core = core_sum
+        elif paddle_api.endswith("mean"):
+            core = core_mean
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported segment api: {paddle_api}"
+            )
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 # t
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
