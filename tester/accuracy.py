@@ -291,6 +291,8 @@ class APITestAccuracy(APITestBase):
                 else:
                     if isinstance(paddle_output[i], int):
                         self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
+                    elif 'tolist' in self.api_config.api_name:
+                        self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
                     elif not isinstance(paddle_output[i], paddle.Tensor):
                         print("[not compare] ", paddle_output[i], torch_output[i], flush=True)
                         write_to_log("accuracy_error", self.api_config.config)

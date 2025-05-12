@@ -1,0 +1,48 @@
+paddle.pow(Tensor([216],"int32"), Tensor([216],"int32"), )
+paddle.pow(Tensor([282],"int64"), Tensor([282],"int64"), )
+paddle.pow(x=Tensor([2, 2, 2],"float64"), y=Tensor([2, 2, 2],"float64"), )
+paddle.pow(x=Tensor([2, 2, 2],"float64"), y=Tensor([2],"float64"), )
+paddle.pow(x=Tensor([2, 2, 2],"int32"), y=Tensor([2, 2, 2],"int32"), )
+paddle.pow(x=Tensor([2, 2, 2],"int64"), y=Tensor([2, 2, 2],"int64"), )
+paddle.pow(Tensor([],"float64"), Tensor([1],"float64"), )
+paddle.pow(Tensor([],"float64"), Tensor([247],"float64"), )
+paddle.pow(Tensor([],"float64"), Tensor([6],"float64"), )
+paddle.pow(x=Tensor([2, 2, 2],"float32"), y=Tensor([2, 2, 2],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([1],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([2, 3, 4],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([207],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([209],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([210],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([4],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([5, 9],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([8],"float32"), )
+paddle.pow(Tensor([],"float32"), Tensor([],"float32"), )
+paddle.pow(Tensor([4, 3, 2],"float16"), Tensor([4, 3, 2],"float32"), )
+paddle.pow(Tensor([4, 3, 2],"float16"), Tensor([4, 3, 2],"float64"), )
+paddle.pow(Tensor([4, 3, 2],"float32"), Tensor([4, 3, 2],"float16"), )
+paddle.pow(Tensor([4, 3, 2],"float32"), Tensor([4, 3, 2],"float64"), )
+paddle.pow(Tensor([4, 3, 2],"float64"), Tensor([4, 3, 2],"float16"), )
+paddle.pow(Tensor([4, 3, 2],"float64"), Tensor([4, 3, 2],"float32"), )
+paddle.pow(Tensor([3],"float32"), Tensor([3],"float32"), )
+paddle.pow(Tensor([3, 3],"float32"), Tensor([3, 3],"float32"), )
+paddle.pow(Tensor([267],"float64"), Tensor([267],"float64"), )
+paddle.pow(Tensor([280],"float32"), Tensor([280],"float32"), )
+paddle.pow(Tensor([2, 3, 4],"float32"), Tensor([],"float32"), )
+paddle.pow(Tensor([5, 9, 7],"float64"), Tensor([7],"float64"), )
+
+
+2025-05-08 01:50:21.625994 test begin: paddle.pow(Tensor([282],"int64"), Tensor([282],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.pow(Tensor([282],"int64"), Tensor([282],"int64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 282 (1.42%)
+Max absolute difference: 9223372036854775807
+Max relative difference: 0.
+ x: array([                 -4,                  -1,                   0,
+                       216,                   0,                   1,
+                         0,                   0,                   0,...
+ y: array([   -4,    -1,     0,   216,     0,     1,     0,     0,     0,
+           1,    -9,     0,     8,     0,     0,     0,     0,     4,
+           0,    81,   625,   125,     1,  6561,     0,     3,     0,...
