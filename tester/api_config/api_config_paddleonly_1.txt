@@ -1,5 +1,3 @@
-paddle.add_n(list[Tensor([],"float32"),Tensor([1],"float32"),Tensor([1],"float32"),Tensor([],"float32"),Tensor([1],"float32"),Tensor([1],"float32"),], )
-paddle.add_n(list[Tensor([1],"float32"),Tensor([],"float32"),], )
 paddle.empty_like(Tensor([1, 10, 5],"float32"), )
 paddle.empty_like(Tensor([1, 8400, 4],"float32"), )
 paddle.empty_like(Tensor([10, 1000],"bfloat16"), )
