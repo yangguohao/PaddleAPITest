@@ -1092,9 +1092,25 @@ class TensorConfig:
                         num_classes = numpy.random.randint(5, 20)
                     self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
 
+            elif api_config.api_name == "paddle.normal":
+                if self.check_arg(api_config, 0, "mean"):
+                    if "int" in self.dtype:
+                        self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
+                    else:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)                     
+                elif self.check_arg(api_config, 1, "std"):
+                    if "int" in self.dtype:
+                        self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
+                    else:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = (numpy.random.random(self.shape)).astype(dtype)      
+                else:
+                    self.numpy_tensor = (numpy.random.randint(0, 1024, size=self.shape)).astype(self.dtype)                    
+                
             elif api_config.api_name == "paddle.ones":
                 if len(self.shape) == 0:
-                    self.numpy_tensor = numpy.array(random.randint(1, 2048), dtype=self.dtype)
+                    self.numpy_tensor = numpy.array(numpy.random.randint(1, 2048), dtype=self.dtype)
                 else:
                     self.numpy_tensor = numpy.random.randint(1, 65535, size=self.shape).astype(self.dtype)
             elif api_config.api_name == "paddle.nn.functional.pad":
@@ -1733,9 +1749,9 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
             
-            elif api_config.api_name in {"paddle.Tensor.__pow__","paddle.Tensor.pow"}:
+            elif api_config.api_name in {"paddle.Tensor.__pow__","paddle.Tensor.pow", "paddle.pow"}:
                 # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other
-                if self.check_arg(api_config, 0, "self"):
+                if self.check_arg(api_config, 0, "self") or self.check_arg(api_config, 0, "x"):
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
                 else:
                     # self.check_arg(api_config, 1, "other"): 
