@@ -415,14 +415,49 @@ if 'rtol' in locals():
 if 'atol' in locals():
     atol = max(0.0, atol)
 """
-        core = f"result = {self.torch_api}(**_kwargs)"     
+        core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess = defaults_code + pre.splitlines() + map_code,
-            core = core.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
 
+class AdaptiveAvgPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre_2d = """
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+"""
+        pre_3d = """
+if data_format == 'NDHWC':
+    x = x.permute(0, 4, 1, 2, 3)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post_2d = """
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        post_3d = """
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        pre = defaults_code
+        if self.torch_api.endswith("2d"):
+            pre += pre_2d.splitlines()
+            post = post_2d.splitlines()
+        elif self.torch_api.endswith("3d"):
+            pre += pre_3d.splitlines()
+            post = post_3d.splitlines()
+        else:
+            return ConvertResult.error(paddle_api, "Unsupported adaptive_avg_pool API")
+        code = Code(
+            preprocess=pre,
+            core=[core],
+            postprocess=post,
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # b
@@ -1147,6 +1182,8 @@ if isinstance(output_size, (list, tuple)):
         pre += pre3.splitlines()
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
+
+
 # g
 
 
@@ -1527,11 +1564,13 @@ result = window
 
 # i
 
+
 class IsEmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = "result = x.numel() == 0"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1613,8 +1652,8 @@ y = to_float_if_needed(y)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess = defaults_code + pre.splitlines() + map_code,
-            core = core.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -2231,6 +2270,7 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SortRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2243,10 +2283,9 @@ axis = axis if axis >= 0 else x.dim() + axis
             core = f"result, _ = {self.torch_api}(**_kwargs)"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines()
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
-    
 
 
 class SlogdetRule(BaseRule):
