@@ -402,6 +402,29 @@ result = [output, loss]
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class AllcloseRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if isinstance(x, tuple):
+    x = x[0]
+if isinstance(y, tuple):
+    y = y[0]
+if 'rtol' in locals():
+    rtol = max(0.0, rtol)
+if 'atol' in locals():
+    atol = max(0.0, atol)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"     
+        code = Code(
+            preprocess = defaults_code + pre.splitlines() + map_code,
+            core = core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+
+
 # b
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1124,8 +1147,6 @@ if isinstance(output_size, (list, tuple)):
         pre += pre3.splitlines()
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
-
-
 # g
 
 
@@ -1576,6 +1597,25 @@ lcm[nonzero_mask] = (x_abs[nonzero_mask] * y_abs[nonzero_mask]) // gcd[nonzero_m
 result = torch.abs(lcm)
 """
         code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class LogaddexpRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+def to_float_if_needed(tensor):
+    if tensor.dtype in [torch.int32, torch.int64]:
+        return tensor.to(torch.float32)
+    return tensor
+x = to_float_if_needed(x)
+y = to_float_if_needed(y)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess = defaults_code + pre.splitlines() + map_code,
+            core = core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -2286,6 +2326,60 @@ class TolistRule(BaseRule):
     
 
 # u
+class UnpoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre_1d = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)        
+"""
+        pre_2d = """
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)     
+"""
+        pre_3d = """
+if data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)      
+"""
+        pre = """
+kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
+stride = tuple(stride) if isinstance(stride, list) else stride
+padding = tuple(padding) if isinstance(padding, list) else padding
+output_size = list(output_size) if isinstance(output_size, tuple) else output_size
+indices = indices.to(torch.int64)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post_1d = """
+if data_format == "NLC":
+    result = result.permute(0, 2, 1)
+"""
+        post_2d = """
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        post_3d = """
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        if self.torch_api.endswith("1d"):
+            pre = pre_1d + pre
+            post = post_1d
+        elif self.torch_api.endswith("2d"):
+            pre = pre_2d + pre
+            post = post_2d
+        elif self.torch_api.endswith("3d"):
+            pre = pre_3d + pre
+            post = post_3d
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported unpool api: {paddle_api}"
+            )
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class UnfoldRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:        
