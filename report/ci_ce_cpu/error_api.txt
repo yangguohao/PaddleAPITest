@@ -49,3 +49,5 @@ paddle.trace
 paddle.unique
 paddle.unique_consecutive
 paddle.var
+paddle.Tensor.__getitem__
+paddle.Tensor.__setitem__
