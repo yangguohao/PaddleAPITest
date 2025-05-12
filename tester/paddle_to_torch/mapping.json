@@ -118,6 +118,12 @@
             "out": "out"
         }
     },
+    "paddle.Tensor.bernoulli_":{
+        "torch_api": "torch.Tensor.bernoulli_",
+        "paddle_torch_args_map": {
+            "p": "p"
+        }
+    },
     "c": "API started with 'c' should be placed here",
     "paddle.crop": {
         "Rule": "CropRule"
@@ -130,6 +136,13 @@
     },
     "paddle.cumprod": {
         "Rule": "CumprodRule"
+    },
+    "paddle.Tensor.cauchy_":{
+        "torch_api": "torch.Tensor.cauchy_",
+        "paddle_torch_args_map": {
+            "loc": "median",
+            "scale": "sigma"
+        }
     },
     "paddle.Tensor.ceil":{
         "torch_api": "torch.Tensor.ceil"
@@ -1153,6 +1166,18 @@
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
     },
+    "paddle.Tensor.slice_scatter": {
+        "torch_api": "torch.Tensor.slice_scatter",
+        "paddle_torch_args_map": {
+            "value": "src"
+        },
+        "torch_kwargs": {
+            "dim": "{axes}[0] if isinstance({axes}, list) else {axes}",
+            "start": "{starts}[0] if isinstance({starts}, list) else {starts}",
+            "end": "{ends}[0] if isinstance({ends}, list) else {ends}",
+            "step": "{strides}[0] if isinstance({strides}, list) else {strides}"
+        }
+    },
     "paddle.scale": {
         "Rule": "ScaleRule",
         "set_defaults": {
@@ -1201,9 +1226,19 @@
         }
     },
     "u": "API started with 'u' should be placed here",
+    "paddle.unstack":{
+        "torch_api": "torch.unbind",
+        "paddle_torch_args_map": {
+            "x": "input", 
+            "axis": "dim"
+        }
+    },
     "v": "API started with 'v' should be placed here",
     "paddle.view":{
         "Rule": "ViewRule"
+    },
+    "paddle.view_as":{
+        "Rule": "View_As_Rule"
     },
     "paddle.vision.ops.distribute_fpn_proposals":{
         "Rule": "Distribute_fpn_proposalsRule"
@@ -1556,14 +1591,6 @@
             "shape": "size"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.cauchy_": {
-        "torch_api": "torch.Tensor.cauchy_",
-        "paddle_torch_args_map": {
-            "loc": "median",
-            "scale": "sigma"
-        },
-        "min_input_args": 0
     },
     "paddle.Tensor.cholesky": {
         "torch_api": "torch.Tensor.cholesky",
