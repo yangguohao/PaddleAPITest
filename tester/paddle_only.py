@@ -23,9 +23,6 @@ class APITestPaddleOnly(APITestBase):
             return
 
         try:
-            if not self.gen_numpy_input():
-                print("gen_paddle_input failed", flush=True)
-                return  
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed", flush=True)
                 return  
