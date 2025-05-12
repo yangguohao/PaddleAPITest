@@ -342,7 +342,6 @@ class APITestBase:
             tmp.append(item.get_numpy_tensor(self.api_config))
         return tuple(tmp) if is_tuple else tmp
 
-
     def gen_numpy_input(self):
         for i, arg_config in enumerate(self.paddle_args_config):
             if isinstance(arg_config, (list, tuple)):
@@ -376,10 +375,16 @@ class APITestBase:
         return tuple(tmp) if is_tuple else tmp
 
     def gen_paddle_input(self):
+        """
+        generate paddle input by config, for tensor config initlize paddle tensor by get_paddle_tensor()
+        
+        be sure to call gen_numpy_input() before use gen_paddle_input() since gen_paddle_input() do not pass index or key to get_paddle_tensor() or get_numpy_tensor() while gen_numpy_input() pass.
+        """
+        
         self.paddle_args = []
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
-
+        
         for arg_config in self.paddle_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config))
@@ -457,15 +462,15 @@ class APITestBase:
         for i in range(len(self.torch_args)):
             if isinstance(self.torch_args[i], torch.Tensor):
                 result.append(self.torch_args[i])
-            elif isinstance(self.torch_args[i], tuple) or isinstance(self.torch_args[i], list):
-                for item in self.paddle_args[i]:
+            elif isinstance(self.torch_args[i], (tuple, list)):
+                for item in self.torch_args[i]:
                     if isinstance(item, torch.Tensor):
                         result.append(item)
 
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 result.append(value)
-            elif isinstance(value, tuple) or isinstance(value, list):
+            elif isinstance(value, (tuple, list)):
                 for item in value:
                     if isinstance(item, torch.Tensor):
                         result.append(item)
@@ -731,6 +736,12 @@ class APITestBase:
         return tuple(tmp) if is_tuple else tmp
 
     def gen_torch_input(self):
+        """
+        generate torch input by config, for tensor config initlize torch tensor by get_torch_tensor()
+        
+        be sure to call gen_numpy_input() before use gen_torch_input() since gen_torch_input() do not pass index or key to get_torch_tensor() or get_numpy_tensor() while gen_numpy_input() pass.
+        """
+        
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
         for arg_config in self.torch_args_config:
