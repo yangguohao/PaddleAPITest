@@ -423,6 +423,44 @@ if 'atol' in locals():
         return ConvertResult.success(paddle_api, code)
 
 
+class AdaptiveAvgPoolRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre_2d = """
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
+"""
+        pre_3d = """
+if data_format == 'NDHWC':
+    x = x.permute(0, 4, 1, 2, 3)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post_2d = """
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
+"""
+        post_3d = """
+if data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
+"""
+        pre = defaults_code
+        if self.torch_api.endswith("2d"):
+            pre += pre_2d.splitlines()
+            post = post_2d.splitlines()
+        elif self.torch_api.endswith("3d"):
+            pre += pre_3d.splitlines()
+            post = post_3d.splitlines()
+        else:
+            return ConvertResult.error(paddle_api, "Unsupported adaptive_avg_pool API")
+        pre += map_code
+        code = Code(
+            preprocess=pre,
+            core=[core],
+            postprocess=post,
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 # b
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

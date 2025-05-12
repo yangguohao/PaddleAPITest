@@ -1100,6 +1100,28 @@
             "output_size": "output_size"
         }
     },
+    "paddle.nn.functional.adaptive_avg_pool2d": {
+        "torch_api": "torch.nn.functional.adaptive_avg_pool2d",
+        "Rule": "AdaptiveAvgPoolRule",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "output_size": "output_size"
+        }
+    },
+    "paddle.nn.functional.adaptive_avg_pool3d": {
+        "torch_api": "torch.nn.functional.adaptive_avg_pool3d",
+        "Rule": "AdaptiveAvgPoolRule",
+        "set_defaults": {
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "output_size": "output_size"
+        }
+    },
     "o": "API started with 'o' should be placed here",
     "paddle.ones":{
         "Rule": "OnesRule"
@@ -5454,22 +5476,6 @@
     },
     "paddle.nn.functional.adaptive_avg_pool1d": {
         "torch_api": "torch.nn.functional.adaptive_avg_pool1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "output_size": "output_size"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.adaptive_avg_pool2d": {
-        "torch_api": "torch.nn.functional.adaptive_avg_pool2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "output_size": "output_size"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.adaptive_avg_pool3d": {
-        "torch_api": "torch.nn.functional.adaptive_avg_pool3d",
         "paddle_torch_args_map": {
             "x": "input",
             "output_size": "output_size"
