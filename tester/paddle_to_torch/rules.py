@@ -99,7 +99,7 @@ class ConvertResult:
         if not code_obj.is_valid():
             return cls.error(paddle_api, f"Invalid code: {code_obj.error_message}")
 
-        if is_torch_corresponding and len(code_obj.core) > 4:
+        if is_torch_corresponding and len(code_obj.core) > 6:
             print(
                 f"Warning: The core code of {paddle_api} is too complex.",
                 flush=True,
@@ -2346,6 +2346,29 @@ for i in range(boxnum.shape[0]):
         code = impl.splitlines()
         code.append(f"result = {self.torch_api}(boxes = ans, **_kwargs)")  # type: ignore
         return ConvertResult.success(paddle_api, code, "result")
+
+
+class ReduceRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, _ = self.apply_generic()
+        pre = """
+if isinstance(axis, (tuple, list)):
+    tmp = []
+    for a in axis:
+        if torch.is_tensor(a):
+            tmp.append(a.item())
+        else:
+            tmp.append(a)
+    axis = tuple(tmp)
+if torch.is_tensor(axis):
+    if axis.dim() == 0:
+        axis = axis.item()
+    else:
+        axis = tuple(axis.tolist())
+"""
+        core = f"result = {self.torch_api}(x, dim=axis, keepdim=keepdim)"
+        code = Code(preprocess=defaults_code + [pre], core=[core])
+        return ConvertResult.success(paddle_api, code)
 
 
 # s

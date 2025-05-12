@@ -587,29 +587,19 @@
         }
     },
     "paddle.max": {
-        "torch_api": "torch.max",
+        "torch_api": "torch.amax",
+        "Rule": "ReduceRule",
         "set_defaults": {
-            "axis": "None"
-        },
-        "paddle_torch_args_map": {
-            "x": "input",
-            "keepdim": "keepdim"
-        },
-        "torch_kwargs": {
-            "dim": "tuple(axis) if isinstance(axis, list) else axis"
+            "axis": "None",
+            "keepdim": "False"
         }
     },
     "paddle.min": {
-        "torch_api": "torch.min",
+        "torch_api": "torch.amin",
+        "Rule": "ReduceRule",
         "set_defaults": {
-            "axis": "None"
-        },
-        "paddle_torch_args_map": {
-            "x": "input",
-            "keepdim": "keepdim"
-        },
-        "torch_kwargs": {
-            "dim": "tuple(axis) if isinstance(axis, list) else axis"
+            "axis": "None",
+            "keepdim": "False"
         }
     },
     "paddle.meshgrid": {
