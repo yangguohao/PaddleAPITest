@@ -2616,6 +2616,77 @@ result = torch.stack(result,0)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class SliceScatterRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+slices = [slice(None)] * x.dim()
+for i, axis in enumerate(axes):
+    slices[axis] = slice(starts[i], ends[i], strides[i])
+shape = list(x.shape)
+for i, axis in enumerate(axes):
+    start, end, stride = starts[i], ends[i], strides[i]
+    shape[axis] = (end - start + stride - 1) // stride
+if list(value.shape) != shape:
+    value = value.expand(shape)
+result = x.clone()
+result[tuple(slices)] = value
+"""
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+class StandardGammaRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+rate = torch.ones_like(x)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = "result = result.sample()"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=[post],
+        )
+        return ConvertResult.success(paddle_api, code)    
+
+class StanhRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = "x = x * scale_a"
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = "result = result * scale_b"
+        code = Code(
+            preprocess=defaults_code + [pre] + map_code,
+            core=[core],
+            postprocess=[post],
+        )
+        return ConvertResult.success(paddle_api, code)    
+    
+class StridedSliceRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+shape = x.shape
+index_list = [torch.arange(s) for s in shape]
+for axis, start, end, stride in zip(axes, starts, ends, strides):
+    dim_len = shape[axis]
+    if start < 0:
+        start += dim_len
+    if end < 0:
+        end += dim_len
+    if stride > 0:
+        start = min(max(start, 0), dim_len)
+        end = min(max(end, 0), dim_len)
+    else:
+        start = min(max(start, -1), dim_len - 1)
+        end = min(max(end, -1), dim_len - 1)
+    index_list[axis] = torch.arange(start, end, step=stride)
+grids = torch.meshgrid(*[ind if isinstance(ind, torch.Tensor) else torch.arange(shape[i]) 
+                            for i, ind in enumerate(index_list)], indexing='ij')
+result = x[grids]
+"""
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+    
 
 class ShardIndex(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

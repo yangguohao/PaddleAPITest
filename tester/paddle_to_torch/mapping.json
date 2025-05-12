@@ -1324,6 +1324,42 @@
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
     },
+    "paddle.slice_scatter": {
+        "Rule": "SliceScatterRule"
+    },
+    "paddle.standard_gamma":{
+        "torch_api": "torch.distributions.Gamma",
+        "Rule": "StandardGammaRule",
+        "paddle_torch_args_map": {
+            "x": "concentration",
+            "rate":"rate"
+        }
+    },
+    "paddle.standard_normal":{
+        "torch_api": "torch.randn",
+        "paddle_torch_args_map": {
+            "shape": "size",
+            "dtype":"dtype"
+        },
+        "set_defaults":{
+            "dtype": "None"
+        }
+    },
+    "paddle.stanh":{
+        "torch_api": "torch.tanh",
+        "Rule": "StanhRule",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "set_defaults":{
+            "scale_a": "0.67",
+            "scale_b":"1.7159"
+        }
+
+    },
+    "paddle.strided_slice":{
+        "Rule": "StridedSliceRule"
+    },
     "paddle.Tensor.slice_scatter": {
         "torch_api": "torch.Tensor.slice_scatter",
         "paddle_torch_args_map": {
