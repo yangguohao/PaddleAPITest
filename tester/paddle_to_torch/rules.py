@@ -2528,8 +2528,6 @@ class ZerosRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 import re
-import paddle
-import numpy
 dtype = locals().get("dtype", None)
 if isinstance(shape,torch.Tensor):
     if shape.numel() == 1:
