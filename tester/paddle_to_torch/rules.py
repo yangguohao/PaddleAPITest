@@ -2584,13 +2584,11 @@ rate = torch.ones_like(x)
 torch.manual_seed(42)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result = result.sample()
-"""
+        post = "result = result.sample()"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines(),
-            postprocess=post.splitlines(),
+            core=[core],
+            postprocess=[post],
         )
         return ConvertResult.success(paddle_api, code)    
 
