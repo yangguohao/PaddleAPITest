@@ -924,6 +924,12 @@
         "Rule": "OnesRule"
     },
     "p": "API started with 'p' should be placed here",
+    "paddle.poisson": {
+        "torch_api": "torch.poisson",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+    },
     "paddle.polar":{
         "Rule": "PolarRule"
     },
@@ -5913,12 +5919,6 @@
             "perm": "dims"
         },
         "min_input_args": 2
-    },
-    "paddle.poisson": {
-        "torch_api": "torch.poisson",
-        "paddle_torch_args_map": {
-            "x": "input"
-        },
     },
     "paddle.pow": {
         "torch_api": "torch.pow",
