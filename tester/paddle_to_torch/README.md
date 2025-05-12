@@ -172,7 +172,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
     ```json
         "<api_name>": {
-            "torch_api": "torch api 名称（torch_api 与 composite_steps 必须定义其一）",
+            "torch_api": "torch api 名称",
             "set_defaults":{
                 "_description1": "默认值设置字典，键为参数名，值为默认值",
                 "_description2": "建议参考官方文档设置默认值，不会覆盖已有参数值，功能等效于 var = locals().get('var', value)"
@@ -185,19 +185,7 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
             ],
             "torch_kwargs": {
                 "_description": "torch api 关键字参数字典，与 torch_args 类似"
-            },
-            "composite_steps": [
-                "当需要多个 torch api 组合实现时，定义步骤列表，每行的执行结果将被赋值给 _tmp_i，可通过 {i} 访问",
-                {
-                    "torch_api": "torch api",
-                    "torch_args": [
-                        "torch api 位置参数列表，可以使用 {i} 代表中间变量"
-                    ],
-                    "torch_kwargs": {
-                        "_description": "torch api 关键字参数字典，与 torch_args 类似"
-                    }
-                }
-            ]
+            }
         }
     ```
 
@@ -248,32 +236,28 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
     ```python
     class CropRule(BaseRule):
         def apply(self, paddle_api: str) -> ConvertResult:
-            impl = """
+            core = """
     ndim = x.dim()
     offsets = locals().get('offsets')
     shape = locals().get('shape')
-
     if offsets is None:
         offsets = [0] * ndim
     elif isinstance(offsets, (list, tuple)):
         offsets = [o.item() if isinstance(o, torch.Tensor) else int(o) for o in offsets]
     elif isinstance(offsets, torch.Tensor):
         offsets = offsets.tolist()
-
     if shape is None:
         shape = [x.size(i) - offsets[i] for i in range(ndim)]
     elif isinstance(shape, (list, tuple)):
         shape = [s.item() if isinstance(s, torch.Tensor) else int(s) for s in shape]
     elif isinstance(shape, torch.Tensor):
         shape = shape.tolist()
-
     shape = [x.size(i) - offsets[i] if s == -1 else s for i, s in enumerate(shape)]
     slices = [slice(offsets[i], offsets[i] + shape[i]) for i in range(ndim)]
-
     result = x[slices]
     """
-            code = impl.splitlines()
-            return ConvertResult.success(paddle_api, code, "result")
+            code = Code(core=core.splitlines())
+            return ConvertResult.success(paddle_api, code, is_torch_coresponding=False)
     ```
 
 ### 运行测试配置
@@ -281,10 +265,10 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 13. 全局搜索 paddle.crop ，将所有相关测试配置移至临时文件中，然后运行 accuracy 测试命令：
 
     ```shell
-    python engine.py --accuracy=True --api_config_file="tester/api_config/api_config_merged_temp.txt"
+    python engine.py --accuracy=True --api_config_file="tester/api_config/api_config_temp.txt"
     ```
 
-    最终测试配置全部通过，结果位于 test_log\api_config_pass.txt，合并至通过 accuracy 测试的 api_config_accuracy_*.txt 中。
+    最终测试配置全部通过，结果位于 test_log/api_config_pass.txt，合并至通过 accuracy 测试的 api_config_support2torch_*.txt 中。
 
 ### 其他情况
 
@@ -379,7 +363,7 @@ if data_format == "NLC":
 """
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines(),
+            core=[core],
             postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
