@@ -681,6 +681,14 @@
         "torch_api": "torch.meshgrid",
         "torch_args": ["*args"]
     },
+    "paddle.mean": {
+        "torch_api": "torch.mean",
+        "Rule": "ReduceRule",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False"
+        }
+    },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
         "Rule": "NanmedianRule"
@@ -4646,16 +4654,6 @@
             "y": "other"
         },
         "min_input_args": 2
-    },
-    "paddle.mean": {
-        "torch_api": "torch.mean",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
     },
     "paddle.minimum": {
         "torch_api": "torch.minimum",

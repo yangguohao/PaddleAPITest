@@ -1187,6 +1187,7 @@ if isinstance(output_size, (list, tuple)):
 
 # g
 
+
 class FullRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         preprocess = """
@@ -1230,7 +1231,7 @@ converted_fill_value = convert_to_scalar(fill_value)
         core = "result = torch.full(size=converted_shape, fill_value=converted_fill_value, dtype=dtype)"
         code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
-    
+
 
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1682,6 +1683,7 @@ result = torch.abs(lcm)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class LogcumsumexpRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2424,8 +2426,25 @@ if torch.is_tensor(axis):
     else:
         axis = tuple(axis.tolist())
 """
-        core = f"result = {self.torch_api}(x, dim=axis, keepdim=keepdim)"
-        code = Code(preprocess=defaults_code + [pre], core=[core])
+        if paddle_api == "paddle.mean":
+            core = """
+if axis is None:
+    result = torch.mean(x)
+else:
+    result = torch.mean(x, dim=axis, keepdim=keepdim)
+"""
+            post = """
+if axis is None and keepdim:
+    result = result.view([1] * x.dim())
+"""
+            code = Code(
+                preprocess=defaults_code + pre.splitlines(),
+                core=core.splitlines(),
+                postprocess=post.splitlines(),
+            )
+        else:
+            core = f"result = {self.torch_api}(x, dim=axis, keepdim=keepdim)"
+            code = Code(preprocess=defaults_code + pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -2639,6 +2658,7 @@ result = torch.stack(result,0)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SliceScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2657,6 +2677,7 @@ result[tuple(slices)] = value
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class StandardGammaRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2670,7 +2691,8 @@ rate = torch.ones_like(x)
             core=[core],
             postprocess=[post],
         )
-        return ConvertResult.success(paddle_api, code)    
+        return ConvertResult.success(paddle_api, code)
+
 
 class StanhRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2683,8 +2705,9 @@ class StanhRule(BaseRule):
             core=[core],
             postprocess=[post],
         )
-        return ConvertResult.success(paddle_api, code)    
-    
+        return ConvertResult.success(paddle_api, code)
+
+
 class StridedSliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2709,7 +2732,7 @@ result = x[grids]
 """
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-    
+
 
 class ShardIndex(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
