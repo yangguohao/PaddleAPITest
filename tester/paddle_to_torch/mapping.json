@@ -543,6 +543,9 @@
             "as_tuple": "as_tuple"
         }
     },
+    "paddle.normal": {
+        "Rule": "NormalRule"
+    },
     "paddle.Tensor.norm": {
         "torch_api": "torch.Tensor.norm",
         "paddle_torch_args_map": {
@@ -932,6 +935,9 @@
         "paddle_torch_args_map": {
             "y": "exponent"
         }
+    },
+    "paddle.prod": {
+        "Rule": "ProdRule"
     },
     "paddle.Tensor.prod": {
         "torch_api": "torch.Tensor.prod",
@@ -5819,9 +5825,6 @@
         },
         "min_input_args": 0
     },
-    "paddle.normal": {
-        "Rule": "NormalRule"
-    },
     "paddle.ones_like": {
         "torch_api": "torch.ones_like",
         "paddle_torch_args_map": {
@@ -5916,7 +5919,6 @@
         "paddle_torch_args_map": {
             "x": "input"
         },
-        "min_input_args": 1
     },
     "paddle.pow": {
         "torch_api": "torch.pow",
@@ -5925,9 +5927,6 @@
             "y": "exponent"
         },
         "min_input_args": 2
-    },
-    "paddle.prod": {
-        "Rule": "ProdRule"
     },
     "paddle.profiler.make_scheduler": {
         "torch_api": "torch.profiler.schedule",
