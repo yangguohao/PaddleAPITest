@@ -236,6 +236,12 @@
         "torch_api": "torch.Tensor.frexp"
     }, 
     "g": "API started with 'g' should be placed here",
+    "paddle.gammaln": {
+        "torch_api": "torch.special.gammaln",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
     },
@@ -299,6 +305,9 @@
         }
     },
     "i": "API started with 'i' should be placed here",
+    "paddle.is_empty": {
+        "Rule": "IsEmptyRule"
+    },
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
     },
@@ -931,6 +940,38 @@
             "padding": "padding",
             "ceil_mode": "ceil_mode",
             "return_mask": "return_indices"
+        }
+    },
+    "paddle.nn.functional.lp_pool1d": {
+        "torch_api": "torch.nn.functional.lp_pool1d",
+        "Rule": "PoolRule",        
+        "set_defaults": {
+            "stride": "None",
+            "padding": 0,
+            "data_format": "'NCL'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "norm_type": "norm_type",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "ceil_mode": "ceil_mode"
+        }
+    },
+    "paddle.nn.functional.lp_pool2d": {
+        "torch_api": "torch.nn.functional.lp_pool2d",
+        "Rule": "PoolRule",
+        "set_defaults": {
+            "stride": "None",
+            "padding": 0,
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "norm_type": "norm_type",
+            "kernel_size": "kernel_size",
+            "stride": "stride",
+            "ceil_mode": "ceil_mode"
         }
     },
     "paddle.nn.functional.max_unpool1d": {
@@ -5541,28 +5582,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.nn.functional.lp_pool1d": {
-        "torch_api": "torch.nn.functional.lp_pool1d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "norm_type": "norm_type",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "ceil_mode": "ceil_mode"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.lp_pool2d": {
-        "torch_api": "torch.nn.functional.lp_pool2d",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "norm_type": "norm_type",
-            "kernel_size": "kernel_size",
-            "stride": "stride",
-            "ceil_mode": "ceil_mode"
-        },
-        "min_input_args": 2
-    },
     "paddle.nn.functional.mish": {
         "torch_api": "torch.nn.functional.mish",
         "paddle_torch_args_map": {
@@ -6074,6 +6093,12 @@
         },
         "min_input_args": 2
     },
+    "paddle.round": {
+        "torch_api": "torch.round",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.rot90": {
         "torch_api": "torch.rot90",
         "paddle_torch_args_map": {
@@ -6172,6 +6197,35 @@
         },
         "min_input_args": 1
     },
+    "paddle.sort": {
+        "Rule": "SortRule",
+        "torch_api": "torch.sort",
+        "set_defaults": {
+            "axis": "-1",
+            "stable": "False",
+            "descending": "False"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "stable": "stable",
+            "descending": "descending"
+        }
+    },
+    "paddle.Tensor.sort": {
+        "Rule": "SortRule",
+        "torch_api": "torch.Tensor.sort",
+        "set_defaults": {
+            "axis": "-1",
+            "stable": "False",
+            "descending": "False"
+        },
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "stable": "stable",
+            "descending": "descending"
+        }
+    },    
     "paddle.sparse.addmm": {
         "torch_api": "torch.sparse.addmm",
         "paddle_torch_args_map": {

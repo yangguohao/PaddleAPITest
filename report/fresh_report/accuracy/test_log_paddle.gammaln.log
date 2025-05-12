@@ -1,0 +1,45 @@
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-04-30 11:03:33.465972 test begin: paddle.gammaln(Tensor([10, 20, 1],"float32"), )
+W0430 11:03:36.376190 13858 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 12.0
+W0430 11:03:36.377558 13858 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] backward  paddle.gammaln(Tensor([10, 20, 1],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 99 / 200 (49.5%)
+Max absolute difference: 81.784935
+Max relative difference: 1.
+ x: array([[[-7.324163e-01],
+        [-1.877554e-01],
+        [-0.000000e+00],...
+ y: array([[[-7.324162e-01],
+        [-1.877554e-01],
+        [-1.682804e-01],...
+2025-04-30 11:03:53.294971 test begin: paddle.gammaln(Tensor([2, 3, 4, 5],"float32"), )
+[accuracy error] backward  paddle.gammaln(Tensor([2, 3, 4, 5],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 58 / 120 (48.3%)
+Max absolute difference: 196.77719
+Max relative difference: 1.
+ x: array([[[[ 1.136089e+00, -5.964237e-01,  0.000000e+00, -0.000000e+00,
+          -0.000000e+00],
+         [-2.551208e+00,  5.572559e-01,  0.000000e+00, -0.000000e+00,...
+ y: array([[[[ 1.136089e+00, -5.964238e-01,  7.566711e-02, -1.019050e+00,
+          -7.592203e-03],
+         [-2.551208e+00,  5.572559e-01,  5.983206e+00, -9.414627e+00,...
+2025-04-30 11:03:53.449497 test begin: paddle.gammaln(Tensor([2, 3, 4, 5],"float64"), )
+[accuracy error] backward  paddle.gammaln(Tensor([2, 3, 4, 5],"float64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 57 / 120 (47.5%)
+Max absolute difference: 37.80070319
+Max relative difference: 1.
+ x: array([[[[ 3.793505e-01, -9.428247e-01, -1.474210e+00,  0.000000e+00,
+          -0.000000e+00],
+         [-2.020323e-01, -1.288403e-01, -0.000000e+00,  0.000000e+00,...
+ y: array([[[[ 3.793505e-01, -9.428247e-01, -1.474210e+00,  1.379037e-01,
+          -1.119203e+00],
+         [-2.020323e-01, -1.288403e-01, -5.175795e+00,  1.077684e+00,...
