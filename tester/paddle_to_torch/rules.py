@@ -1994,8 +1994,6 @@ class OnesRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 import re
-import paddle
-import numpy
 dtype = locals().get("dtype", None)
 if isinstance(shape,torch.Tensor):
     if shape.numel() == 1:
@@ -2023,7 +2021,6 @@ if not dtype is None:
 if dtype is None:
     result = torch.ones(shape)
 else:
-
     result = torch.ones(shape, dtype=dtype)
 """
         code = Code(
@@ -2059,8 +2056,6 @@ class  ProdRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 import re
-import paddle
-import numpy
 dtype = locals().get("dtype", None)
 axis = locals().get("axis", None)
 keepdim = locals().get("keepdim", False)
@@ -2417,15 +2412,13 @@ result = input
         return ConvertResult.success(paddle_api, code)
 class SplitRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 axis = locals().get("axis", 0)
 if isinstance(axis, torch.Tensor):
     axis =axis.item()
 if axis < 0:
     axis = len(x.shape) + axis
-if isinstance(num_or_sections, int):
-    result = torch.split(x, x.shape[axis] // num_or_sections, dim=axis)
-else:
+if not isinstance(num_or_sections, int):
     num = x.shape[axis]
     for i in num_or_sections:
         if i != -1:
@@ -2433,7 +2426,12 @@ else:
     for i in range(len(num_or_sections)):
         if num_or_sections[i] == -1:
             num_or_sections[i] = num
-            break
+            break    
+"""
+        core = """
+if isinstance(num_or_sections, int):
+    result = torch.split(x, x.shape[axis] // num_or_sections, dim=axis)
+else:
     result = torch.split(x, num_or_sections, dim=axis)
 """
         code = impl.splitlines()
