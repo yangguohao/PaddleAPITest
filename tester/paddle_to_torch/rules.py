@@ -1813,11 +1813,166 @@ result = torch.tensor(num_elements, dtype=torch.int64)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class NormalRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+mean = locals().get("mean", 0.0) * 1.
+std = locals().get("std", 1.0) * 1.
+shape = locals().get("shape",None)
+if isinstance(mean,torch.Tensor) or isinstance(std,torch.Tensor):
+    if (isinstance(mean,torch.Tensor) and torch.is_complex(mean)) or (isinstance(std,torch.Tensor) and torch.is_complex(std)):
+        if isinstance(mean,torch.Tensor) and not torch.is_complex(mean):
+            mean = torch.complex(mean,torch.zeros_like(mean))
+        if isinstance(std,torch.Tensor) and not torch.is_complex(std):
+            std = torch.complex(std,torch.zeros_like(std))
+    elif isinstance(mean, complex) or isinstance(std, complex):
+        if isinstance(mean,torch.Tensor) and not torch.is_complex(mean):
+            mean = torch.complex(mean,torch.zeros_like(mean))
+        if isinstance(std,torch.Tensor) and not torch.is_complex(std):
+            std = torch.complex(std,torch.zeros_like(std))        
+else:
+    if isinstance(mean, complex) or isinstance(std, complex):
+        if not isinstance(mean, complex):
+            mean = complex(mean)
+        if not isinstance(std, complex):
+            std = complex(std)            
+"""
+        core = """
+if isinstance(mean,torch.Tensor) or isinstance(std,torch.Tensor):
+    if (isinstance(mean,torch.Tensor) and torch.is_complex(mean)) or (isinstance(std,torch.Tensor) and torch.is_complex(std)):
+        result = torch.complex(torch.normal(mean.real, std.real),torch.normal(mean.imag,std.imag))
+    elif isinstance(mean, complex) or isinstance(std, complex):
+            result = torch.complex(torch.normal(mean.real, std.real),torch.normal(mean.imag,std.imag))
+    else:
+        result = torch.normal(mean,std)
+else:
+    if isinstance(mean, complex) or isinstance(std, complex):
+         result = torch.complex(torch.normal(mean.real, std.real,shape),torch.normal(mean.imag,std.imag,shape))  
+    else:
+        result = torch.normal(mean,std,shape)
+            
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()  
+        )
+        return ConvertResult.success(paddle_api, code)    
 
 # o
-
+class OnesRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+import re
+dtype = locals().get("dtype", None)
+if isinstance(shape,torch.Tensor):
+    if shape.numel() == 1:
+        shape = shape.item()
+    else:
+        li = []
+        for i in shape:
+            li.append(i.item())
+        shape = li
+if not dtype is None:
+    if isinstance(dtype, str):
+        dtype = getattr(torch, dtype)
+    else:
+        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
+            dtype_str = str(dtype).split('.')[-1]
+            dtype = getattr(torch, dtype_str)
+        else:
+            match = re.search(r"'(.+?)'", str(dtype))
+            print(dtype)
+            dtype_str = match.group(1)
+            dtype_str = dtype_str.split('.')[-1]
+            dtype = getattr(torch, dtype_str)    
+"""
+        core = """
+if dtype is None:
+    result = torch.ones(shape)
+else:
+    result = torch.ones(shape, dtype=dtype)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()      
+        )
+        return ConvertResult.success(paddle_api, code, "result")    
 
 # p
+class PolarRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+real = abs * torch.cos(angle)
+imag = abs * torch.sin(angle)
+result = torch.complex(real, imag)
+"""
+        code = Code(
+            core=core.splitlines() 
+        )
+        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
+
+class PositiveRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+result = x
+"""
+        code = Code(
+            core=core.splitlines() 
+        )
+        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
+
+class  ProdRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+import re
+dtype = locals().get("dtype", None)
+axis = locals().get("axis", None)
+keepdim = locals().get("keepdim", False)
+if dtype is None:
+    dtype = x.dtype
+else:
+    if isinstance(dtype, str):
+        dtype = getattr(torch, dtype)
+    else:
+        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
+            dtype_str = str(dtype).split('.')[-1]
+            dtype = getattr(torch, dtype_str)
+        else:
+            match = re.search(r"'(.+?)'", str(dtype))
+            print(dtype)
+            dtype_str = match.group(1)
+            dtype_str = dtype_str.split('.')[-1]
+            dtype = getattr(torch, dtype_str)
+if not axis is None:
+    dim = []
+    if isinstance(axis, (list, tuple)):
+        for i in axis:
+            if isinstance(i, torch.Tensor):
+                dim.append(i.item())
+            else:
+                dim.append(i)
+    elif isinstance(axis, torch.Tensor):
+        for i in axis:
+            dim.append(i.item())
+    else:
+        dim.append(axis)
+"""
+        core = """
+if axis is None:
+    result = torch.prod(x, dtype = dtype)
+else:
+    for i in dim:
+        x = torch.prod(x,dim = i,keepdim=True,dtype = dtype)
+    if not keepdim:
+        x = x.squeeze(dim)
+    result = x
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines() 
+        )
+        return ConvertResult.success(paddle_api, code, "result")
+
 class Put_along_axisRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2053,6 +2208,54 @@ class RankRule(BaseRule):
         )
         return ConvertResult.success(paddle_api, code)
 
+class Reduce_asRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+x_shape = list(x.shape)
+t_shape = [1] * (x.dim() - target.dim()) + list(target.shape)
+reduce_dims = [i for i, (xs, ts) in enumerate(zip(x_shape, t_shape)) if ts == 1 and xs != 1]
+out = x.sum(dim=reduce_dims, keepdim=True)
+result = out.view(target.shape)
+"""
+        code = Code(
+            core=core.splitlines()               
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+class ReshapeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+sh = []
+if isinstance(shape,torch.Tensor):
+    for i in shape:
+        sh.append(i.item())
+else:
+    sh = shape
+"""
+        core = """
+result = torch.reshape(x,sh)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()               
+        )
+        return ConvertResult.success(paddle_api, code, "result")
+class ReverseRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+dim = []
+if isinstance(axis,int):
+    dim.append(axis)
+else:
+    dim = axis
+"""
+        core = """
+result = torch.flip(x,dim)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()            
+        )
+        return ConvertResult.success(paddle_api, code, "result")
 
 class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2231,6 +2434,51 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class SliceRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+for i,dim in enumerate(axes):
+    if starts[i] < 0:
+        starts[i] = starts[i] + input.shape[dim]
+    if ends[i] < 0:
+        ends[i] = ends[i] + input.shape[dim]
+    ends[i] = min(ends[i],input.shape[dim])
+    input = torch.narrow(input, dim, starts[i], ends[i]-starts[i])
+result = input
+"""
+        code = Code(
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+class SplitRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+axis = locals().get("axis", 0)
+if isinstance(axis, torch.Tensor):
+    axis =axis.item()
+if axis < 0:
+    axis = len(x.shape) + axis
+if not isinstance(num_or_sections, int):
+    num = x.shape[axis]
+    for i in num_or_sections:
+        if i != -1:
+            num = num - i
+    for i in range(len(num_or_sections)):
+        if num_or_sections[i] == -1:
+            num_or_sections[i] = num
+            break    
+"""
+        core = """
+if isinstance(num_or_sections, int):
+    result = torch.split(x, x.shape[axis] // num_or_sections, dim=axis)
+else:
+    result = torch.split(x, num_or_sections, dim=axis)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()
+            )
+        return ConvertResult.success(paddle_api, code)
 class SortRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2258,6 +2506,24 @@ result = torch.stack(result,0)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class ShardIndex(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+ignore_value = locals().get("ignore_value", -1)
+shard_size = (index_num + nshards - 1) // nshards
+lower = shard_id * shard_size
+upper = (shard_id + 1) * shard_size
+
+mask = (input >= lower) & (input < upper)
+output = torch.full_like(input, ignore_value)
+
+output[mask] = input[mask] - lower
+result = output
+"""
+        code = Code(
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)      
 
 class ScaleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2371,7 +2637,28 @@ result = x.view(shape_or_dtype)
 
 
 # w
-
+class WhereRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+_kwargs = {}
+for paddle_param, torch_param in {
+    'condition': 'condition',
+    'x': 'input',
+    'y': 'other',
+}.items():
+    if paddle_param in locals():
+        _kwargs[torch_param] = locals()[paddle_param]    
+if "input" in _kwargs and not isinstance(_kwargs['input'], torch.Tensor):
+    _kwargs["input"] = torch.tensor(_kwargs['input'])
+"""
+        core = """
+result = torch.where(**_kwargs)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # x
 
@@ -2380,7 +2667,44 @@ result = x.view(shape_or_dtype)
 
 
 # z
-
+class ZerosRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+import re
+dtype = locals().get("dtype", None)
+if isinstance(shape,torch.Tensor):
+    if shape.numel() == 1:
+        shape = shape.item()
+    else:
+        li = []
+        for i in shape:
+            li.append(i.item())
+        shape = li
+if not dtype is None:
+    if isinstance(dtype, str):
+        dtype = getattr(torch, dtype)
+    else:
+        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
+            dtype_str = str(dtype).split('.')[-1]
+            dtype = getattr(torch, dtype_str)
+        else:
+            match = re.search(r"'(.+?)'", str(dtype))
+            print(dtype)
+            dtype_str = match.group(1)
+            dtype_str = dtype_str.split('.')[-1]
+            dtype = getattr(torch, dtype_str)
+"""
+        core = """
+if dtype is None:
+    result = torch.zeros(shape)
+else:
+    result = torch.zeros(shape, dtype=dtype)        
+"""    
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # __
 class __Pow__Rule(BaseRule):
