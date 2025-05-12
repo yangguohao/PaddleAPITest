@@ -2608,17 +2608,13 @@ torch.manual_seed(42)
 class StanhRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
-        pre = """
-x = x * scale_a
-"""
+        pre = "x = x * scale_a"
         core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result = result * scale_b
-"""
+        post = "result = result * scale_b"
         code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines(),
-            postprocess=post.splitlines(),
+            preprocess=defaults_code + [pre] + map_code,
+            core=[core],
+            postprocess=[post],
         )
         return ConvertResult.success(paddle_api, code)    
     
