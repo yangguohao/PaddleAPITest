@@ -657,6 +657,48 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code, "result")
 
+class CrossEntropyRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+_kwargs = {}
+for paddle_param, torch_param in {
+    "input": "input",
+    "label": "target",
+    "weight": "weight",
+    "ignore_index": "ignore_index",
+    "reduction": "reduction",
+    "label_smoothing": "label_smoothing"
+}.items():
+    if paddle_param in locals() and locals()[paddle_param] is not None:
+        _kwargs[torch_param] = locals()[paddle_param]
+shp = _kwargs['target'].shape
+if len(_kwargs["input"].shape) > 2:
+    perm = [0] + [len(_kwargs["input"].shape)-1]+ [i for i in range(1,len(_kwargs["input"].shape)-1)]
+    _kwargs['input'] = _kwargs['input'].permute(*perm)
+soft_label = locals().get('soft_label',False)
+axis = locals().get('axis',-1)
+use_softmax = locals().get('use_softmax',True)
+if use_softmax:
+    _kwargs['input'] = torch.nn.functional.log_softmax(_kwargs['input'], dim=axis)
+_kwargs['target'] = _kwargs['target'].squeeze(-1)
+if "weight" in _kwargs:
+    _kwargs['weight'].requires_grad = False
+"""
+        core = """
+result = torch.nn.functional.cross_entropy(**_kwargs)
+"""
+        post = """
+if "reduction" in _kwargs and _kwargs['reduction'] == "none":
+    if soft_label:
+        result = result.unsqueeze(-1)
+    else:
+        result = result.reshape(shp)
+"""
+        code = Code(preprocess=pre.splitlines(),
+                    core=core.splitlines(),
+                    postprocess=post.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

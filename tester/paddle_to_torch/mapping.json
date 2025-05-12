@@ -666,6 +666,22 @@
             "groups": "groups"
         }
     },
+    "paddle.nn.functional.binary_cross_entropy": {
+        "Rule": "BinaryCrossEntropyRule"
+    },
+    "paddle.nn.functional.cross_entropy": {
+        "Rule": "CrossEntropyRule"
+    },
+    "paddle.nn.functional.ctc_loss": {
+        "torch_api": "torch.nn.functional.ctc_loss",
+        "paddle_torch_args_map": {
+            "log_probs": "log_probs",
+            "target": "target",
+            "input_lengths": "input_lengths",
+            "blank": "blank",
+            "reduction": "reduction"
+        }
+    },
     "paddle.nn.functional.fractional_max_pool2d": {
         "Rule": "FractionalMaxPoolRule",
         "torch_api": "torch.nn.functional.fractional_max_pool2d",
@@ -5272,9 +5288,6 @@
             "inplace": "inplace"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.binary_cross_entropy": {
-        "Rule": "BinaryCrossEntropyRule"
     },
     "paddle.nn.functional.binary_cross_entropy_with_logits":{
         "torch_api": "torch.nn.functional.binary_cross_entropy_with_logits",
