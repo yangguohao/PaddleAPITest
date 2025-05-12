@@ -2265,33 +2265,24 @@ result = result * scale_b
 class StridedSliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
-slices = [slice(None)] * x.dim()
 shape = x.shape
-
+index_list = [torch.arange(s) for s in shape]
 for axis, start, end, stride in zip(axes, starts, ends, strides):
-    if stride == 0:
-        raise ValueError("stride must not be zero")
-
     dim_len = shape[axis]
-
     if start < 0:
         start += dim_len
     if end < 0:
         end += dim_len
-
     if stride > 0:
         start = min(max(start, 0), dim_len)
         end = min(max(end, 0), dim_len)
     else:
         start = min(max(start, -1), dim_len - 1)
         end = min(max(end, -1), dim_len - 1)
-
-    if (stride > 0 and start >= end) or (stride < 0 and start <= end):
-        slices[axis] = slice(0, 0, 1)
-    else:
-        slices[axis] = slice(start, end, stride)
-print(x[tuple(slices)])
-result = x[tuple(slices)]
+    index_list[axis] = torch.arange(start, end, step=stride)
+grids = torch.meshgrid(*[ind if isinstance(ind, torch.Tensor) else torch.arange(shape[i]) 
+                            for i, ind in enumerate(index_list)], indexing='ij')
+result = x[grids]
 """
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code)  
