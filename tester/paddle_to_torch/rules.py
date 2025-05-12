@@ -2581,7 +2581,6 @@ class StandardGammaRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         pre = """
 rate = torch.ones_like(x)
-torch.manual_seed(42)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post = "result = result.sample()"
@@ -2589,19 +2588,6 @@ torch.manual_seed(42)
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=[core],
             postprocess=[post],
-        )
-        return ConvertResult.success(paddle_api, code)    
-
-class StandardNormalRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        pre = """
-torch.manual_seed(42)
-"""
-        core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines()
         )
         return ConvertResult.success(paddle_api, code)    
 

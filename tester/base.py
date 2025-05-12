@@ -33,6 +33,8 @@ rand_apis = [
     "paddle.randint_like",
     "paddle.randperm",
     "paddle.uniform",
+    "paddle.standard_gamma",
+    "paddle.standard_normal", 
     "paddle.Tensor.bernoulli_",
     "paddle.Tensor.cauchy_",
     "paddle.Tensor.exponential_",

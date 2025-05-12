@@ -1250,7 +1250,6 @@
     },
     "paddle.standard_normal":{
         "torch_api": "torch.randn",
-        "Rule": "StandardNormalRule",
         "paddle_torch_args_map": {
             "shape": "size",
             "dtype":"dtype"
