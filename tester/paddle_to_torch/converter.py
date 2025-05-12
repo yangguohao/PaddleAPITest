@@ -18,14 +18,6 @@ PADDLE2TORCH_WRONG_CONFIG = frozenset(
         "paddle.nn.functional.group_norm",
         "paddle.nn.functional.interpolate",
         "paddle.nn.functional.local_response_norm",
-        "paddle.nn.functional.lp_pool1d",
-        "paddle.nn.functional.lp_pool2d",
-        "paddle.nn.functional.max_pool1d",
-        "paddle.nn.functional.max_pool2d",
-        "paddle.nn.functional.max_pool3d",
-        "paddle.nn.functional.max_unpool1d",
-        "paddle.nn.functional.max_unpool2d",
-        "paddle.nn.functional.max_unpool3d",
         "paddle.nn.functional.pixel_shuffle",
         "paddle.nn.functional.pixel_unshuffle",
         "paddle.nn.functional.prelu",
@@ -102,11 +94,6 @@ class Paddle2TorchConverter:
 
         rule.read_mapping(self.mapping[paddle_api])
         result = rule.apply(paddle_api)
-
-        if result.is_supported and result.code:
-            code_str = "\n".join(result.code)
-            result.compiled_code = compile(code_str, "<string>", "exec")
-
         self.cached_results[paddle_api] = result
         return result
 
@@ -144,7 +131,13 @@ class Paddle2TorchConverter:
         }
 
         try:
-            exec("\n".join(convert_result.code), exec_globals, exec_locals)
+            code = convert_result.code
+            if code.preprocess_compiled:
+                exec(code.preprocess_compiled, exec_globals, exec_locals)
+            if code.core_compiled:
+                exec(code.core_compiled, exec_globals, exec_locals)
+            if code.postprocess_compiled:
+                exec(code.postprocess_compiled, exec_globals, exec_locals)
         except Exception as e:
             raise RuntimeError(
                 f"Error during execution of converted code: {str(e)}"

@@ -5,6 +5,7 @@
 - [模块介绍](#模块介绍)
 - [开发文档](#开发文档)
 - [贡献指南](#贡献指南)
+- [高级Rule指南](#高级Rule指南)
 - [结语](#结语)
 
 ## 模块介绍
@@ -13,8 +14,8 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
 本模块具有精简强悍的架构，仅由三个组件构成：
 - *转换引擎 converter.py*
-- *转换规则 rules.py*
 - *转换配置 mapping.json*
+- *转换规则 rules.py*
 
 代码已完全进行解耦，可以非常容易地迁移至其他代码中。本模块通过 **转换配置** 与 **转换规则** 管理 API 映射关系，因此支持开发者灵活扩展新的 API 转换能力。
 
@@ -161,7 +162,6 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
     x = torch.arange(16).reshape(4, 4)
     print(torch_crop(x))
-
     ```
 
     测试结果符合预期，我们成功地使用了 Torch 模拟出 Paddle API 的所有表现了！现在可以开始编写 Rule 类了！
@@ -172,28 +172,20 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 
     ```json
         "<api_name>": {
-            "torch_api": "torch api 名称（torch_api 与 composite_steps 必须定义其一）",
+            "torch_api": "torch api 名称",
+            "set_defaults":{
+                "_description1": "默认值设置字典，键为参数名，值为默认值",
+                "_description2": "建议参考官方文档设置默认值，不会覆盖已有参数值，功能等效于 var = locals().get('var', value)"
+            },
             "paddle_torch_args_map": {
                 "_description": "参数名映射字典，键对应 paddle，值对应 torch",
             },
             "torch_args": [
-                "torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \\ 转义，也可以直接设为常值"
+                "torch api 位置参数列表, 变量名可使用 {} 环绕，字符串的引号请使用 \\ 转义，可以直接设为常值"
             ],
             "torch_kwargs": {
                 "_description": "torch api 关键字参数字典，与 torch_args 类似"
-            },
-            "composite_steps": [
-                "当需要多个 torch api 组合实现时，定义步骤列表，每行的执行结果将被赋值给 _tmp_i，可通过 {i} 访问",
-                {
-                    "torch_api": "torch api",
-                    "torch_args": [
-                        "torch api 位置参数列表，可以使用 {i} 代表中间变量"
-                    ],
-                    "torch_kwargs": {
-                        "_description": "torch api 关键字参数字典，与 torch_args 类似"
-                    }
-                }
-            ]
+            }
         }
     ```
 
@@ -201,25 +193,23 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
     
     ```json
         "<api_name>": {
-            "Rule": "自定义的 Rule 类的类名"
+            "Rule": "自定义 Rule 类的类名"
         }
     ```
 
-    此外，也可以添加更多的常规配置，以减少 Rule 类代码的编写量（需要主动使用 apply_generic() 方法获取 code ）：
+    此外，也可以添加更多的常规配置，以减少 Rule 类代码的编写量（需要在 Rule 类中主动调用 apply_generic() 方法，返回 defaults_code 与 map_code ）：
 
     ```json
         "<api_name>": {
-            "Rule": "自定义的 Rule 类的类名",
+            "Rule": "自定义 Rule 类的类名",
             "torch_api": "torch api 名称",
+            "set_defaults":{
+                "_description1": "默认值设置字典，键为参数名，值为默认值",
+                "_description2": "建议参考官方文档设置默认值，不会覆盖已有参数值，功能等效于 var = locals().get('var', value)"
+            },
             "paddle_torch_args_map": {
                 "_description": "参数名映射字典，键对应 paddle，值对应 torch"
-            },
-            "set_default": {
-                "_description": "默认值设置字典，键为参数名，值为默认值"
-            },
-            "import": [
-                "需要导入的模块名列表"
-            ]
+            }
         }
     ```
 
@@ -246,32 +236,28 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
     ```python
     class CropRule(BaseRule):
         def apply(self, paddle_api: str) -> ConvertResult:
-            impl = """
+            core = """
     ndim = x.dim()
     offsets = locals().get('offsets')
     shape = locals().get('shape')
-
     if offsets is None:
         offsets = [0] * ndim
     elif isinstance(offsets, (list, tuple)):
         offsets = [o.item() if isinstance(o, torch.Tensor) else int(o) for o in offsets]
     elif isinstance(offsets, torch.Tensor):
         offsets = offsets.tolist()
-
     if shape is None:
         shape = [x.size(i) - offsets[i] for i in range(ndim)]
     elif isinstance(shape, (list, tuple)):
         shape = [s.item() if isinstance(s, torch.Tensor) else int(s) for s in shape]
     elif isinstance(shape, torch.Tensor):
         shape = shape.tolist()
-
     shape = [x.size(i) - offsets[i] if s == -1 else s for i, s in enumerate(shape)]
     slices = [slice(offsets[i], offsets[i] + shape[i]) for i in range(ndim)]
-
     result = x[slices]
     """
-            code = impl.splitlines()
-            return ConvertResult.success(paddle_api, code, "result")
+            code = Code(core=core.splitlines())
+            return ConvertResult.success(paddle_api, code, is_torch_coresponding=False)
     ```
 
 ### 运行测试配置
@@ -279,14 +265,118 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 13. 全局搜索 paddle.crop ，将所有相关测试配置移至临时文件中，然后运行 accuracy 测试命令：
 
     ```shell
-    python engine.py --accuracy=True --api_config_file="tester/api_config/api_config_merged_temp.txt"
+    python engine.py --accuracy=True --api_config_file="tester/api_config/api_config_temp.txt"
     ```
 
-    最终测试配置全部通过，结果位于 test_log\api_config_pass.txt，合并至通过 accuracy 测试的 api_config_accuracy_*.txt 中。
+    最终测试配置全部通过，结果位于 test_log/api_config_pass.txt，合并至通过 accuracy 测试的 api_config_support2torch_*.txt 中。
 
 ### 其他情况
 
 14.  如果 Paddle API 的行为实在难以通过 Torch 表达，可暂时不对其进行支持。可为其注册 ErrorRule 类或直接不做处理，并将所有相关配置合并至未通过 accuracy 测试的 api_config_paddleonly_*.txt 中。
+
+## 高级Rule指南
+
+在最新版本的 Paddle2Torch 中，我们引入了更高级的 Rule 编写方式，可以更方便地处理复杂情况。包括减少编码量，提高可读性，并且有利于实施后续的 Paddle API 性能测试。以 paddle.nn.functional.conv1d 为例：
+```
+paddle.nn.functional.conv1d(x, weight, bias=None, stride=1, padding=0, dilation=1, groups=1, data_format='NCL', name=None)
+```
+
+1. 查询对照表：
+   
+在 [PyTorch 最新 release 与 Paddle develop API 映射表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/pytorch_api_mapping_cn.html) 中搜索 	paddle.nn.functional.conv1d，找到 [torch.nn.functional.conv1d 与 paddle.nn.functional.conv1d 对照表](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/guides/model_convert/convert_from_pytorch/api_difference/functional/torch.nn.functional.conv1d.html)，发现是 paddle 参数更多，需要注册并编写 Conv1dRule 类
+
+2. 查阅文档：
+
+查阅 [Paddle 文档](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/api/paddle/nn/functional/conv1d_cn.html) 与 [PyTorch 文档](https://pytorch.org/docs/stable/generated/torch.nn.functional.conv1d.html?highlight=conv1d#torch.nn.functional.conv1d) 后发现参数差异：
+
+**paddle 参数更多**：paddle 多支持 data_format 参数，需使用 permute 调换输入与输出维度顺序
+
+**paddle 与 torch 的参数用法不同**：stride、dilation 若为列表，需转换为 tuple 类型
+
+**padding 参数形式更丰富**：
+- 当 padding 为 “SAME” 或 “VALID” 时，torch 也支持此设置，直接转写为小写
+- 当 padding 为长度为 1 的列表时，转为 tuple 类型
+- 当 padding 为长度为 2 的列表时，代表非对称填充，torch 对应的 api 不支持非对称填充，因此需使用 torch.nn.functional.pad 对 torch 的输入进行手动填充
+
+3. 编写转换配置
+   
+因为 paddle.nn.functional.conv1d 参数较多、默认值丰富，因此我们可以在 mapping.json 中注册 Conv1dRule 后，编写默认值设置 set_defaults 与参数映射表 paddle_torch_args_map，减少 Rule 类编写量：
+
+```json
+    "paddle.nn.functional.conv1d": {
+        "Rule": "Conv1dRule",
+        "torch_api": "torch.nn.functional.conv1d",
+        "set_defaults": {
+            "bias": "None",
+            "stride": 1,
+            "padding": 0,
+            "dilation": 1,
+            "groups": 1,
+            "data_format": "'NCL'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight",
+            "bias": "bias",
+            "stride": "stride",
+            "padding": "padding",
+            "dilation": "dilation",
+            "groups": "groups"
+        }
+    },
+```
+
+4. 编写转换代码
+
+在 rules.py 中编写 Conv1dRule 类，需要手动调用 apply_generic() 方法，获取 defaults_code、map_code 代码块（通过解析 mappin.json 的配置获得，无需再手动 *设置默认值* 或 *参数映射*）
+
+然后编写 preprocess（预处理）、core（核心执行）、postprocess（后处理）代码块
+
+最终将所有可执行代码分割为字符串列表，组装为 Code 数据类（需在 Code 初始化时提供所有代码，否则不会进行预编译），并通过 ConvertResult.success() 返回：
+
+```python
+class Conv1dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)
+stride = tuple(stride) if isinstance(stride, list) else stride
+dilation = tuple(dilation) if isinstance(dilation, list) else dilation
+if isinstance(padding, str):
+    if padding.lower() == "same":
+        padding = "same"
+    elif padding.lower() == "valid":
+        padding = "valid"
+elif isinstance(padding, list):
+    if len(padding) == 2:
+        pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right))
+        padding = 0
+    else:
+        padding = tuple(padding)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+if data_format == "NLC":
+    result = result.permute(0, 2, 1)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+```
+
+其中 ConvertResult.success() 的 output_var 参数默认为 'result' ；is_torch_corresponding 参数默认为 True，若无直接对应的 Torch API，需手动设置为 False
+
+5. 运行测试配置
+
+调用 engineV2.py，paddle.nn.functional.conv1d 的所有测试配置全部通过，至此 Rule 转换完毕！
+```bash
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_conv1d.txt" --num_gpus=8 --num_workers_per_gpu=1 >> "tester/api_config/test_log/log.log" 2>&1
+```
 
 ## 结语
 

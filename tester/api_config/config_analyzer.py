@@ -854,12 +854,12 @@ class TensorConfig:
                 
                 # int64 handle
                 data_type = "float64" if self.dtype == "int64" else self.dtype
-                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=data_type))
+                x = paddle.to_tensor(self.get_random_numpy_tensor(shape=pool_input_size, data_type=data_type, min=-5, max=5))
                 max_poolxd_func = eval(api_config.api_name.replace("max_unpool", "max_pool"))
                 x, indices = max_poolxd_func(x, kernel_size, stride, padding, return_mask=True)
                 self.numpy_tensor = x.numpy()
                 self.set_tensor_arg_value(api_config, 1, "indices", indices)
-                return self.numpy_tensor
+
             elif api_config.api_name == "paddle.vision.ops.nms":
                 if index == 0 or key == "boxes":
                     self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
