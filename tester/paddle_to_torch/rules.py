@@ -1909,7 +1909,7 @@ result = torch.complex(real, imag)
         code = Code(
             core=core.splitlines() 
         )
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
 
 class PositiveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1919,7 +1919,7 @@ result = x
         code = Code(
             core=core.splitlines() 
         )
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
 
 class  ProdRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2210,21 +2210,17 @@ class RankRule(BaseRule):
 
 class Reduce_asRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
+        core = """
 x_shape = list(x.shape)
 t_shape = [1] * (x.dim() - target.dim()) + list(target.shape)
-
 reduce_dims = [i for i, (xs, ts) in enumerate(zip(x_shape, t_shape)) if ts == 1 and xs != 1]
-"""
-        core = """
 out = x.sum(dim=reduce_dims, keepdim=True)
 result = out.view(target.shape)
 """
         code = Code(
-            preprocess=pre.splitlines(),
             core=core.splitlines()               
         )
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 class ReshapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2512,25 +2508,22 @@ result = torch.stack(result,0)
 
 class ShardIndex(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
+        core = """
 ignore_value = locals().get("ignore_value", -1)
 shard_size = (index_num + nshards - 1) // nshards
 lower = shard_id * shard_size
 upper = (shard_id + 1) * shard_size
 
 mask = (input >= lower) & (input < upper)
-"""
-        core = """
 output = torch.full_like(input, ignore_value)
 
 output[mask] = input[mask] - lower
 result = output
 """
         code = Code(
-            preprocess=pre.splitlines(),
             core=core.splitlines()
         )
-        return ConvertResult.success(paddle_api, code)      
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)      
 
 class ScaleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

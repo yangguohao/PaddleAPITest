@@ -1084,7 +1084,7 @@
         "torch_api": "torch.poisson",
         "paddle_torch_args_map": {
             "x": "input"
-        },
+        }
     },
     "paddle.polar":{
         "Rule": "PolarRule"
