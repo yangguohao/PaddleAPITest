@@ -2262,6 +2262,40 @@ result = result * scale_b
         )
         return ConvertResult.success(paddle_api, code)    
     
+class StridedSliceRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+slices = [slice(None)] * x.dim()
+shape = x.shape
+
+for axis, start, end, stride in zip(axes, starts, ends, strides):
+    if stride == 0:
+        raise ValueError("stride must not be zero")
+
+    dim_len = shape[axis]
+
+    if start < 0:
+        start += dim_len
+    if end < 0:
+        end += dim_len
+
+    if stride > 0:
+        start = min(max(start, 0), dim_len)
+        end = min(max(end, 0), dim_len)
+    else:
+        start = min(max(start, -1), dim_len - 1)
+        end = min(max(end, -1), dim_len - 1)
+
+    if (stride > 0 and start >= end) or (stride < 0 and start <= end):
+        slices[axis] = slice(0, 0, 1)
+    else:
+        slices[axis] = slice(start, end, stride)
+print(x[tuple(slices)])
+result = x[tuple(slices)]
+"""
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code)  
+    
 # t
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

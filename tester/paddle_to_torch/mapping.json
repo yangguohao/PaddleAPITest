@@ -1031,6 +1031,9 @@
         }
 
     },
+    "paddle.strided_slice":{
+        "Rule": "StridedSliceRule"
+    },
     "t": "API started with 't' should be placed here",
     "paddle.topk":{
         "torch_api": "torch.topk",
