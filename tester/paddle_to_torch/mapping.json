@@ -236,6 +236,12 @@
         "torch_api": "torch.Tensor.frexp"
     }, 
     "g": "API started with 'g' should be placed here",
+    "paddle.gammaln": {
+        "torch_api": "torch.special.gammaln",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
     },
@@ -299,6 +305,9 @@
         }
     },
     "i": "API started with 'i' should be placed here",
+    "paddle.is_empty": {
+        "Rule": "IsEmptyRule"
+    },
     "paddle.Tensor.isinf": {
         "torch_api": "torch.Tensor.isinf"
     },
@@ -6066,6 +6075,12 @@
         },
         "min_input_args": 2
     },
+    "paddle.round": {
+        "torch_api": "torch.round",
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.rot90": {
         "torch_api": "torch.rot90",
         "paddle_torch_args_map": {
@@ -6164,6 +6179,35 @@
         },
         "min_input_args": 1
     },
+    "paddle.sort": {
+        "Rule": "SortRule",
+        "torch_api": "torch.sort",
+        "set_defaults": {
+            "axis": "-1",
+            "stable": "False",
+            "descending": "False"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "stable": "stable",
+            "descending": "descending"
+        }
+    },
+    "paddle.Tensor.sort": {
+        "Rule": "SortRule",
+        "torch_api": "torch.Tensor.sort",
+        "set_defaults": {
+            "axis": "-1",
+            "stable": "False",
+            "descending": "False"
+        },
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "stable": "stable",
+            "descending": "descending"
+        }
+    },    
     "paddle.sparse.addmm": {
         "torch_api": "torch.sparse.addmm",
         "paddle_torch_args_map": {

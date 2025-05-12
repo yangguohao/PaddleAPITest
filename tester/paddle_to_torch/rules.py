@@ -1505,6 +1505,13 @@ result = window
 
 
 # i
+
+class IsEmptyRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = x.numel() == 0"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2183,6 +2190,23 @@ else:
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+class SortRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+axis = axis if axis >= 0 else x.dim() + axis
+"""
+        if self.torch_api.startswith("torch.Tensor"):
+            core = "result, _ = x.sort(**_kwargs)"
+        else:
+            core = f"result, _ = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+    
 
 
 class SlogdetRule(BaseRule):
