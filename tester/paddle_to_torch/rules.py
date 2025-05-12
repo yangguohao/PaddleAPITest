@@ -2683,6 +2683,11 @@ result = x.view(shape_or_dtype)
         return ConvertResult.success(paddle_api, code)
 
 
+class View_As_Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = x.view_as(other)"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 # w
 class WhereRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
