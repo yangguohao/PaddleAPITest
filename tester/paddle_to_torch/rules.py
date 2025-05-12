@@ -2495,6 +2495,22 @@ axis = axis if axis >= 0 else x.dim() + axis
         )
         return ConvertResult.success(paddle_api, code)
     
+class SplitTensorRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+axis = axis if axis >= 0 else x.dim() + axis
+if isinstance(num_or_sections, int):
+    num_or_sections = x.shape[axis] // num_or_sections
+elif isinstance(num_or_sections, list) and -1 in num_or_sections:
+    num_or_sections[num_or_sections.index(-1)] = x.shape[axis] - sum(num_or_sections) - 1
+"""
+        core = "result = x.split(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 class SlogdetRule(BaseRule):
@@ -2553,6 +2569,21 @@ class ShapeRule(BaseRule):
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class SubtractRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if x.dtype == torch.bool:
+    x = torch.tensor(x, dtype=y.dtype)
+elif y.dtype == torch.bool:   
+    y = torch.tensor(y, dtype=x.dtype)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # t
 class TriangularSolveRule(BaseRule):
@@ -2568,6 +2599,12 @@ result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=u
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class TolistRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = x.tolist()"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code)
+    
 
 # u
 class UnpoolRule(BaseRule):
@@ -2622,6 +2659,16 @@ if data_format == "NDHWC":
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=[core],
             postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+class UnfoldRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:        
+        defaults_code, map_code = self.apply_generic()
+        core = "result = x.unfold(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 

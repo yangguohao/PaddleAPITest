@@ -1239,6 +1239,16 @@
        "Rule": "SplitRule"
     },
     "t": "API started with 't' should be placed here",
+    "paddle.Tensor.tanh":{
+        "torch_api": "torch.Tensor.tanh"
+    },
+    "paddle.tolist":{
+        "torch_api": "torch.Tensor.tolist",
+        "Rule": "TolistRule"
+    },   
+    "paddle.Tensor.tolist":{
+        "torch_api": "torch.Tensor.tolist"
+    },   
     "paddle.tanh":{
         "torch_api": "torch.tanh",
         "paddle_torch_args_map": {
@@ -1254,6 +1264,15 @@
             "largest": "largest",
             "sorted": "sorted"
         }
+    },
+    "paddle.Tensor.transpose": {
+        "torch_api": "torch.Tensor.permute",
+        "paddle_torch_args_map": {
+            "perm": "dims"
+        }
+    },
+    "paddle.Tensor.trunc": {
+        "torch_api": "torch.Tensor.trunc"
     },
     "paddle.Tensor.tile":{
         "torch_api":"torch.Tensor.tile",
@@ -6288,6 +6307,17 @@
             "descending": "descending"
         }
     },    
+    "paddle.Tensor.split": {
+        "Rule": "SplitTensorRule",
+        "torch_api": "torch.Tensor.split",
+        "set_defaults": {
+            "axis": "0"
+        },
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "num_or_sections": "split_size"
+        }
+    },   
     "paddle.sparse.addmm": {
         "torch_api": "torch.sparse.addmm",
         "paddle_torch_args_map": {
@@ -6443,12 +6473,18 @@
         },
         "min_input_args": 1
     },
+    "paddle.Tensor.sqrt": {
+        "torch_api": "torch.Tensor.sqrt"
+    },    
     "paddle.square": {
         "torch_api": "torch.square",
         "paddle_torch_args_map": {
             "x": "input"
         },
         "min_input_args": 1
+    },
+    "paddle.Tensor.square": {
+        "torch_api": "torch.Tensor.square"
     },
     "paddle.squeeze": {
         "torch_api": "torch.squeeze",
@@ -6485,6 +6521,20 @@
             "dtype": "dtype"
         },
         "min_input_args": 1
+    },
+    "paddle.subtract": {
+        "torch_api": "torch.subtract",
+        "Rule": "SubtractRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
+    "paddle.Tensor.subtract": {
+        "torch_api": "torch.Tensor.subtract",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
     },
     "paddle.linalg.svd_lowrank": {
         "torch_api": "torch.svd_lowrank",
@@ -6624,6 +6674,15 @@
             "shape": "sizes"
         },
         "min_input_args": 3
+    },
+    "paddle.unfold": {
+        "Rule": "UnfoldRule",
+        "torch_api": "torch.Tensor.unfold",
+        "paddle_torch_args_map": {
+            "axis": "dimension",
+            "size": "size",
+            "step": "step"
+        }
     },
     "paddle.unique": {
         "torch_api": "torch.unique",
