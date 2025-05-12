@@ -415,14 +415,12 @@ if 'rtol' in locals():
 if 'atol' in locals():
     atol = max(0.0, atol)
 """
-        core = f"result = {self.torch_api}(**_kwargs)"     
+        core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess = defaults_code + pre.splitlines() + map_code,
-            core = core.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
-
-
 
 
 # b
@@ -1147,6 +1145,8 @@ if isinstance(output_size, (list, tuple)):
         pre += pre3.splitlines()
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
+
+
 # g
 
 
@@ -1527,11 +1527,13 @@ result = window
 
 # i
 
+
 class IsEmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = "result = x.numel() == 0"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1613,8 +1615,8 @@ y = to_float_if_needed(y)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess = defaults_code + pre.splitlines() + map_code,
-            core = core.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -1813,6 +1815,7 @@ result = torch.tensor(num_elements, dtype=torch.int64)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class NormalRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -1852,11 +1855,9 @@ else:
         result = torch.normal(mean,std,shape)
             
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()  
-        )
-        return ConvertResult.success(paddle_api, code)    
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
 
 # o
 class OnesRule(BaseRule):
@@ -1892,11 +1893,9 @@ if dtype is None:
 else:
     result = torch.ones(shape, dtype=dtype)
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()      
-        )
-        return ConvertResult.success(paddle_api, code, "result")    
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, "result")
+
 
 # p
 class PolarRule(BaseRule):
@@ -1906,22 +1905,24 @@ real = abs * torch.cos(angle)
 imag = abs * torch.sin(angle)
 result = torch.complex(real, imag)
 """
-        code = Code(
-            core=core.splitlines() 
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(
+            paddle_api, code, "result", is_torch_corresponding=False
         )
-        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
+
 
 class PositiveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
 result = x
 """
-        code = Code(
-            core=core.splitlines() 
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(
+            paddle_api, code, "result", is_torch_corresponding=False
         )
-        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
 
-class  ProdRule(BaseRule):
+
+class ProdRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 import re
@@ -1967,11 +1968,9 @@ else:
         x = x.squeeze(dim)
     result = x
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines() 
-        )
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
+
 
 class Put_along_axisRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2208,6 +2207,7 @@ class RankRule(BaseRule):
         )
         return ConvertResult.success(paddle_api, code)
 
+
 class Reduce_asRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2217,10 +2217,10 @@ reduce_dims = [i for i, (xs, ts) in enumerate(zip(x_shape, t_shape)) if ts == 1 
 out = x.sum(dim=reduce_dims, keepdim=True)
 result = out.view(target.shape)
 """
-        code = Code(
-            core=core.splitlines()               
-        )
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class ReshapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2234,11 +2234,10 @@ else:
         core = """
 result = torch.reshape(x,sh)
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()               
-        )
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
+
+
 class ReverseRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2251,11 +2250,9 @@ else:
         core = """
 result = torch.flip(x,dim)
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()            
-        )
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
+
 
 class Roi_aignRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2434,6 +2431,7 @@ else:
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2446,10 +2444,10 @@ for i,dim in enumerate(axes):
     input = torch.narrow(input, dim, starts[i], ends[i]-starts[i])
 result = input
 """
-        code = Code(
-            core=core.splitlines()
-        )
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
+
 class SplitRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2474,11 +2472,10 @@ if isinstance(num_or_sections, int):
 else:
     result = torch.split(x, num_or_sections, dim=axis)
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()
-            )
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
+
 class SortRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2491,10 +2488,11 @@ axis = axis if axis >= 0 else x.dim() + axis
             core = f"result, _ = {self.torch_api}(**_kwargs)"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines()
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class SplitTensorRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2508,7 +2506,7 @@ elif isinstance(num_or_sections, list) and -1 in num_or_sections:
         core = "result = x.split(**_kwargs)"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines()
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -2521,6 +2519,7 @@ result = torch.stack(result,0)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class ShardIndex(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2536,10 +2535,9 @@ output = torch.full_like(input, ignore_value)
 output[mask] = input[mask] - lower
 result = output
 """
-        code = Code(
-            core=core.splitlines()
-        )
-        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)      
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 class ScaleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2569,6 +2567,7 @@ class ShapeRule(BaseRule):
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class SubtractRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2581,9 +2580,59 @@ elif y.dtype == torch.bool:
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines()
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
+
+class SegmentRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+num_segments = segment_ids.max().item() + 1
+output_shape = (num_segments,) + data.shape[1:]
+"""
+        core_max = """
+result = torch.full(output_shape, float('-inf'), dtype=data.dtype)
+result.scatter_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+result = torch.where(result == float('-inf'), torch.tensor(0.0, dtype=data.dtype), result)
+"""
+        core_min = """
+result = torch.full(output_shape, float('inf'), dtype=data.dtype)
+result.scatter_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+result = torch.where(result == float('inf'), torch.tensor(0.0, dtype=data.dtype), result)
+"""
+        core_sum = """
+result = torch.zeros(output_shape, dtype=data.dtype)
+result.scatter_add_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+"""
+        core_mean = """
+sum_result = torch.zeros(output_shape, dtype=data.dtype)
+sum_result.scatter_add_(0, segment_ids.unsqueeze(-1).expand_as(data), data)
+count = torch.zeros(num_segments, dtype=torch.int64)
+count.scatter_add_(0, segment_ids, torch.ones_like(segment_ids, dtype=torch.int64))
+count = count.unsqueeze(-1).expand_as(sum_result).clamp(min=1)
+result = sum_result / count.to(sum_result.dtype)
+empty_mask = (count.squeeze(-1) == 1) & (sum_result == 0)
+result = torch.where(empty_mask.unsqueeze(-1), torch.tensor(0.0, dtype=result.dtype), result)
+"""
+        if self.torch_api.endswith(".max"):
+            core = core_max
+        elif self.torch_api.endswith(".min"):
+            core = core_min
+        elif self.torch_api.endswith(".sum"):
+            core = core_sum
+        elif self.torch_api.endswith(".mean"):
+            core = core_mean
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported segment api: {paddle_api}"
+            )
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 # t
 class TriangularSolveRule(BaseRule):
@@ -2599,12 +2648,13 @@ result = torch.linalg.solve_triangular(x,y,upper=upper,left=True,unitriangular=u
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class TolistRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = "result = x.tolist()"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code)
-    
+
 
 # u
 class UnpoolRule(BaseRule):
@@ -2662,14 +2712,12 @@ if data_format == "NDHWC":
         )
         return ConvertResult.success(paddle_api, code)
 
+
 class UnfoldRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:        
+    def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         core = "result = x.unfold(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=core.splitlines()
-        )
+        code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -2688,6 +2736,8 @@ class View_As_Rule(BaseRule):
         core = "result = x.view_as(other)"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 # w
 class WhereRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2706,11 +2756,9 @@ if "input" in _kwargs and not isinstance(_kwargs['input'], torch.Tensor):
         core = """
 result = torch.where(**_kwargs)
 """
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()
-        )
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
 
 # x
 
@@ -2751,12 +2799,10 @@ if dtype is None:
     result = torch.zeros(shape)
 else:
     result = torch.zeros(shape, dtype=dtype)        
-"""    
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines()
-        )
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
 
 # __
 class __Pow__Rule(BaseRule):
