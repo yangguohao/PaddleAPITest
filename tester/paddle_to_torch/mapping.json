@@ -476,7 +476,7 @@
         "torch_kwargs": {
             "start": "start.reshape([]) if isinstance(start, torch.Tensor) else start",
             "end": "stop.reshape([]) if isinstance(stop, torch.Tensor) else stop",
-            "step": "int(num) if isinstance(num, (float, torch.Tensor)) else num"
+            "steps": "int(num) if isinstance(num, (float, torch.Tensor)) else num"
         },
         "description": "result = torch.linspace(start=torch_kwargs['start'], end=torch_kwargs['end'], steps=torch_kwargs['step'], dtype=dtype)"
     },
