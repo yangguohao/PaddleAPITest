@@ -79,6 +79,25 @@
         },
         "description": "result = torch.arange(start=start, end=end, step=step, dtype=dtype)"
     },
+    "paddle.Tensor.argmax": {
+        "torch_api": "torch.Tensor.argmax",
+        "torch_kwargs": {
+            "dim": "None if locals().get('axis') is None else axis.item() if isinstance(axis, torch.Tensor) else axis",
+            "keepdim": "False if locals().get('keepdim') is None else keepdim"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.argmax(dim=axis, keepdim=keepdim)"
+    },
+    "paddle.argmax": {
+        "torch_api": "torch.argmax",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "torch_kwargs": {
+            "dim": "None if locals().get('axis') is None else axis.item() if isinstance(axis, torch.Tensor) else axis",
+            "keepdim": "False if locals().get('keepdim') is None else keepdim"
+        },
+        "description": "result = torch.argmax(input=x, dim=axis, keepdim=keepdim)"
+    },
     "paddle.atleast_1d": {
         "torch_api": "torch.atleast_1d",
         "torch_args": [
@@ -258,6 +277,27 @@
     "paddle.Tensor.frexp": {
         "torch_api": "torch.Tensor.frexp"
     }, 
+    "paddle.full": {
+        "Rule": "FullRule",
+        "torch_api": "torch.full",
+        "paddle_torch_args_map": {
+            "shape": "size",
+            "fill_value": "fill_value",
+            "dtype": "dtype"
+        },
+        "description": "result = torch.full(size=shape, fill_value=fill_value, dtype=dtype)"
+    },
+    "paddle.full_like": {
+        "torch_api": "torch.full_like",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "dtype": "dtype"
+        },
+        "torch_kwargs": {
+            "fill_value": "fill_value.item() if isinstance(fill_value, torch.Tensor) else fill_value"
+        },
+        "description": "result = torch.full_like(input=x, fill_value=torch_kwargs['fill_value'], dtype=dtype)"
+    },
     "g": "API started with 'g' should be placed here",
     "paddle.gather_nd": {
         "Rule": "Gather_ndRule"
@@ -384,6 +424,18 @@
             "y": "other"
         }
     },
+    "paddle.linspace": {
+        "torch_api": "torch.linspace",
+        "paddle_torch_args_map": {
+            "dtype": "dtype"
+        },
+        "torch_kwargs": {
+            "start": "start.reshape([]) if isinstance(start, torch.Tensor) else start",
+            "end": "stop.reshape([]) if isinstance(stop, torch.Tensor) else stop",
+            "step": "int(num) if isinstance(num, (float, torch.Tensor)) else num"
+        },
+        "description": "result = torch.linspace(start=torch_kwargs['start'], end=torch_kwargs['end'], steps=torch_kwargs['step'], dtype=dtype)"
+    },
     "paddle.Tensor.lgamma": {
         "torch_api": "torch.Tensor.lgamma"
     },
@@ -395,6 +447,10 @@
     },
     "paddle.Tensor.log1p": {
         "torch_api": "torch.Tensor.log1p"
+    },
+    "paddle.logcumsumexp": {
+        "Rule": "LogcumsumexpRule",
+        "description": "result = torch.logcumsumexp(input=x, dim=axis)"
     },
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
@@ -1115,14 +1171,6 @@
             "y": "other"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.argmax": {
-        "torch_api": "torch.Tensor.argmax",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "keepdim": "keepdim"
-        },
-        "min_input_args": 0
     },
     "paddle.Tensor.argmin": {
         "torch_api": "torch.Tensor.argmin",
@@ -2359,15 +2407,6 @@
         "torch_api": "torch.arctanh",
         "paddle_torch_args_map": {
             "x": "input"
-        },
-        "min_input_args": 1
-    },
-    "paddle.argmax": {
-        "torch_api": "torch.argmax",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },
@@ -3621,31 +3660,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.full": {
-        "torch_api": "torch.full",
-        "paddle_torch_args_map": {
-            "shape": "size",
-            "fill_value": "fill_value",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad"
-        },
-        "min_input_args": 2
-    },
-    "paddle.full_like": {
-        "torch_api": "torch.full_like",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "fill_value": "fill_value",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad",
-            "memory_format": "memory_format"
-        },
-        "min_input_args": 2
-    },
     "paddle.gcd": {
         "torch_api": "torch.gcd",
         "paddle_torch_args_map": {
@@ -4039,19 +4053,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.linspace": {
-        "torch_api": "torch.linspace",
-        "paddle_torch_args_map": {
-            "start": "start",
-            "stop": "end",
-            "num": "steps",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad"
-        },
-        "min_input_args": 3
-    },
     "paddle.log": {
         "torch_api": "torch.log",
         "paddle_torch_args_map": {
@@ -4079,14 +4080,6 @@
             "x": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.logcumsumexp": {
-        "torch_api": "torch.logcumsumexp",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim"
-        },
-        "min_input_args": 2
     },
     "paddle.logical_and": {
         "torch_api": "torch.logical_and",

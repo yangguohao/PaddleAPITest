@@ -1233,6 +1233,48 @@ if isinstance(output_size, (list, tuple)):
         code += impl.splitlines() + map_code + core.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+class FullRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+shape = locals().get('shape')
+fill_value = locals().get('fill_value')
+dtype = locals().get('dtype')
+
+# handle shape
+def convert_to_list(shape):
+    if isinstance(shape, torch.Tensor):
+        return shape.tolist()
+    elif isinstance(shape, (list, tuple)):
+        shape_list = []
+        for item in shape:
+            if isinstance(item, torch.Tensor):
+                if item.shape == torch.Size([]):
+                    shape_list.append(item.item())
+                else:
+                    shape_list.extend(item.tolist())
+            else:
+                shape_list.append(item)
+        return shape_list
+    elif isinstance(shape, int):
+        return [shape]
+    else:
+        return shape
+
+# handle fill_value
+def convert_to_scalar(fill_value):
+    if isinstance(fill_value, torch.Tensor):
+        return fill_value.item()
+    # example: "-inf", "3.5"
+    elif isinstance(fill_value, str):
+        return float(fill_value)
+    else:
+        return fill_value
+
+result = torch.full(size=convert_to_list(shape), fill_value=convert_to_scalar(fill_value), dtype=dtype)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+    
 
 # g
 # class GetItemRule(BaseRule):
@@ -1673,6 +1715,21 @@ lcm = torch.zeros_like(gcd)
 nonzero_mask = gcd != 0
 lcm[nonzero_mask] = (x_abs[nonzero_mask] * y_abs[nonzero_mask]) // gcd[nonzero_mask]
 result = torch.abs(lcm)
+"""
+        code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+class LogcumsumexpRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        impl = """
+x = locals().get('x')
+axis = locals().get('axis')
+
+if axis is None:
+    x_flat = x.flatten()
+    result = torch.logcumsumexp(x_flat, dim=0)
+else:
+    result = torch.logcumsumexp(x, dim=axis)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
