@@ -2303,6 +2303,21 @@ class ShapeRule(BaseRule):
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class SubtractRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if x.dtype == torch.bool:
+    x = torch.tensor(x, dtype=y.dtype)
+elif y.dtype == torch.bool:   
+    y = torch.tensor(y, dtype=x.dtype)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # t
 class TriangularSolveRule(BaseRule):

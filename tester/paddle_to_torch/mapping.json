@@ -6490,6 +6490,7 @@
     },
     "paddle.subtract": {
         "torch_api": "torch.subtract",
+        "Rule": "SubtractRule",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
