@@ -15,7 +15,3 @@ paddle.scatter(Tensor([183826, 256],"float32"), Tensor([10759233],"int64"), Tens
 paddle.sort(Tensor([1, 30000],"float32"), descending=True, )
 paddle.sort(Tensor([1, 32000],"float16"), descending=True, )
 paddle.sort(Tensor([1, 50304],"float32"), descending=True, )
-paddle.subtract(Tensor([4, 3, 2],"bool"), Tensor([4, 3, 2],"complex128"), )
-paddle.subtract(Tensor([4, 3, 2],"bool"), Tensor([4, 3, 2],"complex64"), )
-paddle.subtract(Tensor([4, 3, 2],"complex128"), Tensor([4, 3, 2],"bool"), )
-paddle.subtract(Tensor([4, 3, 2],"complex64"), Tensor([4, 3, 2],"bool"), )
