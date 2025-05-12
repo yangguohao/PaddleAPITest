@@ -411,9 +411,9 @@ class AllcloseRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         pre = """
 if isinstance(x, tuple):
-    x = x[0] if len(x) > 0 else torch.tensor([])
+    x = x[0]
 if isinstance(y, tuple):
-    y = y[0] if len(y) > 0 else torch.tensor([])
+    y = y[0]
 if 'rtol' in locals():
     rtol = max(0.0, rtol)
 if 'atol' in locals():
