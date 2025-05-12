@@ -2573,7 +2573,7 @@ if list(value.shape) != shape:
 result = x.clone()
 result[tuple(slices)] = value
 """
-        code = Code(core=[core])
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 class StandardGammaRule(BaseRule):
