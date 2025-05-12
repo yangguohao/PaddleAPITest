@@ -2647,7 +2647,7 @@ grids = torch.meshgrid(*[ind if isinstance(ind, torch.Tensor) else torch.arange(
 result = x[grids]
 """
         code = Code(core=[core])
-        return ConvertResult.success(paddle_api, code)  
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
     
 
 class ShardIndex(BaseRule):
