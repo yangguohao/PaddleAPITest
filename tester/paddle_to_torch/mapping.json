@@ -40,25 +40,7 @@
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.any(dim=dim, keepdim=keepdim)"
     },
     "paddle.add_n": {
-        "composite_steps": [
-            {
-                "torch_api": "torch.stack",
-                "torch_args": [
-                    "{inputs} if isinstance({inputs}, list) else [{inputs}]"
-                ],
-                "description": "_tmp_0 = torch.stack(inputs if isinstance(inputs, list) else [inputs])"
-            },
-            {
-                "torch_api": "torch.sum",
-                "torch_args": [
-                    "{0}"
-                ],
-                "torch_kwargs": {
-                    "dim": 0
-                },
-                "description": "_tmp_1 = torch.sum(_tmp_0, dim=0)"
-            }
-        ]
+        "Rule": "AddNRule"
     },
     "paddle.atleast_1d": {
         "torch_api": "torch.atleast_1d",
@@ -1297,7 +1279,10 @@
         "torch_api": "torch.Tensor.__abs__"
     },
     "paddle.Tensor.__and__": {
-        "torch_api": "torch.Tensor.__and__"
+        "torch_api": "torch.Tensor.__and__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }
     },
     "paddle.Tensor.__dir__": {
         "torch_api": "torch.Tensor.__dir__"

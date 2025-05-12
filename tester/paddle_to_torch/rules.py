@@ -99,7 +99,7 @@ class ConvertResult:
         if not code_obj.is_valid():
             return cls.error(paddle_api, f"Invalid code: {code_obj.error_message}")
 
-        if len(code_obj.core) > 4:
+        if is_torch_corresponding and len(code_obj.core) > 4:
             print(
                 f"Warning: The core code of {paddle_api} is too complex.",
                 flush=True,
@@ -174,23 +174,14 @@ class BaseRule(ABC):
             if "torch_api" in mapping:
                 self.torch_api: str = mapping["torch_api"]
             return
-        self.direct_mapping: bool = not mapping.get("composite_steps")
-        if self.direct_mapping:
-            if "torch_api" not in mapping:
-                raise ValueError("Missing required field 'torch_api' in the mapping.")
-            self.torch_api: str = mapping.get("torch_api", "")
-            self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
-            self.torch_args: List = mapping.get("torch_args", [])
-            self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
-            self.is_attribute: bool = mapping.get("is_attribute", False)
-            self.defaults: Dict = mapping.get("set_defaults", {})
-        else:
-            self.composite_steps: List = mapping.get("composite_steps", [])
-            for step in self.composite_steps:
-                if "torch_api" not in step:
-                    raise ValueError(
-                        f"Missing required field 'torch_api' in composite step: {step}"
-                    )
+        if "torch_api" not in mapping:
+            raise ValueError("Missing required field 'torch_api' in the mapping.")
+        self.torch_api: str = mapping.get("torch_api", "")
+        self.args_map: OrderedDict = mapping.get("paddle_torch_args_map", {})
+        self.torch_args: List = mapping.get("torch_args", [])
+        self.torch_kwargs: OrderedDict = mapping.get("torch_kwargs", OrderedDict())
+        self.is_attribute: bool = mapping.get("is_attribute", False)
+        self.defaults: Dict = mapping.get("set_defaults", {})
 
     def apply_generic(self):
         # if "torch_api" in self.mapping:
@@ -227,78 +218,61 @@ class BaseRule(ABC):
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        if self.direct_mapping:  # 直接映射
-            pre = []
-            for default_name, default_value in self.defaults.items():
-                pre.append(
-                    f"{default_name} = locals().get('{default_name}', {default_value})"
+        pre = []
+        for default_name, default_value in self.defaults.items():
+            pre.append(
+                f"{default_name} = locals().get('{default_name}', {default_value})"
+            )
+        is_tensor_method = paddle_api.startswith("paddle.Tensor.")
+        if is_tensor_method:
+            if not self.torch_api.startswith("torch.Tensor."):
+                return ConvertResult.error(
+                    paddle_api,
+                    "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                 )
-            is_tensor_method = paddle_api.startswith("paddle.Tensor.")
-            if is_tensor_method:
-                if not self.torch_api.startswith("torch.Tensor."):
-                    return ConvertResult.error(
-                        paddle_api,
-                        "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
-                    )
-                pre.append(
-                    "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
-                )
-                pre.append("_args = list(args[1:])")
-                if self.is_attribute:
-                    core = [f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}"]
-                    code = Code(preprocess=pre, core=core)
-                    return ConvertResult.success(paddle_api, code)
-            is_inplace = (
-                paddle_api.endswith("_") and not paddle_api.endswith("__")
-            ) or paddle_api == "paddle.Tensor.__setitem__"
+            pre.append("_tmp_tensor = args[0] if args else next(iter(kwargs.values()))")
+            pre.append("_args = list(args[1:])")
+            if self.is_attribute:
+                core = [f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}"]
+                code = Code(preprocess=pre, core=core)
+                return ConvertResult.success(paddle_api, code)
+        is_inplace = (
+            paddle_api.endswith("_") and not paddle_api.endswith("__")
+        ) or paddle_api == "paddle.Tensor.__setitem__"
 
-            if not is_tensor_method:
-                pre.append("_args = []")
-            if self.torch_args:
-                for arg in self.torch_args:
-                    pre.append(f"_args.extend([{self._format_arg(arg)}])")
-            pre.append("_kwargs = {}")
-            if self.torch_kwargs:
-                for key, value in self.torch_kwargs.items():
-                    pre.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
-            if self.args_map:
-                pre.append("for paddle_param, torch_param in {")
-                for paddle_param, torch_param in self.args_map.items():
-                    pre.append(f"    '{paddle_param}': '{torch_param}',")
-                pre.append("}.items():")
-                pre.append("    if paddle_param in locals():")
-                pre.append("        _kwargs[torch_param] = locals()[paddle_param]")
+        if not is_tensor_method:
+            pre.append("_args = []")
+        if self.torch_args:
+            for arg in self.torch_args:
+                pre.append(f"_args.extend([{self._format_arg(arg)}])")
+        pre.append("_kwargs = {}")
+        if self.torch_kwargs:
+            for key, value in self.torch_kwargs.items():
+                pre.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+        if self.args_map:
+            pre.append("for paddle_param, torch_param in {")
+            for paddle_param, torch_param in self.args_map.items():
+                pre.append(f"    '{paddle_param}': '{torch_param}',")
+            pre.append("}.items():")
+            pre.append("    if paddle_param in locals():")
+            pre.append("        _kwargs[torch_param] = locals()[paddle_param]")
 
-            post = []
-            if is_tensor_method:
-                torch_method = self.torch_api.replace("torch.Tensor.", "")
-                if is_inplace:
-                    core = [f"_tmp_tensor.{torch_method}(*_args, **_kwargs)"]
-                    post = ["result = _tmp_tensor"]
-                else:
-                    core = [f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)"]
+        post = []
+        if is_tensor_method:
+            torch_method = self.torch_api.replace("torch.Tensor.", "")
+            if is_inplace:
+                core = [f"_tmp_tensor.{torch_method}(*_args, **_kwargs)"]
+                post = ["result = _tmp_tensor"]
             else:
-                if is_inplace:
-                    core = [f"{self.torch_api}(*_args, **_kwargs)"]
-                    post = ["result = next(iter(kwargs.values()))"]
-                else:
-                    core = [f"result = {self.torch_api}(*_args, **_kwargs)"]
-            code = Code(preprocess=pre, core=core, postprocess=post)
-            return ConvertResult.success(paddle_api, code)
-        else:  # 简单组合映射
-            code = []
-            for i, step in enumerate(self.composite_steps):
-                code.append(f"_args_{i} = []")
-                for arg in step.get("torch_args", []):
-                    code.append(f"_args_{i}.extend([{self._format_arg(arg)}])")
-                code.append(f"_kwargs_{i} = {{}}")
-                for key, value in step.get("torch_kwargs", {}).items():
-                    code.append(f"_kwargs_{i}['{key}'] = {self._format_arg(value)}")
-                code.append(
-                    f"_tmp_{i} = {step['torch_api']}(*_args_{i}, **_kwargs_{i})"
-                )
-            code.append(f"result = _tmp_{len(self.composite_steps) - 1}")
-            return ConvertResult.success(paddle_api, code)
+                core = [f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)"]
+        else:
+            if is_inplace:
+                core = [f"{self.torch_api}(*_args, **_kwargs)"]
+                post = ["result = next(iter(kwargs.values()))"]
+            else:
+                core = [f"result = {self.torch_api}(*_args, **_kwargs)"]
+        code = Code(preprocess=pre, core=core, postprocess=post)
+        return ConvertResult.success(paddle_api, code)
 
 
 class ErrorRule(BaseRule):
@@ -311,6 +285,17 @@ class ErrorRule(BaseRule):
 
 
 # a
+class AddNRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+inputs = [inputs] if torch.is_tensor(inputs) else inputs
+expanded_inputs = torch.broadcast_tensors(*inputs)
+"""
+        core = "result = torch.sum(torch.stack(expanded_inputs), dim=0)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class Adaptive_log_softmax_with_lossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -431,14 +416,15 @@ result = torch.broadcast_shapes(x_shape, y_shape)
 
 class BroadcastTensorsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        code = ["result = torch.broadcast_tensors(*input)"]
-        return ConvertResult.success(paddle_api, code, "result")
+        core = "result = torch.broadcast_tensors(*input)"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code)
 
 
 class BatchNormRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 if locals().get('data_format') == 'NHWC':
     x = x.permute(0, 3, 1, 2)
 if 'running_mean' in locals():
@@ -447,16 +433,14 @@ if 'running_var' in locals():
     running_var.requires_grad = False
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if locals().get('data_format') == 'NHWC':
     result = result.permute(0, 2, 3, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -478,7 +462,7 @@ else:
 
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 ndim = x.dim()
 offsets = locals().get('offsets')
 shape = locals().get('shape')
@@ -498,14 +482,14 @@ shape = [x.size(i) - offsets[i] if s == -1 else s for i, s in enumerate(shape)]
 slices = [slice(offsets[i], offsets[i] + shape[i]) for i in range(ndim)]
 result = x[slices]
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code, "result")
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class CumRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         torch_api = paddle_api.replace("paddle.", "torch.")
-        impl = f"""
+        pre = """
 axis = locals().get('axis')
 if axis is None:
     x = x.flatten()
@@ -513,16 +497,18 @@ if axis is None:
 dtype = locals().get('dtype', 'int64')
 if dtype is not None:
     dtype = getattr(torch, dtype)
-result = {torch_api}(input=x, dim=axis)
-result.values.to(dtype)
 """
-        code = impl.splitlines()
+        core = f"result = {torch_api}(input=x, dim=axis)"
+        post = "result.values.to(dtype)"
+        code = Code(
+            preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines()
+        )
         return ConvertResult.success(paddle_api, code)
 
 
 class CumprodRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = f"""
+        pre = f"""
 dim = locals().get('dim')
 if dim is None:
     x = x.flatten()
@@ -530,15 +516,15 @@ if dim is None:
 dtype = locals().get('dtype')
 if dtype is not None:
     dtype = getattr(torch, dtype)
-result = torch.cumprod(input=x, dim=dim, dtype=dtype)
 """
-        code = impl.splitlines()
+        core = "result = torch.cumprod(input=x, dim=dim, dtype=dtype)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
 class ClassCenterSampleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 unique_pos_classes = torch.unique(label)
 num_pos_classes = unique_pos_classes.size(0)
 if num_pos_classes >= num_samples:
@@ -563,14 +549,14 @@ else:
         remapped_label[label == old_class] = new_idx
 result = (remapped_label, sampled_classes)
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class Conv1dTransposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 crop = None
 if bias is not None:
     out_channels = weight.size(1) * groups
@@ -603,26 +589,24 @@ if output_size is not None:
     output_padding = output_size - L_out
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if crop:
     result = result[:, :, crop[0]:result.size(-1) - crop[1]]
 if data_format == "NLC":
     result = result.transpose(1, 2)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
 
 class Conv2dTransposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 crop = None
 if bias is not None:
     out_channels = weight.size(1) * groups
@@ -670,26 +654,24 @@ if output_size is not None:
     output_padding = tuple(output_padding)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if crop:
     result = result[:, :, crop[0]:result.size(-1) - crop[1], crop[2]:result.size(-2) - crop[3]]
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
 
 class Conv3dTransposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 crop = None
 if bias is not None:
     out_channels = weight.size(1) * groups
@@ -737,18 +719,16 @@ if output_size is not None:
     output_padding = tuple(output_padding)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if crop:
     result = result[:, :, crop[0]:result.size(-3) - crop[1], crop[2]:result.size(-2) - crop[3], crop[4]:result.size(-1) - crop[5]]
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -781,7 +761,7 @@ if data_format == "NLC":
 """
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines(),
+            core=[core],
             postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
@@ -789,8 +769,8 @@ if data_format == "NLC":
 
 class Conv2dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 if data_format == "NHWC":
     x = x.permute(0, 3, 1, 2)
 stride = tuple(stride) if isinstance(stride, list) else stride
@@ -817,24 +797,22 @@ elif isinstance(padding, list):
         padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
 
 class Conv3dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre = """
 if data_format == "NDHWC":
     x = x.permute(0, 4, 1, 2, 3)
 stride = tuple(stride) if isinstance(stride, list) else stride
@@ -864,16 +842,14 @@ elif isinstance(padding, list):
         padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post = """
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -881,22 +857,20 @@ if data_format == "NDHWC":
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        impl1 = """
-if data_format == "NDHWC":
-    x = x.permute(0, 4, 1, 2, 3)
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if data_format == "NHWC":
+    x = x.permute(0, 3, 1, 2)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
-if data_format == "NDHWC":
-    result = result.permute(0, 2, 3, 4, 1)
+        post = """
+if data_format == "NHWC":
+    result = result.permute(0, 2, 3, 1)
 """
-        code = (
-            head_code
-            + impl1.splitlines()
-            + map_code
-            + core.splitlines()
-            + impl2.splitlines()
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -1048,7 +1022,7 @@ if data_format == "NDHWC":
 # e
 class EmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 if isinstance(shape, torch.Tensor):
     size_list = shape.tolist()
 elif isinstance(shape, (list, tuple)):
@@ -1058,9 +1032,9 @@ elif isinstance(shape, (list, tuple)):
             size_list.append(s.item())
         else:
             size_list.append(s)
-result = torch.empty(*size_list)     
 """
-        code = impl.splitlines()
+        core = "result = torch.empty(*size_list)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1085,8 +1059,8 @@ result = x.expand_as(y)
 # f
 class FractionalMaxPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        func1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre1 = """
 batch_size, C = x.shape[0], x.shape[1]
 if locals().get('random_u') is not None:
     random_u = torch.tensor([[[random_u] * 2] * C] * batch_size, dtype=x.dtype, device=x.device)
@@ -1108,7 +1082,7 @@ def compute_kernel_size(x, output_size):
     kW = compute_k(W_in, W_out)
     return (kH, kW)
 """
-        func2 = """
+        pre2 = """
 batch_size, C = x.shape[0], x.shape[1]
 if locals().get('random_u') is not None:
     random_u = torch.tensor([[[random_u] * 3] * C] * batch_size, dtype=x.dtype, device=x.device)
@@ -1131,7 +1105,7 @@ def compute_kernel_size(x, output_size):
     kW = compute_k(W_in, W_out)
     return (kD, kH, kW)  
 """
-        impl = """
+        pre3 = """
 kernel_size = locals().get('kernel_size')
 if kernel_size is None:
     kernel_size = compute_kernel_size(x, output_size)
@@ -1142,12 +1116,13 @@ if isinstance(output_size, (list, tuple)):
                        for i, size in enumerate(output_size)])
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = head_code
+        pre = defaults_code
         if paddle_api == "paddle.nn.functional.fractional_max_pool2d":
-            code += func1.splitlines()
+            pre += pre1.splitlines()
         else:
-            code += func2.splitlines()
-        code += impl.splitlines() + map_code + core.splitlines()
+            pre += pre2.splitlines()
+        pre += pre3.splitlines()
+        code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1385,7 +1360,7 @@ else:
 
 class GetWindowRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 
 def general_gaussian(M, p, sig, sym=True, dtype=torch.float64):
     if M < 1:
@@ -1522,7 +1497,7 @@ elif window_name == 'nuttall':
     window = torch.signal.windows.nuttall(win_length, sym=not fftbins, dtype=dtype)
 result = window
 """
-        code = impl.splitlines()
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1552,7 +1527,7 @@ result = torch.index_select( **_kwargs)
 
 class ItemRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 x = next(iter(kwargs.values()))
 args = locals().get('args')
 if args:
@@ -1562,8 +1537,8 @@ if args:
 else:
     result = x.item()
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class IncrementRule(BaseRule):
@@ -1609,7 +1584,7 @@ result = x.transpose(-1, -2)
 
 class MedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 axis = locals().get('axis')
 keepdim = locals().get('keepdim', False)
 mode = locals().get('mode', 'avg')
@@ -1638,8 +1613,8 @@ else:
         median = torch.median(x, dim=axis, keepdim=keepdim)
 result = median
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class MultiplexRule(BaseRule):
@@ -1660,7 +1635,7 @@ result = torch.stack(temp)
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 axis = locals().get("axis")
 keepdim = locals().get("keepdim", False)
 mode = locals().get("mode", "avg")
@@ -1727,8 +1702,8 @@ else:
         median = median.reshape(output_shape)
 result = median
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class NmsRule(BaseRule):
