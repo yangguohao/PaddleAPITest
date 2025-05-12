@@ -30,7 +30,7 @@ class APITestPaddleOnly(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err))
             write_to_log("paddle_error", self.api_config.config)
             return
-        
+
         try:
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed", flush=True)
