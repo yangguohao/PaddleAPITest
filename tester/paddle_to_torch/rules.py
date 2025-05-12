@@ -11,13 +11,20 @@ class Code:
     """Paddle2PyTorch 转换代码数据类，封装转换后的可执行代码，自动预编译
 
     Attributes:
+        valid: 是否有效，默认为 True
+        error_message: 编译错误信息，仅当 valid = False 时有效
+
         preprocess: 预处理代码，在核心逻辑前执行
         core: 核心逻辑代码，应包含 Torch API
         postprocess: 后处理代码，在核心逻辑后执行
+
         preprocess_compiled: 预编译的预处理代码
         core_compiled: 预编译的核心逻辑代码
         postprocess_compiled: 预编译的后处理代码
     """
+
+    valid: bool = True
+    error_message: Optional[str] = field(default=None, init=False)
 
     preprocess: List[str] = field(default_factory=list)
     core: List[str] = field(default_factory=list)
@@ -29,9 +36,16 @@ class Code:
 
     def __post_init__(self):
         """自动编译代码"""
-        self.preprocess_compiled = self._compile(self.preprocess)
-        self.core_compiled = self._compile(self.core)
-        self.postprocess_compiled = self._compile(self.postprocess)
+        try:
+            self.preprocess_compiled = self._compile(self.preprocess)
+            self.core_compiled = self._compile(self.core)
+            self.postprocess_compiled = self._compile(self.postprocess)
+        except Exception as e:
+            self.preprocess_compiled = None
+            self.core_compiled = None
+            self.postprocess_compiled = None
+            self.valid = False
+            self.error_message = str(e)
 
     @classmethod
     def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
@@ -41,18 +55,11 @@ class Code:
         try:
             return compile("\n".join(code_lines), "<string>", "exec")
         except SyntaxError as e:
-            return None
+            raise SyntaxError(f"Syntax error in code: {e.msg}") from e
 
     def is_valid(self) -> bool:
         """检查代码是否编译成功"""
-        return all(
-            compiled is not None or not code
-            for compiled, code in [
-                (self.preprocess_compiled, self.preprocess),
-                (self.core_compiled, self.core),
-                (self.postprocess_compiled, self.postprocess),
-            ]
-        )
+        return self.valid
 
 
 @dataclass
@@ -90,7 +97,7 @@ class ConvertResult:
     ) -> "ConvertResult":
         code_obj = Code(core=code) if isinstance(code, list) else code
         if not code_obj.is_valid():
-            return cls.error(paddle_api, "Invalid code.")
+            return cls.error(paddle_api, f"Invalid code: {code_obj.error_message}")
 
         if is_torch_corresponding and len(code_obj.core) > 4:
             print(
@@ -211,9 +218,9 @@ class BaseRule(ABC):
 
 class GenericRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        code = []
+        pre = []
         for default_name, default_value in self.defaults.items():
-            code.append(
+            pre.append(
                 f"{default_name} = locals().get('{default_name}', {default_value})"
             )
         is_tensor_method = paddle_api.startswith("paddle.Tensor.")
@@ -223,45 +230,48 @@ class GenericRule(BaseRule):
                     paddle_api,
                     "The torch api should start with 'torch.Tensor.' when direct mapping a paddle api that starts with 'paddle.Tensor.'",
                 )
-            code.append(
-                "_tmp_tensor = args[0] if args else next(iter(kwargs.values()))"
-            )
+            pre.append("_tmp_tensor = args[0] if args else next(iter(kwargs.values()))")
+            pre.append("_args = list(args[1:])")
             if self.is_attribute:
-                code.append(f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}")
+                core = [f"result = _tmp_tensor.{self.torch_api.split('.')[-1]}"]
+                code = Code(preprocess=pre, core=core)
                 return ConvertResult.success(paddle_api, code)
         is_inplace = (
             paddle_api.endswith("_") and not paddle_api.endswith("__")
         ) or paddle_api == "paddle.Tensor.__setitem__"
 
-        code.append("_args = args[1:]")
+        if not is_tensor_method:
+            pre.append("_args = []")
         if self.torch_args:
             for arg in self.torch_args:
-                code.append(f"_args.extend([{self._format_arg(arg)}])")
-        code.append("_kwargs = {}")
+                pre.append(f"_args.extend([{self._format_arg(arg)}])")
+        pre.append("_kwargs = {}")
         if self.torch_kwargs:
             for key, value in self.torch_kwargs.items():
-                code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+                pre.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
         if self.args_map:
-            code.append("for paddle_param, torch_param in {")
+            pre.append("for paddle_param, torch_param in {")
             for paddle_param, torch_param in self.args_map.items():
-                code.append(f"    '{paddle_param}': '{torch_param}',")
-            code.append("}.items():")
-            code.append("    if paddle_param in locals():")
-            code.append("        _kwargs[torch_param] = locals()[paddle_param]")
+                pre.append(f"    '{paddle_param}': '{torch_param}',")
+            pre.append("}.items():")
+            pre.append("    if paddle_param in locals():")
+            pre.append("        _kwargs[torch_param] = locals()[paddle_param]")
 
+        post = []
         if is_tensor_method:
             torch_method = self.torch_api.replace("torch.Tensor.", "")
             if is_inplace:
-                code.append(f"_tmp_tensor.{torch_method}(*_args, **_kwargs)")
-                code.append("result = _tmp_tensor")
+                core = [f"_tmp_tensor.{torch_method}(*_args, **_kwargs)"]
+                post = ["result = _tmp_tensor"]
             else:
-                code.append(f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)")
+                core = [f"result = _tmp_tensor.{torch_method}(*_args, **_kwargs)"]
         else:
             if is_inplace:
-                code.append(f"{self.torch_api}(*_args, **_kwargs)")
-                code.append("result = next(iter(kwargs.values()))")
+                core = [f"{self.torch_api}(*_args, **_kwargs)"]
+                post = ["result = next(iter(kwargs.values()))"]
             else:
-                code.append(f"result = {self.torch_api}(*_args, **_kwargs)")
+                core = [f"result = {self.torch_api}(*_args, **_kwargs)"]
+        code = Code(preprocess=pre, core=core, postprocess=post)
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1699,6 +1709,14 @@ else:
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class IncrementRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = "value = locals().get('value', 1)"
+        core = "result = x + value"
+        code = Code(preprocess=[pre], core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 # j
 
 
@@ -2169,6 +2187,35 @@ result = torch.stack(result,0)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
+class ScaleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, _ = self.apply_generic()
+        core = """
+if bias_after_scale:
+    result = scale * x + bias
+else:
+    result = scale * (x + bias)
+if act is not None:
+    if act == 'tanh':
+        result = torch.tanh(result)
+    elif act == 'sigmoid':
+        result = torch.sigmoid(result)
+    elif act == 'relu':
+        result = torch.relu(result)
+    elif act == 'softmax':
+        result = torch.softmax(result, dim=-1)
+"""
+        code = Code(preprocess=defaults_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class ShapeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = torch.tensor(input.shape)"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 # t
