@@ -1151,7 +1151,7 @@ if isinstance(output_size, (list, tuple)):
 
 class FullRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        preprocess = """
 shape = locals().get('shape')
 fill_value = locals().get('fill_value')
 dtype = locals().get('dtype')
@@ -1186,9 +1186,11 @@ def convert_to_scalar(fill_value):
     else:
         return fill_value
 
-result = torch.full(size=convert_to_list(shape), fill_value=convert_to_scalar(fill_value), dtype=dtype)
+converted_shape = convert_to_list(shape)
+converted_fill_value = convert_to_scalar(fill_value)
 """
-        code = impl.splitlines()
+        core = "result = torch.full(size=converted_shape, fill_value=converted_fill_value, dtype=dtype)"
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
     
 
@@ -1643,17 +1645,16 @@ result = torch.abs(lcm)
 
 class LogcumsumexpRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        preprocess = """
 x = locals().get('x')
 axis = locals().get('axis')
 
 if axis is None:
-    x_flat = x.flatten()
-    result = torch.logcumsumexp(x_flat, dim=0)
-else:
-    result = torch.logcumsumexp(x, dim=axis)
+    x = x.flatten()
+    axis = 0
 """
-        code = impl.splitlines()
+        core = "result = torch.logcumsumexp(x, dim=axis)"
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
