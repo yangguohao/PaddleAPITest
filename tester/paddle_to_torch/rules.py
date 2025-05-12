@@ -452,6 +452,7 @@ if data_format == "NDHWC":
             post = post_3d.splitlines()
         else:
             return ConvertResult.error(paddle_api, "Unsupported adaptive_avg_pool API")
+        pre += map_code
         code = Code(
             preprocess=pre,
             core=[core],

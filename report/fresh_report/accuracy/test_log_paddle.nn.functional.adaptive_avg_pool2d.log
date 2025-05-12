@@ -1,0 +1,96 @@
+paddle.nn.functional.adaptive_avg_pool2d(Tensor([1, 512, 2, 2],"float32"), output_size=tuple(7,7,), data_format="NCHW", name=None, )
+paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), list[2,5,], )
+paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), output_size=5, data_format="NCHW", name=None, )
+paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), output_size=list[2,5,], data_format="NCHW", name=None, )
+paddle.nn.functional.adaptive_avg_pool2d(x=Tensor([2, 3, 7, 7],"float32"), output_size=5, )
+paddle.nn.functional.adaptive_avg_pool2d(x=Tensor([2, 3, 7, 7],"float32"), output_size=list[2,5,], )
+
+2025-05-12 15:20:09.012224 GPU 0 9691 test begin: paddle.nn.functional.adaptive_avg_pool2d(Tensor([1, 512, 2, 2],"float32"), output_size=tuple(7,7,), data_format="NCHW", name=None, )
+[accuracy error] backward  paddle.nn.functional.adaptive_avg_pool2d(Tensor([1, 512, 2, 2],"float32"), output_size=tuple(7,7,), data_format="NCHW", name=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1977 / 2048 (96.5%)
+Max absolute difference among violations: 1.3046241
+Max relative difference among violations: 329.8444
+ ACTUAL: array([[[[-1.526987,  0.793859],
+         [ 0.459483, -0.456117]],
+...
+ DESIRED: array([[[[-1.595161,  1.156072],
+         [ 0.487107,  0.001895]],
+...
+
+2025-05-12 15:20:13.413262 GPU 0 9691 test begin: paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), list[2,5,], )
+[accuracy error] backward  paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), list[2,5,], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 81 / 294 (27.6%)
+Max absolute difference among violations: 0.03527229
+Max relative difference among violations: 3.8753006
+ ACTUAL: array([[[[ 6.091739e-02,  6.756504e-02, -2.637850e-02, -3.302614e-02,
+          -5.718071e-02, -1.057156e-02,  1.358300e-02],
+         [ 6.091739e-02,  6.756504e-02, -2.637850e-02, -3.302614e-02,...
+ DESIRED: array([[[[ 6.091739e-02,  6.756504e-02, -1.536978e-02, -2.201743e-02,
+          -4.617199e-02, -1.057156e-02,  1.358300e-02],
+         [ 6.091739e-02,  6.756504e-02, -1.536978e-02, -2.201743e-02,...
+
+2025-05-12 15:20:13.526098 GPU 0 9691 test begin: paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), output_size=5, data_format="NCHW", name=None, )
+[accuracy error] backward  paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), output_size=5, data_format="NCHW", name=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 177 / 294 (60.2%)
+Max absolute difference among violations: 0.11918312
+Max relative difference among violations: 32.098045
+ ACTUAL: array([[[[-3.700580e-02, -8.502775e-02, -5.198968e-02, -3.967722e-03,
+          -1.175316e-01, -6.494838e-02,  4.861546e-02],
+         [-1.570161e-01, -1.862914e-01,  7.771222e-02,  1.069875e-01,...
+ DESIRED: array([[[[-3.700580e-02, -8.502775e-02, -5.066711e-02, -2.645148e-03,
+          -1.162090e-01, -6.494838e-02,  4.861546e-02],
+         [-1.570161e-01, -1.862914e-01,  4.204971e-02,  7.132502e-02,...
+
+2025-05-12 15:20:13.620773 GPU 0 9691 test begin: paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), output_size=list[2,5,], data_format="NCHW", name=None, )
+[accuracy error] backward  paddle.nn.functional.adaptive_avg_pool2d(Tensor([2, 3, 7, 7],"float32"), output_size=list[2,5,], data_format="NCHW", name=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 63 / 294 (21.4%)
+Max absolute difference among violations: 0.02837847
+Max relative difference among violations: 9.844721
+ ACTUAL: array([[[[-0.055491, -0.098721, -0.016909,  0.026321,  0.052386,
+           0.000664, -0.025401],
+         [-0.055491, -0.098721, -0.016909,  0.026321,  0.052386,...
+ DESIRED: array([[[[-0.055491, -0.098721, -0.025683,  0.017547,  0.043612,
+           0.000664, -0.025401],
+         [-0.055491, -0.098721, -0.025683,  0.017547,  0.043612,...
+
+2025-05-12 15:20:13.701255 GPU 0 9691 test begin: paddle.nn.functional.adaptive_avg_pool2d(x=Tensor([2, 3, 7, 7],"float32"), output_size=5, )
+[accuracy error] backward  paddle.nn.functional.adaptive_avg_pool2d(x=Tensor([2, 3, 7, 7],"float32"), output_size=5, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 152 / 294 (51.7%)
+Max absolute difference among violations: 0.12371188
+Max relative difference among violations: 426.72784
+ ACTUAL: array([[[[ 7.925957e-02, -1.723337e-02, -1.659854e-01, -6.949242e-02,
+          -9.960056e-02, -4.514919e-02, -1.504105e-02],
+         [-3.428019e-02, -1.055037e-01, -8.050537e-02, -9.281896e-03,...
+ DESIRED: array([[[[ 7.925957e-02, -1.723337e-02, -1.428212e-01, -4.632828e-02,
+          -7.643642e-02, -4.514919e-02, -1.504105e-02],
+         [-3.428019e-02, -1.055037e-01, -7.741140e-02, -6.187931e-03,...
+
+2025-05-12 15:20:13.781210 GPU 0 9691 test begin: paddle.nn.functional.adaptive_avg_pool2d(x=Tensor([2, 3, 7, 7],"float32"), output_size=list[2,5,], )
+[accuracy error] backward  paddle.nn.functional.adaptive_avg_pool2d(x=Tensor([2, 3, 7, 7],"float32"), output_size=list[2,5,], ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 81 / 294 (27.6%)
+Max absolute difference among violations: 0.04064114
+Max relative difference among violations: 50.193577
+ ACTUAL: array([[[[ 0.023166,  0.050574, -0.033862, -0.06127 , -0.034832,
+           0.086768,  0.06033 ],
+         [ 0.023166,  0.050574, -0.033862, -0.06127 , -0.034832,...
+ DESIRED: array([[[[ 0.023166,  0.050574, -0.013439, -0.040847, -0.014409,
+           0.086768,  0.06033 ],
+         [ 0.023166,  0.050574, -0.013439, -0.040847, -0.014409,...
