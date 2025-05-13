@@ -2352,6 +2352,14 @@
         },
         "min_input_args": 2
     },
+    "paddle.masked_scatter": {
+        "Rule": "MaskedScatterRule",
+        "torch_api": "torch.Tensor.masked_scatter",
+        "paddle_torch_args_map": {
+            "mask": "mask",
+            "value": "source"
+        }
+    },
     "paddle.Tensor.masked_select": {
         "torch_api": "torch.Tensor.masked_select",
         "paddle_torch_args_map": {

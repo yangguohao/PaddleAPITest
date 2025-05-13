@@ -1782,7 +1782,16 @@ result = x.transpose(-1, -2)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
-
+class MaskedScatterRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        _ , map_code = self.apply_generic()
+        core = "result = x.masked_scatter(**_kwargs)"
+        code = Code(
+            preprocess = map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+    
 class MedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
