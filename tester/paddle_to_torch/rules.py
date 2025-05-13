@@ -2438,6 +2438,10 @@ if axis is None and keepdim:
     result = result.view([1] * x.dim())
 """
         elif paddle_api == "paddle.prod":
+            pre += """
+if dtype is None:
+    dtype = x.dtype
+"""
             core = """
 if axis is None:
     result = torch.prod(x, dtype = dtype)
@@ -2445,13 +2449,13 @@ elif isinstance(axis, int):
     result = torch.prod(x, dim=axis, keepdim=keepdim, dtype = dtype)
 else:
     for a in axis:
-        result = torch.prod(x, dim=a, keepdim=True, dtype=dtype)
+        x = torch.prod(x, dim=a, keepdim=True, dtype=dtype)
+    result = x
 """
             post = """
 if isinstance(axis, tuple) and not keepdim:
     result = torch.squeeze(result, dim=axis)
 """
-            code = Code(preprocess=defaults_code + pre.splitlines(), core=[core])
         elif paddle_api == "paddle.sum":
             core = f"result = torch.sum(x, dim=axis, keepdim=keepdim, dtype=dtype)"
             post = ""
