@@ -1185,78 +1185,6 @@ if isinstance(output_size, (list, tuple)):
         return ConvertResult.success(paddle_api, code)
 
 
-class HessianRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
-batch_axis = locals().get('batch_axis', None)
-
-class Hessian:
-    def __init__(self, ys, xs, batch_axis = None):
-        self.ys = ys
-        self.xs = xs if isinstance(xs, tuple) else (xs,)
-        self.batch_axis = batch_axis
-        self.cache = {}  # 缓存已计算的子矩阵
-        self.device = ys.device
-
-    def _compute_hessian_single(self, x, batch_idx = None) -> torch.Tensor:
-        if self.batch_axis == 0 and batch_idx is not None:
-            # 批量模式，计算单个 batch 的 Hessian
-            def func(x): return torch.sum(self.ys[batch_idx] * x)
-            x_batch = x[batch_idx]
-        else:
-            # 非批量模式或整个批量
-            def func(x): return torch.sum(self.ys * x) if self.batch_axis is None else torch.sum(self.ys @ x)
-        # 计算 Hessian
-        hessian = torch.autograd.functional.hessian(func, x.flatten(), create_graph=False)
-        if self.batch_axis == 0 and batch_idx is None:
-            # 批量模式，返回 [B, N, N]
-            B, N = x.shape
-            return hessian.view(B, N, N)
-        return hessian
-
-    def _compute_hessian_tuple(self, idx1, idx2, batch_idx = None) -> torch.Tensor:
-        x1, x2 = self.xs[idx1], self.xs[idx2]
-        if self.batch_axis == 0 and batch_idx is not None:
-            # 批量模式，单 batch
-            def func(x): return torch.sum(self.ys[batch_idx] * x)
-            x1_batch = x1[batch_idx]
-            x2_batch = x2[batch_idx]
-        else:
-            def func(x): return torch.sum(self.ys * x) if self.batch_axis is None else torch.sum(self.ys @ x)
-        # 计算交叉梯度
-        grad_x1 = torch.autograd.grad(func(x1), x1, create_graph=True)[0]
-        hessian = torch.zeros(x1.shape[-1], x2.shape[-1], device=self.device)
-        for i in range(x1.shape[-1]):
-            hessian[i] = torch.autograd.grad(grad_x1[i], x2, retain_graph=True)[0]
-        return hessian
-
-    def __getitem__(self, key):
-        if isinstance(key, int):
-            key = (key, key)  # 单个索引转换为元组
-        # 处理批量索引
-        batch_idx = None
-        if len(key) == 3 and self.batch_axis == 0:
-            batch_idx, idx1, idx2 = key
-        elif len(key) == 2:
-            idx1, idx2 = key
-        # 检查缓存
-        cache_key = (batch_idx, idx1, idx2)
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-        # 计算 Hessian
-        if idx1 == idx2:
-            result = self._compute_hessian_single(self.xs[idx1], batch_idx)
-        else:
-            result = self._compute_hessian_tuple(idx1, idx2, batch_idx)
-        # 缓存结果
-        self.cache[cache_key] = result
-        return result
-"""
-        core = "result = Hessian(ys=ys, xs=xs, batch_axis=batch_axis)"
-        code = Code(preprocess=pre.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-
-
 # g
 
 
@@ -1678,6 +1606,76 @@ result = window
 
 
 # h
+class HessianRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+batch_axis = locals().get('batch_axis', None)
+
+class Hessian:
+    def __init__(self, ys, xs, batch_axis = None):
+        self.ys = ys
+        self.xs = tuple(xs) if isinstance(xs, (tuple, list)) else (xs,)
+        self.batch_axis = batch_axis
+        self.cache = {}  # 缓存已计算的子矩阵
+        self.device = ys.device
+
+    def _compute_hessian_single(self, x, batch_idx = None) -> torch.Tensor:
+        if self.batch_axis == 0 and batch_idx is not None:
+            # 批量模式，计算单个 batch 的 Hessian
+            def func(x): return torch.sum(self.ys[batch_idx] * x)
+            x_batch = x[batch_idx]
+        else:
+            # 非批量模式或整个批量
+            def func(x): return torch.sum(self.ys * x) if self.batch_axis is None else torch.sum(self.ys @ x)
+        # 计算 Hessian
+        hessian = torch.autograd.functional.hessian(func, x.flatten(), create_graph=False)
+        if self.batch_axis == 0 and batch_idx is None:
+            # 批量模式，返回 [B, N, N]
+            B, N = x.shape
+            return hessian.view(B, N, N)
+        return hessian
+
+    def _compute_hessian_tuple(self, idx1, idx2, batch_idx = None) -> torch.Tensor:
+        x1, x2 = self.xs[idx1], self.xs[idx2]
+        if self.batch_axis == 0 and batch_idx is not None:
+            # 批量模式，单 batch
+            def func(x): return torch.sum(self.ys[batch_idx] * x)
+            x1_batch = x1[batch_idx]
+            x2_batch = x2[batch_idx]
+        else:
+            def func(x): return torch.sum(self.ys * x) if self.batch_axis is None else torch.sum(self.ys @ x)
+        # 计算交叉梯度
+        grad_x1 = torch.autograd.grad(func(x1), x1, create_graph=True)[0]
+        hessian = torch.zeros(x1.shape[-1], x2.shape[-1], device=self.device)
+        for i in range(x1.shape[-1]):
+            hessian[i] = torch.autograd.grad(grad_x1[i], x2, retain_graph=True)[0]
+        return hessian
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            key = (key, key)  # 单个索引转换为元组
+        # 处理批量索引
+        batch_idx = None
+        if len(key) == 3 and self.batch_axis == 0:
+            batch_idx, idx1, idx2 = key
+        elif len(key) == 2:
+            idx1, idx2 = key
+        # 检查缓存
+        cache_key = (batch_idx, idx1, idx2)
+        if cache_key in self.cache:
+            return self.cache[cache_key]
+        # 计算 Hessian
+        if idx1 == idx2:
+            result = self._compute_hessian_single(self.xs[idx1], batch_idx)
+        else:
+            result = self._compute_hessian_tuple(idx1, idx2, batch_idx)
+        # 缓存结果
+        self.cache[cache_key] = result
+        return result
+"""
+        core = "result = Hessian(ys=ys, xs=xs, batch_axis=batch_axis)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 # i
@@ -1742,8 +1740,8 @@ batch_axis = locals().get('batch_axis', None)
 
 class Jacobian:
     def __init__(self, ys, xs, batch_axis = None):
-        self.ys = ys if isinstance(ys, tuple) else (ys,)
-        self.xs = xs if isinstance(xs, tuple) else (xs,)
+        self.ys = tuple(ys) if isinstance(ys, (tuple, list)) else (ys,)
+        self.xs = tuple(xs) if isinstance(xs, (tuple, list)) else (xs,)
         self.batch_axis = batch_axis
         self.cache = {}  # 缓存已计算的子矩阵
         self.device = self.ys[0].device
