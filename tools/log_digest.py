@@ -92,8 +92,8 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
         cuda_error_count = 0
         other_error_count = 0
         
-        alraedy_warned_log_files = []
-        alraedy_warned_config_files = []
+        written_warned_log_files = []
+        written_warned_config_files = []
 
         # Process each entry
         for entry in entries:
@@ -130,11 +130,12 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
                 if not os.path.exists(log_file):
                     with open(log_file, 'w') as f:
                         f.write(f"{entry}")
+                    written_warned_log_files.append(log_file)
                 else:
-                    if log_file not in alraedy_warned_log_files:
+                    if log_file not in written_warned_log_files:
                         print(f"[warning] log file {log_file} already exists, appending to it")
-                        alraedy_warned_log_files.append(log_file)
-                        with open(log_file, 'r') as f:
+                        written_warned_log_files.append(log_file)
+                        with open(log_file, 'a') as f:
                             f.write(f"\n===================== below is the new log =====================\n")
                     with open(log_file, 'a') as f:
                         f.write(f"{entry}")
@@ -144,11 +145,12 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
                 if not os.path.exists(config_file):
                     with open(config_file, 'w') as f:
                         f.write(f"{config_line}\n")
+                    written_warned_config_files.append(config_file)
                 else:
-                    if config_file not in alraedy_warned_config_files:
+                    if config_file not in written_warned_config_files:
                         print(f"[warning] config file {config_file} already exists, appending to it")
-                        alraedy_warned_config_files.append(config_file)
-                        with open(config_file, 'r') as f:
+                        written_warned_config_files.append(config_file)
+                        with open(config_file, 'a') as f:
                             f.write(f"\n===================== below is the new config =====================\n")
                     with open(config_file, 'a') as f:
                         f.write(f"{config_line}\n")
@@ -195,6 +197,8 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
         
     except Exception as e:
         print(f"Error processing log entries: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 def main():
