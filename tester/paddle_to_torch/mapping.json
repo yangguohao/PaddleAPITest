@@ -163,6 +163,12 @@
         }
     },
     "c": "API started with 'c' should be placed here",
+    "paddle.cast":{
+        "Rule": "CastRule"
+    },
+    "paddle.Tensor.cast":{
+        "Rule": "CastRule"
+    },
     "paddle.Tensor.coalesce":{
         "torch_api": "torch.Tensor.coalesce"
     },
@@ -1205,6 +1211,13 @@
     "paddle.ones":{
         "Rule": "OnesRule"
     },
+    "paddle.ones_like": {
+        "torch_api": "torch.ones_like",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "dtype": "dtype"
+        }
+    },
     "p": "API started with 'p' should be placed here",
     "paddle.poisson": {
         "torch_api": "torch.poisson",
@@ -1478,6 +1491,9 @@
         }
     },
     "v": "API started with 'v' should be placed here",
+    "paddle.vecdot": {
+        "Rule": "VecdotRule"
+    },
     "paddle.view":{
         "Rule": "ViewRule"
     },
@@ -1496,6 +1512,13 @@
     "z": "API started with 'z' should be placed here",
     "paddle.zeros":{
         "Rule": "ZerosRule"
+    },
+    "paddle.zeros_like": {
+        "torch_api": "torch.zeros_like",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "dtype": "dtype"
+        }
     },
     "paddle.Tensor.zero_":{
         "torch_api": "torch.Tensor.zero_"
@@ -6073,18 +6096,6 @@
         },
         "min_input_args": 0
     },
-    "paddle.ones_like": {
-        "torch_api": "torch.ones_like",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad",
-            "memory_format": "memory_format"
-        },
-        "min_input_args": 1
-    },
     "paddle.optimizer.ASGD": {
         "torch_api": "torch.optim.ASGD",
         "paddle_torch_args_map": {
@@ -7032,18 +7043,6 @@
         "torch_api": "torch.vstack",
         "paddle_torch_args_map": {
             "x": "tensors"
-        },
-        "min_input_args": 1
-    },
-    "paddle.zeros_like": {
-        "torch_api": "torch.zeros_like",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad",
-            "memory_format": "memory_format"
         },
         "min_input_args": 1
     },
