@@ -1622,8 +1622,63 @@ result = window
 
 
 # h
+class HistogramddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+_kwargs = {}
+for paddle_param, torch_param in {
+    "x": "input",
+    "bins": "bins",
+    "ranges": "range",
+    "weights": "weight",
+    "density": "density"
+}.items():
+    if paddle_param in locals() and not locals()[paddle_param] is None:
+        _kwargs[torch_param] = locals()[paddle_param]
+for k in _kwargs:
+    if isinstance(_kwargs[k],torch.Tensor):
+        _kwargs[k] = _kwargs[k].cpu()
+    elif isinstance(_kwargs[k], (list,tuple)):
+        _kwargs[k] = list(_kwargs[k])
+        for i in range(len(_kwargs[k])):
+            if isinstance(_kwargs[k][i],torch.Tensor):
+                _kwargs[k][i] = _kwargs[k][i].cpu()
+        _kwargs[k] = tuple(_kwargs[k])
+"""
+        core = """
+result = torch.histogramdd(**_kwargs)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+    
+class HistogramBinEdgeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+input = locals().get("input")
+bins = locals().get("bins", 100)
+min = locals().get("min", 0.0)
+max = locals().get("max", 0.0)
+input = input.flatten()
+if min == 0.0 and max == 0.0:
+    min = torch.min(input)
+    max = torch.max(input)
+elif min == max:
+    min = min - 0.5
+    max = max + 0.5
 
+"""
+        core = """
 
+result = torch.linspace(min, max, steps=bins + 1, device=input.device, dtype=input.dtype)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 # i
 
 
