@@ -2805,6 +2805,23 @@ elif y.dtype == torch.bool:
         return ConvertResult.success(paddle_api, code)
 
 
+class SwigluRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get("x")
+y = locals().get("y", None)
+
+if y == None:
+    x, y = torch.chunk(x, 2, dim=-1)
+"""
+        core = "result = torch.nn.functional.silu(x) * y"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 # t
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

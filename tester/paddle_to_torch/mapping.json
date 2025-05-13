@@ -1372,6 +1372,9 @@
     "paddle.split":{
        "Rule": "SplitRule"
     },
+    "paddle.incubate.nn.functional.swiglu":{
+        "Rule": "SwigluRule"
+    },
     "t": "API started with 't' should be placed here",
     "paddle.Tensor.tanh":{
         "torch_api": "torch.Tensor.tanh"
