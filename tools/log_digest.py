@@ -198,7 +198,7 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
         sys.exit(1)
 
 def main():
-    parser = argparse.ArgumentParser(description='Process log files by removing timestamp and prefix.')
+    parser = argparse.ArgumentParser(description='Process log files by removing timestamp and prefix. Ensure you run this script from the PaddleAPITest directory (cwd == PaddleAPITest).')
     parser.add_argument('--file', required=False, help='log file path to process, eg. if you run engine.py by " ... engine.py ... 2&>1 > log.log", then file=log.log')
     parser.add_argument('--dir', required=False, help='Directory containing log files to process')
     parser.add_argument('--id', default='', type=str, help='Identifier to use in output filenames, eg. lhy id==1, xym id==2')
