@@ -505,6 +505,22 @@ if locals().get('data_format') == 'NHWC':
 
 
 # c
+class CastRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+dtype = locals().get('dtype')
+if isinstance(dtype, str) and hasattr(torch, dtype):
+    dtype = getattr(torch, dtype)
+"""
+        core = "result = x.to(dtype)"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class CorrcoefRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2891,6 +2907,33 @@ class UnfoldRule(BaseRule):
 
 
 # v
+class VecdotRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+y = locals().get('y')
+axis = locals().get('axis', -1)
+if torch.is_complex(x) or torch.is_complex(y):
+    x = x.to(torch.complex128)
+    y = y.to(torch.complex128)
+elif x.dtype != y.dtype:
+    if x.dtype == torch.float64 or y.dtype == torch.float64:
+        target_dtype = torch.float64
+    elif x.dtype == torch.float32 or y.dtype == torch.float32:
+        target_dtype = torch.float32
+    else:
+        target_dtype = x.dtype
+    x = x.to(target_dtype)
+    y = y.to(target_dtype)
+"""
+        core = "result = torch.linalg.vecdot(x, y, dim=axis)"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+
+        
 class ViewRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
