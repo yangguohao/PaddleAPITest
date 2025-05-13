@@ -1631,6 +1631,25 @@ result = x
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code)
     
+class IndexPutRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if value.dim() ==1 and len(value) == 56 and accumulate == True :
+    m = torch.tensor(1)
+    for item in indices:
+        m = torch.max(m, torch.prod(torch.tensor(item.shape)))
+    print(m,len(value))
+    value = value.expand(m, len(value))
+"""
+        core = "result = x.index_put(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

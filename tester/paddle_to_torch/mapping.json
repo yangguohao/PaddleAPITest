@@ -427,6 +427,17 @@
     "paddle.index_add": {
         "Rule":"IndexAddRule"
     },
+    "paddle.index_put": {
+        "Rule":"IndexPutRule",
+        "paddle_torch_args_map": {
+            "indices": "indices",
+            "accumulate": "accumulate",
+            "value": "values"
+        },
+        "set_defaults": {
+            "accumulate": "False"
+        }
+    },
     "paddle.index_fill": {
         "torch_api": "torch.index_fill",
         "paddle_torch_args_map": {
