@@ -3018,7 +3018,7 @@ elif x.dtype != y.dtype:
             preprocess=pre.splitlines(),
             core=[core]
         )
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
         
 class ViewRule(BaseRule):
