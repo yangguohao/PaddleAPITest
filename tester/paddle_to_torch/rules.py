@@ -2873,47 +2873,20 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
 
 class SoftmaxMaskFuseRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        pre = """
-if mask is not None:
-    mask = mask.astype(np.float32)
-    mask = 1 - mask
-    mask = np.expand_dims(mask, axis=-1)
-    logits = logits * mask
-"""
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-if mask is not None:
-    result = result * mask
-"""
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines(),
-            postprocess=post.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
+        core = "result = torch.softmax(x + mask, dim=-1)"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class SoftmaxMaskFuseUpperTriangleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        pre = """
-if mask is not None:
-    mask = mask.astype(np.float32)
-    mask = 1 - mask
-    mask = np.expand_dims(mask, axis=-1)
-    logits = logits * mask
+        core = """
+batch, heads, seq_len, seq_len2 = x.shape
+mask = torch.triu(torch.full((seq_len, seq_len2), float('-inf'), device=x.device, dtype=x.dtype), diagonal=1)
+mask = mask.view(1, 1, seq_len, seq_len2)
+result = torch.softmax(x + mask, dim=-1)
 """
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-if mask is not None:
-    result = result * mask
-"""
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=core.splitlines(),
-            postprocess=post.splitlines(),
-        )
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
