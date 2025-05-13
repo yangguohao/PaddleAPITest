@@ -332,6 +332,9 @@
     "paddle.incubate.nn.functional.fused_dropout_add": {
         "Rule": "FusedDropoutAddRule"
     },
+    "paddle.incubate.nn.functional.fused_linear": {
+        "Rule": "FusedLinearRule"
+    },
     "g": "API started with 'g' should be placed here",
     "paddle.gammaln": {
         "torch_api": "torch.special.gammaln",
