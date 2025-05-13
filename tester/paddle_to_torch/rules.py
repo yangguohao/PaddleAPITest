@@ -1270,6 +1270,36 @@ result = fused_bias_dropout_residual_layernorm(x, residual, bias, ln_scale, ln_b
         return ConvertResult.success(paddle_api, code)
 
 
+class FusedDropoutAddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+y = locals().get('y')
+p = locals().get('p', 0.5)
+training = locals().get('training', True)
+mode = locals().get('mode', 'upscale_in_train')
+
+def fused_dropout_add(x, y, p=0.5, training=True, mode='upscale_in_train'):
+    if mode == 'upscale_in_train':
+        x = torch.nn.functional.dropout(x, p=p, training=training)
+        x = x + y
+    else:
+        # handle downscale dropout
+        mask = torch.bernoulli(torch.full(x.shape, 1-p)).to(x.device)
+        if training:
+            x = x * mask
+        else:
+            x = x * (1 - p)
+        x = x + y
+    return x
+"""
+        core = """
+result = fused_dropout_add(x, y, p, training, mode)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         # 抽取对应维度的tensor直接进行stack操作

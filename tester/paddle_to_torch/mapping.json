@@ -329,6 +329,9 @@
     "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm": {
         "Rule": "FusedBiasDropoutResidualLayerNormRule"
     },
+    "paddle.incubate.nn.functional.fused_dropout_add": {
+        "Rule": "FusedDropoutAddRule"
+    },
     "g": "API started with 'g' should be placed here",
     "paddle.gammaln": {
         "torch_api": "torch.special.gammaln",
