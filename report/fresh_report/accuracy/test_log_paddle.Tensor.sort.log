@@ -1,0 +1,68 @@
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-04-30 11:56:31.125652 test begin: paddle.Tensor.sort(Tensor([1638400],"float32"), descending=True, )
+W0430 11:56:33.798699 27459 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 12.0
+W0430 11:56:33.800035 27459 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+0.0
+[accuracy error] backward  paddle.Tensor.sort(Tensor([1638400],"float32"), descending=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 50962 / 1638400 (3.11%)
+Max absolute difference: 0.99470747
+Max relative difference: 51616.844
+ x: array([ 0.43467 , -0.221969, -0.119986, ..., -0.017575, -0.186897,
+       -0.364014], dtype=float32)
+ y: array([ 0.43467 , -0.498354, -0.119986, ..., -0.017575, -0.186897,
+       -0.364014], dtype=float32)
+2025-04-30 11:56:51.827864 test begin: paddle.Tensor.sort(Tensor([3276800],"float32"), descending=True, )
+0.0
+[accuracy error] backward  paddle.Tensor.sort(Tensor([3276800],"float32"), descending=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 197106 / 3276800 (6.02%)
+Max absolute difference: 0.99618745
+Max relative difference: 74650.92
+ x: array([-0.484302,  0.488099,  0.479801, ...,  0.325165,  0.441834,
+       -0.093214], dtype=float32)
+ y: array([-0.484302,  0.488099,  0.479801, ...,  0.325165,  0.441834,
+       -0.093214], dtype=float32)
+2025-04-30 11:56:52.352661 test begin: paddle.Tensor.sort(Tensor([3686400],"float32"), descending=True, )
+0.0
+[accuracy error] backward  paddle.Tensor.sort(Tensor([3686400],"float32"), descending=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 247703 / 3686400 (6.72%)
+Max absolute difference: 0.99790794
+Max relative difference: 81498.414
+ x: array([-0.419115, -0.411816, -0.153382, ..., -0.012142,  0.147816,
+       -0.359543], dtype=float32)
+ y: array([-0.419115, -0.411816,  0.0621  , ..., -0.012142,  0.147816,
+       -0.359543], dtype=float32)
+2025-04-30 11:56:52.900394 test begin: paddle.Tensor.sort(Tensor([6553600],"float32"), descending=True, )
+0.0
+[accuracy error] backward  paddle.Tensor.sort(Tensor([6553600],"float32"), descending=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 749031 / 6553600 (11.4%)
+Max absolute difference: 0.99766076
+Max relative difference: 484342.3
+ x: array([ 0.067569, -0.032559, -0.212637, ...,  0.279945, -0.087721,
+       -0.394181], dtype=float32)
+ y: array([ 0.067569, -0.032559, -0.212637, ...,  0.279945, -0.087721,
+       -0.394181], dtype=float32)
+2025-04-30 11:56:53.904675 test begin: paddle.Tensor.sort(Tensor([7372800],"float32"), descending=True, )
+0.0
+[accuracy error] backward  paddle.Tensor.sort(Tensor([7372800],"float32"), descending=True, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 932519 / 7372800 (12.6%)
+Max absolute difference: 0.9991182
+Max relative difference: 1910050.6
+ x: array([ 0.112612, -0.094932,  0.143039, ...,  0.403627, -0.35968 ,
+       -0.133442], dtype=float32)
+ y: array([ 0.112612, -0.094932,  0.143039, ...,  0.403627, -0.35968 ,
+        0.412893], dtype=float32)

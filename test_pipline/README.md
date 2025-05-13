@@ -4,12 +4,27 @@
 
 **目录**
 
+*   [测试准备](#测试准备)
 *   [目录结构](#目录结构)
 *   [工具详解](#工具详解)
 *   [使用方法](#使用方法)
 *   [总结](#总结)
 
 ---
+## 测试准备
+
+为确保测试结果的准确性与时效性，请务必在测试开始前完成 PaddlePaddle 最新开发环境的配置。
+
+*   **GPU 版本测试**：
+    请访问 [PaddlePaddle GPU每日构建版本链接](https://www.paddlepaddle.org.cn/packages/nightly/cu118/paddlepaddle-gpu/) 下载并安装最新的 `wheel` 包。
+
+*   **CPU 版本测试**：
+    请执行以下命令安装 PaddlePaddle：
+    ```bash
+    python -m pip install --pre paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
+    ```
+    **注意**：目前 CPU 版本的 PaddlePaddle 并非每日更新。安装完成后，建议通过执行 `paddle.__git_commit__` 命令核实当前所安装版本的具体 commit id。
+
 
 ## 目录结构
 
@@ -29,6 +44,9 @@
         *   `gpu_bigtensor_paddleonly/`: 包含专门用于 **管理和分析 GPU 上 big tensor paddle_only 测试** 结果的脚本。
 *   **`gpu_paddleonly/`**: <a name="gpu_paddleonly"></a>
     *   **用途**: 存放与在 GPU 环境下对常规 API 进行 `paddle_only=True` 测试相关的工具和脚本。这种测试模式用于验证 API 在仅使用 PaddlePaddle 内部实现（不涉及与其他框架的对比）时的行为和稳定性。
+    *   **结构**: 直接包含执行该测试场景所需的各类工具脚本（如 `split.sh`, `run*.sh`, `error_stat.py`, `rm_*.sh` 等）。
+*   **`cpu_accuracy/`**: <a name="cpu_accuracy"></a>
+    *   **用途**: 存放与在 CPU 环境下对常规 API 进行 `accuracy=True` 测试相关的工具和脚本。
     *   **结构**: 直接包含执行该测试场景所需的各类工具脚本（如 `split.sh`, `run*.sh`, `error_stat.py`, `rm_*.sh` 等）。
 
 ## 工具详解

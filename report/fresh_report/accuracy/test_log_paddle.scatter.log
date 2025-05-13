@@ -1,0 +1,17 @@
+2025-04-28 18:12:56.179206 test begin: paddle.scatter(Tensor([183826, 256],"float32"), Tensor([10759233],"int64"), Tensor([10759233, 256],"float32"), )
+W0428 18:13:40.664778 132306 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0428 18:13:40.666070 132306 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+One of the differentiated Tensors does not require grad
+[accuracy error] paddle.scatter(Tensor([183826, 256],"float32"), Tensor([10759233],"int64"), Tensor([10759233, 256],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 34134435 / 47059456 (72.5%)
+Max absolute difference among violations: 0.99991524
+Max relative difference among violations: 23961614.
+ ACTUAL: array([[-0.191494,  0.233243, -0.079313, ...,  0.026477,  0.180587,
+        -0.299916],
+       [-0.351739,  0.319201, -0.113861, ...,  0.074503, -0.360081,...
+ DESIRED: array([[-0.304361,  0.361363,  0.429886, ..., -0.42373 ,  0.420357,
+         0.008557],
+       [ 0.37578 , -0.134036,  0.212382, ..., -0.273604, -0.441438,...

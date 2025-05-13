@@ -1,0 +1,20 @@
+paddle.scale(Tensor([2, 1, 1, 2, 3],"float32"), scale=Tensor([],"float32"), )
+paddle.scale(Tensor([2, 1, 1, 2, 3],"float64"), scale=Tensor([],"float32"), )
+paddle.scale(Tensor([2, 1, 2, 3],"float32"), scale=Tensor([],"float32"), )
+paddle.scale(Tensor([2, 1, 2, 3],"float64"), scale=Tensor([],"float32"), )
+paddle.scale(Tensor([2, 3, 4, 5, 6],"float32"), scale=Tensor([1],"float32"), )
+
+2025-05-08 14:05:51.490213 GPU 2 13313 test begin: paddle.scale(Tensor([2, 1, 1, 2, 3],"float32"), scale=Tensor([],"float32"), )
+[not compare]  None tensor(0.1315)
+
+2025-05-08 14:05:51.689669 GPU 2 13313 test begin: paddle.scale(Tensor([2, 1, 1, 2, 3],"float64"), scale=Tensor([],"float32"), )
+[not compare]  None tensor(-0.2185)
+
+2025-05-08 14:05:51.880652 GPU 2 13313 test begin: paddle.scale(Tensor([2, 1, 2, 3],"float32"), scale=Tensor([],"float32"), )
+[not compare]  None tensor(0.2918)
+
+2025-05-08 14:05:52.027731 GPU 2 13313 test begin: paddle.scale(Tensor([2, 1, 2, 3],"float64"), scale=Tensor([],"float32"), )
+[not compare]  None tensor(0.1341)
+
+2025-05-08 14:05:52.475578 GPU 6 13318 test begin: paddle.scale(Tensor([2, 3, 4, 5, 6],"float32"), scale=Tensor([1],"float32"), )
+[not compare]  None tensor([-2.3339])
