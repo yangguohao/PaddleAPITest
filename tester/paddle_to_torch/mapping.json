@@ -424,6 +424,9 @@
     "paddle.increment": {
         "Rule": "IncrementRule"
     },
+    "paddle.index_add": {
+        "Rule":"IndexAddRule"
+    },
     "paddle.index_fill": {
         "torch_api": "torch.index_fill",
         "paddle_torch_args_map": {

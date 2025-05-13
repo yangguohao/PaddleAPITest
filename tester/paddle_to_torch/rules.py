@@ -1617,6 +1617,20 @@ class IsEmptyRule(BaseRule):
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class IndexAddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+x = x.clone()
+for i in range(len(index)):
+    if index[i].item() >= x.size(axis):
+        continue
+    tmp = x.select(dim=axis, index=index[i].item())
+    tmp += value.select(dim=axis, index=i)
+result = x
+"""
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code)
+    
 class IndexSelectRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
