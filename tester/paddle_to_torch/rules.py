@@ -1187,6 +1187,7 @@ if isinstance(output_size, (list, tuple)):
 
 # g
 
+
 class FullRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         preprocess = """
@@ -1230,7 +1231,7 @@ converted_fill_value = convert_to_scalar(fill_value)
         core = "result = torch.full(size=converted_shape, fill_value=converted_fill_value, dtype=dtype)"
         code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
-    
+
 
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1682,6 +1683,7 @@ result = torch.abs(lcm)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
 
 class LogcumsumexpRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2616,6 +2618,7 @@ result = torch.stack(result,0)
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
 
+
 class SliceScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2634,6 +2637,7 @@ result[tuple(slices)] = value
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class StandardGammaRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2647,7 +2651,8 @@ rate = torch.ones_like(x)
             core=[core],
             postprocess=[post],
         )
-        return ConvertResult.success(paddle_api, code)    
+        return ConvertResult.success(paddle_api, code)
+
 
 class StanhRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2660,8 +2665,9 @@ class StanhRule(BaseRule):
             core=[core],
             postprocess=[post],
         )
-        return ConvertResult.success(paddle_api, code)    
-    
+        return ConvertResult.success(paddle_api, code)
+
+
 class StridedSliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2686,7 +2692,7 @@ result = x[grids]
 """
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-    
+
 
 class ShardIndex(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2801,6 +2807,52 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class SoftmaxMaskFuseRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if mask is not None:
+    mask = mask.astype(np.float32)
+    mask = 1 - mask
+    mask = np.expand_dims(mask, axis=-1)
+    logits = logits * mask
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+if mask is not None:
+    result = result * mask
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class SoftmaxMaskFuseUpperTriangleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if mask is not None:
+    mask = mask.astype(np.float32)
+    mask = 1 - mask
+    mask = np.expand_dims(mask, axis=-1)
+    logits = logits * mask
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+if mask is not None:
+    result = result * mask
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # t
