@@ -2804,6 +2804,40 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
 
 
 # t
+class TakeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if 'mode' not in locals():
+    mode = 'raise'
+def torch_take(x, index, mode='raise'):
+    x_flat = x.reshape(-1)
+    numel = x_flat.numel()
+    if mode == 'raise':
+        index_mask = (index >= 0) & (index < numel)
+        valid_indices = torch.clamp(index, 0, numel - 1)  # 避免报错，先 clamp
+        taken = torch.take(x_flat, valid_indices)
+        taken[~index_mask] = 0.0  # 非法 index 位置手动填 0
+        return taken.view(index.shape)
+    elif mode == 'wrap':
+        index_mod = ((index % numel) + numel) % numel
+        result = torch.take(x_flat, index_mod)
+    elif mode == 'clip':
+        index_clipped = torch.clamp(index, 0, numel - 1)
+        result = torch.take(x_flat, index_clipped)
+    else:
+        raise ValueError(f"Invalid mode: {mode}")
+    return result.view(index.shape)
+"""
+
+        core = "result = torch_take(x, index, mode)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

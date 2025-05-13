@@ -6647,12 +6647,11 @@
         "min_input_args": 1
     },
     "paddle.take": {
-        "torch_api": "torch.take",
+        "Rule": "TakeRule",
         "paddle_torch_args_map": {
             "x": "input",
             "index": "index"
-        },
-        "min_input_args": 2
+        }
     },
     "paddle.tan": {
         "torch_api": "torch.tan",
