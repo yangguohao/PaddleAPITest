@@ -460,13 +460,10 @@
         "Rule": "SoftmaxMaskFuseUpperTriangleRule"
     },
     "paddle.incubate.nn.functional.variable_length_memory_efficient_attention": {
-        "Rule": "VariableLengthMemoryEfficientAttentionRule",
-        "set_defaults": {
-            "mask": "None",
-            "scale": "None",
-            "causal": "False",
-            "pre_cache_length": 0
-        }
+        "Rule": "VariableLengthMemoryEfficientAttentionRule"
+    },
+    "paddle.incubate.nn.functional.masked_multihead_attention": {
+        "Rule": "MaskedMultiheadAttentionRule"
     },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",

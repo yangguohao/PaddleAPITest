@@ -1933,6 +1933,130 @@ result = torch.stack(temp)
         return ConvertResult.success(paddle_api, code)
 
 
+class MaskedMultiheadAttentionRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+def masked_multihead_attention(
+    x: torch.Tensor,
+    cache_kv: torch.Tensor | None = None,
+    bias: torch.Tensor | None = None,
+    src_mask: torch.Tensor | None = None,
+    cum_offsets: torch.Tensor | None = None,
+    sequence_lengths: torch.Tensor | None = None,
+    rotary_tensor: torch.Tensor | None = None,
+    beam_cache_offset: torch.Tensor | None = None,
+    qkv_out_scale: torch.Tensor | None = None,
+    out_shift: torch.Tensor | None = None,
+    out_smooth: torch.Tensor | None = None,
+    seq_len: int = 1,
+    rotary_emb_dims: int = 0,
+    use_neox_rotary_style: bool = False,
+    compute_dtype: str = 'default',
+    out_scale: float = -1.0,
+    quant_round_type: int = 1,
+    quant_max_bound: float = 127.0,
+    quant_min_bound: float = -127.0
+):
+    # Infer dimensions from input
+    batch_size = x.shape[0]
+    total_dim = x.shape[1]
+    # Assume x is [batch_size, 3 * num_head * head_dim]
+    num_head = 12  # Example: adjust based on model config
+    head_dim = total_dim // (3 * num_head)
+    # Reshape and split QKV: [batch_size, 3 * num_head * head_dim] -> [batch_size, 3, num_head, head_dim]
+    x = x.view(batch_size, 3, num_head, head_dim)
+    q, k, v = x[:, 0], x[:, 1], x[:, 2]  # Each is [batch_size, num_head, head_dim]
+    # Apply bias if provided
+    if bias is not None:
+        q = q + bias[0]
+        k = k + bias[1]
+        v = v + bias[2]
+    # Apply QKV quantization if qkv_out_scale is provided
+    if qkv_out_scale is not None:
+        q = q / qkv_out_scale[0]
+        k = k / qkv_out_scale[1]
+        v = v / qkv_out_scale[2]
+        # Apply quantization
+        if quant_round_type == 1:
+            q = torch.round(q).clamp(quant_min_bound, quant_max_bound)
+            k = torch.round(k).clamp(quant_min_bound, quant_max_bound)
+            v = torch.round(v).clamp(quant_min_bound, quant_max_bound)
+    # Handle rotary embeddings
+    if rotary_tensor is not None and rotary_emb_dims > 0:
+        # Apply rotary embeddings to q and k
+        def apply_rotary_emb(x, rotary):
+            if use_neox_rotary_style:
+                # Neox-style: split head_dim into pairs and apply rotation
+                half_dim = rotary_emb_dims // 2
+                x1, x2 = x[..., :half_dim], x[..., half_dim:2 * half_dim]
+                rot1, rot2 = rotary[..., :half_dim], rotary[..., half_dim:2 * half_dim]
+                x_rot = torch.cat((-x2 * rot2 + x1 * rot1, x1 * rot2 + x2 * rot1), dim=-1)
+                return torch.cat((x_rot, x[..., 2 * half_dim:]), dim=-1)
+            else:
+                # Standard rotary: apply cosine and sine rotations
+                cos, sin = rotary[..., ::2], rotary[..., 1::2]
+                x1, x2 = x[..., ::2], x[..., 1::2]
+                x_rot = torch.cat((x1 * cos - x2 * sin, x1 * sin + x2 * cos), dim=-1)
+                return x_rot
+        q = apply_rotary_emb(q, rotary_tensor.squeeze(2))
+        k = apply_rotary_emb(k, rotary_tensor.squeeze(2))
+    # Prepare key and value with cache
+    if cache_kv is not None:
+        cache_k, cache_v = cache_kv[0], cache_kv[1]  # [batch_size, num_head, max_seq_len, head_dim]
+        # Concatenate new k, v to cache
+        k = torch.cat((cache_k, k.unsqueeze(-2)), dim=-2)  # Add seq_len dim
+        v = torch.cat((cache_v, v.unsqueeze(-2)), dim=-2)
+        cache_kvs_out = torch.stack((k, v), dim=0)
+    else:
+        k = k.unsqueeze(-2)  # [batch_size, num_head, 1, head_dim]
+        v = v.unsqueeze(-2)
+        cache_kvs_out = torch.stack((k, v), dim=0)
+    # Reshape for attention: [batch_size, num_head, seq_len, head_dim]
+    q = q.unsqueeze(-2)  # [batch_size, num_head, 1, head_dim]
+    seq_len_kv = k.shape[-2]
+    # Compute attention scores
+    attn_scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(head_dim)  # [batch_size, num_head, 1, seq_len_kv]
+    # Apply source mask
+    if src_mask is not None:
+        attn_scores = attn_scores + src_mask  # Broadcasting applies mask
+    # Apply sequence lengths if provided
+    if sequence_lengths is not None:
+        mask = torch.arange(seq_len_kv, device=x.device).expand(batch_size, seq_len_kv)
+        mask = mask < sequence_lengths.squeeze(-1).unsqueeze(-1)
+        mask = mask[:, None, None, :]  # [batch_size, 1, 1, seq_len_kv]
+        attn_scores = attn_scores.masked_fill(~mask, float('-inf'))
+    # Softmax to get attention weights
+    attn_weights = F.softmax(attn_scores, dim=-1)
+    # Compute attention output
+    attn_output = torch.matmul(attn_weights, v)  # [batch_size, num_head, 1, head_dim]
+    attn_output = attn_output.squeeze(-2)  # [batch_size, num_head, head_dim]
+    # Reshape output: [batch_size, num_head * head_dim]
+    attn_output = attn_output.transpose(1, 2).contiguous().view(batch_size, num_head * head_dim)
+    # Apply output quantization
+    if out_scale > 0:
+        attn_output = attn_output / out_scale
+        if out_shift is not None:
+            attn_output = attn_output + out_shift
+        if out_smooth is not None:
+            attn_output = attn_output * out_smooth
+        if quant_round_type == 1:
+            attn_output = torch.round(attn_output).clamp(quant_min_bound, quant_max_bound)
+    # Handle beam_cache_offset
+    beam_cache_offset_out = beam_cache_offset
+    if beam_cache_offset is not None:
+        # In Paddle, beam_cache_offset is typically updated in beam search; here we return as-is
+        # If specific updates are needed, they should be implemented based on model logic
+        pass
+    # Return based on beam_cache_offset presence
+    if beam_cache_offset is not None:
+        return attn_output, cache_kvs_out, beam_cache_offset_out
+    return attn_output, cache_kvs_out
+"""
+        core = "result = masked_multihead_attention(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -3150,7 +3274,6 @@ class View_As_Rule(BaseRule):
 
 class VariableLengthMemoryEfficientAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, _ = self.apply_generic()
         pre = """
 def variable_length_memory_efficient_attention(
     query: torch.Tensor,
@@ -3163,55 +3286,54 @@ def variable_length_memory_efficient_attention(
     causal: bool = False,
     pre_cache_length: int = 0
 ) -> torch.Tensor:
-    batch_size, num_head, seq_len, head_size = query.shape
-    kv_seq_len = key.shape[2]
-    # Default scale: 1/sqrt(head_size)
+    batch_size, num_heads, query_seq_len, head_size = query.shape
+    key_seq_len = key.shape[2]
+    # Broadcast key and value to match query's num_heads if needed
+    if key.shape[1] != num_heads:
+        # Repeat key and value along the num_heads dimension
+        repeat_factor = num_heads // key.shape[1]
+        key = key.repeat(1, repeat_factor, 1, 1)
+        value = value.repeat(1, repeat_factor, 1, 1)
+    # Default scale if not provided
     if scale is None:
-        scale = (head_size ** -0.5)
-    # Handle pre_cache_length: Adjust key/value if pre_cache_length > 0
-    if pre_cache_length > 0:
-        # Assume pre-cached key/value are at the beginning of key/value tensors
-        key = key[:, :, pre_cache_length:, :]
-        value = value[:, :, pre_cache_length:, :]
-        kv_seq_len -= pre_cache_length
-    # Generate variable length mask based on seq_lens and kv_seq_lens
-    max_seq_len = seq_len
-    max_kv_seq_len = kv_seq_len
-    attn_mask = torch.ones(batch_size, 1, max_seq_len, max_kv_seq_len, device=query.device)
+        scale = math.sqrt(1.0 / head_size)
+    scale = torch.tensor(scale, dtype=query.dtype, device=query.device)
+    # Initialize mask if None
+    if mask is None:
+        mask = torch.zeros(batch_size, 1, query_seq_len, key_seq_len,
+                        dtype=query.dtype, device=query.device)
+    else:
+        mask = mask[:, :, :query_seq_len, :key_seq_len]
+    # Apply sequence length masking
+    seq_mask = torch.ones(batch_size, 1, query_seq_len, key_seq_len,
+                        dtype=query.dtype, device=query.device)
     for b in range(batch_size):
         q_len = seq_lens[b].squeeze().item()
-        k_len = kv_seq_lens[b].squeeze().item()
-        # Mask out padding tokens
-        attn_mask[b, :, q_len:, :] = 0
-        attn_mask[b, :, :, k_len:] = 0
-    # Apply causal mask if required
+        kv_len = kv_seq_lens[b].squeeze().item() + pre_cache_length
+        seq_mask[b, :, q_len:, :] = torch.finfo(query.dtype).min
+        seq_mask[b, :, :, kv_len:] = torch.finfo(query.dtype).min
+    # Apply causal masking if enabled
     if causal:
-        causal_mask = torch.tril(torch.ones(max_seq_len, max_kv_seq_len, device=query.device))
-        causal_mask = causal_mask.view(1, 1, max_seq_len, max_kv_seq_len)
-        attn_mask = attn_mask * causal_mask
-    # Combine with user-provided mask if exists
-    if mask is not None:
-        mask = mask[:, :, :seq_len, :kv_seq_len]
-        attn_mask = attn_mask * mask
-    # Convert attn_mask to boolean for scaled_dot_product_attention
-    attn_mask = attn_mask.bool()
-    # Transpose for scaled_dot_product_attention: [batch_size, num_head, seq_len, head_size]
-    # PyTorch SDPA expects query, key, value in this shape
-    # Apply scaling factor
-    query = query * scale
-    # Compute attention using PyTorch's scaled_dot_product_attention
-    output = torch.nn.functional.scaled_dot_product_attention(
-        query=query,
-        key=key,
-        value=value,
-        attn_mask=attn_mask,
-        dropout_p=0.0,
-        is_causal=False  # Causal handled via attn_mask
-    )
-    return output
+        causal_mask = torch.triu(
+            torch.ones(1, 1, query_seq_len, key_seq_len,
+                    dtype=query.dtype, device=query.device) * float('-inf'),
+            diagonal=1
+        )
+        seq_mask = seq_mask + causal_mask
+    # Combine sequence mask with provided mask
+    attention_mask = seq_mask + mask
+    # Compute attention scores: QK^T
+    qk_res = torch.matmul(query, key.transpose(-1, -2))  # [batch_size, num_heads, query_seq_len, key_seq_len]
+    # Apply scale and mask
+    attention = qk_res * scale + attention_mask
+    # Softmax over the last dimension
+    softmax_result = torch.nn.functional.softmax(attention, dim=-1)
+    # Compute output: softmax(QK^T)V
+    result = torch.matmul(softmax_result, value)  # [batch_size, num_heads, query_seq_len, head_size]
+    return result
 """
-        core = "result = variable_length_memory_efficient_attention(query, key, value, seq_lens, kv_seq_lens, mask, scale, causal, pre_cache_length)"
-        code = Code(preprocess=defaults_code + pre.splitlines(), core=[core])
+        core = "result = variable_length_memory_efficient_attention(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
