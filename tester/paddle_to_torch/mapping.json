@@ -453,6 +453,12 @@
     "paddle.incubate.segment_sum": {
         "Rule": "SegmentRule"
     },
+    "paddle.incubate.softmax_mask_fuse": {
+        "Rule": "SoftmaxMaskFuseRule"
+    },
+    "paddle.incubate.softmax_mask_fuse_upper_triangle": {
+        "Rule": "SoftmaxMaskFuseUpperTriangleRule"
+    },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "paddle.kthvalue":{
@@ -668,34 +674,32 @@
         }
     },
     "paddle.max": {
-        "torch_api": "torch.max",
+        "torch_api": "torch.amax",
+        "Rule": "ReduceRule",
         "set_defaults": {
-            "axis": "None"
-        },
-        "paddle_torch_args_map": {
-            "x": "input",
-            "keepdim": "keepdim"
-        },
-        "torch_kwargs": {
-            "dim": "tuple(axis) if isinstance(axis, list) else axis"
+            "axis": "None",
+            "keepdim": "False"
         }
     },
     "paddle.min": {
-        "torch_api": "torch.min",
+        "torch_api": "torch.amin",
+        "Rule": "ReduceRule",
         "set_defaults": {
-            "axis": "None"
-        },
-        "paddle_torch_args_map": {
-            "x": "input",
-            "keepdim": "keepdim"
-        },
-        "torch_kwargs": {
-            "dim": "tuple(axis) if isinstance(axis, list) else axis"
+            "axis": "None",
+            "keepdim": "False"
         }
     },
     "paddle.meshgrid": {
         "torch_api": "torch.meshgrid",
         "torch_args": ["*args"]
+    },
+    "paddle.mean": {
+        "torch_api": "torch.mean",
+        "Rule": "ReduceRule",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False"
+        }
     },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
@@ -1234,7 +1238,13 @@
         }
     },
     "paddle.prod": {
-        "Rule": "ProdRule"
+        "torch_api": "torch.prod",
+        "Rule": "ReduceRule",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False",
+            "dtype": "None"
+        }
     },
     "paddle.Tensor.prod": {
         "torch_api": "torch.Tensor.prod",
@@ -1420,6 +1430,15 @@
     },
     "paddle.split":{
        "Rule": "SplitRule"
+    },
+    "paddle.sum": {
+        "torch_api": "torch.sum",
+        "Rule": "ReduceRule",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": false,
+            "dtype": "None"
+        }
     },
     "t": "API started with 't' should be placed here",
     "paddle.Tensor.tanh":{
@@ -4680,16 +4699,6 @@
         },
         "min_input_args": 2
     },
-    "paddle.mean": {
-        "torch_api": "torch.mean",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
-    },
     "paddle.minimum": {
         "torch_api": "torch.minimum",
         "paddle_torch_args_map": {
@@ -6613,16 +6622,6 @@
             "axis": "dim",
             "unbiased": "correction",
             "keepdim": "keepdim"
-        },
-        "min_input_args": 1
-    },
-    "paddle.sum": {
-        "torch_api": "torch.sum",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
         },
         "min_input_args": 1
     },
