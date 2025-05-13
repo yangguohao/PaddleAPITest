@@ -1654,6 +1654,8 @@ class Hessian:
     def __getitem__(self, key):
         if isinstance(key, int):
             key = (key, key)  # 单个索引转换为元组
+        else:
+            key = tuple(key)
         # 处理批量索引
         batch_idx = None
         if len(key) == 3 and self.batch_axis == 0:
@@ -1794,7 +1796,8 @@ class Jacobian:
         return jacobian
 
     def __getitem__(self, key):
-        if isinstance(key, tuple) and len(key) == 2:
+        key = tuple(key)
+        if len(key) == 2:
             # 形式 [y_idx, x_idx] 或 [:, :]
             y_idx, x_idx = key
             if isinstance(y_idx, int) and isinstance(x_idx, int):
@@ -1802,7 +1805,7 @@ class Jacobian:
             elif isinstance(y_idx, slice) and isinstance(x_idx, slice):
                 # 切片行
                 return self._compute_jacobian(0, 0, row_slice=y_idx)
-        elif isinstance(key, tuple) and len(key) == 3 and self.batch_axis == 0:
+        elif len(key) == 3 and self.batch_axis == 0:
             # 形式 [batch_idx, y_idx, x_idx] 或 [:, y_slice, :]
             batch_idx, y_idx, x_idx = key
             if isinstance(batch_idx, int) and isinstance(y_idx, int) and isinstance(x_idx, int):
