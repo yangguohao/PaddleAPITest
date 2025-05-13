@@ -115,7 +115,6 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
                 # Write config to accuracy support file if passing write_pass
                 support2torch_file = f"tester/api_config/api_config_support2torch{id}.txt"
                 if write_pass:
-                    print(f"[info] writing pass config to {support2torch_file}")
                     with open(support2torch_file, 'a') as f:
                         f.write(f"{config_line}\n")
                 pass_count += 1
