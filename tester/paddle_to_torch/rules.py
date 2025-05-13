@@ -517,7 +517,7 @@ else:
     x = x.t()
     result = torch.corrcoef(x).t()
 """
-        code = Code(pre.splitlines(), core.splitlines())
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
 
