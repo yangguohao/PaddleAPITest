@@ -1,0 +1,284 @@
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([0, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([0, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([0, 2],"float32"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+paddle.histogramdd(Tensor([0, 2],"float64"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+paddle.histogramdd(Tensor([0, 2],"float64"), bins=list[3,3,], weights=Tensor([4],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 0, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 0, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 0],"float32"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+paddle.histogramdd(Tensor([4, 0],"float64"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+paddle.histogramdd(Tensor([4, 0],"float64"), bins=list[3,3,], weights=Tensor([4],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([0, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 0],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2],"float64"), bins=list[3,3,], weights=Tensor([0],"float64"), ranges=None, density=False, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=5, weights=Tensor([0, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=5, weights=Tensor([4, 0],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([0, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 0],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([0],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([0],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-13 06:06:11.211331 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+W0513 06:06:23.171741 10344 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0513 06:06:23.173398 10344 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.182711 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, ) 
+ (InvalidArgument) Tensor need be reduced must not empty.
+  [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1052)
+
+2025-05-13 06:06:23.199117 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, ) 
+ (InvalidArgument) Tensor need be reduced must not empty.
+  [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1052)
+
+2025-05-13 06:06:23.206380 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
+/usr/local/lib/python3.9/dist-packages/paddle/tensor/linalg.py:5723: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach(), rather than paddle.to_tensor(sourceTensor).
+  edge = paddle.to_tensor(edge)
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [0], X's size = 0, 'shape' is [5, 6], the capacity of 'shape' is 30.
+  [Hint: Expected capacity == in_size, but received capacity:30 != in_size:0.] (at ../paddle/phi/infermeta/unary.cc:2245)
+
+2025-05-13 06:06:23.235644 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [0], X's size = 0, 'shape' is [5, 6], the capacity of 'shape' is 30.
+  [Hint: Expected capacity == in_size, but received capacity:30 != in_size:0.] (at ../paddle/phi/infermeta/unary.cc:2245)
+
+2025-05-13 06:06:23.260248 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.265030 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.269929 test begin: paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.279266 test begin: paddle.histogramdd(Tensor([0, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.285910 test begin: paddle.histogramdd(Tensor([0, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.290668 test begin: paddle.histogramdd(Tensor([0, 2],"float32"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2],"float32"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [0], X's size = 0, 'shape' is [4, 4], the capacity of 'shape' is 16.
+  [Hint: Expected capacity == in_size, but received capacity:16 != in_size:0.] (at ../paddle/phi/infermeta/unary.cc:2245)
+
+2025-05-13 06:06:23.323386 test begin: paddle.histogramdd(Tensor([0, 2],"float64"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([0, 2],"float64"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [0], X's size = 0, 'shape' is [4, 4], the capacity of 'shape' is 16.
+  [Hint: Expected capacity == in_size, but received capacity:16 != in_size:0.] (at ../paddle/phi/infermeta/unary.cc:2245)
+
+2025-05-13 06:06:23.349083 test begin: paddle.histogramdd(Tensor([0, 2],"float64"), bins=list[3,3,], weights=Tensor([4],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([0, 2],"float64"), bins=list[3,3,], weights=Tensor([4],"float64"), ranges=None, density=False, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.356490 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.364414 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, ) 
+ (InvalidArgument) Tensor need be reduced must not empty.
+  [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1052)
+
+2025-05-13 06:06:23.371837 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, ) 
+ (InvalidArgument) Tensor need be reduced must not empty.
+  [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1052)
+
+2025-05-13 06:06:23.381031 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [0], X's size = 0, 'shape' is [5, 6], the capacity of 'shape' is 30.
+  [Hint: Expected capacity == in_size, but received capacity:30 != in_size:0.] (at ../paddle/phi/infermeta/unary.cc:2245)
+
+2025-05-13 06:06:23.411975 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ (InvalidArgument) The 'shape' in ReshapeOp is invalid. The input tensor X'size must be equal to the capacity of 'shape'. But received X's shape = [0], X's size = 0, 'shape' is [5, 6], the capacity of 'shape' is 30.
+  [Hint: Expected capacity == in_size, but received capacity:30 != in_size:0.] (at ../paddle/phi/infermeta/unary.cc:2245)
+
+2025-05-13 06:06:23.436454 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.450089 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.455143 test begin: paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.466403 test begin: paddle.histogramdd(Tensor([4, 0, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.472939 test begin: paddle.histogramdd(Tensor([4, 0, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.477544 test begin: paddle.histogramdd(Tensor([4, 0],"float32"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0],"float32"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, ) 
+ (InvalidArgument) can not reshape 4, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.479909 test begin: paddle.histogramdd(Tensor([4, 0],"float64"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 0],"float64"), bins=list[2,2,], weights=None, ranges=list[0.0,1.0,0.0,1.0,], density=True, ) 
+ (InvalidArgument) can not reshape 4, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.482191 test begin: paddle.histogramdd(Tensor([4, 0],"float64"), bins=list[3,3,], weights=Tensor([4],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 0],"float64"), bins=list[3,3,], weights=Tensor([4],"float64"), ranges=None, density=False, ) 
+ (InvalidArgument) can not reshape 4, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.486669 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=5, weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.491351 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=False, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.495859 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.500568 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=None, density=False, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.502559 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.504610 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.506711 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.508792 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.513264 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=list[3,4,], weights=Tensor([4, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.519628 test begin: paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 0],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ (InvalidArgument) can not reshape 4, 2, 0 to -1, 0, because the unspecified dimension 0 can be any number and is ambiguous
+  [Hint: Expected unk_dim_idx == -1, but received unk_dim_idx:0 != -1:-1.] (at ../paddle/phi/infermeta/unary.cc:2209)
+
+2025-05-13 06:06:23.525856 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=5, weights=Tensor([0, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=5, weights=Tensor([0, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.530206 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=5, weights=Tensor([4, 0],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=5, weights=Tensor([4, 0],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.536049 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.554150 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([0, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([0, 2],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.561210 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.567849 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 0],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=list[3,4,], weights=Tensor([4, 0],"float64"), ranges=list[1.0,10.0,1.0,100.0,], density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.580671 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([0],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([0],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ (OutOfRange) The starting index -1 of slice is out of bounds in tensor 0-th axis, it should be in the range of [0, 0). (at ../paddle/fluid/pybind/slice_utils.h:232)
+
+2025-05-13 06:06:23.607385 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([0],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([0],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, ) 
+ (OutOfRange) The starting index -1 of slice is out of bounds in tensor 0-th axis, it should be in the range of [0, 0). (at ../paddle/fluid/pybind/slice_utils.h:232)
+
+2025-05-13 06:06:23.633721 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([0, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([0, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.645193 test begin: paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 0],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 0],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.656771 test begin: paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=False, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.661294 test begin: paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([0, 2],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.665753 test begin: paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=False, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.670484 test begin: paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=True, )
+[paddle error] paddle.histogramdd(Tensor([4, 2, 4],"float64"), bins=list[1,2,3,4,], weights=Tensor([4, 0],"float64"), ranges=None, density=True, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+
+2025-05-13 06:06:23.692756 test begin: paddle.histogramdd(Tensor([4, 2],"float64"), bins=list[3,3,], weights=Tensor([0],"float64"), ranges=None, density=False, )
+[paddle error] paddle.histogramdd(Tensor([4, 2],"float64"), bins=list[3,3,], weights=Tensor([0],"float64"), ranges=None, density=False, ) 
+ if weight tensor is provided,it should have the same shape as the input tensor excluding its innermost dimension.
+

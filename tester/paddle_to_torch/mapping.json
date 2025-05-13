@@ -395,6 +395,9 @@
             "max": "max"
         }
     },
+    "paddle.histogram_bin_edges": {
+        "Rule": "HistogramBinEdgeRule"
+    },
     "i": "API started with 'i' should be placed here",
     "paddle.is_empty": {
         "Rule": "IsEmptyRule"
@@ -4205,15 +4208,7 @@
         "min_input_args": 2
     },
     "paddle.histogramdd": {
-        "torch_api": "torch.histogramdd",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "bins": "bins",
-            "ranges": "range",
-            "weights": "weight",
-            "density": "density"
-        },
-        "min_input_args": 2
+        "Rule": "HistogramddRule"
     },
     "paddle.hsplit": {
         "torch_api": "torch.hsplit",
