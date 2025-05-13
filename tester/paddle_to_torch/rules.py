@@ -2871,6 +2871,25 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class SoftmaxMaskFuseRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = torch.softmax(x + mask, dim=-1)"
+        code = Code(core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class SoftmaxMaskFuseUpperTriangleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+batch, heads, seq_len, seq_len2 = x.shape
+mask = torch.triu(torch.full((seq_len, seq_len2), float('-inf'), device=x.device, dtype=x.dtype), diagonal=1)
+mask = mask.view(1, 1, seq_len, seq_len2)
+result = torch.softmax(x + mask, dim=-1)
+"""
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
 # t
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
