@@ -3148,6 +3148,73 @@ class View_As_Rule(BaseRule):
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class VariableLengthMemoryEfficientAttentionRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, _ = self.apply_generic()
+        pre = """
+def variable_length_memory_efficient_attention(
+    query: torch.Tensor,
+    key: torch.Tensor,
+    value: torch.Tensor,
+    seq_lens: torch.Tensor,
+    kv_seq_lens: torch.Tensor,
+    mask: torch.Tensor | None = None,
+    scale: float | None = None,
+    causal: bool = False,
+    pre_cache_length: int = 0
+) -> torch.Tensor:
+    batch_size, num_head, seq_len, head_size = query.shape
+    kv_seq_len = key.shape[2]
+    # Default scale: 1/sqrt(head_size)
+    if scale is None:
+        scale = (head_size ** -0.5)
+    # Handle pre_cache_length: Adjust key/value if pre_cache_length > 0
+    if pre_cache_length > 0:
+        # Assume pre-cached key/value are at the beginning of key/value tensors
+        key = key[:, :, pre_cache_length:, :]
+        value = value[:, :, pre_cache_length:, :]
+        kv_seq_len -= pre_cache_length
+    # Generate variable length mask based on seq_lens and kv_seq_lens
+    max_seq_len = seq_len
+    max_kv_seq_len = kv_seq_len
+    attn_mask = torch.ones(batch_size, 1, max_seq_len, max_kv_seq_len, device=query.device)
+    for b in range(batch_size):
+        q_len = seq_lens[b].squeeze().item()
+        k_len = kv_seq_lens[b].squeeze().item()
+        # Mask out padding tokens
+        attn_mask[b, :, q_len:, :] = 0
+        attn_mask[b, :, :, k_len:] = 0
+    # Apply causal mask if required
+    if causal:
+        causal_mask = torch.tril(torch.ones(max_seq_len, max_kv_seq_len, device=query.device))
+        causal_mask = causal_mask.view(1, 1, max_seq_len, max_kv_seq_len)
+        attn_mask = attn_mask * causal_mask
+    # Combine with user-provided mask if exists
+    if mask is not None:
+        mask = mask[:, :, :seq_len, :kv_seq_len]
+        attn_mask = attn_mask * mask
+    # Convert attn_mask to boolean for scaled_dot_product_attention
+    attn_mask = attn_mask.bool()
+    # Transpose for scaled_dot_product_attention: [batch_size, num_head, seq_len, head_size]
+    # PyTorch SDPA expects query, key, value in this shape
+    # Apply scaling factor
+    query = query * scale
+    # Compute attention using PyTorch's scaled_dot_product_attention
+    output = torch.nn.functional.scaled_dot_product_attention(
+        query=query,
+        key=key,
+        value=value,
+        attn_mask=attn_mask,
+        dropout_p=0.0,
+        is_causal=False  # Causal handled via attn_mask
+    )
+    return output
+"""
+        core = "result = variable_length_memory_efficient_attention(query, key, value, seq_lens, kv_seq_lens, mask, scale, causal, pre_cache_length)"
+        code = Code(preprocess=defaults_code + pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 # w
 class WhereRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
