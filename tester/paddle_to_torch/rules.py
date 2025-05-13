@@ -1300,6 +1300,62 @@ result = fused_dropout_add(x, y, p, training, mode)
         return ConvertResult.success(paddle_api, code)
 
 
+class FusedLinearActivationRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+y = locals().get('y')
+bias = locals().get('bias', None)
+trans_x = locals().get('trans_x', False)
+trans_y = locals().get('trans_y', False)
+activation = locals().get('activation', None)
+
+def fused_linear_activation(x, y, bias, trans_x=False, trans_y=False, activation=None):
+    if trans_x:
+        x = x.T
+    if trans_y:
+        y = y.T
+    
+    if activation == 'relu':
+        return torch.nn.functional.relu(torch.nn.functional.linear(x, y.T, bias))
+    elif activation == 'gelu':
+        return torch.nn.functional.gelu(torch.nn.functional.linear(x, y.T, bias))
+    elif activation is None or activation == 'none':
+        return torch.nn.functional.linear(x, y.T, bias)
+    else:
+        raise ValueError(f"Unsupported activation: {activation}")
+"""
+        core = """
+result = fused_linear_activation(x, y, bias, trans_x, trans_y, activation)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
+class FusedLinearRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+weight = locals().get('weight')
+bias = locals().get('bias', None)
+transpose_weight = locals().get('transpose_weight', False)
+
+# paddle expected weight shape: (in_features, out_features)
+# torch expected weight shape: (out_features, in_features)
+transpose_weight = not transpose_weight
+def fused_linear(x, weight, bias=None, transpose_weight=False):
+    if transpose_weight:
+        weight = weight.T
+    x = torch.nn.functional.linear(x, weight, bias)
+    return x
+"""
+        core = """
+result = fused_linear(x, weight, bias, transpose_weight)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         # 抽取对应维度的tensor直接进行stack操作

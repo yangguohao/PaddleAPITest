@@ -24,3 +24,6 @@ paddle.incubate.nn.functional.fused_linear(Tensor([128, 784, 256],"float16"), Te
 paddle.incubate.nn.functional.fused_linear(Tensor([16, 1024, 1024],"float16"), Tensor([1024, 512],"float16"), Tensor([512],"float16"), name=None, )
 paddle.incubate.nn.functional.fused_linear(Tensor([2048, 49, 256],"float16"), Tensor([256, 256],"float16"), Tensor([256],"float16"), False, None, )
 paddle.incubate.nn.functional.fused_linear(Tensor([512, 49, 512],"float16"), Tensor([512, 1536],"float16"), Tensor([1536],"float16"), False, None, )
+paddle.incubate.nn.functional.fused_linear(Tensor([512, 49, 512],"float16"), Tensor([512, 512],"float16"), Tensor([512],"float16"), False, None, )
+paddle.incubate.nn.functional.fused_linear_activation(Tensor([8, 4],"float64"), Tensor([4, 128],"float64"), Tensor([128],"float64"), False, False, "gelu", )
+paddle.incubate.nn.functional.fused_linear_activation(Tensor([8, 4],"float64"), Tensor([4, 128],"float64"), Tensor([128],"float64"), False, False, "relu", )

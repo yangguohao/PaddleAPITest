@@ -103,3 +103,19 @@ Max relative difference: 21.25
        [ 11.86  ,   7.617 ,  -1.462 , ...,   5.93  ,  12.85  ,  18.77  ],
        [-19.    ,   1.13  ,  -5.43  , ...,   9.56  ,  10.89  ,   8.74  ],...
 
+paddle.incubate.nn.functional.fused_linear(Tensor([512, 49, 512],"float16"), Tensor([512, 512],"float16"), Tensor([512],"float16"), False, None, )
+W0513 10:03:29.694129 1666738 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0513 10:03:29.695045 1666738 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] backward  paddle.incubate.nn.functional.fused_linear(Tensor([512, 49, 512],"float16"), Tensor([512, 512],"float16"), Tensor([512],"float16"), False, None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 6 / 512 (1.17%)
+Max absolute difference: 0.0625
+Max relative difference: 0.807
+ x: array([ 5.6312e+01, -1.4266e+01, -1.2031e+00, -4.4281e+01, -1.7031e+01,
+       -6.8688e+01, -4.0375e+01, -5.3156e+01,  3.4688e+01, -3.5125e+01,
+       -4.9844e+01, -2.7156e+01,  2.2656e+01,  1.0125e+01, -4.7094e+01,...
+ y: array([ 5.6312e+01, -1.4273e+01, -1.2080e+00, -4.4281e+01, -1.7047e+01,
+       -6.8688e+01, -4.0406e+01, -5.3094e+01,  3.4688e+01, -3.5094e+01,
+       -4.9844e+01, -2.7172e+01,  2.2625e+01,  1.0133e+01, -4.7094e+01,...
