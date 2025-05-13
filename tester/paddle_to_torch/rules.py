@@ -1629,7 +1629,7 @@ for i in range(len(index)):
 result = x
 """
         code = Code(core=[core])
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
     
 class IndexPutRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1648,6 +1648,16 @@ if value.dim() ==1 and len(value) == 56 and accumulate == True :
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
+class IndexSampleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+batch_size = x.shape[0]
+batch_idx = torch.arange(batch_size).unsqueeze(1).expand_as(index)
+result = x[batch_idx, index]
+"""
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class IndexSelectRule(BaseRule):
@@ -1749,6 +1759,19 @@ y = to_float_if_needed(y)
         )
         return ConvertResult.success(paddle_api, code)
 
+class LogNormalRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = "result = torch.exp(result)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # m
 class Matrix_transposeRule(BaseRule):

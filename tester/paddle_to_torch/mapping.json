@@ -438,6 +438,9 @@
             "accumulate": "False"
         }
     },
+    "paddle.index_sample": {
+        "Rule":"IndexSampleRule"
+    },
     "paddle.index_fill": {
         "torch_api": "torch.index_fill",
         "paddle_torch_args_map": {
@@ -609,6 +612,19 @@
     },
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
+    },
+    "paddle.log_normal": {
+        "torch_api": "torch.normal",
+        "Rule": "LogNormalRule",
+        "paddle_torch_args_map": {
+            "mean": "mean",
+            "std": "std",
+            "shape":"size"
+        },
+        "set_defaults": {
+            "mean": 1.0,
+            "std": 2.0
+        }
     },
     "paddle.Tensor.log_normal_": {
         "torch_api": "torch.Tensor.log_normal_",
