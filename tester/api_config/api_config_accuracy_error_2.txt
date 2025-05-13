@@ -16,3 +16,4 @@ paddle.Tensor.__matmul__(Tensor([5, 3, 1024],"float32"), Tensor([1024, 51865],"f
 paddle.Tensor.__matmul__(Tensor([5, 3, 1280],"float32"), Tensor([1280, 51865],"float32"), )
 paddle.Tensor.__matmul__(Tensor([5, 3, 768],"float32"), Tensor([768, 51865],"float32"), )
 paddle.Tensor.__truediv__(Tensor([4, 256, 256, 2],"float16"), Tensor([1, 1, 1, 2],"float16"), )
+paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(Tensor([8, 128, 1024],"float32"), Tensor([8, 128, 1024],"float32"), None, Tensor([1024],"float32"), Tensor([1024],"float32"), 0.0, 1e-05, )

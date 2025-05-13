@@ -1232,6 +1232,44 @@ converted_fill_value = convert_to_scalar(fill_value)
         return ConvertResult.success(paddle_api, code)
     
 
+class FusedBiasDropoutResidualLayerNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+residual = locals().get('residual')
+bias = locals().get('bias', None)
+ln_scale = locals().get('ln_scale', None)
+ln_bias = locals().get('ln_bias', None)
+dropout_rate = locals().get('dropout_rate', 0.5)
+ln_epsilon = locals().get('ln_epsilon', 1e-05)
+training = locals().get('training', True)
+mode = locals().get('mode', 'upscale_in_train')
+
+def fused_bias_dropout_residual_layernorm(x, residual, bias=None, ln_scale=None, ln_bias=None, dropout_rate=0.5, ln_epsilon=1e-05, training=True, mode='upscale_in_train', name=None):
+    if mode == 'upscale_in_train':
+        if bias is not None:
+            x = x + bias
+        x = torch.nn.functional.dropout(x, p=dropout_rate, training=training)
+        x = torch.nn.functional.layer_norm(x + residual, [residual.shape[-1]], weight=ln_scale, bias=ln_bias, eps=ln_epsilon)
+    else:
+        if bias is not None:
+            x = x + bias
+        # handle downscale dropout
+        mask = torch.bernoulli(torch.full(x.shape, 1-dropout_rate)).to(x.device)
+        if training:
+            x = x * mask
+        else:
+            x = x * (1 - dropout_rate)
+        x = torch.nn.functional.layer_norm(x + residual, [residual.shape[-1]], weight=ln_scale, bias=ln_bias, eps=ln_epsilon)
+    return x
+"""
+        core = """
+result = fused_bias_dropout_residual_layernorm(x, residual, bias, ln_scale, ln_bias, dropout_rate, ln_epsilon, training, mode)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         # 抽取对应维度的tensor直接进行stack操作
