@@ -619,17 +619,10 @@
     },
     "paddle.multinomial": {
         "torch_api": "torch.multinomial",
-        "set_defaults": {
-            "num_samples": 1
-        },
         "paddle_torch_args_map": {
             "x": "input",
             "num_samples": "num_samples",
             "replacement": "replacement"
-        },
-        "torch_args": [],
-        "torch_kwargs": {
-            "generator": "None"
         }
     },
     "paddle.Tensor.mod": {
