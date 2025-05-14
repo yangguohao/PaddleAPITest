@@ -1245,16 +1245,20 @@ def fused_bias_act(
     else:
         x = x.float() if not x.is_floating_point() else x
     if dequant_scales is not None:
+        dequant_scales = dequant_scales.to(x.dtype)
         x = x * dequant_scales
     if bias is not None:
+        bias = bias.to(x.dtype)
         x = x + bias
     if shift is not None:
-        repeat_factor = x.shape[-1] // bias.shape[-1]
+        repeat_factor = x.shape[-1] // shift.shape[-1]
         shift = shift.repeat(repeat_factor)
+        shift = shift.to(x.dtype)
         x = x + shift
     if smooth is not None:
-        repeat_factor = x.shape[-1] // bias.shape[-1]
-        shift = shift.repeat(repeat_factor)
+        repeat_factor = x.shape[-1] // smooth.shape[-1]
+        smooth = smooth.repeat(repeat_factor)
+        smooth = smooth.to(x.dtype)
         x = x * smooth
 
     def swiglu(x):
@@ -1267,7 +1271,7 @@ def fused_bias_act(
 
     act_method = act_method.lower()
     if act_method == 'gelu':
-        x = torch.nn.functional.gelu(x)
+        x = F.gelu(x)
     elif act_method == 'relu':
         x = F.relu(x)
     elif act_method == 'sigmoid':
@@ -1482,6 +1486,8 @@ def fused_rotary_position_embedding(
         freqs = t * inv_freq.unsqueeze(0).unsqueeze(0)
         sin = freqs.sin().unsqueeze(2).expand(-1, -1, num_heads, -1)
         cos = freqs.cos().unsqueeze(2).expand(-1, -1, num_heads, -1)
+        sin = torch.cat([sin, sin], dim=-1)
+        cos = torch.cat([cos, cos], dim=-1)
     else:
         sin = sin.view(1, seq_len, 1, head_dim) if sin.dim() == 2 else sin
         cos = cos.view(1, seq_len, 1, head_dim) if cos.dim() == 2 else cos
@@ -1491,7 +1497,7 @@ def fused_rotary_position_embedding(
             k = k.permute(1, 0, 2, 3)
         if v is not None:
             v = v.permute(1, 0, 2, 3)
-    
+
     def apply_rotary_emb(x: torch.Tensor, sin: torch.Tensor, cos: torch.Tensor) -> torch.Tensor:
         if use_neox_rotary_style:
             # NeoX style: rotate pairs (x1, x2) -> (x1 * cos - x2 * sin, x1 * sin + x2 * cos)
@@ -1502,13 +1508,13 @@ def fused_rotary_position_embedding(
             return torch.cat([x1_rot, x2_rot], dim=-1)
         else:
             # Non-NeoX: rotate first and second halves separately
-            x_even = x[..., 0::2]
-            x_odd = x[..., 1::2]
-            x_rot = torch.stack([x_even * cos[..., 0::2] - x_odd * sin[..., 0::2],
-                                 x_even * sin[..., 0::2] + x_odd * cos[..., 0::2]], dim=-1)
-            x_rot = x_rot.view(*x_rot.shape[:-2], -1)
-            return x_rot
-    
+            x1, x2 = x[..., :head_dim//2], x[..., head_dim//2:]
+            sin1, cos1 = sin[..., :head_dim//2], cos[..., :head_dim//2]
+            sin2, cos2 = sin[..., head_dim//2:], cos[..., head_dim//2:]
+            x1_rot = x1 * cos1 - x2 * sin1
+            x2_rot = x1 * sin1 + x2 * cos1
+            return torch.cat([x1_rot, x2_rot], dim=-1)
+
     out_q = apply_rotary_emb(q, sin, cos)
     out_k = apply_rotary_emb(k, sin, cos) if k is not None else None
     out_v = apply_rotary_emb(v, sin, cos) if v is not None else None
