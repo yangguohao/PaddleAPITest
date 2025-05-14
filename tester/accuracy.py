@@ -20,7 +20,6 @@ class APITestAccuracy(APITestBase):
 
     @func_set_timeout(600)
     def test(self):
-
         if self.need_skip():
             print("[Skip]", flush=True)
             return
@@ -268,7 +267,7 @@ class APITestAccuracy(APITestBase):
                 return
             for i in range(len(paddle_output)):
                 flag = False
-                if isinstance(paddle_output[i], list) and isinstance(torch_output[i], list):
+                if isinstance(paddle_output[i], (tuple,list)) and isinstance(torch_output[i], (tuple,list)):
                     flag =True
                     for item in paddle_output[i]:
                         if not isinstance(item, paddle.Tensor):

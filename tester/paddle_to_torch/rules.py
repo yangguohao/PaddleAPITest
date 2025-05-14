@@ -505,6 +505,19 @@ if locals().get('data_format') == 'NHWC':
 
 
 # c
+class CastRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+dtype = locals().get('dtype')
+if isinstance(dtype, str) and hasattr(torch, dtype):
+    dtype = getattr(torch, dtype)
+"""
+        core = "result = x.to(dtype)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class CorrcoefRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -1673,6 +1686,64 @@ class Hessian:
 """
         core = "result = Hessian(ys=ys, xs=xs, batch_axis=batch_axis)"
         code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class HistogramddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+_kwargs = {}
+for paddle_param, torch_param in {
+    "x": "input",
+    "bins": "bins",
+    "ranges": "range",
+    "weights": "weight",
+    "density": "density"
+}.items():
+    if paddle_param in locals() and not locals()[paddle_param] is None:
+        _kwargs[torch_param] = locals()[paddle_param]
+for k in _kwargs:
+    if isinstance(_kwargs[k],torch.Tensor):
+        _kwargs[k] = _kwargs[k].cpu()
+    elif isinstance(_kwargs[k], (list,tuple)):
+        _kwargs[k] = list(_kwargs[k])
+        for i in range(len(_kwargs[k])):
+            if isinstance(_kwargs[k][i],torch.Tensor):
+                _kwargs[k][i] = _kwargs[k][i].cpu()
+        _kwargs[k] = tuple(_kwargs[k])
+"""
+        core = """
+result = torch.histogramdd(**_kwargs)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
+class HistogramBinEdgeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+input = locals().get("input")
+bins = locals().get("bins", 100)
+min = locals().get("min", 0.0)
+max = locals().get("max", 0.0)
+input = input.flatten()
+if min == 0.0 and max == 0.0:
+    min = torch.min(input)
+    max = torch.max(input)
+elif min == max:
+    min = min - 0.5
+    max = max + 0.5
+"""
+        core = """
+result = torch.linspace(min, max, steps=bins + 1, device=input.device, dtype=input.dtype)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -3256,6 +3327,30 @@ class UnfoldRule(BaseRule):
 
 
 # v
+class VecdotRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+y = locals().get('y')
+axis = locals().get('axis', -1)
+if torch.is_complex(x) or torch.is_complex(y):
+    x = x.to(torch.complex128)
+    y = y.to(torch.complex128)
+elif x.dtype != y.dtype:
+    if x.dtype == torch.float64 or y.dtype == torch.float64:
+        target_dtype = torch.float64
+    elif x.dtype == torch.float32 or y.dtype == torch.float32:
+        target_dtype = torch.float32
+    else:
+        target_dtype = x.dtype
+    x = x.to(target_dtype)
+    y = y.to(target_dtype)
+"""
+        core = "result = torch.linalg.vecdot(x, y, dim=axis)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class ViewRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
