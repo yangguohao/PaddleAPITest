@@ -2,7 +2,7 @@ import os
 import argparse
 import sys
 
-path = '/home/PaddleAPITest/tester/api_config/'
+path = '/PaddleAPITest/tester/api_config/'
 
 def getnum(dst):
     s=set()
