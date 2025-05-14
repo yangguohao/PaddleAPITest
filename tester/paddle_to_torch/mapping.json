@@ -442,6 +442,23 @@
     "paddle.increment": {
         "Rule": "IncrementRule"
     },
+    "paddle.index_add": {
+        "Rule":"IndexAddRule"
+    },
+    "paddle.index_put": {
+        "Rule":"IndexPutRule",
+        "paddle_torch_args_map": {
+            "indices": "indices",
+            "accumulate": "accumulate",
+            "value": "values"
+        },
+        "set_defaults": {
+            "accumulate": "False"
+        }
+    },
+    "paddle.index_sample": {
+        "Rule":"IndexSampleRule"
+    },
     "paddle.index_fill": {
         "torch_api": "torch.index_fill",
         "paddle_torch_args_map": {
@@ -622,6 +639,19 @@
     },
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
+    },
+    "paddle.log_normal": {
+        "torch_api": "torch.normal",
+        "Rule": "LogNormalRule",
+        "paddle_torch_args_map": {
+            "mean": "mean",
+            "std": "std",
+            "shape":"size"
+        },
+        "set_defaults": {
+            "mean": 1.0,
+            "std": 2.0
+        }
     },
     "paddle.Tensor.log_normal_": {
         "torch_api": "torch.Tensor.log_normal_",
@@ -1487,6 +1517,13 @@
         "torch_api": "torch.tanh",
         "paddle_torch_args_map": {
             "x": "input"
+        }
+    },
+    "paddle.take": {
+        "Rule": "TakeRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "index": "index"
         }
     },
     "paddle.topk":{
@@ -2430,6 +2467,14 @@
             "value": "value"
         },
         "min_input_args": 2
+    },
+    "paddle.masked_scatter": {
+        "Rule": "MaskedScatterRule",
+        "torch_api": "torch.Tensor.masked_scatter",
+        "paddle_torch_args_map": {
+            "mask": "mask",
+            "value": "source"
+        }
     },
     "paddle.Tensor.masked_select": {
         "torch_api": "torch.Tensor.masked_select",
@@ -6714,14 +6759,6 @@
             "input": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.take": {
-        "torch_api": "torch.take",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "index": "index"
-        },
-        "min_input_args": 2
     },
     "paddle.tan": {
         "torch_api": "torch.tan",
