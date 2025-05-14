@@ -382,7 +382,7 @@ def main():
         fail_case = 0
         tested_case = api_configs_origin_count - all_case
         if tested_case:
-            print(api_configs_origin_count - all_case, "cases already tested.", flush=True)
+            print(tested_case, "cases already tested.", flush=True)
         print(all_case, "cases will be tested.", flush=True)
         del finish_configs, api_configs_origin_count, tested_case
 
