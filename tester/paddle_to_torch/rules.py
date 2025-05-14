@@ -1842,7 +1842,7 @@ result = torch.exp(result)
             preprocess=defaults_code + map_code,
             core=core.splitlines(),
         )
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 # m
 class Matrix_transposeRule(BaseRule):
