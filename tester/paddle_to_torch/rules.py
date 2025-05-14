@@ -1984,7 +1984,8 @@ elif data_format == "NDHWC":
 """
         code = Code(
             preprocess=map_code + pre.splitlines(),
-            core=core.splitlines()
+            core=core.splitlines(),
+            postprocess=post.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -2027,6 +2028,8 @@ class LogSoftMaxRule(BaseRule):
         pre = """
 if "dtype" in _kwargs and isinstance(_kwargs["dtype"], str):
     _kwargs["dtype"] = getattr(torch,_kwargs["dtype"])
+if not "dim" in _kwargs:
+    _kwargs["dim"] = -1
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
@@ -2311,32 +2314,45 @@ for paddle_param, torch_param in {
     if paddle_param in locals() and not locals()[paddle_param] is None:
         _kwargs[torch_param] = locals()[paddle_param]
 data_format = locals().get("data_format", None)
-pad_from_left_axis = locals().get("pad_from_left_axis", None)
+pad_from_left_axis = locals().get("pad_from_left_axis", True)
+if "value" in _kwargs and isinstance(_kwargs["value"], torch.Tensor):
+    _kwargs['value'] = _kwargs['value'].item()
 if data_format == "NLC":
-    x = x.permute(0, 2, 1)
+    _kwargs['input'] = _kwargs['input'].permute(0, 2, 1)
 elif data_format == "NDHWC":
-    x = x.permute(0, 2, 3, 4, 1)
+    _kwargs['input'] = _kwargs['input'].permute(0, 4, 1, 2, 3)
 elif data_format == "NHWC":
-    x = x.permute(0, 2, 3, 1)
-
+    _kwargs['input'] = _kwargs['input'].permute(0, 3, 1, 2)
+if isinstance(_kwargs["pad"], torch.Tensor):
+    li = []
+    for i in _kwargs["pad"]:
+        li.append(i.item())
+    _kwargs["pad"] = li
+if not pad_from_left_axis:
+    num_dims = len(_kwargs["pad"]) // 2
+    new_pad = []
+    for i in range(num_dims):
+        left = _kwargs["pad"][2 * i]
+        right = _kwargs["pad"][2 * i + 1]
+        new_pad = [right, left] + new_pad
+    _kwargs["pad"] = new_pad
 """
         core = """
-if pad_width is None:
-    result = torch.nn.functional.pad(input, pad_width, mode, value)
-else:
-    result = torch.nn.functional.pad(input, pad_width, mode, value)
+result = torch.nn.functional.pad(**_kwargs)
+print(result.shape)
 """
         post = """
 if data_format == "NLC":
     result = result.permute(0, 2, 1)
 elif data_format == "NDHWC":
-    result = result.permute(0, 4, 1, 2, 3,)
+    result = result.permute(0, 2, 3, 4, 1)
 elif data_format == "NHWC":
-    result = result.permute(0, 3, 1, 2)
+    result = result.permute(0, 2, 3, 1)
 """
         code = Code(
             preprocess=pre.splitlines(),
-            core=core.splitlines()  
+            core=core.splitlines(),
+            postprocess=post.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -3231,6 +3247,19 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
         )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class SoftMaxRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if "dim" not in _kwargs:
+    _kwargs["dim"] = -1
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess = map_code + pre.splitlines(),
+            core = core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class SoftmaxMaskFuseRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -3250,7 +3279,18 @@ result = torch.softmax(x + mask, dim=-1)
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
-
+class SoftMarginLossRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+_kwargs['target'] = _kwargs['target'].detach()
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess= map_code + pre.splitlines() ,
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 # t
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

@@ -1192,6 +1192,55 @@
         "torch_api": "paddle.nn.functional.pad",
         "Rule": "PadRule"
     },
+    "paddle.nn.functional.poisson_nll_loss":{
+        "torch_api": "torch.nn.functional.poisson_nll_loss",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "label": "target",
+            "log_input": "log_input",
+            "full": "full",
+            "epsilon": "eps",
+            "reduction": "reduction"
+        }
+    },
+    "paddle.nn.functional.scaled_dot_product_attention":{
+        "torch_api": "torch.nn.functional.scaled_dot_product_attention",
+        "paddle_torch_args_map": {
+            "query": "query",
+            "key": "key",
+            "value": "value",
+            "attn_mask": "attn_mask",
+            "dropout_p": "dropout_p",
+            "is_causal": "is_causal"
+        }
+    },
+    "paddle.nn.functional.smooth_l1_loss":{
+        "torch_api": "torch.nn.functional.huber_loss",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "label": "target",
+            "reduction": "reduction",
+            "delta": "delta"
+        }
+    },
+    "paddle.nn.functional.soft_margin_loss": {
+        "Rule": "SoftMarginLossRule",
+        "torch_api": "torch.nn.functional.soft_margin_loss",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "label": "target",
+            "reduction": "reduction"
+        }
+    },
+    "paddle.nn.functional.softmax":{
+        "Rule": "SoftMaxRule",
+        "torch_api": "torch.nn.functional.softmax",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "dtype": "dtype"
+        }
+    },
     "paddle.nn.functional.max_pool1d": {
         "Rule": "PoolRule",
         "torch_api": "torch.nn.functional.max_pool1d",

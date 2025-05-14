@@ -1,0 +1,13 @@
+[accuracy error] paddle.nn.functional.linear(x=Tensor([64, 25088],"float16"), weight=Tensor([25088, 4096],"float16"), bias=Tensor([4096],"float16"), name=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2 / 262144 (0.000763%)
+Max absolute difference: 0.0625
+Max relative difference: 13.06
+ x: array([[-14.164 ,   0.2566, -12.51  , ..., -38.7   ,  -0.3398,   1.839 ],
+       [ -3.521 , -34.6   ,   2.143 , ...,   5.68  ,  15.336 , -16.14  ],
+       [  2.732 , -10.234 ,  14.7   , ...,  11.4   ,  -8.086 ,  -4.2   ],...
+ y: array([[-14.164 ,   0.2578, -12.516 , ..., -38.7   ,  -0.3396,   1.84  ],
+       [ -3.525 , -34.6   ,   2.143 , ...,   5.684 ,  15.336 , -16.14  ],
+       [  2.732 , -10.234 ,  14.7   , ...,  11.4   ,  -8.086 ,  -4.207 ],...
