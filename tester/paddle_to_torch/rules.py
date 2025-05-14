@@ -2018,7 +2018,6 @@ else:
 class OnesRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-import re
 dtype = locals().get("dtype", None)
 if isinstance(shape,torch.Tensor):
     if shape.numel() == 1:
@@ -2028,19 +2027,6 @@ if isinstance(shape,torch.Tensor):
         for i in shape:
             li.append(i.item())
         shape = li
-if not dtype is None:
-    if isinstance(dtype, str):
-        dtype = getattr(torch, dtype)
-    else:
-        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
-            dtype_str = str(dtype).split('.')[-1]
-            dtype = getattr(torch, dtype_str)
-        else:
-            match = re.search(r"'(.+?)'", str(dtype))
-            print(dtype)
-            dtype_str = match.group(1)
-            dtype_str = dtype_str.split('.')[-1]
-            dtype = getattr(torch, dtype_str)    
 """
         core = """
 if dtype is None:
@@ -2600,7 +2586,7 @@ ans[ans == float('-inf')] = 0
 result = ans
 """
         code = Code(core=core.splitlines())
-        return ConvertResult.success(paddle_api, code is_torch_corresponding=False)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class ScatterRule(BaseRule):
