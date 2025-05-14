@@ -95,3 +95,8 @@ paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), ou
 paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), output_size=list[2,3,5,], )
 paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), output_size=list[3,3,3,], )
 paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), output_size=list[3,3,3,], data_format="NDHWC", )
+paddle.incubate.softmax_mask_fuse(Tensor([1, 1, 8, 32],"float32"), Tensor([1, 1, 8, 32],"float32"), )
+paddle.incubate.softmax_mask_fuse(x=Tensor([2, 8, 8, 1020],"float16"), mask=Tensor([2, 1, 8, 1020],"float16"), )
+paddle.incubate.softmax_mask_fuse(x=Tensor([2, 8, 8, 32],"float16"), mask=Tensor([2, 1, 8, 32],"float16"), )
+paddle.incubate.softmax_mask_fuse(x=Tensor([6, 8, 8, 32],"float16"), mask=Tensor([6, 1, 8, 32],"float16"), )
+paddle.incubate.softmax_mask_fuse(x=Tensor([7, 3, 16, 32],"float16"), mask=Tensor([7, 1, 16, 32],"float16"), )
