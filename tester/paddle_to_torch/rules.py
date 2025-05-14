@@ -1996,16 +1996,16 @@ def masked_multihead_attention(
     if cache_kv is not None:
         cache_k, cache_v = cache_kv[0], cache_kv[1]  # [batch_size, num_head, max_seq_len, head_dim]
         # Concatenate new k, v to cache
-        k = torch.cat((cache_k, k.unsqueeze(-2)), dim=-2)  # Add seq_len dim
-        v = torch.cat((cache_v, v.unsqueeze(-2)), dim=-2)
+        k = torch.cat((cache_k, k.unsqueeze(-2)), dim=2)  # Add seq_len dim
+        v = torch.cat((cache_v, v.unsqueeze(-2)), dim=2)
         cache_kvs_out = torch.stack((k, v), dim=0)
     else:
         k = k.unsqueeze(-2)  # [batch_size, num_head, 1, head_dim]
         v = v.unsqueeze(-2)
         cache_kvs_out = torch.stack((k, v), dim=0)
     # Reshape for attention: [batch_size, num_head, seq_len, head_dim]
-    q = q.unsqueeze(-2)  # [batch_size, num_head, 1, head_dim]
-    seq_len_kv = k.shape[-2]
+    q = q.unsqueeze(2)  # [batch_size, num_head, 1, head_dim]
+    seq_len_kv = k.shape[2]
     # Compute attention scores
     attn_scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(head_dim)  # [batch_size, num_head, 1, seq_len_kv]
     # Apply source mask
