@@ -15,3 +15,4 @@ paddle.scatter(Tensor([183826, 256],"float32"), Tensor([10759233],"int64"), Tens
 paddle.sort(Tensor([1, 30000],"float32"), descending=True, )
 paddle.sort(Tensor([1, 32000],"float16"), descending=True, )
 paddle.sort(Tensor([1, 50304],"float32"), descending=True, )
+paddle.index_put(Tensor([110, 42, 32, 56],"float64"), tuple(Tensor([16, 16],"int32"),Tensor([16, 16],"int32"),Tensor([32],"bool"),), Tensor([16, 16, 56],"float64"), False, )

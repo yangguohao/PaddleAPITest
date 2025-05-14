@@ -128,13 +128,11 @@ class TensorConfig:
         axis = self.get_arg(api_config, 2, "axis")
         if axis is None and not allow_none:
             raise ValueError("Axis is None")
-        else:
-            axis = 0
+
         x_shape = self.get_arg(api_config, 0, "x").shape
         axis = axis if axis >= 0 else axis + len(x_shape)
         if not (0 <= axis < len(x_shape)):
             raise ValueError(f"Invalid axis {axis} for shape {x_shape}")
-
         if len(self.shape) >= 1:
             return numpy.random.randint(0, x_shape[axis], size=self.shape, dtype=self.dtype)
 

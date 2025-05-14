@@ -1,8 +1,0 @@
-paddle.dot
-paddle.linalg.cov
-paddle.linalg.lstsq
-paddle.maximum
-paddle.maximum
-paddle.nn.functional.cosine_similarity
-paddle.Tensor.dot
-paddle.Tensor.matmul

@@ -1,0 +1,14 @@
+2025-05-13 08:12:46.554743 GPU 3 17764 test begin: paddle.index_put(Tensor([110, 42, 56, 56],"float64"), tuple(Tensor([16, 16],"int64"),Tensor([16, 16],"int64"),Tensor([1, 16],"int64"),), Tensor([56],"float64"), False, )
+[accuracy error] paddle.index_put(Tensor([110, 42, 32, 56],"float64"), tuple(Tensor([16, 16],"int32"),Tensor([16, 16],"int32"),Tensor([32],"bool"),), Tensor([16, 16, 56],"float64"), False, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 212 / 8279040 (0.00256%)
+Max absolute difference: 0.96382047
+Max relative difference: 866.6510059
+ x: array([[[[ 4.609722e-01,  7.876549e-02, -2.577023e-01, ...,
+          -4.675377e-01, -1.746702e-01, -2.535524e-01],
+         [-3.489117e-01, -3.032523e-01, -2.055867e-01, ...,...
+ y: array([[[[ 4.609722e-01,  7.876549e-02, -2.577023e-01, ...,
+          -4.675377e-01, -1.746702e-01, -2.535524e-01],
+         [-3.489117e-01, -3.032523e-01, -2.055867e-01, ...,...
