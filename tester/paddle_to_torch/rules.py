@@ -1284,7 +1284,7 @@ def fused_bias_dropout_residual_layernorm(x, residual, bias=None, ln_scale=None,
 result = fused_bias_dropout_residual_layernorm(x, residual, bias, ln_scale, ln_bias, dropout_rate, ln_epsilon, training, mode)
 """
         code = Code(preprocess=preprocess.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class FusedDropoutAddRule(BaseRule):
@@ -1314,7 +1314,7 @@ def fused_dropout_add(x, y, p=0.5, training=True, mode='upscale_in_train'):
 result = fused_dropout_add(x, y, p, training, mode)
 """
         code = Code(preprocess=preprocess.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class FusedLinearActivationRule(BaseRule):
@@ -1346,7 +1346,7 @@ def fused_linear_activation(x, y, bias, trans_x=False, trans_y=False, activation
 result = fused_linear_activation(x, y, bias, trans_x, trans_y, activation)
 """
         code = Code(preprocess=preprocess.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class FusedLinearRule(BaseRule):
@@ -1370,7 +1370,7 @@ def fused_linear(x, weight, bias=None, transpose_weight=False):
 result = fused_linear(x, weight, bias, transpose_weight)
 """
         code = Code(preprocess=preprocess.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class GatherRule(BaseRule):
