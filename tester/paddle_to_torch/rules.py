@@ -514,10 +514,7 @@ if isinstance(dtype, str) and hasattr(torch, dtype):
     dtype = getattr(torch, dtype)
 """
         core = "result = x.to(dtype)"
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=[core]
-        )
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -1201,6 +1198,281 @@ if isinstance(output_size, (list, tuple)):
         return ConvertResult.success(paddle_api, code)
 
 
+class FusedBiasActRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+import torch.nn.functional as F
+
+def fused_bias_act(
+    x: torch.Tensor,
+    bias: torch.Tensor | None = None,
+    dequant_scales: torch.Tensor | None = None,
+    shift: torch.Tensor | None = None,
+    smooth: torch.Tensor | None = None,
+    act_method: str = 'gelu',
+    compute_dtype: str = 'default',
+    quant_scale: float = -1,
+    quant_round_type: int = 0,
+    quant_max_bound: float = 0,
+    quant_min_bound: float = 0
+) -> torch.Tensor:
+    if compute_dtype != 'default' and compute_dtype in ['float16', 'float32', 'float64']:
+        x = x.to(getattr(torch, compute_dtype))
+    else:
+        x = x.float() if not x.is_floating_point() else x
+    if dequant_scales is not None:
+        x = x * dequant_scales
+    if bias is not None:
+        x = x + bias
+    if shift is not None:
+        x = x + shift
+    if smooth is not None:
+        x = x * smooth
+    act_method = act_method.lower()
+    if act_method == 'gelu':
+        x = F.gelu(x)
+    elif act_method == 'relu':
+        x = F.relu(x)
+    elif act_method == 'sigmoid':
+        x = torch.sigmoid(x)
+    elif act_method == 'tanh':
+        x = torch.tanh(x)
+    else:
+        raise ValueError(f"Unsupported activation method: {act_method}")
+    if quant_scale > 0:
+        x = x / quant_scale
+        if quant_round_type == 0:
+            x = torch.round(x)  # Round to nearest, ties to even
+        elif quant_round_type == 1:
+            x = torch.where(x >= 0, torch.ceil(x - 0.5), torch.floor(x + 0.5))
+        else:
+            raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
+        x = x * quant_scale
+        x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
+    return x
+"""
+        core = "result = fused_bias_act(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class FusedMatmulBiasRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+def fused_matmul_bias(
+    x: torch.Tensor,
+    y: torch.Tensor,
+    bias: torch.Tensor | None = None,
+    transpose_x: bool = False,
+    transpose_y: bool = False,
+    name: str | None = None
+) -> torch.Tensor:
+    if transpose_x:
+        x = x.swapaxes(-1, -2)
+    if transpose_y:
+        y = y.transpose(0, 1)
+    out = torch.matmul(x, y)
+    if bias is not None:
+        out = out + bias
+    return out
+"""
+        core = "result = fused_matmul_bias(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
+class FusedMultiHeadAttentionRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+import torch.nn.functional as F
+
+def fused_multi_head_attention(
+    x: torch.Tensor,
+    qkv_weight: torch.Tensor,
+    linear_weight: torch.Tensor,
+    pre_layer_norm: bool = False,
+    pre_ln_scale: torch.Tensor | None = None,
+    pre_ln_bias: torch.Tensor | None = None,
+    ln_scale: torch.Tensor | None = None,
+    ln_bias: torch.Tensor | None = None,
+    pre_ln_epsilon: float = 1e-05,
+    qkv_bias: torch.Tensor | None = None,
+    linear_bias: torch.Tensor | None = None,
+    cache_kv: torch.Tensor | None = None,
+    attn_mask: torch.Tensor | None = None,
+    dropout_rate: float = 0.5,
+    attn_dropout_rate: float = 0.5,
+    ln_epsilon: float = 1e-05,
+    training: bool = True,
+    mode: str = 'upscale_in_train',
+    ring_id: int = -1,
+    add_residual: bool = True,
+    num_heads: int = -1,
+    transpose_qkv_wb: bool = False,
+    name: str | None = None
+) -> torch.Tensor:
+    batch_size, seq_len, embed_dim = x.shape
+    residual = x
+    if pre_layer_norm and pre_ln_scale is not None and pre_ln_bias is not None:
+        x = F.layer_norm(x, [embed_dim], pre_ln_scale, pre_ln_bias, pre_ln_epsilon)
+    if transpose_qkv_wb:
+        dim_head = embed_dim // num_heads
+        qkv = torch.matmul(x, qkv_weight)  # [bs, seq_len, 3 * embed_dim]
+        if qkv_bias is not None:
+            qkv = qkv + qkv_bias
+        qkv = qkv.view(batch_size, seq_len, 3, num_heads, dim_head)
+        qkv = qkv.permute(2, 0, 3, 1, 4)  # [3, bs, n_head, seq_len, dim_head]
+    else:
+        qkv = torch.matmul(x, qkv_weight.view(-1, embed_dim))  # [bs, seq_len, 3 * n_head * dim_head]
+        if qkv_bias is not None:
+            qkv = qkv + qkv_bias.view(-1)
+        num_heads = qkv_weight.shape[1]
+        dim_head = qkv_weight.shape[2]
+        qkv = qkv.view(batch_size, seq_len, 3, num_heads, dim_head)
+        qkv = qkv.permute(2, 0, 3, 1, 4)  # [3, bs, n_head, seq_len, dim_head]
+    q, k, v = qkv[0], qkv[1], qkv[2]  # [bs, n_head, seq_len, dim_head]
+    q = q * (dim_head ** -0.5)  # Scale query
+    if cache_kv is not None:
+        k = cache_kv[0]  # [bs, n_head, seq_len, dim_head]
+        v = cache_kv[1]  # [bs, n_head, seq_len, dim_head]
+    attn_scores = torch.matmul(q, k.transpose(-1, -2))  # [bs, n_head, seq_len, seq_len]
+    if attn_mask is not None:
+        attn_scores = attn_scores + attn_mask
+    attn_weights = F.softmax(attn_scores, dim=-1)
+    if attn_dropout_rate > 0 and training:
+        attn_weights = F.dropout(attn_weights, p=attn_dropout_rate, training=training)
+    out = torch.matmul(attn_weights, v)  # [bs, n_head, seq_len, dim_head]
+    out = out.permute(0, 2, 1, 3).contiguous()  # [bs, seq_len, n_head, dim_head]
+    out = out.view(batch_size, seq_len, embed_dim)  # [bs, seq_len, embed_dim]
+    out = torch.matmul(out, linear_weight)
+    if linear_bias is not None:
+        out = out + linear_bias
+    if dropout_rate > 0:
+        if mode == 'upscale_in_train':
+            scale = 1.0 / (1.0 - dropout_rate) if training else 1.0
+            out = F.dropout(out, p=dropout_rate, training=training) * scale
+        else:  # downscale_in_infer
+            scale = (1.0 - dropout_rate) if not training else 1.0
+            out = F.dropout(out, p=dropout_rate, training=training) * scale
+    if add_residual:
+        out = residual + out
+    if not pre_layer_norm and ln_scale is not None and ln_bias is not None:
+        out = F.layer_norm(out, [embed_dim], ln_scale, ln_bias, ln_epsilon)
+    return out
+"""
+        core = "result = fused_multihead_attention(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
+class FusedRMSNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+def fused_rms_norm(
+    x: torch.Tensor,
+    norm_weight: torch.Tensor,
+    norm_bias: torch.Tensor,
+    epsilon: float,
+    begin_norm_axis: int,
+    bias: torch.Tensor | None = None,
+    residual: torch.Tensor | None = None,
+    quant_scale: float = -1,
+    quant_round_type: int = 0,
+    quant_max_bound: float = 0,
+    quant_min_bound: float = 0
+) -> torch.Tensor:
+    x = x.float() if not x.is_floating_point() else x
+    if residual is not None:
+        x = x + residual
+    if bias is not None:
+        x = x + bias
+    norm_axes = tuple(range(begin_norm_axis, x.dim()))
+    variance = torch.mean(x**2, dim=norm_axes, keepdim=True)
+    x = x / torch.sqrt(variance + epsilon)
+    x = x * norm_weight + norm_bias
+    if quant_scale > 0:
+        x = x / quant_scale
+        if quant_round_type == 0:
+            x = torch.round(x)  # Round to nearest, ties to even
+        elif quant_round_type == 1:
+            x = torch.where(x >= 0, torch.ceil(x - 0.5), torch.floor(x + 0.5))
+        else:
+            raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
+        x = x * quant_scale
+        x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
+    return x
+"""
+        core = "result = fused_rms_norm(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
+class FusedRotaryPositionEmbeddingRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+def fused_rotary_position_embedding(
+    q: torch.Tensor,
+    k: torch.Tensor | None = None,
+    v: torch.Tensor | None = None,
+    sin: torch.Tensor | None = None,
+    cos: torch.Tensor | None = None,
+    position_ids: torch.Tensor | None = None,
+    use_neox_rotary_style: bool = True,
+    time_major: bool = False,
+    rotary_emb_base: float = 10000.0
+) -> tuple[torch.Tensor, torch.Tensor | None, torch.Tensor | None]:
+    if time_major:
+        batch_size, seq_len = q.size(1), q.size(0)
+    else:
+        batch_size, seq_len = q.size(0), q.size(1)
+    num_heads, head_dim = q.size(2), q.size(3)
+    if sin is None or cos is None:
+        if position_ids is None:
+            position_ids = torch.arange(seq_len, device=q.device).unsqueeze(0).expand(batch_size, -1)
+        inv_freq = 1.0 / (rotary_emb_base ** (torch.arange(0, head_dim, 2, device=q.device).float() / head_dim))
+        t = position_ids.float().unsqueeze(-1)
+        freqs = t * inv_freq.unsqueeze(0).unsqueeze(0)
+        sin = freqs.sin().unsqueeze(2).expand(-1, -1, num_heads, -1)
+        cos = freqs.cos().unsqueeze(2).expand(-1, -1, num_heads, -1)
+    else:
+        sin = sin.view(1, seq_len, 1, head_dim) if sin.dim() == 2 else sin
+        cos = cos.view(1, seq_len, 1, head_dim) if cos.dim() == 2 else cos
+    if time_major:
+        q = q.permute(1, 0, 2, 3)
+        if k is not None:
+            k = k.permute(1, 0, 2, 3)
+        if v is not None:
+            v = v.permute(1, 0, 2, 3)
+    
+    def apply_rotary_emb(x: torch.Tensor, sin: torch.Tensor, cos: torch.Tensor) -> torch.Tensor:
+        if use_neox_rotary_style:
+            # NeoX style: rotate pairs (x1, x2) -> (x1 * cos - x2 * sin, x1 * sin + x2 * cos)
+            x1, x2 = x[..., :head_dim//2], x[..., head_dim//2:]
+            sin_half, cos_half = sin[..., :head_dim//2], cos[..., :head_dim//2:]
+            x1_rot = x1 * cos_half - x2 * sin_half
+            x2_rot = x1 * sin_half + x2 * cos_half
+            return torch.cat([x1_rot, x2_rot], dim=-1)
+        else:
+            # Non-NeoX: rotate first and second halves separately
+            x_rot = x * cos + torch.roll(x, shifts=1, dims=-1) * sin
+            return x_rot
+    
+    out_q = apply_rotary_emb(q, sin, cos)
+    out_k = apply_rotary_emb(k, sin, cos) if k is not None else None
+    out_v = apply_rotary_emb(v, sin, cos) if v is not None else None
+    if time_major:
+        out_q = out_q.permute(1, 0, 2, 3)
+        if out_k is not None:
+            out_k = out_k.permute(1, 0, 2, 3)
+        if out_v is not None:
+            out_v = out_v.permute(1, 0, 2, 3)
+    return out_q, out_k, out_v
+"""
+        core = "result = fused_rotary_position_embedding(**kwargs)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
 # g
 
 
@@ -1653,7 +1925,8 @@ result = torch.histogramdd(**_kwargs)
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class HistogramBinEdgeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -1679,6 +1952,8 @@ result = torch.linspace(min, max, steps=bins + 1, device=input.device, dtype=inp
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 # i
 
 
@@ -3069,13 +3344,10 @@ elif x.dtype != y.dtype:
     y = y.to(target_dtype)
 """
         core = "result = torch.linalg.vecdot(x, y, dim=axis)"
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=[core]
-        )
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
-        
+
 class ViewRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

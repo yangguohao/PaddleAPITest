@@ -462,6 +462,21 @@
     "paddle.incubate.softmax_mask_fuse_upper_triangle": {
         "Rule": "SoftmaxMaskFuseUpperTriangleRule"
     },
+    "paddle.incubate.nn.functional.fused_bias_act": {
+        "Rule": "FusedBiasActRule"
+    },
+    "paddle.incubate.nn.functional.fused_matmul_bias": {
+        "Rule": "FusedMatmulBiasRule"
+    },
+    "paddle.incubate.nn.functional.fused_multi_head_attention": {
+        "Rule": "FusedMultiHeadAttentionRule"
+    },
+    "paddle.incubate.nn.functional.fused_rms_norm": {
+        "Rule": "FusedRMSNormRule"
+    },
+    "paddle.incubate.nn.functional.fused_rotary_position_embedding": {
+        "Rule": "FusedRotaryPositionEmbeddingRule"
+    },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
     "paddle.kthvalue":{
