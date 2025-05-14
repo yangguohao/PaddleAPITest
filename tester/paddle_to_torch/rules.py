@@ -1850,16 +1850,15 @@ y = to_float_if_needed(y)
 class LogNormalRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
-        pre = """
+        core = """
+result = torch.normal(**_kwargs)"
+result = torch.exp(result)
 """
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = "result = torch.exp(result)"
         code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
+            preprocess=defaults_code + map_code,
             core=core.splitlines(),
-            postprocess=post.splitlines()
         )
-        return ConvertResult.success(paddle_api, code)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 # m
 class Matrix_transposeRule(BaseRule):
