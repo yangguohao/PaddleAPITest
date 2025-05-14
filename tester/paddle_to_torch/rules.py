@@ -1201,8 +1201,6 @@ if isinstance(output_size, (list, tuple)):
 class FusedBiasActRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-import torch.nn.functional as F
-
 def fused_bias_act(
     x: torch.Tensor,
     bias: torch.Tensor | None = None,
@@ -1216,6 +1214,8 @@ def fused_bias_act(
     quant_max_bound: float = 0,
     quant_min_bound: float = 0
 ) -> torch.Tensor:
+    import torch.nn.functional as F
+
     if compute_dtype != 'default' and compute_dtype in ['float16', 'float32', 'float64']:
         x = x.to(getattr(torch, compute_dtype))
     else:
@@ -1228,17 +1228,25 @@ def fused_bias_act(
         x = x + shift
     if smooth is not None:
         x = x * smooth
+
+    def swiglu(x):
+        x, gate = x.chunk(2, dim=-1)
+        return x * torch.sigmoid(x) * gate
+
     act_method = act_method.lower()
     if act_method == 'gelu':
-        x = F.gelu(x)
+        x = torch.nn.functional.gelu(x)
     elif act_method == 'relu':
         x = F.relu(x)
     elif act_method == 'sigmoid':
         x = torch.sigmoid(x)
     elif act_method == 'tanh':
         x = torch.tanh(x)
+    elif act_method == 'swiglu':
+        x = swiglu(x)
     else:
         raise ValueError(f"Unsupported activation method: {act_method}")
+
     if quant_scale > 0:
         x = x / quant_scale
         if quant_round_type == 0:
@@ -1284,8 +1292,6 @@ def fused_matmul_bias(
 class FusedMultiHeadAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-import torch.nn.functional as F
-
 def fused_multi_head_attention(
     x: torch.Tensor,
     qkv_weight: torch.Tensor,
@@ -1311,6 +1317,8 @@ def fused_multi_head_attention(
     transpose_qkv_wb: bool = False,
     name: str | None = None
 ) -> torch.Tensor:
+    import torch.nn.functional as F
+
     batch_size, seq_len, embed_dim = x.shape
     residual = x
     if pre_layer_norm and pre_ln_scale is not None and pre_ln_bias is not None:
@@ -1323,7 +1331,7 @@ def fused_multi_head_attention(
         qkv = qkv.view(batch_size, seq_len, 3, num_heads, dim_head)
         qkv = qkv.permute(2, 0, 3, 1, 4)  # [3, bs, n_head, seq_len, dim_head]
     else:
-        qkv = torch.matmul(x, qkv_weight.view(-1, embed_dim))  # [bs, seq_len, 3 * n_head * dim_head]
+        qkv = torch.matmul(x, qkv_weight.permute(3, 0, 1, 2).view(embed_dim, -1))  # [bs, seq_len, 3 * n_head * dim_head]
         if qkv_bias is not None:
             qkv = qkv + qkv_bias.view(-1)
         num_heads = qkv_weight.shape[1]
@@ -1360,7 +1368,7 @@ def fused_multi_head_attention(
         out = F.layer_norm(out, [embed_dim], ln_scale, ln_bias, ln_epsilon)
     return out
 """
-        core = "result = fused_multihead_attention(**kwargs)"
+        core = "result = fused_multi_head_attention(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
@@ -1389,7 +1397,9 @@ def fused_rms_norm(
     norm_axes = tuple(range(begin_norm_axis, x.dim()))
     variance = torch.mean(x**2, dim=norm_axes, keepdim=True)
     x = x / torch.sqrt(variance + epsilon)
-    x = x * norm_weight + norm_bias
+    x = x * norm_weight
+    if norm_bias is not None:
+        x = x + norm_bias
     if quant_scale > 0:
         x = x / quant_scale
         if quant_round_type == 0:
