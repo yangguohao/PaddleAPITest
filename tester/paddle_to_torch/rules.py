@@ -1216,8 +1216,16 @@ def fused_bias_act(
 ) -> torch.Tensor:
     import torch.nn.functional as F
 
-    if compute_dtype != 'default' and compute_dtype in ['float16', 'float32', 'float64']:
-        x = x.to(getattr(torch, compute_dtype))
+    x_dtype = x.dtype
+    if compute_dtype != 'default':
+        if compute_dtype == 'fp16':
+            compute_dtype = 'float16'
+        elif compute_dtype == 'fp32':
+            compute_dtype = 'float32'
+        elif compute_dtype == 'fp64':
+            compute_dtype = 'float64'
+        if compute_dtype in ['float16', 'float32', 'float64']:
+            x = x.to(getattr(torch, compute_dtype))
     else:
         x = x.float() if not x.is_floating_point() else x
     if dequant_scales is not None:
@@ -1225,13 +1233,21 @@ def fused_bias_act(
     if bias is not None:
         x = x + bias
     if shift is not None:
+        repeat_factor = x.shape[-1] // bias.shape[-1]
+        shift = shift.repeat(repeat_factor)
         x = x + shift
     if smooth is not None:
+        repeat_factor = x.shape[-1] // bias.shape[-1]
+        shift = shift.repeat(repeat_factor)
         x = x * smooth
 
     def swiglu(x):
         x, gate = x.chunk(2, dim=-1)
         return x * torch.sigmoid(x) * gate
+
+    def geglu(x):
+        x, gate = x.chunk(2, dim=-1)
+        return F.gelu(x) * gate
 
     act_method = act_method.lower()
     if act_method == 'gelu':
@@ -1244,6 +1260,8 @@ def fused_bias_act(
         x = torch.tanh(x)
     elif act_method == 'swiglu':
         x = swiglu(x)
+    elif act_method == 'geglu':
+        x = geglu(x)
     else:
         raise ValueError(f"Unsupported activation method: {act_method}")
 
@@ -1257,7 +1275,7 @@ def fused_bias_act(
             raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
         x = x * quant_scale
         x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
-    return x
+    return x.to(x_dtype)
 """
         core = "result = fused_bias_act(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])
@@ -1322,6 +1340,8 @@ def fused_multi_head_attention(
     batch_size, seq_len, embed_dim = x.shape
     residual = x
     if pre_layer_norm and pre_ln_scale is not None and pre_ln_bias is not None:
+        pre_ln_scale = pre_ln_scale.to(x.dtype)
+        pre_ln_bias = pre_ln_bias.to(x.dtype)
         x = F.layer_norm(x, [embed_dim], pre_ln_scale, pre_ln_bias, pre_ln_epsilon)
     if transpose_qkv_wb:
         dim_head = embed_dim // num_heads
@@ -1365,6 +1385,8 @@ def fused_multi_head_attention(
     if add_residual:
         out = residual + out
     if not pre_layer_norm and ln_scale is not None and ln_bias is not None:
+        ln_scale = ln_scale.to(x.dtype)
+        ln_bias = ln_bias.to(x.dtype)
         out = F.layer_norm(out, [embed_dim], ln_scale, ln_bias, ln_epsilon)
     return out
 """
@@ -1464,7 +1486,11 @@ def fused_rotary_position_embedding(
             return torch.cat([x1_rot, x2_rot], dim=-1)
         else:
             # Non-NeoX: rotate first and second halves separately
-            x_rot = x * cos + torch.roll(x, shifts=1, dims=-1) * sin
+            x_even = x[..., 0::2]
+            x_odd = x[..., 1::2]
+            x_rot = torch.stack([x_even * cos[..., 0::2] - x_odd * sin[..., 0::2],
+                                 x_even * sin[..., 0::2] + x_odd * cos[..., 0::2]], dim=-1)
+            x_rot = x_rot.view(*x_rot.shape[:-2], -1)
             return x_rot
     
     out_q = apply_rotary_emb(q, sin, cos)
