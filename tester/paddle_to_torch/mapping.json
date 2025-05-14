@@ -372,6 +372,15 @@
     "paddle.geometric.segment_max": {
         "Rule":"SegmentMaxRule"
     },
+    "paddle.geometric.segment_mean": {
+        "Rule": "SegmentRule"
+    },
+    "paddle.geometric.segment_min": {
+        "Rule": "SegmentRule"
+    },
+    "paddle.geometric.segment_sum": {
+        "Rule": "SegmentRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {
@@ -433,6 +442,23 @@
     "paddle.increment": {
         "Rule": "IncrementRule"
     },
+    "paddle.index_add": {
+        "Rule":"IndexAddRule"
+    },
+    "paddle.index_put": {
+        "Rule":"IndexPutRule",
+        "paddle_torch_args_map": {
+            "indices": "indices",
+            "accumulate": "accumulate",
+            "value": "values"
+        },
+        "set_defaults": {
+            "accumulate": "False"
+        }
+    },
+    "paddle.index_sample": {
+        "Rule":"IndexSampleRule"
+    },
     "paddle.index_fill": {
         "torch_api": "torch.index_fill",
         "paddle_torch_args_map": {
@@ -443,6 +469,9 @@
         "torch_kwargs": {
             "index": "{index}.to(torch.int64) if {index}.dtype != torch.int64 else {index}"
         }
+    },
+    "paddle.incubate.nn.functional.blha_get_max_len": {
+        "Rule": "BlhaGetMaxLenRule"
     },
     "paddle.incubate.segment_max": {
         "Rule": "SegmentRule"
@@ -610,6 +639,19 @@
     },
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
+    },
+    "paddle.log_normal": {
+        "torch_api": "torch.normal",
+        "Rule": "LogNormalRule",
+        "paddle_torch_args_map": {
+            "mean": "mean",
+            "std": "std",
+            "shape":"size"
+        },
+        "set_defaults": {
+            "mean": 1.0,
+            "std": 2.0
+        }
     },
     "paddle.Tensor.log_normal_": {
         "torch_api": "torch.Tensor.log_normal_",
@@ -1350,6 +1392,23 @@
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
     },
+    "paddle.signal.stft":{
+        "torch_api": "torch.stft",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "n_fft": "n_fft",
+            "hop_length": "hop_length",
+            "win_length": "win_length",
+            "window": "window",
+            "center": "center",
+            "pad_mode": "pad_mode",
+            "onesided": "onesided",
+            "normalized": "normalized"
+        },
+        "torch_kwargs":{
+            "return_complex": "True"
+        }
+    },
     "paddle.slice_scatter": {
         "Rule": "SliceScatterRule"
     },
@@ -1458,6 +1517,13 @@
         "torch_api": "torch.tanh",
         "paddle_torch_args_map": {
             "x": "input"
+        }
+    },
+    "paddle.take": {
+        "Rule": "TakeRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "index": "index"
         }
     },
     "paddle.topk":{
@@ -1617,6 +1683,41 @@
             "y": "other"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__radd__(other=y)"
+    },
+    "paddle.Tensor.__rlshift__": {
+        "torch_api": "torch.Tensor.__rlshift__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rlshift__(other=y)"
+    },
+    "paddle.Tensor.__rrshift__": {
+        "torch_api": "torch.Tensor.__rrshift__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rrshift__(other=y)"
+    },
+    "paddle.Tensor.__ror__": {
+        "torch_api": "torch.Tensor.__ror__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ror__(other=y)"
+    },
+    "paddle.Tensor.__xor__": {
+        "torch_api": "torch.Tensor.__xor__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__xor__(other=y)"
+    },
+    "paddle.Tensor.__rxor__": {
+        "torch_api": "torch.Tensor.__rxor__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rxor__(other=y)"
     },
     "paddle.Tensor.__rmatmul__": {
         "torch_api": "torch.Tensor.__rmatmul__",
@@ -2369,6 +2470,14 @@
             "value": "value"
         },
         "min_input_args": 2
+    },
+    "paddle.masked_scatter": {
+        "Rule": "MaskedScatterRule",
+        "torch_api": "torch.Tensor.masked_scatter",
+        "paddle_torch_args_map": {
+            "mask": "mask",
+            "value": "source"
+        }
     },
     "paddle.Tensor.masked_select": {
         "torch_api": "torch.Tensor.masked_select",
@@ -6653,14 +6762,6 @@
             "input": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.take": {
-        "torch_api": "torch.take",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "index": "index"
-        },
-        "min_input_args": 2
     },
     "paddle.tan": {
         "torch_api": "torch.tan",
