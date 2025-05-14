@@ -21,8 +21,8 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
     )
 
-from tester.api_config.log_writer import (aggregate_logs, read_log,
-                                          set_engineV2, write_to_log)
+from tester.api_config.log_writer import (aggregate_logs, print_log_info,
+                                          read_log, set_engineV2, write_to_log)
 
 
 def cleanup(pool):
@@ -364,8 +364,10 @@ def main():
         try:
             with open(options.api_config_file, "r") as f:
                 lines = [line.strip() for line in f if line.strip()]
+                print(len(lines), "cases in total.", flush=True)
                 api_configs = set(lines)
-                print(len(lines) - len(api_configs), "cases are duplicates and removed.", flush=True)
+                dup_case = len(lines) - len(api_configs)
+                print(dup_case, "cases are duplicates and removed.", flush=True)
         except FileNotFoundError:
             print(
                 f"Error: api config file {options.api_config_file} not found",
@@ -474,6 +476,7 @@ def main():
                 cleanup(pool)
             finally:
                 aggregate_logs()
+                print_log_info(all_case, fail_case)
         else:
             # Single worker
             from tester import (APIConfig, APITestAccuracy,
