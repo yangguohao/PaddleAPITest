@@ -3029,6 +3029,7 @@ if y == None:
             preprocess=pre.splitlines(),
             core=[core],
         )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class SegmentRule(BaseRule):
