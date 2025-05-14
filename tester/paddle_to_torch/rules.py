@@ -937,8 +937,6 @@ if data_format == "NHWC":
 class Distribute_fpn_proposalsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
-import math
-        
 def BBoxArea(box, pixel_offset):
     w = box[2] - box[0]
     h = box[3] - box[1]
@@ -1301,8 +1299,6 @@ for batch in range(batch_size):
 class GenerateProposalsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """    
-import torchvision
-import math
 def nms(box1, box2, normaloized):
     if box2[0] > box1[2] or box2[2] < box1[0] or box2[1] > box1[3] or box2[3] < box1[1]:
         return 0
@@ -1958,11 +1954,7 @@ def masked_multihead_attention(
     quant_min_bound: float = -127.0
 ):
     # Infer dimensions from input
-    batch_size = x.shape[0]
-    total_dim = x.shape[1]
-    # Assume x is [batch_size, 3 * num_head * head_dim]
-    num_head = 12  # Example: adjust based on model config
-    head_dim = total_dim // (3 * num_head)
+    _, batch_size, num_head, max_seq_len, head_dim = cache_kv.shape
     # Reshape and split QKV: [batch_size, 3 * num_head * head_dim] -> [batch_size, 3, num_head, head_dim]
     x = x.view(batch_size, 3, num_head, head_dim)
     q, k, v = x[:, 0], x[:, 1], x[:, 2]  # Each is [batch_size, num_head, head_dim]
@@ -2018,6 +2010,14 @@ def masked_multihead_attention(
     attn_scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(head_dim)  # [batch_size, num_head, 1, seq_len_kv]
     # Apply source mask
     if src_mask is not None:
+        expected_mask_shape = (batch_size, 1, 1, seq_len_kv)
+        if src_mask.shape[-1] != seq_len_kv:
+            # Pad src_mask with zeros to match seq_len_kv
+            padding = torch.zeros(
+                batch_size, 1, 1, seq_len_kv - src_mask.shape[-1],
+                device=src_mask.device, dtype=src_mask.dtype
+            )
+            src_mask = torch.cat((src_mask, padding), dim=-1)
         attn_scores = attn_scores + src_mask  # Broadcasting applies mask
     # Apply sequence lengths if provided
     if sequence_lengths is not None:
@@ -2026,7 +2026,7 @@ def masked_multihead_attention(
         mask = mask[:, None, None, :]  # [batch_size, 1, 1, seq_len_kv]
         attn_scores = attn_scores.masked_fill(~mask, float('-inf'))
     # Softmax to get attention weights
-    attn_weights = F.softmax(attn_scores, dim=-1)
+    attn_weights = torch.nn.functional.softmax(attn_scores, dim=-1)
     # Compute attention output
     attn_output = torch.matmul(attn_weights, v)  # [batch_size, num_head, 1, head_dim]
     attn_output = attn_output.squeeze(-2)  # [batch_size, num_head, head_dim]
@@ -2050,7 +2050,7 @@ def masked_multihead_attention(
     # Return based on beam_cache_offset presence
     if beam_cache_offset is not None:
         return attn_output, cache_kvs_out, beam_cache_offset_out
-    return attn_output, cache_kvs_out
+    return attn_output, cache_kvs_out, None
 """
         core = "result = masked_multihead_attention(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])
