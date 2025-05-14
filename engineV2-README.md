@@ -1,47 +1,53 @@
-# EngineV2：高性能多进程测试框架
+# engineV2：高性能多进程测试框架
 
-`engineV2.py` 是为 PaddleAPITest 项目设计的高性能测试框架，支持多 GPU 并行执行，具备负载均衡、超时处理和崩溃恢复能力。相比原始的 `engine.py` 实现，它能显著提升 Paddle API 配置测试效率，加速比约为 3-5 倍。
+`engineV2.py` 是为 PaddleAPITest 项目设计的高性能测试框架，支持多 GPU 并行执行，具备负载均衡、超时处理和崩溃恢复能力。相比原始的 `engine.py` 实现，它能显著提升 Paddle API 配置测试效率，加速比约为 5-10 倍。
 
 ## 功能特性
 
-- **多 GPU 并行**：通过 `--num_gpus` 参数，支持可配置的多 GPU 执行，任务跨 GPU 动态分发。同时支持单 GPU 模式
-- ~~**多 CPU 并行**：通过 `--num_cpus` 参数，支持可配置的多 CPU 执行（尚未实现）~~
-- **进程级并行**：基于 Pebble 库的 ProcessPool 实现基于进程的高效任务分发，通过 `--num_workers_per_gpu` 支持单 GPU 多 worker
-- **动态负载均衡**：自动将新的子进程分配给负载最轻的 GPU，确保资源最优利用
-- **超时/崩溃恢复**：根据张量大小设置执行时限（90秒至3600秒梯度阈值），避免进程卡死。自动检测并重启超时或崩溃进程
-- **进程安全日志**：集成 `log_writer.py` 实现无争用日志，确保日志可靠聚合
+- **多 GPU 并行**：拥有灵活的 *gpus 相关参数*，可配置多 GPU 并行测试，支持任务跨 GPU 动态分发
+- **进程级并行**：基于 Pebble 库的 ProcessPool 进程池实现，支持进程的高效并行，每张 GPU 可拥有多个 worker
+- **动态负载均衡**：新的子进程自动分配至负载最轻 GPU，计算资源最优利用
+- **超时/崩溃恢复**：由张量大小推断执行时限（梯度阈值），主动杀死 coredump 进程，自动检测并重启死亡进程
+
+## 其他优化
+
+- **进程安全日志**：`log_writer.py` 采用无争用日志，进程日志可靠聚合
 - **优雅关闭**：绑定中断信号，安全终止所有子进程
-- **延迟导入**：采用类型提示和模块惰性加载，防止子进程过早初始化模块，降低内存开销
-- **自动化执行**：包含 `run.sh` 脚本实现一键执行，支持 nohup 后台运行和详细监控指引
+- **延迟导入**：采用类型提示和模块惰性加载，隔离子进程初始化环境
+- **自动化执行**：`run.sh` 脚本一键执行，支持 nohup 后台运行和显存监控
 
 ## 安装说明
 
 1. 安装 PaddleAPITest 项目依赖项
     ```bash
-    pip install paddlepaddle-gpu torch func_timeout psutil pebble
+    pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    pip install func_timeout pebble pynvml
     ```
 2. 克隆 PaddleAPITest 仓库并进入项目目录
    ```bash
    git clone https://github.com/PFCCLab/PaddleAPITest.git
    cd PaddleAPITest
    ```
-3. 确保 `engineV2.py` 、 `log_writer.py` 和 `run.sh` 位于正确目录
+3. 确保 `engineV2.py` 、 `log_writer.py` 和 `run.sh` 路径正确
 
 ## 使用指南
 
 ### 命令行参数
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| `--api_config` | str | 单条 API 配置字符串（快速测试用） |
-| `--api_config_file` | str | API 配置文件路径（如`tester/api_config/api_config_temp.txt`） |
-| `--paddle_only` | bool | 仅运行 Paddle 测试（默认 False） |
-| `--accuracy` | bool | 启用精度测试（默认 False） |
-| `--paddle_cinn` | bool | 运行 CINN vs Dygraph 对比测试（默认 False） |
-| `--test_amp` | bool | 启用自动混合精度测试（默认 False） |
-| `--num_gpus` | int | 使用的GPU数量（默认 0，单 GPU 模式） |
-| `--num_workers_per_gpu` | int | 每个 GPU 的 worker 进程数（默认 1） |
-| ~~`--num_cpus`~~ | ~~int~~ | ~~使用的CPU核心数（默认 0，尚未支持）~~ |
+| 参数                    | 类型  | 说明                                                          |
+| ----------------------- | ----- | ------------------------------------------------------------- |
+| `--api_config`          | str   | API 配置字符串（单条测试）                                    |
+| `--api_config_file`     | str   | API 配置文件路径（如`tester/api_config/api_config_temp.txt`） |
+| `--paddle_only`         | bool  | 仅运行 Paddle 测试（默认 False）                              |
+| `--accuracy`            | bool  | 启用精度测试（默认 False）                                    |
+| `--paddle_cinn`         | bool  | 运行 CINN vs Dygraph 对比测试（默认 False）                   |
+| `--test_amp`            | bool  | 启用自动混合精度测试（默认 False）                            |
+| `--num_gpus`            | int   | 使用的 GPU 数量（默认 0，-1 动态最大）                        |
+| `--num_workers_per_gpu` | int   | 每 GPU 的 worker 进程数（默认 1，-1 动态最大）                |
+| `--gpu_ids`             | str   | 使用的 GPU 序号，以逗号分隔（默认""，"-1" 动态最大）          |
+| `--required_memory`     | float | 每 worker 进程预估使用显存（默认 10.0）                       |
+| `--test_cpu`            | bool  | 启用 Paddle CPU 模式测试                                      |
 
 ### 示例命令
 
@@ -68,7 +74,7 @@ python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_conf
 # chmod +x run.sh
 ./run.sh
 ```
-该脚本使用默认参数（NUM_GPUS=8, NUM_WORKERS_PER_GPU=1）在后台运行程序，可在修改 `run.sh` 参数后使用
+该脚本使用参数：NUM_GPUS=-1, NUM_WORKERS_PER_GPU=-1，在后台运行程序，可在修改 `run.sh` 参数后使用
 
 ## 监控方法
 
@@ -84,14 +90,14 @@ python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_conf
 ### engineV2.py
 
 *主工作流*：
-- 解析命令行参数配置执行模式（单配置或批量测试）
-- 批量模式时读取 `--api_config_file` 配置，通过 `log_writer.read_log("checkpoint")` 跳过已完成测试
-- 支持 `--api_config` 参数快速执行单配置测试
+- 解析命令行参数配置执行模式
+- 批量模式下读取 `--api_config_file` 配置，跳过已完成测试
+- 支持 `--api_config` 执行单条配置测试
 
 *多 GPU 执行*：
-- 初始化 ProcessPool（最大 worker 数 = GPU 数 × 每 GPU worker 数）
-- 通过 `init_worker_gpu()` 将进程绑定到GPU，使用共享的 Manager.list 跟踪分配状态
-- 以 16,384 个配置为批次处理任务，优化内存和 I/O 效率
+- 初始化 ProcessPool 进程池，根据参数动态分配 GPU 和 worker 数量
+- 通过 `init_worker_gpu()` 将进程绑定到GPU，使用共享的 manager.dict 跟踪分配状态
+- 以 20000 个配置为批次处理任务，优化内存和 I/O 效率
 
 *任务执行*：
 - `run_test_case()` 执行单个测试用例，根据参数选择测试类：*APITestAccuracy*、*APITestPaddleOnly*、*APITestCINNVSDygraph*
@@ -114,20 +120,19 @@ python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_conf
 
 ### run.sh
 
-- 配置默认参数：NUM_GPUS=8, NUM_WORKERS_PER_GPU=1, LOG_DIR=tester/api_config/test_log
+- 配置参数：NUM_GPUS=-1, NUM_WORKERS_PER_GPU=-1, LOG_DIR=tester/api_config/test_log
 - 使用 nohup 后台运行 engineV2.py，输出重定向至 log.log
 - 显示 GPU 监控、日志查看和进程终止命令
 
 ## 测试结果
 
-- 在数千个配置上验证正确性，精度测试速度达原始引擎的 3-5 倍
+- 在数十万个配置上验证正确性，精度测试速度达原始引擎的 5-10 倍
 - 可处理大张量（平均每 GPU 约 20GB，峰值 70GB），在多进程多 GPU、单进程多 GPU、单 GPU 模式下均表现稳定
 
 ## 注意事项
 
 1. `estimate_timeout()` 梯度阈值粒度较粗，可进一步调整 TIMEOUT_STEPS
-2. 重负载多进程情况下会产生 OOM 反复崩溃重启，可通过 nvidia-smi 监控可用显存，实现动态调整工作进程数
-3. 安装 PaddlePaddle（develop） 与 PyTorch（2.6） 需确保兼容性，必须首先安装 PaddlePaddle 再安装 PyTorch
+2. 安装 PaddlePaddle（develop） 与 PyTorch（2.6） 需确保兼容性，必须首先安装 PaddlePaddle 再安装 PyTorch
 
 ## 许可协议
 

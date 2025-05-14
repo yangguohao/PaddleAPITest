@@ -363,7 +363,9 @@ def main():
         print(len(finish_configs), "cases have been tested.", flush=True)
         try:
             with open(options.api_config_file, "r") as f:
-                api_configs = set(line.strip() for line in f if line.strip())
+                lines = [line.strip() for line in f if line.strip()]
+                api_configs = set(lines)
+                print(len(lines) - len(api_configs), "cases are duplicates and removed.", flush=True)
         except FileNotFoundError:
             print(
                 f"Error: api config file {options.api_config_file} not found",
@@ -371,10 +373,13 @@ def main():
             )
             return
 
+        api_configs_origin_count = len(api_configs)
         api_configs = sorted(api_configs - finish_configs)
         all_case = len(api_configs)
         fail_case = 0
+        print(api_configs_origin_count - all_case, "cases already tested.", flush=True)
         print(all_case, "cases will be tested.", flush=True)
+        del finish_configs, api_configs_origin_count
 
         if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
