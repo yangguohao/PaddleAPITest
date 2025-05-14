@@ -3306,28 +3306,27 @@ def variable_length_memory_efficient_attention(
         mask = mask[:, :, :query_seq_len, :key_seq_len]
     # Apply sequence length masking
     seq_mask = torch.ones(batch_size, 1, query_seq_len, key_seq_len,
-                        dtype=query.dtype, device=query.device)
+                         dtype=torch.bool, device=query.device)
     for b in range(batch_size):
         q_len = seq_lens[b].squeeze().item()
         kv_len = kv_seq_lens[b].squeeze().item() + pre_cache_length
-        seq_mask[b, :, q_len:, :] = torch.finfo(query.dtype).min
-        seq_mask[b, :, :, kv_len:] = torch.finfo(query.dtype).min
+        seq_mask[b, :, q_len:, :] = False
+        seq_mask[b, :, :, kv_len:] = False
     # Apply causal masking if enabled
     if causal:
-        causal_mask = torch.triu(
-            torch.ones(1, 1, query_seq_len, key_seq_len,
-                    dtype=query.dtype, device=query.device) * float('-inf'),
-            diagonal=1
+        causal_mask = torch.tril(
+            torch.ones(1, 1, query_seq_len, key_seq_len, dtype=torch.bool, device=query.device)
         )
-        seq_mask = seq_mask + causal_mask
-    # Combine sequence mask with provided mask
-    attention_mask = seq_mask + mask
+        seq_mask = seq_mask & causal_mask
     # Compute attention scores: QK^T
     qk_res = torch.matmul(query, key.transpose(-1, -2))  # [batch_size, num_heads, query_seq_len, key_seq_len]
-    # Apply scale and mask
-    attention = qk_res * scale + attention_mask
+    # Apply scale
+    attention = qk_res * scale
+    attention = attention.masked_fill(~seq_mask, torch.finfo(attention.dtype).min)
+    attention = attention + mask
     # Softmax over the last dimension
     softmax_result = torch.nn.functional.softmax(attention, dim=-1)
+    softmax_result = softmax_result.masked_fill(~seq_mask, 0.0)
     # Compute output: softmax(QK^T)V
     result = torch.matmul(softmax_result, value)  # [batch_size, num_heads, query_seq_len, head_size]
     return result
