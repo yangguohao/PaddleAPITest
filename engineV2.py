@@ -367,7 +367,8 @@ def main():
                 print(len(lines), "cases in total.", flush=True)
                 api_configs = set(lines)
                 dup_case = len(lines) - len(api_configs)
-                print(dup_case, "cases are duplicates and removed.", flush=True)
+                if dup_case > 0:
+                    print(dup_case, "cases are duplicates and removed.", flush=True)
         except FileNotFoundError:
             print(
                 f"Error: api config file {options.api_config_file} not found",
@@ -379,9 +380,11 @@ def main():
         api_configs = sorted(api_configs - finish_configs)
         all_case = len(api_configs)
         fail_case = 0
-        print(api_configs_origin_count - all_case, "cases already tested.", flush=True)
+        tested_case = api_configs_origin_count - all_case
+        if tested_case:
+            print(api_configs_origin_count - all_case, "cases already tested.", flush=True)
         print(all_case, "cases will be tested.", flush=True)
-        del finish_configs, api_configs_origin_count
+        del finish_configs, api_configs_origin_count, tested_case
 
         if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
