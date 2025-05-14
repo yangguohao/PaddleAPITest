@@ -1707,7 +1707,7 @@ class IndexPutRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if value.dim() ==1 and len(value) == 56 and accumulate == True :
+if value.dim() ==1 and len(value) == 56 and accumulate == True :   # 56 此处特判
     m = torch.tensor(1)
     for item in indices:
         m = torch.max(m, torch.prod(torch.tensor(item.shape)))
