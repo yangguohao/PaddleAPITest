@@ -462,6 +462,20 @@ if data_format == "NDHWC":
 
 
 # b
+class BlhaGetMaxLenRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+seq_lens_encoder = locals().get('seq_lens_encoder')
+seq_lens_decoder = locals().get('seq_lens_decoder')
+"""
+        core = "result = (torch.max(seq_lens_encoder), torch.max(seq_lens_decoder))"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """

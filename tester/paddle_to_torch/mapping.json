@@ -372,6 +372,15 @@
     "paddle.geometric.segment_max": {
         "Rule":"SegmentMaxRule"
     },
+    "paddle.geometric.segment_mean": {
+        "Rule": "SegmentRule"
+    },
+    "paddle.geometric.segment_min": {
+        "Rule": "SegmentRule"
+    },
+    "paddle.geometric.segment_sum": {
+        "Rule": "SegmentRule"
+    },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
         "paddle_torch_args_map": {
@@ -443,6 +452,9 @@
         "torch_kwargs": {
             "index": "{index}.to(torch.int64) if {index}.dtype != torch.int64 else {index}"
         }
+    },
+    "paddle.incubate.nn.functional.blha_get_max_len": {
+        "Rule": "BlhaGetMaxLenRule"
     },
     "paddle.incubate.segment_max": {
         "Rule": "SegmentRule"
@@ -1349,6 +1361,23 @@
     },
     "paddle.Tensor.sin":{
         "torch_api":"torch.Tensor.sin"
+    },
+    "paddle.signal.stft":{
+        "torch_api": "torch.stft",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "n_fft": "n_fft",
+            "hop_length": "hop_length",
+            "win_length": "win_length",
+            "window": "window",
+            "center": "center",
+            "pad_mode": "pad_mode",
+            "onesided": "onesided",
+            "normalized": "normalized"
+        },
+        "torch_kwargs":{
+            "return_complex": "True"
+        }
     },
     "paddle.slice_scatter": {
         "Rule": "SliceScatterRule"
