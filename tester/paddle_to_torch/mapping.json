@@ -1615,6 +1615,41 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__radd__(other=y)"
     },
+    "paddle.Tensor.__rlshift__": {
+        "torch_api": "torch.Tensor.__rlshift__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rlshift__(other=y)"
+    },
+    "paddle.Tensor.__rrshift__": {
+        "torch_api": "torch.Tensor.__rrshift__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rrshift__(other=y)"
+    },
+    "paddle.Tensor.__ror__": {
+        "torch_api": "torch.Tensor.__ror__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ror__(other=y)"
+    },
+    "paddle.Tensor.__xor__": {
+        "torch_api": "torch.Tensor.__xor__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__xor__(other=y)"
+    },
+    "paddle.Tensor.__rxor__": {
+        "torch_api": "torch.Tensor.__rxor__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rxor__(other=y)"
+    },
     "paddle.Tensor.__rmatmul__": {
         "torch_api": "torch.Tensor.__rmatmul__",
         "paddle_torch_args_map": {
