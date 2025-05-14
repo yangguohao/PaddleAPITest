@@ -32,9 +32,9 @@ rand_apis = [
     "paddle.randint",
     "paddle.randint_like",
     "paddle.randperm",
+    "paddle.uniform",
     "paddle.standard_gamma",
     "paddle.standard_normal", 
-    "paddle.uniform",
     "paddle.Tensor.bernoulli_",
     "paddle.Tensor.cauchy_",
     "paddle.Tensor.exponential_",
@@ -205,6 +205,12 @@ class APITestBase:
             paddle_sig = inspect.signature(self.paddle_api)
             paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
             paddle_args_dict = paddle_bound_args.arguments
+            # fix paddle.arange wrong binding 
+            if self.api_config.api_name == "paddle.arange":
+                # if end is not provided, use the 'start' kwargs as end
+                if "end" not in paddle_args_dict:
+                    paddle_args_dict["end"] = paddle_args_dict["start"]
+                    paddle_args_dict["start"] = 0
         else:
             # For APIs without signatures, use the external mapping dict
             mapping = no_signature_api_mappings[api_name]
@@ -555,30 +561,33 @@ class APITestBase:
         return result_outputs, result_outputs_grads
 
     def convert_dtype_to_torch_type(self, dtype):
-        if dtype in ["float32", numpy.float32]:
+        # for python built-in types, mappings are int -> torch.int64, bool -> torch.bool, float -> torch.float64, complex -> torch.complex128, None -> None
+        if dtype in ["float32", numpy.float32, paddle.float32, paddle.base.libpaddle.VarDesc.VarType.FP32]:
             return torch.float32
-        elif dtype in ['float16', numpy.float16]:
+        elif dtype in ['float16', numpy.float16, paddle.float16, paddle.base.libpaddle.VarDesc.VarType.FP16]:
             return torch.float16
-        elif dtype in ['float64', numpy.float64]:
+        elif dtype in ['float64', numpy.float64, paddle.float64, paddle.base.libpaddle.VarDesc.VarType.FP64, float]:
             return torch.float64
-        elif dtype in ['int16', numpy.int16]:
+        elif dtype in ['int16', numpy.int16, paddle.int16, paddle.base.libpaddle.VarDesc.VarType.INT16]:
             return torch.int16
-        elif dtype in ['int8', numpy.int8]:
+        elif dtype in ['int8', numpy.int8, paddle.int8, paddle.base.libpaddle.VarDesc.VarType.INT8]:
             return torch.int8
-        elif dtype in ['bool', numpy.bool_]:
+        elif dtype in ['bool', numpy.bool_, paddle.bool, paddle.base.libpaddle.VarDesc.VarType.BOOL, bool]:
             return torch.bool
-        elif dtype in ['bfloat16', numpy.uint16]:
+        elif dtype in ['bfloat16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
             return torch.bfloat16
-        elif dtype in ['uint8', numpy.uint8]:
+        elif dtype in ['uint8', numpy.uint8, paddle.uint8, paddle.base.libpaddle.VarDesc.VarType.UINT8]:
             return torch.uint8
-        elif dtype in ['int32', numpy.int32]:
+        elif dtype in ['int32', numpy.int32, paddle.int32, paddle.base.libpaddle.VarDesc.VarType.INT32]:
             return torch.int32
-        elif dtype in ['int64', numpy.int64]:
+        elif dtype in ['int64', "int", numpy.int64, paddle.int64, paddle.base.libpaddle.VarDesc.VarType.INT64, int]:
             return torch.int64
-        elif dtype in ['complex64', numpy.complex64]:
+        elif dtype in ['complex64', numpy.complex64, paddle.complex64, paddle.base.libpaddle.VarDesc.VarType.COMPLEX64]:
             return torch.complex64
-        elif dtype in ['complex128', numpy.complex128]:
+        elif dtype in ['complex128', numpy.complex128, paddle.complex128, paddle.base.libpaddle.VarDesc.VarType.COMPLEX128, complex]:
             return torch.complex128
+        elif dtype is None:
+            return None
         else:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
@@ -751,6 +760,8 @@ class APITestBase:
             elif isinstance(arg_config, (list, tuple)):
                 is_tuple = isinstance(arg_config, tuple)
                 self.torch_args.append(self._handle_list_or_tuple_torch(arg_config, is_tuple))
+            elif isinstance(arg_config, paddle.dtype) or isinstance(arg_config, paddle.base.libpaddle.VarDesc.VarType):
+                self.torch_args.append(self.convert_dtype_to_torch_type(arg_config))
             else:
                 self.torch_args.append(arg_config)
 
@@ -761,6 +772,8 @@ class APITestBase:
             elif isinstance(arg_config, (list, tuple)):
                 is_tuple = isinstance(arg_config, tuple)
                 self.torch_kwargs[key] = self._handle_list_or_tuple_torch(arg_config, is_tuple)
+            elif isinstance(arg_config, paddle.dtype) or isinstance(arg_config, paddle.base.libpaddle.VarDesc.VarType) or key == "dtype":
+                self.torch_kwargs[key] = self.convert_dtype_to_torch_type(arg_config)
             else:
                 self.torch_kwargs[key] = arg_config
 

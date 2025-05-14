@@ -12,8 +12,6 @@ from .rules import BaseRule, ConvertResult, ErrorRule, GenericRule
 PADDLE2TORCH_WRONG_CONFIG = frozenset(
     [
         "paddle.matmul",
-        "paddle.nn.functional.adaptive_avg_pool2d",
-        "paddle.nn.functional.adaptive_avg_pool3d",
         "paddle.nn.functional.pixel_shuffle",
         "paddle.nn.functional.pixel_unshuffle",
         "paddle.nn.functional.prelu",
