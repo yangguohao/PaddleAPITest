@@ -1711,7 +1711,6 @@ if value.dim() ==1 and len(value) == 56 and accumulate == True :
     m = torch.tensor(1)
     for item in indices:
         m = torch.max(m, torch.prod(torch.tensor(item.shape)))
-    print(m,len(value))
     value = value.expand(m, len(value))
 """
         core = "result = x.index_put(**_kwargs)"

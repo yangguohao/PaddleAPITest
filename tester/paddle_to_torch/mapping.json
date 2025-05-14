@@ -1490,6 +1490,13 @@
             "x": "input"
         }
     },
+    "paddle.take": {
+        "Rule": "TakeRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "index": "index"
+        }
+    },
     "paddle.topk":{
         "torch_api": "torch.topk",
         "paddle_torch_args_map": {
@@ -6688,13 +6695,6 @@
             "input": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.take": {
-        "Rule": "TakeRule",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "index": "index"
-        }
     },
     "paddle.tan": {
         "torch_api": "torch.tan",
