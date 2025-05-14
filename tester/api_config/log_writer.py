@@ -1,6 +1,7 @@
 import os
 import shutil
 from pathlib import Path
+from tester import get_cfg
 
 # 日志文件路径
 DIR_PATH = Path(__file__).resolve()
@@ -35,8 +36,9 @@ def get_log_file(log_type: str):
     """获取指定日志类型和PID对应的日志文件路径"""
     global is_engineV2
     prefix = LOG_PREFIXES.get(log_type)
+    id = get_cfg().id
     if not is_engineV2:
-        return TEST_LOG_PATH / f"{prefix}.txt"
+        return TEST_LOG_PATH / f"{prefix + id}.txt"
     pid = os.getpid()
     return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
 
@@ -60,7 +62,8 @@ def read_log(log_type):
     """读取文件所有行，返回集合"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-    file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type]}.txt"
+    id = get_cfg().id
+    file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type] + id}.txt"
     try:
         with file_path.open("r") as f:
             return set(line.strip() for line in f if line.strip())
