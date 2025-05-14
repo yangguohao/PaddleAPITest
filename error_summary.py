@@ -28,7 +28,8 @@ with open(os.path.join(output_dir, "error_log.log"), "w") as error_log:
                     if "[Worker" in line and "Processing Task" in line:
                         # 遇到新的Task，先检查上一个Task是否是出错的
                         if log_str:
-                            if ("[accuracy error]" in log_str or
+                            if "[torch error]" not in log_str and
+                                    ("[accuracy error]" in log_str or
                                     "[cuda error]" in log_str or
                                     "FatalError" in log_str or
                                     "cudaErrorIllegalAddress" in log_str or
@@ -57,7 +58,8 @@ with open(os.path.join(output_dir, "error_log.log"), "w") as error_log:
 
                 # 文件结束，处理最后一个Task
                 if log_str:
-                    if ("[accuracy error]" in log_str or
+                    if "[torch error]" not in log_str and
+                            ("[accuracy error]" in log_str or
                             "[cuda error]" in log_str or
                             "FatalError" in log_str or
                             "cudaErrorIllegalAddress" in log_str or
