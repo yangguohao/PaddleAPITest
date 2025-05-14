@@ -1615,6 +1615,13 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__eq__(other=y)"
     },
+    "paddle.Tensor.__lshift__": {
+        "torch_api": "torch.Tensor.__lshift__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__lshift__(other=y)"
+    },
     "paddle.Tensor.__ge__": {
         "torch_api": "torch.Tensor.__ge__",
         "paddle_torch_args_map": {
@@ -1684,6 +1691,21 @@
             "y": "other"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ne__(other=y)"
+    },
+    "paddle.Tensor.__neg__": {
+        "torch_api": "torch.Tensor.__neg__",
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__neg__()"
+    },
+    "paddle.Tensor.__nonzero__": {
+        "Rule": "NonzeroRule",
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__gt__(0)"
+    },
+    "paddle.Tensor.__or__": {
+        "torch_api": "torch.Tensor.__or__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__or__(other=y)"
     },
     "paddle.Tensor.__pow__": {
         "Rule": "__Pow__Rule",
@@ -3234,6 +3256,10 @@
             "y": "other"
         },
         "min_input_args": 2
+    },
+    "paddle.binomial": {
+        "Rule": "BinomialRule", 
+        "description": "result = torch.distributions.binomial.Binomial(total_count=tcnt, probs=tprob).sample()"
     },
     "paddle.bmm": {
         "torch_api": "torch.bmm",
