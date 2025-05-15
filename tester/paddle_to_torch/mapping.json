@@ -338,6 +338,18 @@
         },
         "description": "result = torch.full_like(input=x, fill_value=torch_kwargs['fill_value'], dtype=dtype)"
     },
+    "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm": {
+        "Rule": "FusedBiasDropoutResidualLayerNormRule"
+    },
+    "paddle.incubate.nn.functional.fused_dropout_add": {
+        "Rule": "FusedDropoutAddRule"
+    },
+    "paddle.incubate.nn.functional.fused_linear_activation": {
+        "Rule": "FusedLinearActivationRule"
+    },
+    "paddle.incubate.nn.functional.fused_linear": {
+        "Rule": "FusedLinearRule"
+    },
     "g": "API started with 'g' should be placed here",
     "paddle.gammaln": {
         "torch_api": "torch.special.gammaln",
@@ -1556,6 +1568,9 @@
     },
     "paddle.split":{
        "Rule": "SplitRule"
+    },
+    "paddle.incubate.nn.functional.swiglu":{
+        "Rule": "SwigluRule"
     },
     "paddle.sum": {
         "torch_api": "torch.sum",

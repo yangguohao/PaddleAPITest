@@ -1268,6 +1268,130 @@ converted_fill_value = convert_to_scalar(fill_value)
         return ConvertResult.success(paddle_api, code)
 
 
+class FusedBiasDropoutResidualLayerNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+residual = locals().get('residual')
+bias = locals().get('bias', None)
+ln_scale = locals().get('ln_scale', None)
+ln_bias = locals().get('ln_bias', None)
+dropout_rate = locals().get('dropout_rate', 0.5)
+ln_epsilon = locals().get('ln_epsilon', 1e-05)
+training = locals().get('training', True)
+mode = locals().get('mode', 'upscale_in_train')
+
+def fused_bias_dropout_residual_layernorm(x, residual, bias=None, ln_scale=None, ln_bias=None, dropout_rate=0.5, ln_epsilon=1e-05, training=True, mode='upscale_in_train', name=None):
+    if mode == 'upscale_in_train':
+        if bias is not None:
+            x = x + bias
+        x = torch.nn.functional.dropout(x, p=dropout_rate, training=training)
+        x = torch.nn.functional.layer_norm(x + residual, [residual.shape[-1]], weight=ln_scale, bias=ln_bias, eps=ln_epsilon)
+    else:
+        if bias is not None:
+            x = x + bias
+        # handle downscale dropout
+        mask = torch.bernoulli(torch.full(x.shape, 1-dropout_rate)).to(x.device)
+        if training:
+            x = x * mask
+        else:
+            x = x * (1 - dropout_rate)
+        x = torch.nn.functional.layer_norm(x + residual, [residual.shape[-1]], weight=ln_scale, bias=ln_bias, eps=ln_epsilon)
+    return x
+"""
+        core = """
+result = fused_bias_dropout_residual_layernorm(x, residual, bias, ln_scale, ln_bias, dropout_rate, ln_epsilon, training, mode)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class FusedDropoutAddRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+y = locals().get('y')
+p = locals().get('p', 0.5)
+training = locals().get('training', True)
+mode = locals().get('mode', 'upscale_in_train')
+
+def fused_dropout_add(x, y, p=0.5, training=True, mode='upscale_in_train'):
+    if mode == 'upscale_in_train':
+        x = torch.nn.functional.dropout(x, p=p, training=training)
+        x = x + y
+    else:
+        # handle downscale dropout
+        mask = torch.bernoulli(torch.full(x.shape, 1-p)).to(x.device)
+        if training:
+            x = x * mask
+        else:
+            x = x * (1 - p)
+        x = x + y
+    return x
+"""
+        core = """
+result = fused_dropout_add(x, y, p, training, mode)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class FusedLinearActivationRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+y = locals().get('y')
+bias = locals().get('bias', None)
+trans_x = locals().get('trans_x', False)
+trans_y = locals().get('trans_y', False)
+activation = locals().get('activation', None)
+
+def fused_linear_activation(x, y, bias, trans_x=False, trans_y=False, activation=None):
+    if trans_x:
+        x = x.T
+    if trans_y:
+        y = y.T
+    
+    if activation == 'relu':
+        return torch.nn.functional.relu(torch.nn.functional.linear(x, y.T, bias))
+    elif activation == 'gelu':
+        return torch.nn.functional.gelu(torch.nn.functional.linear(x, y.T, bias))
+    elif activation is None or activation == 'none':
+        return torch.nn.functional.linear(x, y.T, bias)
+    else:
+        raise ValueError(f"Unsupported activation: {activation}")
+"""
+        core = """
+result = fused_linear_activation(x, y, bias, trans_x, trans_y, activation)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class FusedLinearRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+weight = locals().get('weight')
+bias = locals().get('bias', None)
+transpose_weight = locals().get('transpose_weight', False)
+
+# paddle expected weight shape: (in_features, out_features)
+# torch expected weight shape: (out_features, in_features)
+transpose_weight = not transpose_weight
+def fused_linear(x, weight, bias=None, transpose_weight=False):
+    if transpose_weight:
+        weight = weight.T
+    x = torch.nn.functional.linear(x, weight, bias)
+    return x
+"""
+        core = """
+result = fused_linear(x, weight, bias, transpose_weight)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         # 抽取对应维度的tensor直接进行stack操作
@@ -3277,6 +3401,23 @@ elif y.dtype == torch.bool:
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
+
+class SwigluRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get("x")
+y = locals().get("y", None)
+
+if y == None:
+    x, y = torch.chunk(x, 2, dim=-1)
+"""
+        core = "result = torch.nn.functional.silu(x) * y"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class SegmentRule(BaseRule):

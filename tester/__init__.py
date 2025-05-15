@@ -30,7 +30,19 @@ if TYPE_CHECKING:
         USE_CACHED_NUMPY,
         cached_numpy
     )
-    from .config import get_cfg, set_cfg
+    
+# Command line arguments configuration
+CMD_CONFIG = None
+
+def get_cfg():
+    global CMD_CONFIG
+    return CMD_CONFIG
+
+def set_cfg(cfg):
+    global CMD_CONFIG
+    if cfg.id != "":
+        cfg.id = "_"+cfg.id
+    CMD_CONFIG = cfg
 
 def __getattr__(name: str) -> Any:
     if name not in __all__:
