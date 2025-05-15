@@ -1413,6 +1413,13 @@
             "dtype": "dtype"
         }
     },
+    "paddle.outer": {
+        "torch_api": "torch.outer",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "vec2"
+        }
+    },
     "p": "API started with 'p' should be placed here",
     "paddle.poisson": {
         "torch_api": "torch.poisson",
@@ -1460,6 +1467,21 @@
         "Rule": "Put_along_axisRule"
     },
     "q": "API started with 'q' should be placed here",
+    "paddle.quantile": {
+        "torch_api": "torch.quantile",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "q": "q",
+            "axis": "dim",
+            "keepdim": "keepdim",
+            "interpolation": "interpolation"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False",
+            "interpolation": "linear"      
+        }
+    },
     "r": "API started with 'r' should be placed here",
     "paddle.rank":{
         "Rule": "RankRule"
@@ -6344,14 +6366,6 @@
         },
         "min_input_args": 3
     },
-    "paddle.outer": {
-        "torch_api": "torch.outer",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "vec2"
-        },
-        "min_input_args": 2
-    },
     "paddle.linalg.pca_lowrank": {
         "torch_api": "torch.pca_lowrank",
         "paddle_torch_args_map": {
@@ -6388,17 +6402,6 @@
             "skip_first": "skip_first"
         },
         "min_input_args": 0
-    },
-    "paddle.quantile": {
-        "torch_api": "torch.quantile",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "q": "q",
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "interpolation": "interpolation"
-        },
-        "min_input_args": 2
     },
     "paddle.rad2deg": {
         "torch_api": "torch.rad2deg",

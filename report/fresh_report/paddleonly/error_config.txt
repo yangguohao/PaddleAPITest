@@ -243,3 +243,5 @@ paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1, 1],"float16"), 
 paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([8, 1],"float16"), Tensor([8, 1],"float16"), reduction="mean", ) 
 paddle.Tensor.matmul(Tensor([128, 12, 23, 23],"float32"), Tensor([128, 12, 23, 32],"float16"), )
 paddle.Tensor.matmul(Tensor([192, 12, 22, 22],"float32"), Tensor([192, 12, 22, 32],"float16"), )
+paddle.outer(Tensor([5, 10, 10],"int32"), Tensor([2, 10],"int32"), )
+paddle.outer(Tensor([5, 10, 10],"int64"), Tensor([2, 10],"int64"), )
