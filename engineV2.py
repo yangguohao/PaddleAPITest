@@ -21,8 +21,8 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
     )
 
-from tester.api_config.log_writer import (aggregate_logs, read_log,
-                                          set_engineV2, write_to_log)
+from tester.api_config.log_writer import (aggregate_logs, print_log_info,
+                                          read_log, set_engineV2, write_to_log)
 
 
 def cleanup(pool):
@@ -363,7 +363,12 @@ def main():
         print(len(finish_configs), "cases have been tested.", flush=True)
         try:
             with open(options.api_config_file, "r") as f:
-                api_configs = set(line.strip() for line in f if line.strip())
+                lines = [line.strip() for line in f if line.strip()]
+                print(len(lines), "cases in total.", flush=True)
+                api_configs = set(lines)
+                dup_case = len(lines) - len(api_configs)
+                if dup_case > 0:
+                    print(dup_case, "cases are duplicates and removed.", flush=True)
         except FileNotFoundError:
             print(
                 f"Error: api config file {options.api_config_file} not found",
@@ -371,10 +376,15 @@ def main():
             )
             return
 
+        api_configs_origin_count = len(api_configs)
         api_configs = sorted(api_configs - finish_configs)
         all_case = len(api_configs)
         fail_case = 0
+        tested_case = api_configs_origin_count - all_case
+        if tested_case:
+            print(tested_case, "cases already tested.", flush=True)
         print(all_case, "cases will be tested.", flush=True)
+        del finish_configs, api_configs_origin_count, tested_case
 
         if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
@@ -469,6 +479,7 @@ def main():
                 cleanup(pool)
             finally:
                 aggregate_logs()
+                print_log_info(all_case, fail_case)
         else:
             # Single worker
             from tester import (APIConfig, APITestAccuracy,
