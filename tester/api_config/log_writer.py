@@ -1,7 +1,6 @@
 import os
 import shutil
 from pathlib import Path
-from tester import get_cfg
 
 # 日志文件路径
 DIR_PATH = Path(__file__).resolve()
@@ -25,6 +24,19 @@ LOG_PREFIXES = {
 
 is_engineV2 = False
 
+    
+# Command line arguments configuration
+CMD_CONFIG = None
+
+def get_cfg():
+    global CMD_CONFIG
+    return CMD_CONFIG
+
+def set_cfg(cfg):
+    global CMD_CONFIG
+    if cfg.id != "":
+        cfg.id = "_"+cfg.id
+    CMD_CONFIG = cfg
 
 def set_engineV2():
     global is_engineV2
