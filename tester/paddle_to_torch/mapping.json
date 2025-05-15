@@ -266,6 +266,14 @@
     "paddle.Tensor.detach":{
         "torch_api": "torch.Tensor.detach"
     },
+    "paddle.diag": {
+        "torch_api": "torch.diag",
+        "Rule": "DiagRule",
+        "set_defaults": {
+            "offset": "0",
+            "padding_value": "0"
+        }
+    },
     "paddle.Tensor.digamma":{
         "torch_api": "torch.Tensor.digamma"
     },
@@ -330,6 +338,19 @@
         },
         "torch_kwargs": {
             "generator": "None"
+        }
+    },
+    "paddle.eye": {
+        "torch_api": "torch.eye",
+        "Rule": "EyeRule",
+        "paddle_torch_args_map": {
+            "dtype": "dtype",
+            "num_columns": "m",
+            "num_rows": "n"
+        },
+        "set_defaults": {
+            "dtype": "None",
+            "num_columns": "None"
         }
     },
     "f": "API started with 'f' should be placed here",
@@ -3603,14 +3624,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.diag": {
-        "torch_api": "torch.diag",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "offset": "diagonal"
-        },
-        "min_input_args": 1
-    },
     "paddle.diag_embed": {
         "torch_api": "torch.diag_embed",
         "paddle_torch_args_map": {
@@ -4160,18 +4173,6 @@
         "torch_api": "torch.exp",
         "paddle_torch_args_map": {
             "x": "input"
-        },
-        "min_input_args": 1
-    },
-    "paddle.eye": {
-        "torch_api": "torch.eye",
-        "paddle_torch_args_map": {
-            "num_rows": "n",
-            "num_columns": "m",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad"
         },
         "min_input_args": 1
     },
