@@ -1,5 +1,6 @@
 import gc
 import traceback
+
 import numpy
 import paddle
 import torch
@@ -18,7 +19,6 @@ class APITestAccuracy(APITestBase):
 
     @func_set_timeout(600)
     def test(self):
-
         if self.need_skip():
             print("[Skip]", flush=True)
             return
@@ -266,7 +266,7 @@ class APITestAccuracy(APITestBase):
                 return
             for i in range(len(paddle_output)):
                 flag = False
-                if isinstance(paddle_output[i], list) and isinstance(torch_output[i], list):
+                if isinstance(paddle_output[i], (tuple,list)) and isinstance(torch_output[i], (tuple,list)):
                     flag =True
                     for item in paddle_output[i]:
                         if not isinstance(item, paddle.Tensor):
@@ -290,6 +290,8 @@ class APITestAccuracy(APITestBase):
                         return                    
                 else:
                     if isinstance(paddle_output[i], int):
+                        self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
+                    elif 'tolist' in self.api_config.api_name:
                         self.np_assert_accuracy(numpy.array(paddle_output[i]), numpy.array(torch_output[i]), 1e-2, 1e-2, self.api_config)
                     elif not isinstance(paddle_output[i], paddle.Tensor):
                         print("[not compare] ", paddle_output[i], torch_output[i], flush=True)

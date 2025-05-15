@@ -25,6 +25,23 @@ LOG_PREFIXES = {
 is_engineV2 = False
 
 
+# Command line arguments configuration
+# Used in engine.py
+CMD_CONFIG = None
+
+
+def get_cfg():
+    global CMD_CONFIG
+    return CMD_CONFIG
+
+
+def set_cfg(cfg):
+    global CMD_CONFIG
+    if cfg.id != "":
+        cfg.id = "_" + cfg.id
+    CMD_CONFIG = cfg
+
+
 def set_engineV2():
     global is_engineV2
     is_engineV2 = True
@@ -36,7 +53,11 @@ def get_log_file(log_type: str):
     global is_engineV2
     prefix = LOG_PREFIXES.get(log_type)
     if not is_engineV2:
-        return TEST_LOG_PATH / f"{prefix}.txt"
+        cfg = get_cfg()
+        if cfg:
+            return TEST_LOG_PATH / f"{prefix + cfg.id}.txt"
+        else:
+            return TEST_LOG_PATH / f"{prefix}.txt"
     pid = os.getpid()
     return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
 
@@ -60,7 +81,11 @@ def read_log(log_type):
     """读取文件所有行，返回集合"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-    file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type]}.txt"
+    cfg = get_cfg()
+    if cfg:
+        file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type] + cfg.id}.txt"
+    else:
+        file_path = TEST_LOG_PATH / f"{LOG_PREFIXES[log_type]}.txt"
     try:
         with file_path.open("r") as f:
             return set(line.strip() for line in f if line.strip())
@@ -103,3 +128,40 @@ def aggregate_logs(mkdir=False):
         pass
     if mkdir:
         TMP_LOG_PATH.mkdir(exist_ok=True)
+
+
+def print_log_info(all_case, fail_case):
+    """打印日志统计信息"""
+    log_counts = {}
+    recorded_count = 0
+
+    for log_type, prefix in LOG_PREFIXES.items():
+        log_file = TEST_LOG_PATH / f"{prefix}.txt"
+        if not log_file.exists():
+            continue
+        try:
+            with log_file.open("r") as f:
+                count = sum(1 for _ in f)
+                log_counts[log_type] = count
+                if log_type not in ["checkpoint", "timeout", "crash"]:
+                    recorded_count += count
+        except Exception as err:
+            print(f"Error reading {log_file}: {err}", flush=True)
+
+    skipped_case = all_case - recorded_count - fail_case
+    assert (
+        skipped_case >= 0
+    ), f"skipped_case should be non-negative, but got {skipped_case}"
+
+    # 打印统计信息
+    print("\n" + "=" * 50)
+    print("Test Case Statistics".center(50))
+    print("=" * 50)
+    print(f"{'Total cases':<30}: {all_case}")
+    print(f"{'Failed cases':<30}: {fail_case}")
+    print(f"{'Skipped cases':<30}: {skipped_case}")
+    print("-" * 50)
+    print("Log Type Breakdown:")
+    for log_type, count in log_counts.items():
+        print(f"  {log_type:<28}: {count}")
+    print("=" * 50 + "\n")

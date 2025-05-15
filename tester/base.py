@@ -32,9 +32,9 @@ rand_apis = [
     "paddle.randint",
     "paddle.randint_like",
     "paddle.randperm",
+    "paddle.uniform",
     "paddle.standard_gamma",
     "paddle.standard_normal", 
-    "paddle.uniform",
     "paddle.Tensor.bernoulli_",
     "paddle.Tensor.cauchy_",
     "paddle.Tensor.exponential_",
@@ -205,6 +205,12 @@ class APITestBase:
             paddle_sig = inspect.signature(self.paddle_api)
             paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
             paddle_args_dict = paddle_bound_args.arguments
+            # fix paddle.arange wrong binding 
+            if self.api_config.api_name == "paddle.arange":
+                # if end is not provided, use the 'start' kwargs as end
+                if "end" not in paddle_args_dict:
+                    paddle_args_dict["end"] = paddle_args_dict["start"]
+                    paddle_args_dict["start"] = 0
         else:
             # For APIs without signatures, use the external mapping dict
             mapping = no_signature_api_mappings[api_name]
@@ -342,7 +348,6 @@ class APITestBase:
             tmp.append(item.get_numpy_tensor(self.api_config))
         return tuple(tmp) if is_tuple else tmp
 
-
     def gen_numpy_input(self):
         for i, arg_config in enumerate(self.paddle_args_config):
             if isinstance(arg_config, (list, tuple)):
@@ -376,10 +381,16 @@ class APITestBase:
         return tuple(tmp) if is_tuple else tmp
 
     def gen_paddle_input(self):
+        """
+        generate paddle input by config, for tensor config initlize paddle tensor by get_paddle_tensor()
+        
+        be sure to call gen_numpy_input() before use gen_paddle_input() since gen_paddle_input() do not pass index or key to get_paddle_tensor() or get_numpy_tensor() while gen_numpy_input() pass.
+        """
+        
         self.paddle_args = []
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
-
+        
         for arg_config in self.paddle_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config))
@@ -457,15 +468,15 @@ class APITestBase:
         for i in range(len(self.torch_args)):
             if isinstance(self.torch_args[i], torch.Tensor):
                 result.append(self.torch_args[i])
-            elif isinstance(self.torch_args[i], tuple) or isinstance(self.torch_args[i], list):
-                for item in self.paddle_args[i]:
+            elif isinstance(self.torch_args[i], (tuple, list)):
+                for item in self.torch_args[i]:
                     if isinstance(item, torch.Tensor):
                         result.append(item)
 
         for key, value in self.torch_kwargs.items():
             if isinstance(value, torch.Tensor):
                 result.append(value)
-            elif isinstance(value, tuple) or isinstance(value, list):
+            elif isinstance(value, (tuple, list)):
                 for item in value:
                     if isinstance(item, torch.Tensor):
                         result.append(item)
@@ -550,30 +561,33 @@ class APITestBase:
         return result_outputs, result_outputs_grads
 
     def convert_dtype_to_torch_type(self, dtype):
-        if dtype in ["float32", numpy.float32]:
+        # for python built-in types, mappings are int -> torch.int64, bool -> torch.bool, float -> torch.float64, complex -> torch.complex128, None -> None
+        if dtype in ['float32', 'float', numpy.float32, paddle.float32, paddle.base.libpaddle.VarDesc.VarType.FP32]:
             return torch.float32
-        elif dtype in ['float16', numpy.float16]:
+        elif dtype in ['float16', numpy.float16, paddle.float16, paddle.base.libpaddle.VarDesc.VarType.FP16]:
             return torch.float16
-        elif dtype in ['float64', numpy.float64]:
+        elif dtype in ['float64', 'double', numpy.float64, paddle.float64, paddle.base.libpaddle.VarDesc.VarType.FP64, float]:
             return torch.float64
-        elif dtype in ['int16', numpy.int16]:
+        elif dtype in ['int16', numpy.int16, paddle.int16, paddle.base.libpaddle.VarDesc.VarType.INT16]:
             return torch.int16
-        elif dtype in ['int8', numpy.int8]:
+        elif dtype in ['int8', numpy.int8, paddle.int8, paddle.base.libpaddle.VarDesc.VarType.INT8]:
             return torch.int8
-        elif dtype in ['bool', numpy.bool_]:
+        elif dtype in ['bool', numpy.bool_, paddle.bool, paddle.base.libpaddle.VarDesc.VarType.BOOL, bool]:
             return torch.bool
-        elif dtype in ['bfloat16', numpy.uint16]:
+        elif dtype in ['bfloat16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
             return torch.bfloat16
-        elif dtype in ['uint8', numpy.uint8]:
+        elif dtype in ['uint8', numpy.uint8, paddle.uint8, paddle.base.libpaddle.VarDesc.VarType.UINT8]:
             return torch.uint8
-        elif dtype in ['int32', numpy.int32]:
+        elif dtype in ['int32', numpy.int32, paddle.int32, paddle.base.libpaddle.VarDesc.VarType.INT32]:
             return torch.int32
-        elif dtype in ['int64', numpy.int64]:
+        elif dtype in ['int64', "int", numpy.int64, paddle.int64, paddle.base.libpaddle.VarDesc.VarType.INT64, int]:
             return torch.int64
-        elif dtype in ['complex64', numpy.complex64]:
+        elif dtype in ['complex64', numpy.complex64, paddle.complex64, paddle.base.libpaddle.VarDesc.VarType.COMPLEX64]:
             return torch.complex64
-        elif dtype in ['complex128', numpy.complex128]:
+        elif dtype in ['complex128', numpy.complex128, paddle.complex128, paddle.base.libpaddle.VarDesc.VarType.COMPLEX128, complex]:
             return torch.complex128
+        elif dtype is None:
+            return None
         else:
             raise ValueError(f'Unsupport dtype: {dtype}')
 
@@ -731,6 +745,12 @@ class APITestBase:
         return tuple(tmp) if is_tuple else tmp
 
     def gen_torch_input(self):
+        """
+        generate torch input by config, for tensor config initlize torch tensor by get_torch_tensor()
+        
+        be sure to call gen_numpy_input() before use gen_torch_input() since gen_torch_input() do not pass index or key to get_torch_tensor() or get_numpy_tensor() while gen_numpy_input() pass.
+        """
+        
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
         for arg_config in self.torch_args_config:
@@ -740,6 +760,8 @@ class APITestBase:
             elif isinstance(arg_config, (list, tuple)):
                 is_tuple = isinstance(arg_config, tuple)
                 self.torch_args.append(self._handle_list_or_tuple_torch(arg_config, is_tuple))
+            elif isinstance(arg_config, paddle.dtype) or isinstance(arg_config, paddle.base.libpaddle.VarDesc.VarType):
+                self.torch_args.append(self.convert_dtype_to_torch_type(arg_config))
             else:
                 self.torch_args.append(arg_config)
 
@@ -750,6 +772,8 @@ class APITestBase:
             elif isinstance(arg_config, (list, tuple)):
                 is_tuple = isinstance(arg_config, tuple)
                 self.torch_kwargs[key] = self._handle_list_or_tuple_torch(arg_config, is_tuple)
+            elif isinstance(arg_config, paddle.dtype) or isinstance(arg_config, paddle.base.libpaddle.VarDesc.VarType) or key == "dtype":
+                self.torch_kwargs[key] = self.convert_dtype_to_torch_type(arg_config)
             else:
                 self.torch_kwargs[key] = arg_config
 

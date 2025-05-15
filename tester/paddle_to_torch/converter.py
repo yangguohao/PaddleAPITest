@@ -12,21 +12,10 @@ from .rules import BaseRule, ConvertResult, ErrorRule, GenericRule
 PADDLE2TORCH_WRONG_CONFIG = frozenset(
     [
         "paddle.matmul",
-        "paddle.nn.functional.adaptive_avg_pool2d",
-        "paddle.nn.functional.adaptive_avg_pool3d",
         "paddle.nn.functional.gaussian_nll_loss",
         "paddle.nn.functional.group_norm",
         "paddle.nn.functional.interpolate",
         "paddle.nn.functional.local_response_norm",
-        "paddle.nn.functional.lp_pool1d",
-        "paddle.nn.functional.lp_pool2d",
-        "paddle.nn.functional.max_unpool1d",
-        "paddle.nn.functional.max_unpool2d",
-        "paddle.nn.functional.max_unpool3d",
-        "paddle.nn.functional.pixel_shuffle",
-        "paddle.nn.functional.pixel_unshuffle",
-        "paddle.nn.functional.prelu",
-        "paddle.nn.functional.selu",
     ]
 )
 
