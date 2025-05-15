@@ -128,6 +128,12 @@
         "torch_api": "torch.Tensor.atanh",
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.atanh()"
     },
+    "paddle.autograd.hessian": {
+        "Rule": "HessianRule"
+    },
+    "paddle.autograd.jacobian": {
+        "Rule": "JacobianRule"
+    },
     "b": "API started with 'b' should be placed here",
     "paddle.bincount": {
         "torch_api": "torch.bincount",
@@ -490,6 +496,12 @@
     },
     "paddle.incubate.softmax_mask_fuse_upper_triangle": {
         "Rule": "SoftmaxMaskFuseUpperTriangleRule"
+    },
+    "paddle.incubate.nn.functional.variable_length_memory_efficient_attention": {
+        "Rule": "VariableLengthMemoryEfficientAttentionRule"
+    },
+    "paddle.incubate.nn.functional.masked_multihead_attention": {
+        "Rule": "MaskedMultiheadAttentionRule"
     },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
