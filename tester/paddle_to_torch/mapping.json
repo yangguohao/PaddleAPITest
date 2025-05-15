@@ -674,6 +674,14 @@
             "y": "other"
         }
     },
+    "paddle.multinomial": {
+        "torch_api": "torch.multinomial",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "num_samples": "num_samples",
+            "replacement": "replacement"
+        }
+    },
     "paddle.Tensor.mod": {
         "torch_api": "torch.Tensor.fmod",
         "paddle_torch_args_map": {
@@ -4874,16 +4882,6 @@
             "destination": "destination"
         },
         "min_input_args": 3
-    },
-    "paddle.multinomial": {
-        "torch_api": "torch.multinomial",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "num_samples": "num_samples",
-            "replacement": "replacement",
-            "generator": "generator"
-        },
-        "min_input_args": 2
     },
     "paddle.mv": {
         "torch_api": "torch.mv",
