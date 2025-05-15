@@ -907,6 +907,27 @@
     "paddle.nn.functional.cross_entropy": {
         "Rule": "CrossEntropyRule"
     },
+    "paddle.nn.functional.binary_cross_entropy_with_logits":{
+        "Rule": "WeightDetachRule",
+        "torch_api": "torch.nn.functional.binary_cross_entropy_with_logits",
+        "paddle_torch_args_map": {
+            "logit": "input",
+            "label": "target",
+            "weight": "weight",
+            "reduction": "reduction",
+            "pos_weight": "pos_weight"
+        }
+    },
+    "paddle.nn.functional.cosine_embedding_loss": {
+        "torch_api": "torch.nn.functional.cosine_embedding_loss",
+        "paddle_torch_args_map": {
+            "input1": "input1",
+            "input2": "input2",
+            "label": "target",
+            "margin": "margin",
+            "reduction": "reduction"
+        }
+    },
     "paddle.nn.functional.ctc_loss": {
         "Rule": "CtcLossRule"
     },
@@ -5924,27 +5945,6 @@
             "inplace": "inplace"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.binary_cross_entropy_with_logits":{
-        "Rule": "WeightDetachRule",
-        "torch_api": "torch.nn.functional.binary_cross_entropy_with_logits",
-        "paddle_torch_args_map": {
-            "logit": "input",
-            "label": "target",
-            "weight": "weight",
-            "reduction": "reduction",
-            "pos_weight": "pos_weight"
-        }
-    },
-    "paddle.nn.functional.cosine_embedding_loss": {
-        "torch_api": "torch.nn.functional.cosine_embedding_loss",
-        "paddle_torch_args_map": {
-            "input1": "input1",
-            "input2": "input2",
-            "label": "target",
-            "margin": "margin",
-            "reduction": "reduction"
-        }
     },
     "paddle.nn.functional.celu": {
         "torch_api": "torch.nn.functional.celu",

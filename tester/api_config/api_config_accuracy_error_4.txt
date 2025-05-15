@@ -3309,7 +3309,6 @@ paddle.nn.functional.gaussian_nll_loss(Tensor([10, 2],"float32"), Tensor([10, 2]
 paddle.nn.functional.gaussian_nll_loss(Tensor([10, 2],"float32"), Tensor([10, 2],"float32"), Tensor([10, 2],"float32"), full=True, reduction="sum", )
 paddle.nn.functional.gaussian_nll_loss(Tensor([10, 2],"float64"), Tensor([10, 2],"float64"), Tensor([10, 2],"float64"), False, 1e-06, "none", None, )
 paddle.nn.functional.gaussian_nll_loss(Tensor([10, 2],"float64"), Tensor([10, 2],"float64"), Tensor([10, 2],"float64"), full=False, reduction="none", )
-paddle.nn.functional.linear(x=Tensor([64, 25088],"float16"), weight=Tensor([25088, 4096],"float16"), bias=Tensor([4096],"float16"), name=None, )
 paddle.nn.functional.log_softmax(Tensor([2, 2, 1],"float32"), 0, )
 paddle.nn.functional.log_softmax(Tensor([2, 2, 1],"float64"), 0, )
 paddle.nn.functional.log_softmax(Tensor([2, 3, 4, 5],"float32"), 1, )
