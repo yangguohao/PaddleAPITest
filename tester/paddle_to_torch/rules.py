@@ -963,13 +963,21 @@ class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if data_format == "NHWC":
+if data_format == "NLC":
+    x = x.transpose(1, 2)
+elif data_format == "NHWC":
     x = x.permute(0, 3, 1, 2)
+elif data_format == "NDHWC":
+    x = x.permute(0, 4, 1, 2, 3)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post = """
-if data_format == "NHWC":
+if data_format == "NLC":
+    result = result.transpose(1, 2)
+elif data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
+elif data_format == "NDHWC":
+    result = result.permute(0, 2, 3, 4, 1)
 """
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
@@ -2886,6 +2894,22 @@ else:
     result = x    
 """
         code = impl.splitlines()
+        return ConvertResult.success(paddle_api, code)
+
+
+class SeluRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if scale == 1.0507009873554804934193349852946 and alpha == 1.6732632423543772848170429916717:
+    result = {self.torch_api}(**_kwargs)
+else:
+    result = scale * torch.where(x > 0, x, alpha * (torch.exp(x) - 1))
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
