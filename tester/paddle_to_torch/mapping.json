@@ -5919,6 +5919,7 @@
         "min_input_args": 1
     },
     "paddle.nn.functional.binary_cross_entropy_with_logits":{
+        "Rule": "WeightDetachRule",
         "torch_api": "torch.nn.functional.binary_cross_entropy_with_logits",
         "paddle_torch_args_map": {
             "logit": "input",
