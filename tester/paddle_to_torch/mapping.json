@@ -128,6 +128,12 @@
         "torch_api": "torch.Tensor.atanh",
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.atanh()"
     },
+    "paddle.autograd.hessian": {
+        "Rule": "HessianRule"
+    },
+    "paddle.autograd.jacobian": {
+        "Rule": "JacobianRule"
+    },
     "b": "API started with 'b' should be placed here",
     "paddle.bincount": {
         "torch_api": "torch.bincount",
@@ -148,6 +154,10 @@
     },
     "paddle.broadcast_tensors": {
         "Rule": "BroadcastTensorsRule"
+    },
+    "paddle.binomial": {
+        "Rule": "BinomialRule", 
+        "description": "result = torch.distributions.binomial.Binomial(total_count=tcnt, probs=tprob).sample()"
     },
     "paddle.bitwise_invert": {
         "torch_api": "torch.bitwise_not",
@@ -332,6 +342,18 @@
         },
         "description": "result = torch.full_like(input=x, fill_value=torch_kwargs['fill_value'], dtype=dtype)"
     },
+    "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm": {
+        "Rule": "FusedBiasDropoutResidualLayerNormRule"
+    },
+    "paddle.incubate.nn.functional.fused_dropout_add": {
+        "Rule": "FusedDropoutAddRule"
+    },
+    "paddle.incubate.nn.functional.fused_linear_activation": {
+        "Rule": "FusedLinearActivationRule"
+    },
+    "paddle.incubate.nn.functional.fused_linear": {
+        "Rule": "FusedLinearRule"
+    },
     "g": "API started with 'g' should be placed here",
     "paddle.gammaln": {
         "torch_api": "torch.special.gammaln",
@@ -490,6 +512,12 @@
     },
     "paddle.incubate.softmax_mask_fuse_upper_triangle": {
         "Rule": "SoftmaxMaskFuseUpperTriangleRule"
+    },
+    "paddle.incubate.nn.functional.variable_length_memory_efficient_attention": {
+        "Rule": "VariableLengthMemoryEfficientAttentionRule"
+    },
+    "paddle.incubate.nn.functional.masked_multihead_attention": {
+        "Rule": "MaskedMultiheadAttentionRule"
     },
     "j": "API started with 'j' should be placed here",
     "k": "API started with 'k' should be placed here",
@@ -672,6 +700,14 @@
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
+        }
+    },
+    "paddle.multinomial": {
+        "torch_api": "torch.multinomial",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "num_samples": "num_samples",
+            "replacement": "replacement"
         }
     },
     "paddle.Tensor.mod": {
@@ -1006,6 +1042,50 @@
     },
     "paddle.nn.functional.interpolate": {
         "Rule": "InterpolateRule"
+    },
+    "paddle.nn.functional.pixel_shuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.pixel_shuffle",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "upscale_factor": "upscale_factor"
+        }
+    },
+    "paddle.nn.functional.pixel_unshuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.pixel_unshuffle",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "downscale_factor": "downscale_factor"
+        }
+    },
+    "paddle.nn.functional.prelu": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.prelu",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight"
+        }
+    },
+    "paddle.nn.functional.selu": {
+        "Rule": "SeluRule",
+        "torch_api": "torch.nn.functional.selu",
+        "set_defaults": {
+            "scale": 1.0507009873554804934193349852946,
+            "alpha": 1.6732632423543772848170429916717
+        },
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
     },
     "paddle.nonzero": {
         "torch_api": "torch.argwhere",
@@ -1727,6 +1807,9 @@
     "paddle.split":{
        "Rule": "SplitRule"
     },
+    "paddle.incubate.nn.functional.swiglu":{
+        "Rule": "SwigluRule"
+    },
     "paddle.sum": {
         "torch_api": "torch.sum",
         "Rule": "ReduceRule",
@@ -1834,6 +1917,13 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__eq__(other=y)"
     },
+    "paddle.Tensor.__lshift__": {
+        "torch_api": "torch.Tensor.__lshift__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__lshift__(other=y)"
+    },
     "paddle.Tensor.__ge__": {
         "torch_api": "torch.Tensor.__ge__",
         "paddle_torch_args_map": {
@@ -1855,6 +1945,9 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__le__(other=y)"
     },
+    "paddle.Tensor.__len__": {
+        "torch_api": "torch.Tensor.__len__"
+      },      
     "paddle.Tensor.__lt__": {
         "torch_api": "torch.Tensor.__lt__",
         "paddle_torch_args_map": {
@@ -1903,6 +1996,21 @@
             "y": "other"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__ne__(other=y)"
+    },
+    "paddle.Tensor.__neg__": {
+        "torch_api": "torch.Tensor.__neg__",
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__neg__()"
+    },
+    "paddle.Tensor.__nonzero__": {
+        "Rule": "NonzeroRule",
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__gt__(0)"
+    },
+    "paddle.Tensor.__or__": {
+        "torch_api": "torch.Tensor.__or__",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__or__(other=y)"
     },
     "paddle.Tensor.__pow__": {
         "Rule": "__Pow__Rule",
@@ -5062,16 +5170,6 @@
         },
         "min_input_args": 3
     },
-    "paddle.multinomial": {
-        "torch_api": "torch.multinomial",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "num_samples": "num_samples",
-            "replacement": "replacement",
-            "generator": "generator"
-        },
-        "min_input_args": 2
-    },
     "paddle.mv": {
         "torch_api": "torch.mv",
         "paddle_torch_args_map": {
@@ -6150,30 +6248,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.nn.functional.pixel_shuffle": {
-        "torch_api": "torch.nn.functional.pixel_shuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "upscale_factor": "upscale_factor"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.pixel_unshuffle": {
-        "torch_api": "torch.nn.functional.pixel_unshuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "downscale_factor": "downscale_factor"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.prelu": {
-        "torch_api": "torch.nn.functional.prelu",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight"
-        },
-        "min_input_args": 2
-    },
     "paddle.nn.functional.relu": {
         "torch_api": "torch.nn.functional.relu",
         "paddle_torch_args_map": {
@@ -6204,14 +6278,6 @@
             "lower": "lower",
             "upper": "upper",
             "training": "training",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.selu": {
-        "torch_api": "torch.nn.functional.selu",
-        "paddle_torch_args_map": {
-            "x": "input",
             "inplace": "inplace"
         },
         "min_input_args": 1

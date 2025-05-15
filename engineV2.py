@@ -21,8 +21,8 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
     )
 
-from tester.api_config.log_writer import (aggregate_logs, read_log,
-                                          set_engineV2, write_to_log)
+from tester.api_config.log_writer import (aggregate_logs, print_log_info,
+                                          read_log, set_engineV2, write_to_log)
 
 
 def cleanup(pool):
@@ -280,6 +280,11 @@ def main():
 
     parser = argparse.ArgumentParser(description="API Test")
     parser.add_argument("--api_config_file", default="")
+    parser.add_argument(
+        "--api_config_file_pattern",
+        default="",
+        help="Pattern to match multiple config files (e.g., 'tester/api_config/api_config_support2torch_*.txt')",
+    )
     parser.add_argument("--api_config", default="")
     parser.add_argument(
         "--paddle_only",
@@ -357,24 +362,62 @@ def main():
         finally:
             case.clear_tensor()
             del case
-    elif options.api_config_file:
+    elif options.api_config_file or options.api_config_file_pattern:
+        if options.api_config_file_pattern:
+            import glob
+            import re
+
+            if "*" in options.api_config_file_pattern:
+                all_files = glob.glob(options.api_config_file_pattern)
+                regex_pattern = re.sub(r'\*([^*]*)$', r'\\d+\1', options.api_config_file_pattern)
+                config_files = [
+                    file for file in all_files if re.fullmatch(regex_pattern, file)
+                ]
+                if not config_files:
+                    print(
+                        f"No config files found: {options.api_config_file_pattern}",
+                        flush=True,
+                    )
+                    return
+            else:
+                config_files = [options.api_config_file_pattern]
+            print("\nConfig files to be tested:")
+            for i, config_file in enumerate(sorted(config_files), 1):
+                print(f"{i}. {config_file}")
+        else:
+            config_files = [options.api_config_file]
+
         # Batch execution
         finish_configs = read_log("checkpoint")
         print(len(finish_configs), "cases have been tested.", flush=True)
-        try:
-            with open(options.api_config_file, "r") as f:
-                api_configs = set(line.strip() for line in f if line.strip())
-        except FileNotFoundError:
-            print(
-                f"Error: api config file {options.api_config_file} not found",
-                flush=True,
-            )
-            return
 
+        api_config_count = 0
+        api_configs = set()
+        for config_file in config_files:
+            try:
+                with open(config_file, "r") as f:
+                    lines = [line.strip() for line in f if line.strip()]
+                    api_config_count += len(lines)
+                    api_configs.update(lines)
+            except FileNotFoundError:
+                print(
+                    f"Error: config file {config_file} not found",
+                    flush=True,
+                )
+        print(api_config_count, "cases in total.", flush=True)
+        dup_case = api_config_count - len(api_configs)
+        if dup_case > 0:
+            print(dup_case, "cases are duplicates and removed.", flush=True)
+
+        api_config_count = len(api_configs)
         api_configs = sorted(api_configs - finish_configs)
         all_case = len(api_configs)
         fail_case = 0
+        tested_case = api_config_count - all_case
+        if tested_case:
+            print(tested_case, "cases already tested.", flush=True)
         print(all_case, "cases will be tested.", flush=True)
+        del api_config_count, dup_case, tested_case
 
         if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
@@ -469,6 +512,7 @@ def main():
                 cleanup(pool)
             finally:
                 aggregate_logs()
+                print_log_info(all_case, fail_case)
         else:
             # Single worker
             from tester import (APIConfig, APITestAccuracy,
