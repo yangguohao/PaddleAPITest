@@ -765,6 +765,13 @@
     "paddle.median": {
         "Rule": "MedianRule"
     },
+    "paddle.mm": {
+        "torch_api": "torch.mm",
+        "paddle_torch_args_map": {
+            "input": "input",
+            "mat2": "mat2"
+        }
+    },
     "paddle.mod": {
         "torch_api": "torch.fmod",
         "paddle_torch_args_map": {
@@ -4965,14 +4972,6 @@
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
-        },
-        "min_input_args": 2
-    },
-    "paddle.mm": {
-        "torch_api": "torch.mm",
-        "paddle_torch_args_map": {
-            "input": "input",
-            "mat2": "mat2"
         },
         "min_input_args": 2
     },

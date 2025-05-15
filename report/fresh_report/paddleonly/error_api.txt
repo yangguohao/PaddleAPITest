@@ -36,3 +36,4 @@ paddle.Tensor.__setitem__
 paddle.nn.functional.binary_cross_entropy_with_logits
 paddle.Tensor.matmul
 paddle.outer
+paddle.mm

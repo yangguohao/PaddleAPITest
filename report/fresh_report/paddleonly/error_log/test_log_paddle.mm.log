@@ -1,0 +1,3 @@
+[paddle error] paddle.mm(Tensor([32, 1, 256],"float32"), Tensor([32, 256, 576],"float16"), ) 
+ (InvalidArgument) The type of data we are trying to retrieve (float16) does not match the type of data (float32) currently contained in the container.
+  [Hint: Expected dtype() == phi::CppTypeToDataType<T>::Type(), but received dtype():10 != phi::CppTypeToDataType<T>::Type():15.] (at /paddle/paddle/phi/core/dense_tensor.cc:153)
