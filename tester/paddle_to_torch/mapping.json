@@ -686,6 +686,14 @@
             "y": "other"
         }
     },
+    "paddle.multinomial": {
+        "torch_api": "torch.multinomial",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "num_samples": "num_samples",
+            "replacement": "replacement"
+        }
+    },
     "paddle.Tensor.mod": {
         "torch_api": "torch.Tensor.fmod",
         "paddle_torch_args_map": {
@@ -1633,6 +1641,9 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__le__(other=y)"
     },
+    "paddle.Tensor.__len__": {
+        "torch_api": "torch.Tensor.__len__"
+      },      
     "paddle.Tensor.__lt__": {
         "torch_api": "torch.Tensor.__lt__",
         "paddle_torch_args_map": {
@@ -4839,16 +4850,6 @@
             "destination": "destination"
         },
         "min_input_args": 3
-    },
-    "paddle.multinomial": {
-        "torch_api": "torch.multinomial",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "num_samples": "num_samples",
-            "replacement": "replacement",
-            "generator": "generator"
-        },
-        "min_input_args": 2
     },
     "paddle.mv": {
         "torch_api": "torch.mv",
