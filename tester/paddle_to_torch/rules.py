@@ -460,6 +460,24 @@ if data_format == "NDHWC":
         )
         return ConvertResult.success(paddle_api, code)
 
+class ArgminRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if keepdim == None:
+    keepdim = False
+if not isinstance(axis, int) and axis != None:
+    axis = int(axis)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # b
 class BlhaGetMaxLenRule(BaseRule):

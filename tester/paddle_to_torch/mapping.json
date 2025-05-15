@@ -96,6 +96,19 @@
         },
         "description": "result = torch.argmax(input=x, dim=axis, keepdim=keepdim)"
     },
+    "paddle.argmin": {
+        "torch_api": "torch.argmin",
+        "Rule": "ArgminRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": false
+        }
+    },
     "paddle.atleast_1d": {
         "torch_api": "torch.atleast_1d",
         "torch_args": [
@@ -3187,15 +3200,6 @@
         "torch_api": "torch.arctanh",
         "paddle_torch_args_map": {
             "x": "input"
-        },
-        "min_input_args": 1
-    },
-    "paddle.argmin": {
-        "torch_api": "torch.argmin",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },
