@@ -369,9 +369,7 @@ def main():
 
             if "*" in options.api_config_file_pattern:
                 all_files = glob.glob(options.api_config_file_pattern)
-                regex_pattern = re.sub(
-                    r"\*([^*]*)$", r"\d+\1", options.api_config_file_pattern
-                )
+                regex_pattern = re.sub(r'\*([^*]*)$', r'\\d+\1', options.api_config_file_pattern)
                 config_files = [
                     file for file in all_files if re.fullmatch(regex_pattern, file)
                 ]
