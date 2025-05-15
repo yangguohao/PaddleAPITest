@@ -2252,7 +2252,34 @@ result = x.transpose(-1, -2)
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class MatualTensorRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if transpose_x == True:
+    x = x.transpose(-1, -2)
+if transpose_y == True:
+    y = y.transpose(-1, -2)
 
+def extract_bit(dtype):
+    import re 
+    s = str(dtype)
+    m = re.search(r'(\d+)', s)
+    return int(m.group(1)) if m else 0
+
+x_bits = extract_bit(x.dtype)
+y_bits = extract_bit(y.dtype)
+target_dtype = x.dtype if x_bits >= y_bits else y.dtype
+x, y = x.to(target_dtype), y.to(target_dtype)
+
+"""
+        core = "result = x.matmul(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+    
 class MaskedScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         _, map_code = self.apply_generic()

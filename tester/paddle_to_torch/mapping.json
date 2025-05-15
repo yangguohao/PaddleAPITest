@@ -751,6 +751,17 @@
     "paddle.matrix_transpose":{
         "Rule": "Matrix_transposeRule"
     },
+    "paddle.Tensor.matmul": {
+        "torch_api": "torch.Tensor.matmul",
+        "Rule": "MatualTensorRule",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "set_defaults": {
+            "transpose_x": "False",
+            "transpose_y": "False"
+        }
+    },
     "paddle.median": {
         "Rule": "MedianRule"
     },
@@ -1647,6 +1658,17 @@
     "t": "API started with 't' should be placed here",
     "paddle.Tensor.tanh":{
         "torch_api": "torch.Tensor.tanh"
+    },
+    "paddle.tensordot": {
+        "torch_api": "torch.tensordot",
+        "paddle_torch_args_map": {
+            "x": "a",
+            "y": "b",
+            "axes": "dims"
+        },
+        "set_defaults": {
+            "axes": 2
+        }
     },
     "paddle.tolist":{
         "torch_api": "torch.Tensor.tolist",
@@ -2647,13 +2669,6 @@
         "torch_api": "torch.Tensor.masked_select",
         "paddle_torch_args_map": {
             "mask": "mask"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.matmul": {
-        "torch_api": "torch.Tensor.matmul",
-        "paddle_torch_args_map": {
-            "y": "other"
         },
         "min_input_args": 1
     },
@@ -6851,15 +6866,6 @@
             "x": "input",
             "num_or_indices": "indices",
             "axis": "dim"
-        },
-        "min_input_args": 2
-    },
-    "paddle.tensordot": {
-        "torch_api": "torch.tensordot",
-        "paddle_torch_args_map": {
-            "x": "a",
-            "y": "b",
-            "axes": "dims"
         },
         "min_input_args": 2
     },

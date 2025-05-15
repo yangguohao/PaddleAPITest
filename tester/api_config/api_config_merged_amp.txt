@@ -518,8 +518,6 @@ paddle.concat(tuple(Tensor([128, 1, 768],"float32"),Tensor([128, 196, 768],"floa
 paddle.concat(tuple(Tensor([14, 1, 768],"float32"),Tensor([14, 1568, 768],"float16"),), axis=1, )
 paddle.concat(tuple(Tensor([24, 32, 128, 128],"float32"),Tensor([24, 34, 128, 128],"float16"),), axis=1, )
 paddle.concat(x=tuple(Tensor([2, 3, 1, 64],"float16"),Tensor([2, 3, 256, 64],"float32"),), axis=-2, )
-paddle.Tensor.matmul(Tensor([128, 12, 23, 23],"float32"), Tensor([128, 12, 23, 32],"float16"), )
-paddle.Tensor.matmul(Tensor([192, 12, 22, 22],"float32"), Tensor([192, 12, 22, 32],"float16"), )
 paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float16"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
 paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float16"), Tensor([190960, 80],"float32"), )
 paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float16"), Tensor([210056, 80],"float32"), )
