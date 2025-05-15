@@ -452,3 +452,6 @@ paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([256],"float3
 paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([512],"float32"), label=Tensor([512],"float32"), reduction="sum", )
 paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([64, 19],"float32"), label=Tensor([64, 19],"float32"), reduction="none", )
 paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([64, 26],"float32"), label=Tensor([64, 26],"float32"), reduction="none", )
+paddle.nn.functional.linear(x=Tensor([1, 1024, 768],"bfloat16"), weight=Tensor([768, 11008],"bfloat16"), bias=None, name=None, )
+paddle.nn.functional.linear(x=Tensor([10, 499, 512],"float32"), weight=Tensor([512, 43],"float16"), bias=Tensor([43],"float16"), name=None, )
+paddle.nn.functional.linear(x=tuple(Tensor([1, 10],"float32"),), weight=Tensor([10, 10],"float16"), bias=None, name=None, )
