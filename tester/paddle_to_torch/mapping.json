@@ -686,6 +686,14 @@
             "y": "other"
         }
     },
+    "paddle.multinomial": {
+        "torch_api": "torch.multinomial",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "num_samples": "num_samples",
+            "replacement": "replacement"
+        }
+    },
     "paddle.Tensor.mod": {
         "torch_api": "torch.Tensor.fmod",
         "paddle_torch_args_map": {
@@ -953,6 +961,50 @@
         },
         "torch_kwargs": {
             "approximate": "'tanh' if {approximate} else 'none'"
+        }
+    },
+    "paddle.nn.functional.pixel_shuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.pixel_shuffle",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "upscale_factor": "upscale_factor"
+        }
+    },
+    "paddle.nn.functional.pixel_unshuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.pixel_unshuffle",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "downscale_factor": "downscale_factor"
+        }
+    },
+    "paddle.nn.functional.prelu": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.prelu",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight"
+        }
+    },
+    "paddle.nn.functional.selu": {
+        "Rule": "SeluRule",
+        "torch_api": "torch.nn.functional.selu",
+        "set_defaults": {
+            "scale": 1.0507009873554804934193349852946,
+            "alpha": 1.6732632423543772848170429916717
+        },
+        "paddle_torch_args_map": {
+            "x": "input"
         }
     },
     "paddle.nonzero": {
@@ -1636,6 +1688,9 @@
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__le__(other=y)"
     },
+    "paddle.Tensor.__len__": {
+        "torch_api": "torch.Tensor.__len__"
+      },      
     "paddle.Tensor.__lt__": {
         "torch_api": "torch.Tensor.__lt__",
         "paddle_torch_args_map": {
@@ -4843,16 +4898,6 @@
         },
         "min_input_args": 3
     },
-    "paddle.multinomial": {
-        "torch_api": "torch.multinomial",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "num_samples": "num_samples",
-            "replacement": "replacement",
-            "generator": "generator"
-        },
-        "min_input_args": 2
-    },
     "paddle.mv": {
         "torch_api": "torch.mv",
         "paddle_torch_args_map": {
@@ -5977,30 +6022,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.nn.functional.pixel_shuffle": {
-        "torch_api": "torch.nn.functional.pixel_shuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "upscale_factor": "upscale_factor"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.pixel_unshuffle": {
-        "torch_api": "torch.nn.functional.pixel_unshuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "downscale_factor": "downscale_factor"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.prelu": {
-        "torch_api": "torch.nn.functional.prelu",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight"
-        },
-        "min_input_args": 2
-    },
     "paddle.nn.functional.relu": {
         "torch_api": "torch.nn.functional.relu",
         "paddle_torch_args_map": {
@@ -6031,14 +6052,6 @@
             "lower": "lower",
             "upper": "upper",
             "training": "training",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.selu": {
-        "torch_api": "torch.nn.functional.selu",
-        "paddle_torch_args_map": {
-            "x": "input",
             "inplace": "inplace"
         },
         "min_input_args": 1
