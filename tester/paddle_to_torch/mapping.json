@@ -589,6 +589,24 @@
     "paddle.linalg.corrcoef":{
         "Rule": "CorrcoefRule"
     },
+    "paddle.linalg.cov": {
+        "Rule": "CovRule",
+        "torch_api": "torch.cov",
+        "set_defaults":{
+            "ddof": "True",
+            "fweights": "None",
+            "aweights": "None",
+            "rowvar":"True"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "fweights": "fweights"
+        },
+        "torch_kwargs": {
+            "correction": "int(ddof)",
+            "aweights": "aweights.to(torch.float) if torch.is_tensor(aweights) else aweights"
+        }
+    },
     "paddle.linalg.eig":{
         "torch_api": "torch.linalg.eig",
         "paddle_torch_args_map": {
@@ -4737,24 +4755,6 @@
             "p": "p"
         },
         "min_input_args": 1
-    },
-    "paddle.linalg.cov": {
-        "Rule": "CovRule",
-        "torch_api": "torch.cov",
-        "set_defaults":{
-            "ddof": "True",
-            "fweights": "None",
-            "aweights": "None",
-            "rowvar":"True"
-        },
-        "paddle_torch_args_map": {
-            "x": "input",
-            "fweights": "fweights"
-        },
-        "torch_kwargs": {
-            "correction": "int(ddof)",
-            "aweights": "aweights.to(torch.float) if torch.is_tensor(aweights) else aweights"
-        }
     },
     "paddle.linalg.det": {
         "torch_api": "torch.linalg.det",
