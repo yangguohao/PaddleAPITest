@@ -476,6 +476,19 @@ seq_lens_decoder = locals().get('seq_lens_decoder')
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class BinomialRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+total_count = locals().get('count')
+probs = locals().get('prob')
+
+distribution = torch.distributions.binomial.Binomial(total_count=total_count, probs=probs)
+"""
+        core = "result = distribution.sample()"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
+
+
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -2477,6 +2490,16 @@ result = torch.tensor(num_elements, dtype=torch.int64)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
+
+
+class NonzeroRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = args[0] if args else next(iter(kwargs.values()))
+"""
+        core = "result = x.__gt__(0).item()"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class NormalRule(BaseRule):
