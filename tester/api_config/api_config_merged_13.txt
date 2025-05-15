@@ -1725,8 +1725,6 @@ paddle.nn.functional.pad(Tensor([4, 32, 32, 16],"complex64"), list[0,0,0,0,0,0,0
 paddle.nn.functional.pad(Tensor([8, 1, 237, 237],"float32"), list[2,2,2,2,], "constant", 0, )
 paddle.nn.functional.pad(Tensor([8, 32, 241, 241],"float32"), list[120,120,120,120,], mode="replicate", )
 paddle.nn.functional.pad(Tensor([8, 32, 241, 241],"float32"), tuple(0,9,0,9,), mode="constant", )
-paddle.nn.functional.pixel_shuffle(Tensor([1, 1, 17, 82],"float32"), 1, "NCHW", None, )
-paddle.nn.functional.pixel_shuffle(Tensor([1, 1, 274, 47],"float32"), 1, "NCHW", None, )
 paddle.nn.functional.relu(Tensor([1, 16, 17, 82],"float32"), None, )
 paddle.nn.functional.relu(Tensor([1, 16, 274, 47],"float32"), None, )
 paddle.nn.functional.relu(Tensor([1, 32, 17, 82],"float32"), None, )

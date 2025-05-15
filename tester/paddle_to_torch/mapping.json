@@ -951,6 +951,50 @@
             "approximate": "'tanh' if {approximate} else 'none'"
         }
     },
+    "paddle.nn.functional.pixel_shuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.pixel_shuffle",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "upscale_factor": "upscale_factor"
+        }
+    },
+    "paddle.nn.functional.pixel_unshuffle": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.pixel_unshuffle",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "downscale_factor": "downscale_factor"
+        }
+    },
+    "paddle.nn.functional.prelu": {
+        "Rule": "DataFormatRule",
+        "torch_api": "torch.nn.functional.prelu",
+        "set_defaults": {
+            "data_format": "'NCHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "weight": "weight"
+        }
+    },
+    "paddle.nn.functional.selu": {
+        "Rule": "SeluRule",
+        "torch_api": "torch.nn.functional.selu",
+        "set_defaults": {
+            "scale": 1.0507009873554804934193349852946,
+            "alpha": 1.6732632423543772848170429916717
+        },
+        "paddle_torch_args_map": {
+            "x": "input"
+        }
+    },
     "paddle.nonzero": {
         "torch_api": "torch.argwhere",
         "paddle_torch_args_map": {
@@ -5963,30 +6007,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.nn.functional.pixel_shuffle": {
-        "torch_api": "torch.nn.functional.pixel_shuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "upscale_factor": "upscale_factor"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.pixel_unshuffle": {
-        "torch_api": "torch.nn.functional.pixel_unshuffle",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "downscale_factor": "downscale_factor"
-        },
-        "min_input_args": 2
-    },
-    "paddle.nn.functional.prelu": {
-        "torch_api": "torch.nn.functional.prelu",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "weight": "weight"
-        },
-        "min_input_args": 2
-    },
     "paddle.nn.functional.relu": {
         "torch_api": "torch.nn.functional.relu",
         "paddle_torch_args_map": {
@@ -6017,14 +6037,6 @@
             "lower": "lower",
             "upper": "upper",
             "training": "training",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.selu": {
-        "torch_api": "torch.nn.functional.selu",
-        "paddle_torch_args_map": {
-            "x": "input",
             "inplace": "inplace"
         },
         "min_input_args": 1
