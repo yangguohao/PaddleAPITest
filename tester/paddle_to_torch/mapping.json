@@ -192,6 +192,18 @@
     "paddle.Tensor.cast":{
         "Rule": "CastRule"
     },
+    "paddle.chunk": {
+        "torch_api": "torch.chunk",
+        "Rule": "ChunkRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "chunks": "chunks",
+            "axis": "dim"
+        },
+        "set_defaults": {
+            "axis": "0"
+        }
+    },
     "paddle.Tensor.coalesce":{
         "torch_api": "torch.Tensor.coalesce"
     },
@@ -206,6 +218,19 @@
     },
     "paddle.cumprod": {
         "Rule": "CumprodRule"
+    },
+    "paddle.cumsum": {
+        "torch_api": "torch.cumsum",
+        "Rule": "CumsumRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "dtype": "dtype"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "dtype": "None"            
+        }
     },
     "paddle.Tensor.cauchy_":{
         "torch_api": "torch.Tensor.cauchy_",
@@ -3384,15 +3409,6 @@
         },
         "min_input_args": 2
     },
-    "paddle.chunk": {
-        "torch_api": "torch.chunk",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "chunks": "chunks",
-            "axis": "dim"
-        },
-        "min_input_args": 2
-    },
     "paddle.clip": {
         "torch_api": "torch.clamp",
         "paddle_torch_args_map": {
@@ -3569,15 +3585,6 @@
             "device": "device"
         },
         "min_input_args": 0
-    },
-    "paddle.cumsum": {
-        "torch_api": "torch.cumsum",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 2
     },
     "paddle.cumulative_trapezoid": {
         "torch_api": "torch.cumulative_trapezoid",

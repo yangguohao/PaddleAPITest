@@ -1,6 +1,4 @@
 paddle.diag(x=Tensor([2],"float64"), name="test name", )
-paddle.cumsum(Tensor([5, 6],"float64"), axis=Tensor([1],"int32"), )
-paddle.cumsum(Tensor([9, 10, 11],"float32"), axis=Tensor([1],"int64"), )
 paddle.clip(x=Tensor([2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), name="test name", )
 paddle.clip(x=Tensor([3, 3],"float64"), min=1, max=Tensor([1],"float64"), )
 paddle.clip(Tensor([107136],"float32"), max=Tensor([],"int64"), )

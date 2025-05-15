@@ -470,12 +470,9 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-"""
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
+            core=[core]
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -578,6 +575,19 @@ else:
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
+class ChunkRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if not isinstance(axis, int) and axis != None:
+    axis = int(axis)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -640,6 +650,22 @@ if dtype is not None:
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
+class CumsumRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if axis == None:
+    axis = 0
+    x = x.flatten()
+if not isinstance(axis, int) and axis != None:
+    axis = int(axis)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class ClassCenterSampleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
