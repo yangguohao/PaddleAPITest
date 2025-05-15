@@ -3489,6 +3489,8 @@ class View_As_Rule(BaseRule):
 class VariableLengthMemoryEfficientAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+import math
+
 def variable_length_memory_efficient_attention(
     query: torch.Tensor,
     key: torch.Tensor,

@@ -54,8 +54,6 @@ nan location mismatch:
  DESIRED: array([[[[ 0.338653, -0.18054 , -0.257099, ..., -0.141157, -0.211918,
            0.390092],
          [ 0.159117,  0.00303 , -0.085863, ..., -0.28183 , -0.419381,...
-2025-05-14 12:07:47.941086 GPU 0 109595 test begin: paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 1, 232, 64],"float16"), Tensor([2, 1, 232, 64],"float16"), Tensor([2, 1, 232, 64],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.125, )
-[Pass] paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 1, 232, 64],"float16"), Tensor([2, 1, 232, 64],"float16"), Tensor([2, 1, 232, 64],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.125, )
 2025-05-14 12:07:48.656905 GPU 0 109595 test begin: paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 1, 35, 64],"float16"), Tensor([2, 1, 35, 64],"float16"), Tensor([2, 1, 35, 64],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.125, )
 [accuracy error] paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 1, 35, 64],"float16"), Tensor([2, 1, 35, 64],"float16"), Tensor([2, 1, 35, 64],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.125, ) 
  

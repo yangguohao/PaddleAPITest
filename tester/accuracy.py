@@ -1,5 +1,4 @@
 import gc
-import math
 import traceback
 
 import numpy
@@ -63,7 +62,7 @@ class APITestAccuracy(APITestBase):
             # 以下代码等价于:
             # torch_output = Paddle2TorchConverter.execute(convert_result, self.torch_args, self.torch_kwargs)
             # 准备执行环境，将参数(torch tensors)直接映射至locals
-            exec_globals = {"torch": torch, "math": math}
+            exec_globals = {"torch": torch}
             exec_locals = {
                 "args": self.torch_args,
                 "kwargs": self.torch_kwargs,
