@@ -1425,6 +1425,17 @@
             "output_size": "output_size"
         }
     },
+    "paddle.nn.functional.upsample":{
+        "Rule": "UpsampleRule",
+        "torch_api": "torch.nn.functional.upsample",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "size": "size",
+            "scale_factor": "scale_factor",
+            "mode": "mode",
+            "align_corners": "align_corners"
+        }
+    },
     "paddle.nn.functional.adaptive_avg_pool2d": {
         "torch_api": "torch.nn.functional.adaptive_avg_pool2d",
         "Rule": "AdaptiveAvgPoolRule",

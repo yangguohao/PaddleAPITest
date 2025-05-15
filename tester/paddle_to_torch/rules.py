@@ -1869,21 +1869,21 @@ if not 'align_corners' in _kwargs:
     _kwargs['align_corners'] = False    
 if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
     del _kwargs["align_corners"]
+elif align_mode == 1:
+    _kwargs['align_corners'] = True
+elif align_mode == 0:
+    _kwargs['align_corners'] = False
 """
         core = """
-if align_mode == 1:
-    result = torch.tensordad([1,0])
-else:
-    result = torch.nn.functional.interpolate(**_kwargs)
+result = torch.nn.functional.interpolate(**_kwargs)
 """
         post = """
-if align_mode != 1:
-    if data_format == "NHWC":
-        result = result.permute(0,2,3,1)
-    elif data_format == "NDHWC":
-        result = result.permute(0,2,3,4,1)
-    elif data_format == "NWC":
-        result = result.permute(0,2,1)
+if data_format == "NHWC":
+    result = result.permute(0,2,3,1)
+elif data_format == "NDHWC":
+    result = result.permute(0,2,3,4,1)
+elif data_format == "NWC":
+    result = result.permute(0,2,1)
 """
         code = Code(
             preprocess=pre.splitlines(),
@@ -3508,6 +3508,59 @@ class UnfoldRule(BaseRule):
         code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+class UpsampleRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+for k in list(_kwargs.keys()):
+    if _kwargs[k] is None:
+        del _kwargs[k]
+if 'size' in _kwargs and isinstance(_kwargs['size'],torch.Tensor):
+    size = []
+    for i in _kwargs['size']:
+        size.append(int(i.item()))
+    _kwargs['size'] = size
+if 'scale_factor' in _kwargs and isinstance(_kwargs['scale_factor'],torch.Tensor):
+    scale_factor = []
+    for i in _kwargs['scale_factor']:
+        scale_factor.append(i.item())
+    _kwargs['scale_factor'] = scale_factor
+data_format = locals().get('data_format', 'None')
+align_mode = locals().get('align_mode', 0)
+if data_format == "NHWC":
+    _kwargs['input'] = _kwargs['input'].permute(0,3,1,2)
+elif data_format == "NDHWC":
+    _kwargs['input'] = _kwargs['input'].permute(0,4,1,2,3)
+elif data_format == "NWC":
+    _kwargs['input'] = _kwargs['input'].permute(0,2,1)
+if not 'mode' in _kwargs:
+    _kwargs['mode'] = 'nearest'
+if not 'align_corners' in _kwargs:
+    _kwargs['align_corners'] = False    
+if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
+    del _kwargs["align_corners"]
+elif align_mode == 1:
+    _kwargs['align_corners'] = True
+elif align_mode == 0:
+    _kwargs['align_corners'] = False
+"""
+        core = """
+result = torch.nn.functional.upsample(**_kwargs)
+"""
+        post = """
+if data_format == "NHWC":
+    result = result.permute(0,2,3,1)
+elif data_format == "NDHWC":
+    result = result.permute(0,2,3,4,1)
+elif data_format == "NWC":
+    result = result.permute(0,2,1)
+""" 
+        code = Code(
+            preprocess=map_code + pre.splitlines(),
+            core=core.splitlines(),
+            postprocess=post.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # v
 class VecdotRule(BaseRule):
