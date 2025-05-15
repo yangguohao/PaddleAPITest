@@ -1836,6 +1836,19 @@ for paddle_param, torch_param in {
 }.items():
     if paddle_param in locals() and not locals()[paddle_param] is None:
         _kwargs[torch_param] = locals()[paddle_param]
+for k in list(_kwargs.keys()):
+    if _kwargs[k] is None:
+        del _kwargs[k]
+if 'size' in _kwargs and isinstance(_kwargs['size'],torch.Tensor):
+    size = []
+    for i in _kwargs['size']:
+        size.append(int(i.item()))
+    _kwargs['size'] = size
+if 'scale_factor' in _kwargs and isinstance(_kwargs['scale_factor'],torch.Tensor):
+    scale_factor = []
+    for i in _kwargs['scale_factor']:
+        scale_factor.append(i.item())
+    _kwargs['scale_factor'] = scale_factor
 align_mode = locals().get('align_mode', 0)
 data_format = locals().get('data_format', 'None')
 if data_format == "NHWC":
@@ -3594,6 +3607,8 @@ class WeightDetachRule(BaseRule):
         pre = """
 if "weight" in _kwargs and not _kwargs["weight"] is None:
     _kwargs["weight"] = _kwargs["weight"].detach()
+if "pos_weight" in _kwargs and not _kwargs["pos_weight"] is None:
+    _kwargs["pos_weight"] = _kwargs["pos_weight"].detach()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(

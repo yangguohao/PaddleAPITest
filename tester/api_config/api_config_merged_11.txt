@@ -16,7 +16,6 @@ paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), list[2,2,2,2,],
 paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), list[2,2,4,1,], )
 paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), Tensor([4],"int32"), )
 paddle.nn.functional.zeropad2d(Tensor([4, 3, 224, 224],"int64"), tuple(1,2,3,4,), )
-paddle.nn.functional.softmax(Tensor([2, 2],"float32"), axis=Tensor([],"int64"), )
 paddle.autograd.hessian(Tensor([5, 1],"float32"), list[Tensor([5, 2],"float32"),Tensor([5, 2],"float32"),], batch_axis=0, )
 paddle.autograd.jacobian(Tensor([],"float64"), list[Tensor([4],"float64"),Tensor([4],"float64"),], batch_axis=None, )
 paddle.cartesian_prod(list[Tensor([2],"complex128"),Tensor([1],"complex128"),Tensor([3],"complex128"),Tensor([0],"complex128"),], )
