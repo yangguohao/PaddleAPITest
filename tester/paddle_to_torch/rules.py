@@ -561,6 +561,23 @@ else:
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class CovRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        # 改进rowvar参数处理，只有当rowvar为False时才需要转置
+        pre = """
+if 'rowvar' in locals() and rowvar is False:
+    if torch.is_tensor(x) and x.dim() > 1:
+        x = torch.transpose(x, 0, 1)
+"""   
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
+
+        
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
