@@ -895,7 +895,14 @@
         }
     },
     "paddle.nn.functional.binary_cross_entropy": {
-        "Rule": "BinaryCrossEntropyRule"
+        "Rule": "WeightDetachRule",
+        "torch_api": "torch.nn.functional.binary_cross_entropy",
+        "paddle_torch_args_map":{
+            "input": "input",
+            "label": "target",
+            "weight": "weight",
+            "reduction": "reduction"
+        }
     },
     "paddle.nn.functional.cross_entropy": {
         "Rule": "CrossEntropyRule"
