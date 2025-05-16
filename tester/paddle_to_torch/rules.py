@@ -3755,25 +3755,28 @@ if act is not None:
         code = Code(preprocess=defaults_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
-class ScaledDotProductAttentionRule(BaesRule):
-    def appley(self, paddle_api: str) -> ConvertResult:
+class ScaledDotProductAttentionRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
 _kwargs['query'] = _kwargs['query'].permute(0, 2, 1, 3)
 _kwargs['key'] = _kwargs['key'].permute(0, 2, 1, 3)
 _kwargs['value'] = _kwargs['value'].permute(0, 2, 1, 3)
+if _kwargs['key'].shape[1] < _kwargs['query'].shape[1]:
+    _kwargs['key'] = _kwargs['key'].repeat(1, _kwargs['query'].shape[1] // _kwargs['key'].shape[1], 1, 1)
+    _kwargs['value'] = _kwargs['key'].repeat(1, _kwargs['query'].shape[1] // _kwargs['key'].shape[1], 1, 1)
+if "is_causal" in  _kwargs and _kwargs["is_causal"]:
+    if "attn_mask" in _kwargs:
+        del _kwargs["attn_mask"]
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code,
-                    core=core.splitlines()
+        post = """
+result = result.permute(0, 2, 1, 3)
+"""
+        code = Code(preprocess=map_code + pre.splitlines(),
+                    core=core.splitlines(),
+                    postprocess=post.splitlines())
         return ConvertResult.success(paddle_api, code)
-    
-class ShapeRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        core = "result = torch.tensor(input.shape)"
-        code = Code(core=[core])
-        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-
 
 class SubtractRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
