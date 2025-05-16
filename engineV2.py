@@ -225,12 +225,6 @@ def run_test_case(api_config_str, options):
     cuda_visible = os.environ.get("CUDA_VISIBLE_DEVICES", "0")
     gpu_id = int(cuda_visible.split(",")[0])
 
-    write_to_log("checkpoint", api_config_str)
-    print(
-        f"{datetime.now()} GPU {gpu_id} {os.getpid()} test begin: {api_config_str}",
-        flush=True,
-    )
-
     pynvml.nvmlInit()
     try:
         while True:
@@ -251,6 +245,12 @@ def run_test_case(api_config_str, options):
     finally:
         pynvml.nvmlShutdown()
 
+    write_to_log("checkpoint", api_config_str)
+    print(
+        f"{datetime.now()} GPU {gpu_id} {os.getpid()} test begin: {api_config_str}",
+        flush=True,
+    )
+
     try:
         api_config = APIConfig(api_config_str)
     except Exception as err:
@@ -269,9 +269,8 @@ def run_test_case(api_config_str, options):
     try:
         case.test()
     except Exception as err:
-        print(f"[test error] {api_config_str} {str(err)}", flush=True)
         if "CUDA error" in str(err) or "memory corruption" in str(err):
-            exit(0)
+            raise
     finally:
         case.clear_tensor()
         del case
@@ -373,7 +372,9 @@ def main():
 
             if "*" in options.api_config_file_pattern:
                 all_files = glob.glob(options.api_config_file_pattern)
-                regex_pattern = re.sub(r'\*([^*]*)$', r'\\d+\1', options.api_config_file_pattern)
+                regex_pattern = re.sub(
+                    r"\*([^*]*)$", r"\\d+\1", options.api_config_file_pattern
+                )
                 config_files = [
                     file for file in all_files if re.fullmatch(regex_pattern, file)
                 ]
@@ -471,7 +472,7 @@ def main():
 
             def cleanup_handler(*args):
                 cleanup(pool)
-                sys.exit(0)
+                sys.exit(1)
 
             signal.signal(signal.SIGINT, cleanup_handler)
             signal.signal(signal.SIGTERM, cleanup_handler)
@@ -519,6 +520,9 @@ def main():
             finally:
                 log_counts = aggregate_logs(end=True)
                 print_log_info(all_case, log_counts)
+                end_time = time.time()
+                total_time = end_time - start_time
+                print(f"Test time: {round(total_time/60, 3)} minutes.", flush=True)
         else:
             # Single worker
             from tester import (APIConfig, APITestAccuracy,
