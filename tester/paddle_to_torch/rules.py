@@ -1180,6 +1180,23 @@ result = x.expand_as(y)
 
 
 # f
+class FillDiagonalTensorRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = args[0] if args else next(iter(kwargs.values()))
+y = locals().get('y')
+offset = locals().get('offset', 0)
+dim1 = locals().get('dim1', 0)
+dim2 = locals().get('dim2', 1)
+diag = torch.diagonal(x, offset=offset, dim1=dim1, dim2=dim2)
+result = x.clone()
+"""
+        core = """
+result = torch.diagonal_scatter(result, y, offset=offset, dim1=dim1, dim2=dim2)
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 class FractionalMaxPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -1247,9 +1264,6 @@ if isinstance(output_size, (list, tuple)):
         pre += pre3.splitlines()
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
-
-
-# g
 
 
 class FullRule(BaseRule):
@@ -1420,7 +1434,7 @@ result = fused_linear(x, weight, bias, transpose_weight)
         code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
-
+# g
 class GatherRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         # 抽取对应维度的tensor直接进行stack操作

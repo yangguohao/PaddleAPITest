@@ -314,6 +314,9 @@
         "paddle_torch_args_map": {
             "x": "input"
         }
+    },
+    "paddle.Tensor.fill_diagonal_tensor":{
+        "Rule": "FillDiagonalTensorRule"
     },   
     "paddle.Tensor.floor": {
         "torch_api": "torch.Tensor.floor"
