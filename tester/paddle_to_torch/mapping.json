@@ -1360,6 +1360,7 @@
         }
     },
     "paddle.nn.functional.scaled_dot_product_attention":{
+        "Rule": "ScaledDotProductAttentionRule",
         "torch_api": "torch.nn.functional.scaled_dot_product_attention",
         "paddle_torch_args_map": {
             "query": "query",
