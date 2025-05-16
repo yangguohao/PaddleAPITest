@@ -4,8 +4,7 @@ from pathlib import Path
 
 # 日志文件路径
 DIR_PATH = Path(__file__).resolve()
-while DIR_PATH.name != "PaddleAPITest":
-    DIR_PATH = DIR_PATH.parent
+DIR_PATH = DIR_PATH.parent.parent.parent
 TEST_LOG_PATH = DIR_PATH / "tester/api_config/test_log"
 TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
 TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"

@@ -278,6 +278,7 @@ def run_test_case(api_config_str, options):
 
 
 def main():
+    start_time = time.time()
     print(f"Main process id: {os.getpid()}")
     set_start_method("spawn")
 
@@ -513,6 +514,8 @@ def main():
             except Exception as e:
                 print(f"Unexpected error: {e}", flush=True)
                 cleanup(pool)
+                total_time = time.time() - start_time
+                print(f"Test time: {round(total_time/60, 3)} minutes.", flush=True)
             finally:
                 log_counts = aggregate_logs(end=True)
                 print_log_info(all_case, log_counts)
