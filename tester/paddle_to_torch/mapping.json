@@ -4819,6 +4819,13 @@
     },
     "paddle.linalg.norm": {
         "torch_api": "torch.linalg.norm",
+        "Rule": "NormRule",
+        "set_defaults": {
+            "ord": "None",
+            "dim": "None",
+            "keepdim": "False",
+            "dtype": "None"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "p": "ord",

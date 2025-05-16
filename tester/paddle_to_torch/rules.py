@@ -2482,6 +2482,45 @@ if top_k is not None:
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class NormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if 'p' in locals() and p=="fro":
+    if(x.dim()==1):
+        p=2
+"""
+        core = f"""
+import math
+if 'ord' in _kwargs:
+    if _kwargs['ord']==0:
+        if _kwargs['keepdim']:
+            result = (_kwargs['input']!= 0).sum(dim=_kwargs['dim'], keepdim=True).to(_kwargs['input'].dtype)
+        else:
+            result = (_kwargs['input']!= 0).sum(dim=_kwargs['dim']).to(_kwargs['input'].dtype)
+    elif len(_kwargs['input'].shape)>2 and _kwargs.get('dim') is None:
+        if _kwargs['ord']==math.inf:
+            result = _kwargs['input'].abs().amax()
+            if _kwargs['keepdim']:
+                result = result.reshape([1] * _kwargs['input'].ndim)
+        elif _kwargs['ord']==-math.inf:
+            result = _kwargs['input'].abs().amin()
+            if _kwargs['keepdim']:
+                result = result.reshape([1] * _kwargs['input'].ndim)
+        else:
+            result = {self.torch_api}(**_kwargs)
+    else:
+        result = {self.torch_api}(**_kwargs)
+else:
+    result = {self.torch_api}(**_kwargs)
+"""
+        code = Code( 
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class NumelRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
