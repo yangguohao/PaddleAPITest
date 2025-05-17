@@ -644,6 +644,23 @@
             "unpack_pivots": "unpack_pivots"
         }
     },
+    "paddle.linalg.norm": {
+        "Rule": "NormRule",
+        "set_defaults": {
+            "p": "None",
+            "axis": "None",
+            "keepdim": "False",
+            "name": "None"
+        },
+        "torch_api": "torch.linalg.norm",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "p": "ord",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "min_input_args": 1
+    },
     "paddle.logaddexp":{
         "Rule": "LogaddexpRule",
         "torch_api": "torch.logaddexp",
@@ -4814,23 +4831,6 @@
         "torch_api": "torch.linalg.multi_dot",
         "paddle_torch_args_map": {
             "x": "tensors"
-        },
-        "min_input_args": 1
-    },
-    "paddle.linalg.norm": {
-        "Rule": "NormRule",
-        "set_defaults": {
-            "p": "None",
-            "axis": "None",
-            "keepdim": "False",
-            "name": "None"
-        },
-        "torch_api": "torch.linalg.norm",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "p": "ord",
-            "axis": "dim",
-            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },
