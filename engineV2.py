@@ -269,6 +269,7 @@ def run_test_case(api_config_str, options):
     try:
         case.test()
     except Exception as err:
+        print(f"[test error] {api_config_str} {str(err)}", flush=True)
         if "CUDA error" in str(err) or "memory corruption" in str(err):
             raise
     finally:
@@ -335,7 +336,10 @@ def main():
         default=False,
         help="Whether to test CPU mode",
     )
+    parser.add_argument("--use_cached_numpy", type=bool, default=False)
     options = parser.parse_args()
+
+    os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
 
     if options.api_config:
         # Single config execution
