@@ -11,7 +11,6 @@ from .rules import BaseRule, ConvertResult, ErrorRule, GenericRule
 
 PADDLE2TORCH_WRONG_CONFIG = frozenset(
     [
-        "paddle.matmul",
         "paddle.nn.functional.gaussian_nll_loss",
         "paddle.nn.functional.group_norm",
         "paddle.nn.functional.interpolate",
