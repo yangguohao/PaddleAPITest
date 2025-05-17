@@ -4818,20 +4818,19 @@
         "min_input_args": 1
     },
     "paddle.linalg.norm": {
-        "torch_api": "torch.linalg.norm",
         "Rule": "NormRule",
         "set_defaults": {
-            "ord": "None",
-            "dim": "None",
+            "p": "None",
+            "axis": "None",
             "keepdim": "False",
-            "dtype": "None"
+            "name": "None"
         },
+        "torch_api": "torch.linalg.norm",
         "paddle_torch_args_map": {
             "x": "input",
             "p": "ord",
             "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
+            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },

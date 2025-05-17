@@ -1,30 +1,30 @@
-2025-05-16 14:03:54.947754 GPU 0 44027 test begin: paddle.linalg.norm(Tensor([16, 16],"float32"), 2.0, )
+2025-05-17 04:48:39.662116 GPU 0 85990 test begin: paddle.linalg.norm(Tensor([16, 16],"float32"), 2.0, )
 [accuracy error] paddle.linalg.norm(Tensor([16, 16],"float32"), 2.0, ) 
  
 Not equal to tolerance rtol=0.01, atol=0.01
 
 Mismatched elements: 1 / 1 (100%)
-Max absolute difference: 2.693722
-Max relative difference: 1.2865305
- x: array(4.78751, dtype=float32)
- y: array(2.093788, dtype=float32)
-2025-05-16 14:04:01.256095 GPU 0 44027 test begin: paddle.linalg.norm(x=Tensor([3, 4],"float32"), p=2, axis=None, keepdim=False, )
+Max absolute difference: 2.680261
+Max relative difference: 1.2742248
+ x: array(4.783705, dtype=float32)
+ y: array(2.103444, dtype=float32)
+2025-05-17 04:48:46.075191 GPU 0 85990 test begin: paddle.linalg.norm(x=Tensor([3, 4],"float32"), p=2, axis=None, keepdim=False, )
 [accuracy error] paddle.linalg.norm(x=Tensor([3, 4],"float32"), p=2, axis=None, keepdim=False, ) 
  
 Not equal to tolerance rtol=0.01, atol=0.01
 
 Mismatched elements: 1 / 1 (100%)
-Max absolute difference: 0.22730851
-Max relative difference: 0.34752932
- x: array(0.881379, dtype=float32)
- y: array(0.65407, dtype=float32)
-2025-05-16 14:04:01.359254 GPU 0 44027 test begin: paddle.linalg.norm(x=Tensor([3, 4],"float32"), p=2, axis=None, keepdim=True, )
+Max absolute difference: 0.24244219
+Max relative difference: 0.28602707
+ x: array(1.090062, dtype=float32)
+ y: array(0.84762, dtype=float32)
+2025-05-17 04:48:46.177512 GPU 0 85990 test begin: paddle.linalg.norm(x=Tensor([3, 4],"float32"), p=2, axis=None, keepdim=True, )
 [accuracy error] paddle.linalg.norm(x=Tensor([3, 4],"float32"), p=2, axis=None, keepdim=True, ) 
  
 Not equal to tolerance rtol=0.01, atol=0.01
 
 Mismatched elements: 1 / 1 (100%)
-Max absolute difference: 0.18180054
-Max relative difference: 0.27115583
- x: array([[0.852266]], dtype=float32)
- y: array([[0.670465]], dtype=float32)
+Max absolute difference: 0.23389745
+Max relative difference: 0.2970119
+ x: array([[1.021399]], dtype=float32)
+ y: array([[0.787502]], dtype=float32)

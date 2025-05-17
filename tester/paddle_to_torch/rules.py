@@ -2486,29 +2486,27 @@ class NormRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if 'p' in locals() and p=="fro":
-    if(x.dim()==1):
-        p=2
+if p == "fro" and x.dim() == 1:
+    p = 2
 """
         core = f"""
 import math
-if 'ord' in _kwargs:
-    if _kwargs['ord']==0:
-        if _kwargs['keepdim']:
-            result = (_kwargs['input']!= 0).sum(dim=_kwargs['dim'], keepdim=True).to(_kwargs['input'].dtype)
+if p==0:
+    if keepdim:
+        result = (x!= 0).sum(dim=axis, keepdim=True).to(x.dtype)
+    else:
+        result = (x!= 0).sum(dim=axis).to(x.dtype)
+elif len(x.shape)>2 and axis is None:
+    if p==math.inf:
+        if keepdim:
+            result = x.abs().amax().reshape([1] * x.ndim)
         else:
-            result = (_kwargs['input']!= 0).sum(dim=_kwargs['dim']).to(_kwargs['input'].dtype)
-    elif len(_kwargs['input'].shape)>2 and _kwargs.get('dim') is None:
-        if _kwargs['ord']==math.inf:
-            result = _kwargs['input'].abs().amax()
-            if _kwargs['keepdim']:
-                result = result.reshape([1] * _kwargs['input'].ndim)
-        elif _kwargs['ord']==-math.inf:
-            result = _kwargs['input'].abs().amin()
-            if _kwargs['keepdim']:
-                result = result.reshape([1] * _kwargs['input'].ndim)
+            result = x.abs().amax()
+    elif p==-math.inf:
+        if keepdim:
+            result = x.abs().amin().reshape([1] * x.ndim)
         else:
-            result = {self.torch_api}(**_kwargs)
+            result = x.abs().amin()
     else:
         result = {self.torch_api}(**_kwargs)
 else:
