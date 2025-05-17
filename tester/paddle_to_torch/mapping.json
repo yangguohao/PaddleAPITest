@@ -661,6 +661,21 @@
         },
         "min_input_args": 1
     },
+    "paddle.linalg.lstsq": {
+        "Rule": "LstsqRule",
+        "set_defaults": {
+            "rcond": "None",
+            "driver": "None"
+        },
+        "torch_api": "torch.linalg.lstsq",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "b",
+            "rcond": "rcond",
+            "driver": "driver"
+        },
+        "min_input_args": 2
+    },
     "paddle.logaddexp":{
         "Rule": "LogaddexpRule",
         "torch_api": "torch.logaddexp",
@@ -4778,16 +4793,6 @@
             "x": "A"
         },
         "min_input_args": 1
-    },
-    "paddle.linalg.lstsq": {
-        "torch_api": "torch.linalg.lstsq",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "b",
-            "rcond": "rcond",
-            "driver": "driver"
-        },
-        "min_input_args": 2
     },
     "paddle.matmul": {
         "torch_api": "torch.linalg.matmul",

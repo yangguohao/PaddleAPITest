@@ -2161,6 +2161,20 @@ result = torch.exp(result)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class LstsqRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre="""
+driver='gels'
+"""  
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code( 
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=True)
+
+
 # m
 class Matrix_transposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
