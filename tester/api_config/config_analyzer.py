@@ -281,6 +281,7 @@ class TensorConfig:
             
             # c
             elif api_config.api_name == "paddle.chunk":
+                import random
                 if self.check_arg(api_config, 2, "axis"):
                     x_tensor = self.get_arg(api_config, 0, "x")
                     chunks = self.get_arg(api_config, 1, "chunks")

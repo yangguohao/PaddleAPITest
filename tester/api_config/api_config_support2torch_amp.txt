@@ -7681,3 +7681,6 @@ paddle.vision.ops.deform_conv2d(x=Tensor([4, 32, 64, 64],"float32"), offset=Tens
 paddle.vision.ops.deform_conv2d(x=Tensor([4, 32, 64, 64],"float32"), offset=Tensor([4, 72, 64, 64],"float32"), weight=Tensor([32, 32, 3, 3],"float16"), bias=Tensor([32],"float16"), stride=list[1,1,], padding=list[1,1,], dilation=list[1,1,], deformable_groups=4, groups=1, mask=Tensor([4, 36, 64, 64],"float32"), )
 paddle.add_n(list[Tensor([],"float32"),Tensor([],"float32"),Tensor([],"float16"),Tensor([],"float32"),], )
 paddle.add_n(list[Tensor([],"float32"),Tensor([],"float32"),Tensor([],"float32"),Tensor([],"float16"),Tensor([],"float32"),], )
+paddle.Tensor.matmul(Tensor([128, 12, 23, 23],"float32"), Tensor([128, 12, 23, 32],"float16"), )
+paddle.Tensor.matmul(Tensor([192, 12, 22, 22],"float32"), Tensor([192, 12, 22, 32],"float16"), )
+paddle.mm(Tensor([32, 1, 256],"float32"), Tensor([32, 256, 576],"float16"), )
