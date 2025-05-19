@@ -1751,6 +1751,9 @@ class TensorConfig:
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
             
+            elif api_config.api_name == "paddle.poisson":
+                self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+            
             elif api_config.api_name in {"paddle.Tensor.__pow__","paddle.Tensor.pow", "paddle.pow"}:
                 # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other
                 if self.check_arg(api_config, 0, "self") or self.check_arg(api_config, 0, "x"):

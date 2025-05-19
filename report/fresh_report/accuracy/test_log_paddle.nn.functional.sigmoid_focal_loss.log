@@ -1,0 +1,805 @@
+paddle.nn.functional.sigmoid_focal_loss(Tensor([108, 4],"float32"), Tensor([108, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([11, 4],"float32"), Tensor([11, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([110484, 4],"float32"), Tensor([110484, 4],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([117, 4],"float32"), Tensor([117, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([1200, 4],"float32"), Tensor([1200, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([122760, 4],"float32"), Tensor([122760, 4],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([135036, 4],"float32"), Tensor([135036, 4],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float32"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([1620, 4],"float32"), Tensor([1620, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([1728, 4],"float32"), Tensor([1728, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([1800, 4],"float32"), Tensor([1800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float32"), Tensor([190960, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=0.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=0.0, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=3, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=3, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=0.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=0.0, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=3, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=3, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=0.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=0.0, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="mean", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=0.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="mean", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3],"float32"), Tensor([2, 3],"float32"), normalizer=Tensor([1],"float32"), reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3],"float32"), Tensor([2, 3],"float32"), normalizer=Tensor([],"float32"), reduction="sum", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([20, 4],"float32"), Tensor([20, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float32"), Tensor([210056, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([218240, 80],"float32"), Tensor([218240, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([240064, 80],"float32"), Tensor([240064, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([245520, 80],"float32"), Tensor([245520, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([270072, 80],"float32"), Tensor([270072, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([272800, 80],"float32"), Tensor([272800, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([27648, 4],"float32"), Tensor([27648, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([28800, 4],"float32"), Tensor([28800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([30, 4],"float32"), Tensor([30, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([300, 4],"float32"), Tensor([300, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([300080, 80],"float32"), Tensor([300080, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([330088, 80],"float32"), Tensor([330088, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([35, 4],"float32"), Tensor([35, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([3872, 2],"float32"), label=Tensor([3872, 2],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([414, 4],"float32"), Tensor([414, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([432, 4],"float32"), Tensor([432, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([450, 4],"float32"), Tensor([450, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([4800, 4],"float32"), Tensor([4800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([5, 2],"float32"), label=Tensor([5, 2],"float32"), normalizer=Tensor([1],"float32"), alpha=0.25, gamma=2.0, reduction="sum", name=None, )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([6380, 4],"float32"), Tensor([6380, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([6408, 4],"float32"), Tensor([6408, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([6912, 4],"float32"), Tensor([6912, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([7200, 4],"float32"), Tensor([7200, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([80, 4],"float32"), Tensor([80, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([8550, 4],"float32"), Tensor([8550, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([85932, 4],"float32"), Tensor([85932, 4],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([9, 4],"float32"), Tensor([9, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([95480, 4],"float32"), Tensor([95480, 4],"float32"), )
+
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-19 02:16:56.458583 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([108, 4],"float32"), Tensor([108, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+W0519 02:17:02.419685 25112 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0519 02:17:02.421030 25112 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([108, 4],"float32"), Tensor([108, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 198 / 432 (45.8%)
+Max absolute difference: 0.21821743
+Max relative difference: 0.5664039
+ x: array([[0.178338, 0.045725, 0.060088, 0.141389],
+       [0.427946, 0.10066 , 0.140541, 0.157402],
+       [0.02762 , 0.429126, 0.478682, 0.147241],...
+ y: array([[0.183471, 0.068239, 0.055597, 0.14642 ],
+       [0.32723 , 0.096381, 0.185215, 0.155705],
+       [0.048657, 0.330068, 0.35753 , 0.150444],...
+2025-05-19 02:17:33.423169 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([11, 4],"float32"), Tensor([11, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([11, 4],"float32"), Tensor([11, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 26 / 44 (59.1%)
+Max absolute difference: 0.2511965
+Max relative difference: 0.6152922
+ x: array([[0.181222, 0.037918, 0.089503, 0.054629],
+       [0.112666, 0.084766, 0.487776, 0.098069],
+       [0.159743, 0.3222  , 0.164975, 0.124504],...
+ y: array([[0.176569, 0.057885, 0.07967 , 0.060126],
+       [0.114706, 0.104248, 0.350511, 0.114501],
+       [0.161532, 0.270934, 0.161168, 0.139362],...
+2025-05-19 02:17:33.689660 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([110484, 4],"float32"), Tensor([110484, 4],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([110484, 4],"float32"), Tensor([110484, 4],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 65546.03
+Max relative difference: 460254.1
+ x: array(65546.17, dtype=float32)
+ y: array(0.142413, dtype=float32)
+2025-05-19 02:17:33.879913 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([117, 4],"float32"), Tensor([117, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([117, 4],"float32"), Tensor([117, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 229 / 468 (48.9%)
+Max absolute difference: 0.23928821
+Max relative difference: 0.59506494
+ x: array([[0.079699, 0.034274, 0.217194, 0.088427],
+       [0.065137, 0.061288, 0.172764, 0.145007],
+       [0.147427, 0.243718, 0.092471, 0.091744],...
+ y: array([[0.07124 , 0.048513, 0.198986, 0.077002],
+       [0.075939, 0.065685, 0.209532, 0.147044],
+       [0.149566, 0.214609, 0.093684, 0.093504],...
+2025-05-19 02:17:34.064779 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([1200, 4],"float32"), Tensor([1200, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([1200, 4],"float32"), Tensor([1200, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2359 / 4800 (49.1%)
+Max absolute difference: 0.24639156
+Max relative difference: 0.60660774
+ x: array([[0.21292 , 0.119291, 0.103115, 0.132059],
+       [0.42815 , 0.088229, 0.022249, 0.16011 ],
+       [0.415163, 0.113236, 0.112721, 0.511225],...
+ y: array([[0.196229, 0.120071, 0.119345, 0.135538],
+       [0.312998, 0.075557, 0.039182, 0.185285],
+       [0.309225, 0.150682, 0.13069 , 0.347482],...
+2025-05-19 02:17:34.222115 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([122760, 4],"float32"), Tensor([122760, 4],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([122760, 4],"float32"), Tensor([122760, 4],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 72812.17
+Max relative difference: 511306.84
+ x: array(72812.31, dtype=float32)
+ y: array(0.142404, dtype=float32)
+2025-05-19 02:17:34.397991 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([135036, 4],"float32"), Tensor([135036, 4],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([135036, 4],"float32"), Tensor([135036, 4],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 80077.25
+Max relative difference: 562335.56
+ x: array(80077.39, dtype=float32)
+ y: array(0.142401, dtype=float32)
+2025-05-19 02:17:34.572615 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float32"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float32"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 805878.7
+Max relative difference: 1289352.8
+ x: array(805879.3, dtype=float32)
+ y: array(0.625026, dtype=float32)
+2025-05-19 02:17:34.820512 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([1620, 4],"float32"), Tensor([1620, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([1620, 4],"float32"), Tensor([1620, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3181 / 6480 (49.1%)
+Max absolute difference: 0.2570436
+Max relative difference: 0.622818
+ x: array([[0.103746, 0.076387, 0.103174, 0.191776],
+       [0.190417, 0.031672, 0.30451 , 0.395466],
+       [0.359141, 0.139998, 0.239435, 0.380645],...
+ y: array([[0.11929 , 0.08498 , 0.103718, 0.187969],
+       [0.189995, 0.053439, 0.254285, 0.299576],
+       [0.297638, 0.146834, 0.221659, 0.284882],...
+2025-05-19 02:17:34.983778 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([1728, 4],"float32"), Tensor([1728, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([1728, 4],"float32"), Tensor([1728, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3359 / 6912 (48.6%)
+Max absolute difference: 0.23664555
+Max relative difference: 0.5917438
+ x: array([[0.069025, 0.154245, 0.416758, 0.019457],
+       [0.038342, 0.100418, 0.196578, 0.32465 ],
+       [0.18149 , 0.15942 , 0.085738, 0.127836],...
+ y: array([[0.069167, 0.169239, 0.308619, 0.036404],
+       [0.061752, 0.110755, 0.184619, 0.258405],
+       [0.174459, 0.160329, 0.069916, 0.149413],...
+2025-05-19 02:17:35.139928 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([1800, 4],"float32"), Tensor([1800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([1800, 4],"float32"), Tensor([1800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3504 / 7200 (48.7%)
+Max absolute difference: 0.2534466
+Max relative difference: 0.61900556
+ x: array([[0.415276, 0.022176, 0.211114, 0.2205  ],
+       [0.077897, 0.138172, 0.229195, 0.082505],
+       [0.107385, 0.126722, 0.076785, 0.321739],...
+ y: array([[0.307451, 0.038314, 0.202374, 0.203763],
+       [0.067406, 0.147078, 0.216592, 0.067464],
+       [0.108756, 0.150814, 0.06555 , 0.262319],...
+2025-05-19 02:17:35.310923 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float32"), Tensor([190960, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float32"), Tensor([190960, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2262228.
+Max relative difference: 15897496.
+ x: array(2262228.2, dtype=float32)
+ y: array(0.142301, dtype=float32)
+2025-05-19 02:17:36.382196 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=0.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=0.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 132 / 240 (55%)
+Max absolute difference: 0.16932431
+Max relative difference: 0.34261168
+ x: array([[[[0.961835, 0.522061, 0.581902, 0.574044, 1.027213, 0.653051,
+          0.3606  , 0.419776, 0.376174, 0.9922  ],
+         [0.322759, 0.916387, 0.715541, 0.373191, 0.389589, 0.388315,...
+ y: array([[[[0.878045, 0.551418, 0.589728, 0.585879, 0.915018, 0.641751,
+          0.341909, 0.405543, 0.376434, 0.884246],
+         [0.461276, 0.84381 , 0.690636, 0.325275, 0.392064, 0.384738,...
+2025-05-19 02:17:36.551493 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=0.0, reduction="sum", )
+[accuracy error] backward  paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=0.0, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 18 / 240 (7.5%)
+Max absolute difference: 0.01282783
+Max relative difference: 1.15521725
+ x: array([[[[ 2.705087e-02,  1.797692e-02,  3.125781e-02,  1.768990e-02,
+           1.236525e-02,  3.472476e-04,  2.317225e-02,  2.991027e-02,
+           5.960721e-03,  2.303456e-02],...
+ y: array([[[[0.019966, 0.016851, 0.020605, 0.013432, 0.013516, 0.004609,
+          0.018829, 0.018849, 0.008405, 0.019232],
+         [0.019605, 0.009416, 0.01517 , 0.008933, 0.007298, 0.005492,...
+2025-05-19 02:17:36.720555 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=3, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=3, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 70 / 240 (29.2%)
+Max absolute difference: 0.20869836
+Max relative difference: 0.83049069
+ x: array([[[[0.044934, 0.036607, 0.030904, 0.121471, 0.043729, 0.074655,
+          0.039545, 0.23337 , 0.074889, 0.321377],
+         [0.041019, 0.045855, 0.03092 , 0.268464, 0.040732, 0.054936,...
+ y: array([[[[0.039917, 0.03256 , 0.035582, 0.121086, 0.037527, 0.08773 ,
+          0.033678, 0.185399, 0.078076, 0.211224],
+         [0.034872, 0.041669, 0.029298, 0.183584, 0.036365, 0.093269,...
+2025-05-19 02:17:36.882858 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=3, reduction="sum", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.25, gamma=3, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 1.41925951
+Max relative difference: 0.07921785
+ x: array(19.335166)
+ y: array(17.915907)
+2025-05-19 02:17:37.024356 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=0.0, reduction="none", )
+[accuracy error] backward  paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=0.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 177 / 240 (73.8%)
+Max absolute difference: 0.11619626
+Max relative difference: 1.
+ x: array([[[[0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],...
+ y: array([[[[ 2.863666e-02,  9.271160e-03,  1.986137e-02,  6.149848e-02,
+           1.000271e-01,  3.796859e-02,  2.047450e-02, -4.450718e-02,
+          -5.141008e-03,  1.488491e-02],...
+2025-05-19 02:17:37.206530 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=0.0, reduction="sum", )
+[accuracy error] backward  paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=0.0, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 134 / 240 (55.8%)
+Max absolute difference: 0.02296897
+Max relative difference: 1.
+ x: array([[[[0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],...
+ y: array([[[[-0.018006, -0.014889,  0.017991,  0.017725,  0.005809,
+           0.012335,  0.001133,  0.021766, -0.002462,  0.009537],
+         [-0.005348,  0.022903,  0.021973,  0.006077,  0.008322,...
+2025-05-19 02:17:37.367101 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=3, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=3, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 41 / 240 (17.1%)
+Max absolute difference: 0.07251863
+Max relative difference: 7.69153857
+ x: array([[[[0.049728, 0.050028, 0.032654, 0.056247, 0.0431  , 0.053735,
+          0.043807, 0.11138 , 0.050018, 0.049575],
+         [0.036084, 0.035116, 0.034362, 0.026616, 0.077226, 0.029057,...
+ y: array([[[[ 0.049512,  0.049979,  0.031821,  0.055461,  0.0431  ,
+           0.054847,  0.047571,  0.101839,  0.054175,  0.053899],
+         [ 0.035858,  0.034751,  0.040032,  0.025715,  0.085081,...
+2025-05-19 02:17:37.544401 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=3, reduction="sum", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), None, alpha=0.5, gamma=3, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.59954235
+Max relative difference: 0.04885441
+ x: array(12.871564)
+ y: array(12.272021)
+2025-05-19 02:17:37.713410 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=0.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=0.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 194 / 240 (80.8%)
+Max absolute difference: 5.64915064
+Max relative difference: 0.30183556
+ x: array([[[[11.738954, 28.979917, 16.337694, 23.614646, 16.545383,
+          11.40812 , 15.570629, 21.309453, 11.487223, 27.780855],
+         [15.591416, 15.788641, 18.823333, 13.265967, 29.922388,...
+ y: array([[[[11.372299, 26.169062, 18.109318, 22.475082, 18.227047,
+           9.664739, 15.747029, 20.810224, 11.145082, 25.659377],
+         [16.80209 , 17.041598, 19.580146, 14.580393, 26.839677,...
+2025-05-19 02:17:37.873555 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=0.0, reduction="sum", )
+[accuracy error] backward  paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=0.0, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 224 / 240 (93.3%)
+Max absolute difference: 0.26452358
+Max relative difference: 1.15866326
+ x: array([[[[-3.147679e-01, -4.895195e-01, -9.046730e-02, -2.435179e-01,
+          -1.498795e-01, -4.027292e-03, -1.055157e-01, -1.218564e-01,
+          -6.906458e-02, -4.292166e-01],...
+ y: array([[[[-0.306295, -0.386189, -0.173175, -0.226033, -0.215029,
+          -0.089472, -0.173334, -0.191615, -0.149746, -0.32048 ],
+         [-0.48102 , -0.076222, -0.128905, -0.100689, -0.238204,...
+2025-05-19 02:17:38.052515 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="mean", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="mean", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.05856898
+Max relative difference: 0.07920321
+ x: array(0.798046)
+ y: array(0.739477)
+2025-05-19 02:17:38.236949 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 119 / 240 (49.6%)
+Max absolute difference: 0.42759298
+Max relative difference: 0.86055076
+ x: array([[[[-0.087396, -0.02882 , -0.329098, -0.109918, -0.088259,
+          -0.123074, -0.162314, -0.149186, -0.251469, -0.301606],
+         [-0.093065, -0.101548, -0.040009, -0.383937, -0.102977,...
+ y: array([[[[-0.108531, -0.030133, -0.273069, -0.109384, -0.074231,
+          -0.136066, -0.217382, -0.15631 , -0.2197  , -0.260594],
+         [-0.099843, -0.099797, -0.040482, -0.36171 , -0.102278,...
+2025-05-19 02:17:38.418062 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="sum", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.25, gamma=3, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 1088.58404736
+Max relative difference: 0.1039838
+ x: array(11557.368568)
+ y: array(10468.784521)
+2025-05-19 02:17:38.573939 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=0.0, reduction="none", )
+[accuracy error] backward  paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=0.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 233 / 240 (97.1%)
+Max absolute difference: 1.14277887
+Max relative difference: 1.
+ x: array([[[[0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+         [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],...
+ y: array([[[[-1.178092e-01,  2.797855e-02, -4.752201e-02, -1.346534e-01,
+          -3.775286e-01, -1.398177e-02, -2.224167e-01, -3.180487e-01,
+          -2.477759e-01, -5.732771e-01],...
+2025-05-19 02:17:38.759180 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="mean", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="mean", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.02218425
+Max relative difference: 0.07883769
+ x: array(-0.303576)
+ y: array(-0.281391)
+2025-05-19 02:17:38.917253 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 87 / 240 (36.2%)
+Max absolute difference: 0.08008217
+Max relative difference: 15.11922616
+ x: array([[[[-0.054034, -0.134149, -0.063976, -0.025178, -0.030161,
+          -0.01972 , -0.120127, -0.139399, -0.029884, -0.012328],
+         [-0.16228 , -0.143136, -0.087822, -0.071177, -0.024183,...
+ y: array([[[[-0.061489, -0.143144, -0.070592, -0.001562, -0.027456,
+           0.00343 , -0.147432, -0.169587, -0.020902,  0.032671],
+         [-0.151644, -0.137096, -0.114219, -0.07854 , -0.008386,...
+2025-05-19 02:17:39.102303 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="sum", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3, 4, 10],"float64"), Tensor([2, 3, 4, 10],"float64"), Tensor([1],"float64"), alpha=0.5, gamma=3, reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.68143855
+Max relative difference: 0.02388161
+ x: array(29.215471)
+ y: array(28.534032)
+2025-05-19 02:17:39.273438 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3],"float32"), Tensor([2, 3],"float32"), normalizer=Tensor([1],"float32"), reduction="sum", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3],"float32"), Tensor([2, 3],"float32"), normalizer=Tensor([1],"float32"), reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.5355265
+Max relative difference: 0.1651811
+ x: array(3.777583, dtype=float32)
+ y: array(3.242057, dtype=float32)
+2025-05-19 02:17:39.437476 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3],"float32"), Tensor([2, 3],"float32"), normalizer=Tensor([],"float32"), reduction="sum", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([2, 3],"float32"), Tensor([2, 3],"float32"), normalizer=Tensor([],"float32"), reduction="sum", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.620337
+Max relative difference: 0.15696268
+ x: array(-4.572468, dtype=float32)
+ y: array(-3.952131, dtype=float32)
+2025-05-19 02:17:39.609311 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([20, 4],"float32"), Tensor([20, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([20, 4],"float32"), Tensor([20, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 38 / 80 (47.5%)
+Max absolute difference: 0.13773501
+Max relative difference: 0.41611108
+ x: array([[0.124523, 0.039207, 0.246297, 0.228373],
+       [0.117504, 0.087846, 0.156216, 0.154806],
+       [0.083053, 0.124482, 0.108507, 0.08536 ],...
+ y: array([[0.154624, 0.064035, 0.261952, 0.207202],
+       [0.116862, 0.073437, 0.154854, 0.157275],
+       [0.083379, 0.132842, 0.10637 , 0.069795],...
+2025-05-19 02:17:39.779308 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float32"), Tensor([210056, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float32"), Tensor([210056, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2488916.5
+Max relative difference: 17488130.
+ x: array(2488916.8, dtype=float32)
+ y: array(0.14232, dtype=float32)
+2025-05-19 02:17:40.911232 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([218240, 80],"float32"), Tensor([218240, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([218240, 80],"float32"), Tensor([218240, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2586323.8
+Max relative difference: 18169544.
+ x: array(2586324., dtype=float32)
+ y: array(0.142344, dtype=float32)
+2025-05-19 02:17:42.110726 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([240064, 80],"float32"), Tensor([240064, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([240064, 80],"float32"), Tensor([240064, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2844246.5
+Max relative difference: 19985742.
+ x: array(2844246.8, dtype=float32)
+ y: array(0.142314, dtype=float32)
+2025-05-19 02:17:43.401623 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([245520, 80],"float32"), Tensor([245520, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([245520, 80],"float32"), Tensor([245520, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2909305.5
+Max relative difference: 20440980.
+ x: array(2909305.8, dtype=float32)
+ y: array(0.142327, dtype=float32)
+2025-05-19 02:17:44.720179 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([270072, 80],"float32"), Tensor([270072, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([270072, 80],"float32"), Tensor([270072, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3200831.
+Max relative difference: 22486118.
+ x: array(3200831.2, dtype=float32)
+ y: array(0.142347, dtype=float32)
+2025-05-19 02:17:46.147301 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([272800, 80],"float32"), Tensor([272800, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([272800, 80],"float32"), Tensor([272800, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3232534.8
+Max relative difference: 22711748.
+ x: array(3232535., dtype=float32)
+ y: array(0.142329, dtype=float32)
+2025-05-19 02:17:47.562924 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([27648, 4],"float32"), Tensor([27648, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([27648, 4],"float32"), Tensor([27648, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 53937 / 110592 (48.8%)
+Max absolute difference: 0.26258856
+Max relative difference: 0.6313228
+ x: array([[0.132484, 0.227978, 0.091126, 0.160449],
+       [0.116689, 0.162942, 0.079893, 0.081392],
+       [0.095791, 0.137649, 0.228357, 0.191538],...
+ y: array([[0.133425, 0.214871, 0.089771, 0.161076],
+       [0.168548, 0.159675, 0.089463, 0.075922],
+       [0.105173, 0.137434, 0.219925, 0.181684],...
+2025-05-19 02:17:47.754701 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([28800, 4],"float32"), Tensor([28800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([28800, 4],"float32"), Tensor([28800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 56076 / 115200 (48.7%)
+Max absolute difference: 0.26052055
+Max relative difference: 0.6279015
+ x: array([[0.315885, 0.095701, 0.099355, 0.116702],
+       [0.045436, 0.442208, 0.173288, 0.104741],
+       [0.145905, 0.264598, 0.095082, 0.057126],...
+ y: array([[0.259654, 0.089127, 0.113881, 0.131742],
+       [0.050646, 0.339699, 0.187458, 0.108072],
+       [0.150069, 0.247263, 0.140023, 0.064157],...
+2025-05-19 02:17:47.940578 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([30, 4],"float32"), Tensor([30, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([30, 4],"float32"), Tensor([30, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 51 / 120 (42.5%)
+Max absolute difference: 0.17134172
+Max relative difference: 0.4629022
+ x: array([[0.303892, 0.429139, 0.082659, 0.079778],
+       [0.152955, 0.09114 , 0.202634, 0.056518],
+       [0.176748, 0.089178, 0.140919, 0.105523],...
+ y: array([[0.276138, 0.332726, 0.076747, 0.070691],
+       [0.151222, 0.088981, 0.224228, 0.062951],
+       [0.171144, 0.112396, 0.17555 , 0.102698],...
+2025-05-19 02:17:48.103702 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([300, 4],"float32"), Tensor([300, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([300, 4],"float32"), Tensor([300, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 584 / 1200 (48.7%)
+Max absolute difference: 0.21660024
+Max relative difference: 0.55376405
+ x: array([[0.368119, 0.118588, 0.114061, 0.101331],
+       [0.070115, 0.172818, 0.155218, 0.106457],
+       [0.19426 , 0.246208, 0.089234, 0.087681],...
+ y: array([[0.319039, 0.126205, 0.172974, 0.101969],
+       [0.063031, 0.177473, 0.162405, 0.104596],
+       [0.184874, 0.221422, 0.082384, 0.085531],...
+2025-05-19 02:17:48.268373 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([300080, 80],"float32"), Tensor([300080, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([300080, 80],"float32"), Tensor([300080, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3556579.2
+Max relative difference: 24984008.
+ x: array(3556579.5, dtype=float32)
+ y: array(0.142354, dtype=float32)
+2025-05-19 02:17:49.820313 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([330088, 80],"float32"), Tensor([330088, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([330088, 80],"float32"), Tensor([330088, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3911745.8
+Max relative difference: 27483478.
+ x: array(3911746., dtype=float32)
+ y: array(0.142331, dtype=float32)
+2025-05-19 02:17:51.481541 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([35, 4],"float32"), Tensor([35, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([35, 4],"float32"), Tensor([35, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 63 / 140 (45%)
+Max absolute difference: 0.1994676
+Max relative difference: 0.51165247
+ x: array([[0.153578, 0.126135, 0.088329, 0.164189],
+       [0.205186, 0.099058, 0.076041, 0.087905],
+       [0.207892, 0.134065, 0.092205, 0.543252],...
+ y: array([[0.151756, 0.160671, 0.07595 , 0.162917],
+       [0.210874, 0.098257, 0.063842, 0.081681],
+       [0.193648, 0.139263, 0.097621, 0.364228],...
+2025-05-19 02:17:51.656422 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([3872, 2],"float32"), label=Tensor([3872, 2],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([3872, 2],"float32"), label=Tensor([3872, 2],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 5899.547
+Max relative difference: 8044.1753
+ x: array(-5900.2803, dtype=float32)
+ y: array(-0.733394, dtype=float32)
+2025-05-19 02:17:51.819642 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([414, 4],"float32"), Tensor([414, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([414, 4],"float32"), Tensor([414, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 789 / 1656 (47.6%)
+Max absolute difference: 0.23096713
+Max relative difference: 0.57362604
+ x: array([[0.518238, 0.042589, 0.119896, 0.116774],
+       [0.088746, 0.061886, 0.175355, 0.094668],
+       [0.143577, 0.313919, 0.059985, 0.279652],...
+ y: array([[0.355343, 0.058998, 0.119475, 0.117727],
+       [0.076651, 0.058897, 0.169278, 0.107197],
+       [0.142931, 0.260419, 0.058185, 0.239159],...
+2025-05-19 02:17:51.982054 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([432, 4],"float32"), Tensor([432, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([432, 4],"float32"), Tensor([432, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 827 / 1728 (47.9%)
+Max absolute difference: 0.23888502
+Max relative difference: 0.5878423
+ x: array([[0.126715, 0.221738, 0.27822 , 0.169798],
+       [0.099855, 0.081314, 0.083518, 0.080991],
+       [0.176556, 0.126249, 0.130314, 0.020036],...
+ y: array([[0.137724, 0.201138, 0.252634, 0.199781],
+       [0.12869 , 0.081882, 0.094313, 0.101866],
+       [0.183853, 0.152983, 0.136586, 0.038666],...
+2025-05-19 02:17:52.144155 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([450, 4],"float32"), Tensor([450, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([450, 4],"float32"), Tensor([450, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 894 / 1800 (49.7%)
+Max absolute difference: 0.2289561
+Max relative difference: 0.57060343
+ x: array([[0.386438, 0.229676, 0.193533, 0.065892],
+       [0.051133, 0.120482, 0.22997 , 0.139775],
+       [0.133329, 0.078152, 0.06294 , 0.064412],...
+ y: array([[0.294198, 0.22975 , 0.184026, 0.072452],
+       [0.064183, 0.143458, 0.217387, 0.139432],
+       [0.135512, 0.078508, 0.077052, 0.075122],...
+2025-05-19 02:17:52.304185 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([4800, 4],"float32"), Tensor([4800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([4800, 4],"float32"), Tensor([4800, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 9427 / 19200 (49.1%)
+Max absolute difference: 0.2475321
+Max relative difference: 0.60924006
+ x: array([[0.441449, 0.086543, 0.047627, 0.079322],
+       [0.075098, 0.171632, 0.097487, 0.031907],
+       [0.0619  , 0.18885 , 0.153674, 0.051546],...
+ y: array([[0.316043, 0.074113, 0.050212, 0.076655],
+       [0.067299, 0.191761, 0.098656, 0.048907],
+       [0.081977, 0.179184, 0.152306, 0.054115],...
+2025-05-19 02:17:52.480408 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([5, 2],"float32"), label=Tensor([5, 2],"float32"), normalizer=Tensor([1],"float32"), alpha=0.25, gamma=2.0, reduction="sum", name=None, )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([5, 2],"float32"), label=Tensor([5, 2],"float32"), normalizer=Tensor([1],"float32"), alpha=0.25, gamma=2.0, reduction="sum", name=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.22546077
+Max relative difference: 0.07630216
+ x: array(2.72938, dtype=float32)
+ y: array(2.954841, dtype=float32)
+2025-05-19 02:17:52.645791 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([6380, 4],"float32"), Tensor([6380, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([6380, 4],"float32"), Tensor([6380, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 12480 / 25520 (48.9%)
+Max absolute difference: 0.2539681
+Max relative difference: 0.61783415
+ x: array([[0.084011, 0.13902 , 0.060003, 0.114958],
+       [0.082717, 0.067372, 0.454187, 0.100936],
+       [0.117286, 0.085991, 0.202597, 0.212467],...
+ y: array([[0.074344, 0.140098, 0.056543, 0.116517],
+       [0.080248, 0.080088, 0.31949 , 0.115348],
+       [0.119049, 0.078666, 0.190596, 0.195778],...
+2025-05-19 02:17:52.826104 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([6408, 4],"float32"), Tensor([6408, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([6408, 4],"float32"), Tensor([6408, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 12392 / 25632 (48.3%)
+Max absolute difference: 0.25745663
+Max relative difference: 0.6224408
+ x: array([[0.10156 , 0.099237, 0.419032, 0.108853],
+       [0.179884, 0.474945, 0.092846, 0.086484],
+       [0.028644, 0.069757, 0.095949, 0.118728],...
+ y: array([[0.105459, 0.097668, 0.309649, 0.143888],
+       [0.17682 , 0.332491, 0.091501, 0.078967],
+       [0.048306, 0.061139, 0.094908, 0.123042],...
+2025-05-19 02:17:52.991829 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([6912, 4],"float32"), Tensor([6912, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([6912, 4],"float32"), Tensor([6912, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 13442 / 27648 (48.6%)
+Max absolute difference: 0.2535158
+Max relative difference: 0.6159755
+ x: array([[0.092726, 0.096623, 0.086138, 0.065038],
+       [0.318114, 0.032362, 0.088601, 0.11985 ],
+       [0.246175, 0.180867, 0.09017 , 0.2252  ],...
+ y: array([[0.085959, 0.141225, 0.069575, 0.085095],
+       [0.293842, 0.048129, 0.07126 , 0.133213],
+       [0.257234, 0.174047, 0.124268, 0.228954],...
+2025-05-19 02:17:53.186019 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([7200, 4],"float32"), Tensor([7200, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([7200, 4],"float32"), Tensor([7200, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 13951 / 28800 (48.4%)
+Max absolute difference: 0.26092982
+Max relative difference: 0.6283501
+ x: array([[0.153549, 0.101884, 0.156397, 0.02782 ],
+       [0.087804, 0.102971, 0.167945, 0.366651],
+       [0.088244, 0.159535, 0.288074, 0.358347],...
+ y: array([[0.152177, 0.105208, 0.154171, 0.038341],
+       [0.104118, 0.101038, 0.166113, 0.281131],
+       [0.072513, 0.162377, 0.240871, 0.274766],...
+2025-05-19 02:17:53.367967 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([80, 4],"float32"), Tensor([80, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([80, 4],"float32"), Tensor([80, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 168 / 320 (52.5%)
+Max absolute difference: 0.18882817
+Max relative difference: 0.4973814
+ x: array([[0.250587, 0.192835, 0.295077, 0.162772],
+       [0.40003 , 0.259776, 0.075526, 0.344973],
+       [0.28943 , 0.204361, 0.116988, 0.040894],...
+ y: array([[0.218198, 0.219888, 0.253352, 0.165101],
+       [0.296402, 0.261687, 0.074306, 0.306422],
+       [0.262461, 0.209075, 0.116923, 0.053821],...
+2025-05-19 02:17:53.545951 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([8550, 4],"float32"), Tensor([8550, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([8550, 4],"float32"), Tensor([8550, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 16511 / 34200 (48.3%)
+Max absolute difference: 0.2575089
+Max relative difference: 0.6236349
+ x: array([[0.126775, 0.053109, 0.087382, 0.098928],
+       [0.09545 , 0.040405, 0.037507, 0.080575],
+       [0.281916, 0.072186, 0.103863, 0.048679],...
+ y: array([[0.172238, 0.055781, 0.075301, 0.105368],
+       [0.100872, 0.063426, 0.045709, 0.100127],
+       [0.251949, 0.088197, 0.11237 , 0.0744  ],...
+2025-05-19 02:17:53.709056 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([85932, 4],"float32"), Tensor([85932, 4],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([85932, 4],"float32"), Tensor([85932, 4],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 50896.3
+Max relative difference: 357683.16
+ x: array(50896.44, dtype=float32)
+ y: array(0.142294, dtype=float32)
+2025-05-19 02:17:53.875740 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([9, 4],"float32"), Tensor([9, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([9, 4],"float32"), Tensor([9, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 17 / 36 (47.2%)
+Max absolute difference: 0.09914878
+Max relative difference: 0.31544504
+ x: array([[0.11475 , 0.110235, 0.043772, 0.138429],
+       [0.089986, 0.113164, 0.089968, 0.413463],
+       [0.079522, 0.18911 , 0.122933, 0.103509],...
+ y: array([[0.117616, 0.108773, 0.052885, 0.138532],
+       [0.104141, 0.159747, 0.079561, 0.314314],
+       [0.066655, 0.228695, 0.12796 , 0.123802],...
+2025-05-19 02:17:54.049315 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([95480, 4],"float32"), Tensor([95480, 4],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([95480, 4],"float32"), Tensor([95480, 4],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 56657.812
+Max relative difference: 397566.72
+ x: array(56657.953, dtype=float32)
+ y: array(0.142511, dtype=float32)
