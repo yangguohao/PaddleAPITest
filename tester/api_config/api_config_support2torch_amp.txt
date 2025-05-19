@@ -9516,4 +9516,6 @@ paddle.nn.functional.linear(x=Tensor([96, 51, 1024],"float16"), weight=Tensor([1
 paddle.nn.functional.linear(x=Tensor([96, 52, 1024],"float16"), weight=Tensor([1024, 1024],"float32"), bias=Tensor([1024],"float32"), name=None, )
 paddle.nn.functional.linear(x=Tensor([96, 53, 1024],"float16"), weight=Tensor([1024, 1024],"float32"), bias=Tensor([1024],"float32"), name=None, )
 paddle.nn.functional.linear(x=Tensor([96, 9, 1024],"float16"), weight=Tensor([1024, 1024],"float32"), bias=Tensor([1024],"float32"), name=None, )
-
+paddle.Tensor.matmul(Tensor([128, 12, 23, 23],"float32"), Tensor([128, 12, 23, 32],"float16"), )
+paddle.Tensor.matmul(Tensor([192, 12, 22, 22],"float32"), Tensor([192, 12, 22, 32],"float16"), )
+paddle.mm(Tensor([32, 1, 256],"float32"), Tensor([32, 256, 576],"float16"), )
