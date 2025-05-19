@@ -118,7 +118,8 @@ def worker_process(gpu_id, task_queue, result_queue, idx, args_mode):
                     print(f"[Worker {idx}] Error on Task {task_id}: {e}")
                     result_queue.put((task_id, "error", str(e)))
                     if "CUDA error" in str(e) or "memory corruption" in str(e) or "CUDA out of memory" in str(e):
-                        exit(1)
+                       print(f"[Worker {idx}] OOM on Task {task_id}: {e}") 
+                       exit(1)
 
         except Exception as e:
             print(f"[Worker {idx}] Fatal Error: {e}")
