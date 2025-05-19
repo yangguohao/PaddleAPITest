@@ -1,6 +1,8 @@
 paddle.Tensor.fill_diagonal_tensor
-经调试，当输入参数y的dtype为float类型时，无法进行反向梯度传播，将类型改为int则均可正常通过
-调试时输出如下：
+1.经调试，当输入参数y的dtype为float类型时，无法进行反向梯度传播，将类型改为int则均可正常通过
+
+2.调试时对比paddle和torch输出如下：
+
 print(torch_out_grads[1].numpy())
 [-0.10939214 -0.37324573]
 
@@ -9,6 +11,7 @@ Traceback (most recent call last):
   File "<string>", line 1, in <module>
 AttributeError: 'NoneType' object has no attribute 'numpy'
 
+3.具体配置及报错信息如下：
 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 3, 2],"float32"), Tensor([2, 2, 3],"float32"), offset=0, dim1=1, dim2=2, )
 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 3, 2],"float64"), Tensor([2, 2, 3],"float64"), offset=0, dim1=1, dim2=2, )
 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 4],"float32"), Tensor([4, 2],"float32"), 0, 0, 1, )

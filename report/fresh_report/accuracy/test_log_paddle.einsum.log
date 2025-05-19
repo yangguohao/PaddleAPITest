@@ -1,0 +1,45 @@
+paddle.einsum("mixy,bmxy,kmxy->bixy", Tensor([32, 32, 1, 1],"float32"), Tensor([8, 32, 241, 241],"float32"), Tensor([1, 32, 1, 1],"float32"), ) 
+paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), )
+paddle.einsum("ij,ij->j", Tensor([10, 2],"float64"), Tensor([1, 2],"float64"), )
+
+2025-05-19 20:04:22.858512 GPU 3 52905 test begin: paddle.einsum("mixy,bmxy,kmxy->bixy", Tensor([32, 32, 1, 1],"float32"), Tensor([8, 32, 241, 241],"float32"), Tensor([1, 32, 1, 1],"float32"), )
+[accuracy error] backward  paddle.einsum("mixy,bmxy,kmxy->bixy", Tensor([32, 32, 1, 1],"float32"), Tensor([8, 32, 241, 241],"float32"), Tensor([1, 32, 1, 1],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 32 (3.12%)
+Max absolute difference among violations: 0.01694
+Max relative difference among violations: 0.02975037
+ ACTUAL: array([[[[ -36.74041 ]],
+
+        [[ -63.613914]],...
+ DESIRED: array([[[[ -36.747635]],
+
+        [[ -63.602814]],...
+
+
+2025-05-19 18:20:09.231487 test begin: paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), )
+[accuracy error] backward  paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 2 (50%)
+Max absolute difference among violations: 1.67772062e+243
+Max relative difference among violations: 9.88534928e+244
+ ACTUAL: array([1.697179e-002, 1.677721e+243])
+ DESIRED: array([0.016972, 0.016972])
+2025-05-19 18:20:09.333923 test begin: paddle.einsum("ij,ij->j", Tensor([10, 2],"float64"), Tensor([1, 2],"float64"), )
+[accuracy error] backward  paddle.einsum("ij,ij->j", Tensor([10, 2],"float64"), Tensor([1, 2],"float64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 19 / 20 (95%)
+Max absolute difference among violations: 0.15860387
+Max relative difference among violations: 3.64924469
+ ACTUAL: array([[ 1.572126e-001, -1.151418e-001],
+       [ 6.915085e-310,  1.723795e-320],
+       [ 6.914397e-310,  6.914828e-310],...
+ DESIRED: array([[0.157213, 0.043462],
+       [0.157213, 0.043462],
+       [0.157213, 0.043462],...
+

@@ -2603,7 +2603,6 @@ paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([9744, 80],"float16
 paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([9792, 80],"float16"), Tensor([9792, 80],"float32"), reduction="none", )
 paddle.exp(Tensor([10, 2],"bfloat16"), )
 paddle.exp(Tensor([4, 3, 2],"bfloat16"), )
-paddle.einsum("i,j->ij", Tensor([93],"float32"), Tensor([16],"float16"), )
 paddle.incubate.nn.functional.swiglu(Tensor([1, 1024, 11008],"bfloat16"), Tensor([1, 1024, 11008],"bfloat16"), )
 paddle.incubate.nn.functional.swiglu(Tensor([1, 1024, 4864],"bfloat16"), Tensor([1, 1024, 4864],"bfloat16"), )
 paddle.incubate.nn.functional.swiglu(Tensor([2, 114, 64],"bfloat16"), Tensor([2, 114, 64],"bfloat16"), )

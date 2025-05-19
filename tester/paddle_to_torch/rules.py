@@ -1143,6 +1143,33 @@ if data_format == "NDHWC":
 
 
 # e
+class EinsumRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+equation = locals().get('equation')
+operands = locals().get('operands')
+tensor_args = list(operands) if isinstance(operands, (list, tuple)) else [operands]
+output_pattern = equation.split('->')[-1] if '->' in equation else ""
+has_repeats = len(output_pattern.replace('...', '')) != len(set(output_pattern.replace('...', '')))
+is_ii_pattern = output_pattern == 'ii'
+special_handling = has_repeats and is_ii_pattern
+if special_handling:
+    interim_eq = equation.split('->')[0] + '->i'
+    interim_result = None
+"""
+        core = f"""
+if special_handling:
+    interim_result = {self.torch_api}(interim_eq, *tensor_args)
+    n = interim_result.shape[0]
+    result = torch.zeros((n, n), dtype=interim_result.dtype, device=interim_result.device)
+    result.diagonal().copy_(interim_result)
+else:
+    result = {self.torch_api}(equation, *tensor_args)
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
 class EmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -3568,6 +3595,31 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class SendUvRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+y = locals().get('y')
+src_index = locals().get('src_index')
+dst_index = locals().get('dst_index')
+message_op = locals().get('message_op', 'add')
+src_features = x[src_index]
+dst_features = y[dst_index]
+"""
+        core = """
+if message_op == 'add':
+    result = src_features + dst_features
+elif message_op == 'sub':
+    result = src_features - dst_features
+elif message_op == 'mul':
+    result = src_features * dst_features
+elif message_op == 'div':
+    result = src_features / (dst_features)
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class SoftmaxMaskFuseRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = "result = torch.softmax(x + mask, dim=-1)"
@@ -3736,6 +3788,34 @@ else:
         return ConvertResult.success(paddle_api, code)
 
 # v
+class VanderRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+n = locals().get('n', None)
+increasing = locals().get('increasing', False)
+if n is None:
+    n = len(x)
+x_size = x.size(0)
+dtype = x.dtype
+device = x.device
+"""
+        core = """
+if n == 0:
+    result = torch.zeros((x_size, 0), dtype=dtype, device=device)
+elif n == 1:
+    result = torch.ones((x_size, 1), dtype=dtype, device=device)
+else:
+    powers = torch.arange(n, device=device)
+    if not increasing:
+        powers = n - 1 - powers
+    x_col = x.view(-1, 1)
+    result = x_col ** powers
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class VecdotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """

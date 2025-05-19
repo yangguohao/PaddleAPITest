@@ -173,6 +173,10 @@
         }
     },
     "c": "API started with 'c' should be placed here",
+    "paddle.cartesian_prod":{
+        "torch_api": "torch.cartesian_prod",
+        "torch_args":["*{x}"]
+    },
     "paddle.cast":{
         "Rule": "CastRule"
     },
@@ -250,6 +254,14 @@
         "Rule": "Dropout3dRule"
     },
     "e": "API started with 'e' should be placed here",
+    "paddle.einsum": {
+        "Rule": "EinsumRule",
+        "torch_api": "torch.einsum",
+        "torch_args": [
+            "{equation}",
+            "*{operands}"
+        ]
+    },
     "paddle.equal_all": {
         "torch_api": "torch.equal",
         "paddle_torch_args_map": {
@@ -405,6 +417,9 @@
     },
     "paddle.geometric.segment_sum": {
         "Rule": "SegmentRule"
+    },
+    "paddle.geometric.send_uv": {
+        "Rule": "SendUvRule"
     },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
@@ -1738,6 +1753,9 @@
         }
     },
     "v": "API started with 'v' should be placed here",
+    "paddle.vander": {
+        "Rule": "VanderRule"
+    },
     "paddle.vecdot": {
         "Rule": "VecdotRule"
     },
@@ -7184,15 +7202,6 @@
             "x": "tensor"
         },
         "min_input_args": 0
-    },
-    "paddle.vander": {
-        "torch_api": "torch.vander",
-        "paddle_torch_args_map": {
-            "x": "x",
-            "n": "N",
-            "increasing": "increasing"
-        },
-        "min_input_args": 1
     },
     "paddle.var": {
         "torch_api": "torch.var",
