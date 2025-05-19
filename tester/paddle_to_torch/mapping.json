@@ -753,7 +753,7 @@
     },
     "paddle.Tensor.matmul": {
         "torch_api": "torch.Tensor.matmul",
-        "Rule": "MatualTensorRule",
+        "Rule": "MatmulTensorRule",
         "paddle_torch_args_map": {
             "y": "other"
         },
@@ -766,10 +766,11 @@
         "Rule": "MedianRule"
     },
     "paddle.mm": {
-        "torch_api": "torch.mm",
+        "torch_api": "torch.matmul",
+        "Rule": "MmRule",
         "paddle_torch_args_map": {
             "input": "input",
-            "mat2": "mat2"
+            "mat2": "other"
         }
     },
     "paddle.mod": {
@@ -1422,6 +1423,7 @@
     },
     "paddle.outer": {
         "torch_api": "torch.outer",
+        "Rule": "OuterRule",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "vec2"
@@ -1476,6 +1478,7 @@
     "q": "API started with 'q' should be placed here",
     "paddle.quantile": {
         "torch_api": "torch.quantile",
+        "Rule": "QuantileRule",
         "paddle_torch_args_map": {
             "x": "input",
             "q": "q",
@@ -1486,7 +1489,7 @@
         "set_defaults": {
             "axis": "None",
             "keepdim": "False",
-            "interpolation": "linear"      
+            "interpolation": "'linear'"      
         }
     },
     "r": "API started with 'r' should be placed here",
@@ -1690,6 +1693,7 @@
     },
     "paddle.tensordot": {
         "torch_api": "torch.tensordot",
+        "Rule": "TensordotRule",
         "paddle_torch_args_map": {
             "x": "a",
             "y": "b",

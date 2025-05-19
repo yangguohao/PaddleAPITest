@@ -1,7 +1,0 @@
-[paddle error] paddle.outer(Tensor([5, 10, 10],"int32"), Tensor([2, 10],"int32"), ) 
- (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float64, complex128, float16, float32, complex64, bfloat16.
-  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at /paddle/paddle/phi/core/kernel_factory.cc:380)
-
-[paddle error] paddle.outer(Tensor([5, 10, 10],"int64"), Tensor([2, 10],"int64"), ) 
- (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int64) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int64`. Paddle support following DataTypes: float64, complex128, float16, float32, complex64, bfloat16.
-  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at /paddle/paddle/phi/core/kernel_factory.cc:380)
