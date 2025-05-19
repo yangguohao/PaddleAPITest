@@ -589,6 +589,22 @@ if not isinstance(axis, int) and axis != None:
         )
         return ConvertResult.success(paddle_api, code)
 
+class CovRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if 'rowvar' in locals() and rowvar is False:
+    if torch.is_tensor(x) and x.dim() > 1:
+        x = torch.transpose(x, 0, 1)
+"""   
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class CropRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -2244,6 +2260,20 @@ result = torch.exp(result)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class LstsqRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre="""
+driver='gels'
+"""  
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code( 
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=True)
+
+
 # m
 class Matrix_transposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2607,6 +2637,43 @@ if top_k is not None:
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class NormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if p == "fro" and x.dim() == 1:
+    p = 2
+"""
+        core = f"""
+import math
+if p==0:
+    if keepdim:
+        result = (x!= 0).sum(dim=axis, keepdim=True).to(x.dtype)
+    else:
+        result = (x!= 0).sum(dim=axis).to(x.dtype)
+elif len(x.shape)>2 and axis is None:
+    if p==math.inf:
+        if keepdim:
+            result = x.abs().amax().reshape([1] * x.ndim)
+        else:
+            result = x.abs().amax()
+    elif p==-math.inf:
+        if keepdim:
+            result = x.abs().amin().reshape([1] * x.ndim)
+        else:
+            result = x.abs().amin()
+    else:
+        result = {self.torch_api}(**_kwargs)
+else:
+    result = {self.torch_api}(**_kwargs)
+"""
+        code = Code( 
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 class NumelRule(BaseRule):
@@ -3194,6 +3261,29 @@ for i in range(boxnum.shape[0]):
         return ConvertResult.success(paddle_api, code, "result")
 
 
+class RollRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if 'shifts' in locals() and isinstance(shifts, torch.Tensor):
+    if shifts.numel() == 1:
+        shifts = shifts.item()
+    else:
+        shifts = shifts.tolist()
+if 'axis' in locals() and isinstance(axis, torch.Tensor):
+    if axis.numel() == 1:
+        axis = axis.item()
+    else:
+        axis = axis.tolist()
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class ReduceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, _ = self.apply_generic()
@@ -3435,6 +3525,27 @@ else:
     result = torch.split(x, num_or_sections, dim=axis)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
+class SqueezeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if 'axis' in locals():
+    if isinstance(axis, torch.Tensor):
+        if axis.numel() == 1:
+            axis = axis.item()
+        else:
+            axis = tuple(axis.tolist())
+    elif isinstance(axis, (list, tuple)):
+        axis = tuple(axis)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -3879,6 +3990,34 @@ class UnfoldRule(BaseRule):
         code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+
+class UnsqueezeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if 'axis' in locals():
+    if isinstance(axis, torch.Tensor):
+        if axis.numel() == 1:
+            axis = axis.item()
+        else:
+            axis = axis.tolist()
+    if isinstance(axis, tuple):
+        axis = list(axis)
+"""
+        core = f"""
+if isinstance(axis, list):
+    input_tensor = x
+    for ax in axis:
+        input_tensor = torch.unsqueeze(input_tensor, ax)
+    result = input_tensor
+else:
+    result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 # v
 class VecdotRule(BaseRule):
