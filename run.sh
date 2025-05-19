@@ -3,7 +3,7 @@
 # 配置参数
 # NUM_GPUS!=0 时，engineV2 不受外部 "CUDA_VISIBLE_DEVICES" 影响
 INPUT_FILE="tester/api_config/api_config_paddleonly_1.txt"
-FILE_PATTERN="tester/api_config/api_config_paddleonly_*.txt"
+FILE_PATTERN="tester/api_config/a.txt"
 LOG_DIR="tester/api_config/test_log"
 NUM_GPUS=-1
 NUM_WORKERS_PER_GPU=-1
@@ -13,7 +13,7 @@ REQUIRED_MEMORY=10
 mkdir -p "$LOG_DIR" || { echo "无法创建日志目录 $LOG_DIR"; exit 1; }
 
 # 执行程序
-nohup python engineV2.py --paddle_only=True \
+nohup python engineV2.py --accuracy=True \
         --api_config_file_pattern="$FILE_PATTERN" \
         --num_gpus=$NUM_GPUS \
         --num_workers_per_gpu=$NUM_WORKERS_PER_GPU \
