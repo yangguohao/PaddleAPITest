@@ -2164,17 +2164,24 @@ result = torch.exp(result)
 # m
 class MatmulRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        core = """
+        pre = """
+if x.dtype != y.dtype:
+    if x.dtype.is_complex:
+        y = y.to(x.dtype)
+    elif y.dtype.is_complex:
+        x = x.to(y.dtype)
 transpose_x = locals().get('transpose_x', False)
 transpose_y = locals().get('transpose_y', False)
 if transpose_x == True and x.dim() >=2:
     x = x.transpose(-2, -1)
 if transpose_y == True and y.dim() >=2:
     y = y.transpose(-2, -1)
-result = torch.matmul(x, y)
 """
-        code = Code(core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+        core = f"result = {self.torch_api}(x, y)"
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
 
 class Matrix_transposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
