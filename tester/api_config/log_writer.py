@@ -19,6 +19,7 @@ LOG_PREFIXES = {
     "accuracy_error": "api_config_accuracy_error",
     "timeout": "api_config_timeout",
     "crash": "api_config_crash",
+    "oom": "api_config_oom",
 }
 
 is_engineV2 = False

@@ -11,7 +11,7 @@ from multiprocessing import Lock, Manager, cpu_count, set_start_method
 from typing import TYPE_CHECKING
 
 import pynvml
-from pebble import ProcessPool
+from pebble import ProcessExpired, ProcessPool
 
 if TYPE_CHECKING:
     from tester import (
@@ -267,11 +267,13 @@ def run_test_case(api_config_str, options):
 
     case = test_class(api_config, options.test_amp)
     try:
-        case.test()
+        case.test(retry=options.retry)
     except Exception as err:
-        print(f"[test error] {api_config_str} {str(err)}", flush=True)
+        if "CUDA out of memory" in str(err):
+            os._exit(99)
         if "CUDA error" in str(err) or "memory corruption" in str(err):
-            raise
+            os._exit(1)
+        raise
     finally:
         case.clear_tensor()
         del case
@@ -337,6 +339,9 @@ def main():
         help="Whether to test CPU mode",
     )
     parser.add_argument("--use_cached_numpy", type=bool, default=False)
+    parser.add_argument(
+        "--retry", type=bool, default=False, help="whether to test on cpu"
+    )
     options = parser.parse_args()
 
     os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
@@ -363,7 +368,7 @@ def main():
 
         case = test_class(api_config, options.test_amp)
         try:
-            case.test()
+            case.test(retry=options.retry)
         except Exception as err:
             print(f"[test error] {options.api_config}: {err}", flush=True)
         finally:
@@ -498,17 +503,30 @@ def main():
                         config = futures[future]
                         try:
                             future.result()
-                        except TimeoutError as exc:
+                        except TimeoutError as err:
                             write_to_log("timeout", config)
                             print(
-                                f"[timeout] Test case timed out for {config}: {exc}",
+                                f"[timeout] Test case timed out for {config}: {err}",
                                 flush=True,
                             )
                             fail_case += 1
-                        except Exception as exc:
+                        except ProcessExpired as err:
+                            if err.exitcode == 99:
+                                write_to_log("oom", config)
+                                # print(
+                                #     f"[oom] CUDA out of memory for {config}", flush=True
+                                # )
+                            else:
+                                write_to_log("crash", config)
+                                print(
+                                    f"[fatal] Worker crashed for {config}: {err}",
+                                    flush=True,
+                                )
+                            fail_case += 1
+                        except Exception as err:
                             write_to_log("crash", config)
                             print(
-                                f"[fatal] Worker crashed for {config}: {exc}",
+                                f"[fatal] Worker crashed for {config}: {err}",
                                 flush=True,
                             )
                             fail_case += 1
