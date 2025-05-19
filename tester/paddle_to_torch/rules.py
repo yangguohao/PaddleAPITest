@@ -2863,7 +2863,6 @@ if not pad_from_left_axis:
 """
         core = """
 result = torch.nn.functional.pad(**_kwargs)
-print(result.shape)
 """
         post = """
 if data_format == "NLC":
@@ -3753,6 +3752,12 @@ if act is not None:
         result = torch.softmax(result, dim=-1)
 """
         code = Code(preprocess=defaults_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+class ShapeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = "result = torch.tensor(input.shape)"
+        code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 class ScaledDotProductAttentionRule(BaseRule):
