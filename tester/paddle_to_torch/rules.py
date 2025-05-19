@@ -2177,6 +2177,20 @@ result = torch.exp(result)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class LstsqRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre="""
+driver='gels'
+"""  
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code( 
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=True)
+
+
 # m
 class Matrix_transposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2496,6 +2510,43 @@ if top_k is not None:
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class NormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if p == "fro" and x.dim() == 1:
+    p = 2
+"""
+        core = f"""
+import math
+if p==0:
+    if keepdim:
+        result = (x!= 0).sum(dim=axis, keepdim=True).to(x.dtype)
+    else:
+        result = (x!= 0).sum(dim=axis).to(x.dtype)
+elif len(x.shape)>2 and axis is None:
+    if p==math.inf:
+        if keepdim:
+            result = x.abs().amax().reshape([1] * x.ndim)
+        else:
+            result = x.abs().amax()
+    elif p==-math.inf:
+        if keepdim:
+            result = x.abs().amin().reshape([1] * x.ndim)
+        else:
+            result = x.abs().amin()
+    else:
+        result = {self.torch_api}(**_kwargs)
+else:
+    result = {self.torch_api}(**_kwargs)
+"""
+        code = Code( 
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 class NumelRule(BaseRule):
