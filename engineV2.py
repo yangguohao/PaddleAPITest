@@ -273,6 +273,7 @@ def run_test_case(api_config_str, options):
             os._exit(99)
         if "CUDA error" in str(err) or "memory corruption" in str(err):
             os._exit(1)
+        print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
         case.clear_tensor()
@@ -524,11 +525,11 @@ def main():
                                 )
                             fail_case += 1
                         except Exception as err:
-                            write_to_log("crash", config)
-                            print(
-                                f"[fatal] Worker crashed for {config}: {err}",
-                                flush=True,
-                            )
+                            # write_to_log("crash", config)
+                            # print(
+                            #     f"[fatal] Worker crashed for {config}: {err}",
+                            #     flush=True,
+                            # )
                             fail_case += 1
                     aggregate_logs()
                 print(f"{all_case} cases tested, {fail_case} failed.", flush=True)
