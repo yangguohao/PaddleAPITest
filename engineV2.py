@@ -39,29 +39,30 @@ def cleanup(pool):
 
 def estimate_timeout(api_config) -> float:
     """Estimate timeout based on tensor size in APIConfig."""
-    TIMEOUT_STEPS = (
-        # (1e4, 10),
-        # (1e5, 30),
-        (1e6, 90),
-        (1e7, 300),
-        (1e8, 1800),
-        (float("inf"), 3600),
-    )
-    try:
-        api_config = APIConfig(api_config)
-        first = None
-        if api_config.args:
-            first = api_config.args[0]
-        elif api_config.kwargs:
-            first = next(iter(api_config.kwargs.values()))
-        if first is not None and hasattr(first, "shape"):
-            total_elements = math.prod(first.shape)
-            for threshold, timeout in TIMEOUT_STEPS:
-                if total_elements <= threshold:
-                    return timeout
-    except Exception:
-        pass
-    return TIMEOUT_STEPS[-1][1]
+    # TIMEOUT_STEPS = (
+    #     (1e4, 10),
+    #     (1e5, 30),
+    #     (1e6, 90),
+    #     (1e7, 300),
+    #     (1e8, 1800),
+    #     (float("inf"), 3600),
+    # )
+    # try:
+    #     api_config = APIConfig(api_config)
+    #     first = None
+    #     if api_config.args:
+    #         first = api_config.args[0]
+    #     elif api_config.kwargs:
+    #         first = next(iter(api_config.kwargs.values()))
+    #     if first is not None and hasattr(first, "shape"):
+    #         total_elements = math.prod(first.shape)
+    #         for threshold, timeout in TIMEOUT_STEPS:
+    #             if total_elements <= threshold:
+    #                 return timeout
+    # except Exception:
+    #     pass
+    # return TIMEOUT_STEPS[-1][1]
+    return 1800
 
 
 def validate_gpu_options(options) -> tuple:
