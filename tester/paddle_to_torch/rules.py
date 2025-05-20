@@ -1314,12 +1314,20 @@ elif isinstance(shape, (list, tuple)):
     size_list = []
     for s in shape:
         if isinstance(s, torch.Tensor):
-            size_list.append(s.item())
+            if s.numel() == 1:
+                size_list.append(s.item())
+            else:
+                size_list.append(s.flatten()[0].item())
         else:
             size_list.append(s)
 """
-        core = "result = torch.empty(*size_list)"
-        code = Code(preprocess=pre.splitlines(), core=[core])
+        core = """
+if len(size_list) == 0:
+    result = torch.empty([])
+else:
+    result = torch.empty(*size_list)
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
