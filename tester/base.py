@@ -90,6 +90,7 @@ class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
         self.outputs_grad_numpy = []
+        torch.set_num_threads(8)
 
     def need_skip(self):
         # not support
@@ -201,7 +202,7 @@ class APITestBase:
             paddle_sig = inspect.signature(self.paddle_api)
             paddle_bound_args = paddle_sig.bind(*self.api_config.args, **self.api_config.kwargs)
             paddle_args_dict = paddle_bound_args.arguments
-            # fix paddle.arange wrong binding 
+            # fix paddle.arange wrong binding
             if self.api_config.api_name == "paddle.arange":
                 # if end is not provided, use the 'start' kwargs as end
                 if "end" not in paddle_args_dict:
@@ -382,11 +383,11 @@ class APITestBase:
         
         be sure to call gen_numpy_input() before use gen_paddle_input() since gen_paddle_input() do not pass index or key to get_paddle_tensor() or get_numpy_tensor() while gen_numpy_input() pass.
         """
-        
+
         self.paddle_args = []
         self.paddle_kwargs = collections.OrderedDict()
         self.paddle_merged_kwargs = collections.OrderedDict()
-        
+
         for arg_config in self.paddle_args_config:
             if isinstance(arg_config, TensorConfig):
                 self.paddle_args.append(arg_config.get_paddle_tensor(self.api_config))
@@ -436,7 +437,6 @@ class APITestBase:
             (k, _deep_copy(v)) for k, v in self.paddle_kwargs.items()
         )
         return args, kwargs
-
 
     def get_paddle_input_list(self):
         result = []
@@ -722,7 +722,6 @@ class APITestBase:
         )
         return args, kwargs
 
-
     def _handle_list_or_tuple_torch(self, config_items, is_tuple=False):
         """处理 list 或 tuple """
         tmp = []
@@ -746,7 +745,7 @@ class APITestBase:
         
         be sure to call gen_numpy_input() before use gen_torch_input() since gen_torch_input() do not pass index or key to get_torch_tensor() or get_numpy_tensor() while gen_numpy_input() pass.
         """
-        
+
         self.torch_args = []
         self.torch_kwargs = collections.OrderedDict()
         for arg_config in self.torch_args_config:
@@ -821,6 +820,43 @@ class APITestBase:
             #         value_torch=str(np_torch_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_torch_flatten_nonzero) else '',
             #     )
             # ),
+        )
+
+    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol):
+        paddle_tensor = paddle_tensor.cpu().detach()
+        torch_tensor = torch_tensor.cpu().detach()
+
+        paddle_dlpack = paddle.utils.dlpack.to_dlpack(paddle_tensor)
+        converted_paddle_tensor = torch.utils.dlpack.from_dlpack(paddle_dlpack)
+
+        def error_msg(msg):
+            total_count = converted_paddle_tensor.numel()
+            display_count = min(total_count, 100)
+            flat_paddle = converted_paddle_tensor.flatten()[:display_count]
+            flat_torch = torch_tensor.flatten()[:display_count]
+
+            msg = "\n".join(msg.splitlines()[2:])
+            elements_text = (
+                f"First {display_count} elements"
+                if display_count < total_count
+                else "All elements"
+            )
+            return (
+                f"Not equal to tolerance rtol={rtol}, atol={atol}\n"
+                f"{msg}\n"
+                f"ACTUAL: (shape={converted_paddle_tensor.shape}, dtype={converted_paddle_tensor.dtype})\n"
+                f"{elements_text}: {flat_paddle}\n"
+                f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
+                f"{elements_text}: {flat_torch}"
+            )
+
+        torch.testing.assert_close(
+            converted_paddle_tensor,
+            torch_tensor,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=True,
+            msg=error_msg,
         )
 
     def test(self):
