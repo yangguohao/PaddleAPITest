@@ -109,6 +109,11 @@
             "keepdim": false
         }
     },
+    "paddle.assign": {
+        "torch_api": "torch.clone",
+        "Rule": "AssignRule",
+        "description": "result = torch.clone(input=x)"
+    },
     "paddle.atleast_1d": {
         "torch_api": "torch.atleast_1d",
         "torch_args": [

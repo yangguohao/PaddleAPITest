@@ -476,6 +476,48 @@ if not isinstance(axis, int) and axis != None:
         )
         return ConvertResult.success(paddle_api, code)
 
+
+class AssignRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x = locals().get('x')
+output = locals().get('output')
+"""
+        convert_list_to_torch_tensor = """
+def convert_list2tensor(tlist):
+    #  recursive implementation is not supported in current engine, use vanilla verison
+    # # stack tensors and List[scalars] on dim 0 for nested list
+    # if isinstance(tlist, list):
+    #     return torch.stack([convert_list2tensor(t) for t in tlist])
+    # else:
+    #     return torch.tensor(tlist)
+    if isinstance(tlist, list):
+        result = []
+        for x in tlist:
+            mid_result = []
+            if isinstance(x, list):
+                for y in x:
+                    if isinstance(y, list):
+                        inner_result = []
+                        for z in y:
+                            if isinstance(z, list):
+                                raise NotImplementedError("Nested list (depth > 3) is not supported")
+                            else:
+                                inner_result.append(torch.tensor(z))
+                        mid_result.append(torch.stack(inner_result))
+                    else:
+                        mid_result.append(torch.tensor(y))
+                result.append(torch.stack(mid_result))
+            else:
+                result.append(torch.tensor(x))
+        return torch.stack(result)
+    else:
+        return torch.tensor(tlist)
+"""
+        core = "result = torch.clone(convert_list2tensor(x))"
+        code = Code(preprocess=pre.splitlines() + convert_list_to_torch_tensor.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 # b 
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
