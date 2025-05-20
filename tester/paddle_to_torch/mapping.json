@@ -803,6 +803,22 @@
     "paddle.Tensor.logical_not": {
         "torch_api": "torch.Tensor.logical_not"
     },
+    "paddle.logspace": {
+        "torch_api": "torch.logspace",
+        "paddle_torch_args_map": {
+            "dtype": "dtype"
+        }, 
+        "torch_kwargs": {
+            "start": "start.reshape([]) if isinstance(start, torch.Tensor) else start",
+            "end": "stop.reshape([]) if isinstance(stop, torch.Tensor) else stop",
+            "steps": "int(num.item()) if isinstance(num, torch.Tensor) else int(num)", 
+            "base": "float(base.item()) if isinstance(base, torch.Tensor) else float(base)"
+        },
+        "set_defaults": {
+            "base": 10.0
+        },
+        "description": "result = torch.logspace(start=start, end=stop, steps=num, base=base, dtype=dtype)"
+    },
     "paddle.log_normal": {
         "torch_api": "torch.normal",
         "Rule": "LogNormalRule",
@@ -5278,20 +5294,6 @@
             "y": "other"
         },
         "min_input_args": 2
-    },
-    "paddle.logspace": {
-        "torch_api": "torch.logspace",
-        "paddle_torch_args_map": {
-            "start": "start",
-            "stop": "end",
-            "num": "steps",
-            "base": "base",
-            "dtype": "dtype",
-            "layout": "layout",
-            "device": "device",
-            "requires_grad": "requires_grad"
-        },
-        "min_input_args": 3
     },
     "paddle.seed": {
         "torch_api": "torch.manual_seed",
