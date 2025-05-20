@@ -60,6 +60,19 @@ paddle.nn.functional.sigmoid_focal_loss(Tensor([9, 4],"float32"), Tensor([9, 4],
 paddle.nn.functional.sigmoid_focal_loss(Tensor([95480, 4],"float32"), Tensor([95480, 4],"float32"), )
 
 
+paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float16"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float16"), Tensor([190960, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float16"), Tensor([210056, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([218240, 80],"float16"), Tensor([218240, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([220968, 80],"float16"), Tensor([220968, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([240064, 80],"float16"), Tensor([240064, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([245520, 80],"float16"), Tensor([245520, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([270072, 80],"float16"), Tensor([270072, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([272800, 80],"float16"), Tensor([272800, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([300080, 80],"float16"), Tensor([300080, 80],"float32"), )
+paddle.nn.functional.sigmoid_focal_loss(Tensor([330088, 80],"float16"), Tensor([330088, 80],"float32"), )
+
+
 grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
 2025-05-19 02:16:56.458583 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([108, 4],"float32"), Tensor([108, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
 W0519 02:17:02.419685 25112 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
@@ -803,3 +816,118 @@ Max absolute difference: 56657.812
 Max relative difference: 397566.72
  x: array(56657.953, dtype=float32)
  y: array(0.142511, dtype=float32)
+
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-20 08:43:39.995824 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float16"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
+W0520 08:43:48.894981 133341 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 08:43:48.896440 133341 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float16"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 913183.1
+Max relative difference: 1289088.5
+ x: array(913183.8, dtype=float32)
+ y: array(0.708394, dtype=float32)
+2025-05-20 08:43:49.231945 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float16"), Tensor([190960, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float16"), Tensor([190960, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2262366.8
+Max relative difference: 15897137.
+ x: array(2262367., dtype=float32)
+ y: array(0.142313, dtype=float32)
+2025-05-20 08:43:50.411099 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float16"), Tensor([210056, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([210056, 80],"float16"), Tensor([210056, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2489458.5
+Max relative difference: 17489028.
+ x: array(2489458.8, dtype=float32)
+ y: array(0.142344, dtype=float32)
+2025-05-20 08:43:51.641381 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([218240, 80],"float16"), Tensor([218240, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([218240, 80],"float16"), Tensor([218240, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2586694.2
+Max relative difference: 18171186.
+ x: array(2586694.5, dtype=float32)
+ y: array(0.142351, dtype=float32)
+2025-05-20 08:43:53.051051 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([220968, 80],"float16"), Tensor([220968, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([220968, 80],"float16"), Tensor([220968, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2618895.
+Max relative difference: 18397106.
+ x: array(2618895.2, dtype=float32)
+ y: array(0.142354, dtype=float32)
+2025-05-20 08:43:54.456770 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([240064, 80],"float16"), Tensor([240064, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([240064, 80],"float16"), Tensor([240064, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2844830.8
+Max relative difference: 19986726.
+ x: array(2844831., dtype=float32)
+ y: array(0.142336, dtype=float32)
+2025-05-20 08:43:55.873618 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([245520, 80],"float16"), Tensor([245520, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([245520, 80],"float16"), Tensor([245520, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 2908660.8
+Max relative difference: 20438908.
+ x: array(2908661., dtype=float32)
+ y: array(0.14231, dtype=float32)
+2025-05-20 08:43:57.295580 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([270072, 80],"float16"), Tensor([270072, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([270072, 80],"float16"), Tensor([270072, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3199928.5
+Max relative difference: 22484572.
+ x: array(3199928.8, dtype=float32)
+ y: array(0.142317, dtype=float32)
+2025-05-20 08:43:58.791218 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([272800, 80],"float16"), Tensor([272800, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([272800, 80],"float16"), Tensor([272800, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3232217.8
+Max relative difference: 22711836.
+ x: array(3232218., dtype=float32)
+ y: array(0.142314, dtype=float32)
+2025-05-20 08:44:00.206907 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([300080, 80],"float16"), Tensor([300080, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([300080, 80],"float16"), Tensor([300080, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3556317.8
+Max relative difference: 24985372.
+ x: array(3556318., dtype=float32)
+ y: array(0.142336, dtype=float32)
+2025-05-20 08:44:01.470387 test begin: paddle.nn.functional.sigmoid_focal_loss(Tensor([330088, 80],"float16"), Tensor([330088, 80],"float32"), )
+[accuracy error] paddle.nn.functional.sigmoid_focal_loss(Tensor([330088, 80],"float16"), Tensor([330088, 80],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 3912063.8
+Max relative difference: 27483198.
+ x: array(3912064., dtype=float32)
+ y: array(0.142344, dtype=float32)
