@@ -348,6 +348,12 @@
     "paddle.incubate.nn.functional.fused_dropout_add": {
         "Rule": "FusedDropoutAddRule"
     },
+    "paddle.incubate.nn.functional.fused_layer_norm": {
+        "Rule": "FusedLayerNormRule"
+    },
+    "paddle.incubate.nn.functional.fused_feedforward": {
+        "Rule": "FusedFeedforwardRule"
+    },
     "paddle.incubate.nn.functional.fused_linear_activation": {
         "Rule": "FusedLinearActivationRule"
     },
