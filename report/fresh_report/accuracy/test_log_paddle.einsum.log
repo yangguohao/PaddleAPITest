@@ -1,4 +1,5 @@
 paddle.einsum("mixy,bmxy,kmxy->bixy", Tensor([32, 32, 1, 1],"float32"), Tensor([8, 32, 241, 241],"float32"), Tensor([1, 32, 1, 1],"float32"), ) 
+paddle.einsum("ak, kn-> an", Tensor([60000, 11],"float32"), Tensor([11, 50],"float32"), )
 paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), )
 paddle.einsum("ij,ij->j", Tensor([10, 2],"float64"), Tensor([1, 2],"float64"), )
 
