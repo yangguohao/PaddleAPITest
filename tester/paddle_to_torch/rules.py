@@ -1272,8 +1272,6 @@ if data_format == "NDHWC":
 class EinsumRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-equation = locals().get('equation')
-operands = locals().get('operands')
 tensor_args = list(operands) if isinstance(operands, (list, tuple)) else [operands]
 output_pattern = equation.split('->')[-1] if '->' in equation else ""
 has_repeats = len(output_pattern.replace('...', '')) != len(set(output_pattern.replace('...', '')))
@@ -1385,7 +1383,6 @@ class FillDiagonalTensorRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 x = args[0] if args else next(iter(kwargs.values()))
-y = locals().get('y')
 offset = locals().get('offset', 0)
 dim1 = locals().get('dim1', 0)
 dim2 = locals().get('dim2', 1)
@@ -4507,10 +4504,6 @@ if "dim" not in _kwargs:
 class SendUvRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-x = locals().get('x')
-y = locals().get('y')
-src_index = locals().get('src_index')
-dst_index = locals().get('dst_index')
 message_op = locals().get('message_op', 'add')
 src_features = x[src_index]
 dst_features = y[dst_index]
@@ -4813,7 +4806,6 @@ else:
 class VanderRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-x = locals().get('x')
 n = locals().get('n', None)
 increasing = locals().get('increasing', False)
 if n is None:

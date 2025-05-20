@@ -302,11 +302,7 @@
     "e": "API started with 'e' should be placed here",
     "paddle.einsum": {
         "Rule": "EinsumRule",
-        "torch_api": "torch.einsum",
-        "torch_args": [
-            "{equation}",
-            "*{operands}"
-        ]
+        "torch_api": "torch.einsum"
     },
     "paddle.equal_all": {
         "torch_api": "torch.equal",

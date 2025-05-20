@@ -17,6 +17,20 @@ Max relative difference among violations: 0.02975037
 
         [[ -63.602814]],...
 
+2025-05-20 17:15:22.979854 GPU 3 52905  test begin: paddle.einsum("ak, kn-> an", Tensor([60000, 11],"float32"), Tensor([11, 50],"float32"), )
+[accuracy error] backward  paddle.einsum("ak, kn-> an", Tensor([60000, 11],"float32"), Tensor([11, 50],"float32"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+        
+Mismatched elements: 1 / 550 (0.182%)
+Max absolute difference among violations: 0.01344787
+Max relative difference among violations: 0.12590677
+ACTUAL: array([[ 3.119495e+00,  1.093832e+01, -1.955085e+01,  4.989104e+00,
+                 1.975074e+01,  1.565219e+01, -5.484893e+00, -3.650616e+01,
+                -9.376511e+00, -2.308892e+00, -4.321965e+00, -1.260278e+01,...
+DESIRED: array([[ 3.117249e+00,  1.093082e+01, -1.955087e+01,  4.990483e+00,
+                 1.974363e+01,  1.564456e+01, -5.489556e+00, -3.650040e+01,
+                -9.380242e+00, -2.319523e+00, -4.324854e+00, -1.260425e+01,...
 
 2025-05-19 18:20:09.231487 test begin: paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), )
 [accuracy error] backward  paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), ) 

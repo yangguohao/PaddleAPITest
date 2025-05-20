@@ -1,6 +1,7 @@
 paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), )
 paddle.einsum("ij,ij->j", Tensor([10, 2],"float64"), Tensor([1, 2],"float64"), )
 paddle.einsum("mixy,bmxy,kmxy->bixy", Tensor([32, 32, 1, 1],"float32"), Tensor([8, 32, 241, 241],"float32"), Tensor([1, 32, 1, 1],"float32"), )
+paddle.einsum("ak, kn-> an", Tensor([60000, 11],"float32"), Tensor([11, 50],"float32"), )
 paddle.Tensor.tile(Tensor([29151, 1, 32],"float16"), list[1,100,1,], )
 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 3, 2],"float32"), Tensor([2, 2, 3],"float32"), offset=0, dim1=1, dim2=2, )
 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 3, 2],"float64"), Tensor([2, 2, 3],"float64"), offset=0, dim1=1, dim2=2, )
