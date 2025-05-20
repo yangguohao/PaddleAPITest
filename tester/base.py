@@ -90,7 +90,7 @@ class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
         self.outputs_grad_numpy = []
-        torch.set_num_threads(8)
+        torch.set_num_threads(20)
 
     def need_skip(self):
         # not support
