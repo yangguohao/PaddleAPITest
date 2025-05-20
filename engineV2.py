@@ -225,6 +225,12 @@ def run_test_case(api_config_str, options):
     cuda_visible = os.environ.get("CUDA_VISIBLE_DEVICES", "0")
     gpu_id = int(cuda_visible.split(",")[0])
 
+    write_to_log("checkpoint", api_config_str)
+    print(
+        f"{datetime.now()} GPU {gpu_id} {os.getpid()} test begin: {api_config_str}",
+        flush=True,
+    )
+
     pynvml.nvmlInit()
     try:
         while True:
@@ -245,12 +251,6 @@ def run_test_case(api_config_str, options):
     finally:
         pynvml.nvmlShutdown()
 
-    write_to_log("checkpoint", api_config_str)
-    print(
-        f"{datetime.now()} GPU {gpu_id} {os.getpid()} test begin: {api_config_str}",
-        flush=True,
-    )
-
     try:
         api_config = APIConfig(api_config_str)
     except Exception as err:
@@ -267,7 +267,7 @@ def run_test_case(api_config_str, options):
 
     case = test_class(api_config, options.test_amp)
     try:
-        case.test(retry=options.retry)
+        case.test()
     except Exception as err:
         if "CUDA out of memory" in str(err):
             os._exit(99)
@@ -368,7 +368,7 @@ def main():
 
         case = test_class(api_config, options.test_amp)
         try:
-            case.test(retry=options.retry)
+            case.test()
         except Exception as err:
             print(f"[test error] {options.api_config}: {err}", flush=True)
         finally:
