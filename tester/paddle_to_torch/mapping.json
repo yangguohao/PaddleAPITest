@@ -1797,6 +1797,9 @@
     "paddle.nn.quant.weight_only_linear": {
         "Rule": "WeightOnlyLinearRule"
     },
+    "paddle.nn.quant.weight_quantize": {
+        "Rule": "WeightQuantizeRule"
+    },
     "o": "API started with 'o' should be placed here",
     "paddle.ones":{
         "Rule": "OnesRule"

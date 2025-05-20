@@ -5339,11 +5339,37 @@ if "pos_weight" in _kwargs and not _kwargs["pos_weight"] is None:
 class WeightOnlyLinearRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
-dequant_weight = weight.to(torch.float16) * weight_scale.view(-1, 1)
-result = torch.nn.functional.linear(x, dequant_weight, bias)
+bias = locals().get("bias", None)
+if weight.shape[0] < weight_scale.shape[0]:
+    weight = weight.repeat(weight_scale.shape[0] // weight.shape[0], 1)
+weight_float = weight * weight_scale.unsqueeze(1)
+out = torch.matmul(x, weight_float.t())
+if bias is not None:
+        out = out + bias
+result = out
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+class WeightQuantizeRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+# Determine quantization bit width
+num_bits = 8 if algo != 'weight_only_int4' else 4
+qmax = 2 ** (num_bits - 1) - 1
+qmin = -2 ** (num_bits - 1)
+
+# Input shape
+out_dim, in_dim = x.shape
+x = x.to(torch.float32)  # convert for stable quantization
+
+# Per-channel quantization
+scale = torch.max(torch.abs(x), dim=1, keepdim=True)[0] / qmax
+q_x = torch.clamp((x / scale).round(), qmin, qmax).to(torch.int8)
+result = (q_x.t().contiguous(), scale.squeeze(1))
+"""
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)    
         
         
 class WhereRule(BaseRule):
