@@ -57,7 +57,7 @@ def extract_api_name(config_line):
         return match.group(1).strip()
     return None
 
-def process_log_entries(file_path, id, ckpt_id, write_pass):
+def process_log_entries(file_path, id, ckpt_id, write_pass, write_pass_amp):
     """
     Process log file by categorizing entries based on their status and distributing
     them to appropriate files.
@@ -65,6 +65,9 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
     Args:
         file_path (str): Path to the log file to process
         id (str): Identifier to use in output filenames
+        ckpt_id (str): Identifier to use in checkpoint file
+        write_pass (bool): Whether to write pass api config to file
+        write_pass_amp (bool): Whether to write pass api config to amp file
     """
     try:
         # First remove timestamps from the file
@@ -114,8 +117,12 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
             if "[Pass]" in entry:
                 # Write config to accuracy support file if passing write_pass
                 support2torch_file = f"tester/api_config/api_config_support2torch{id}.txt"
+                support2torch_amp_file = f"tester/api_config/api_config_support2torch_amp{id}.txt"
                 if write_pass:
                     with open(support2torch_file, 'a') as f:
+                        f.write(f"{config_line}\n")
+                if write_pass_amp:
+                    with open(support2torch_amp_file, 'a') as f:
                         f.write(f"{config_line}\n")
                 pass_count += 1
                     
@@ -132,7 +139,7 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
                     written_warned_log_files.append(log_file)
                 else:
                     if log_file not in written_warned_log_files:
-                        print(f"[warning] log file {log_file} already exists, appending to it")
+                        print(f"[warn] log file {log_file} already exists, appending to it")
                         written_warned_log_files.append(log_file)
                         with open(log_file, 'a') as f:
                             f.write(f"\n===================== below is the new log =====================\n")
@@ -147,7 +154,7 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
                     written_warned_config_files.append(config_file)
                 else:
                     if config_file not in written_warned_config_files:
-                        print(f"[warning] config file {config_file} already exists, appending to it")
+                        print(f"[warn] config file {config_file} already exists, appending to it")
                         written_warned_config_files.append(config_file)
                         with open(config_file, 'a') as f:
                             f.write(f"\n===================== below is the new config =====================\n")
@@ -173,7 +180,7 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
                 checkpoint_lines = f.readlines()
                 checkpoint_count = len(checkpoint_lines)
         except FileNotFoundError:
-            print(f"Warning: Checkpoint file {checkpoint_file} not found.")
+            print(f"[warn] checkpoint file {checkpoint_file} not found.")
         
         total_processed = pass_count + accuracy_error_count + paddle_error_count + torch_error_count + cuda_error_count + other_error_count
         
@@ -188,9 +195,9 @@ def process_log_entries(file_path, id, ckpt_id, write_pass):
         print(f"Checkpoint count:       {checkpoint_count}")
         
         if checkpoint_count != total_processed:
-            print(f"[warning] Checkpoint count ({checkpoint_count}) does not match total processed count ({total_processed}), missing {total_processed - checkpoint_count} logs")
+            print(f"[warn] checkpoint count ({checkpoint_count}) does not match total processed count ({total_processed}), missing {total_processed - checkpoint_count} logs")
         else:
-            print("Checkpoint count matches total processed count.")
+            print("[info] checkpoint count matches total processed count.")
             
         return pass_count, accuracy_error_count, paddle_error_count, torch_error_count, cuda_error_count, other_error_count
         
@@ -206,12 +213,14 @@ def main():
     parser.add_argument('--dir', required=False, help='Directory containing log files to process')
     parser.add_argument('--id', default='', type=str, help='Identifier to use in output filenames, eg. lhy id==1, xym id==2')
     parser.add_argument('--ckpt-id', default='', type=str, help='Identifier to use in checkpoint file, usually ignore, using tester/api_config/test_log/checkpoint.txt')
-    parser.add_argument('--write-pass', default=False, type=bool, help='write pass api config to file')
+    parser.add_argument('--write-pass', default=False, action='store_true', help='write pass api config to file')
+    parser.add_argument('--write-pass-amp', default=False, action='store_true', help='write passed case to amp file')
     
     args = parser.parse_args()
     args.id = "_" + args.id if args.id else ""
     args.ckpt_id = "_" + args.ckpt_id if args.ckpt_id else ""
-
+    assert not (args.write_pass and args.write_pass_amp), "write_pass and write_pass_amp cannot be set at the same time"
+    
     if args.file:
         # Check if error directories exist
         error_dirs = glob.glob("tester/api_config/test_log/*_error")
@@ -223,12 +232,15 @@ def main():
                     shutil.rmtree(dir_path)
                 print(f"[info] Deleted error directories: {', '.join(error_dirs)}")
             
-        process_log_entries(args.file, args.id, args.ckpt_id, args.write_pass)
-        if not args.write_pass:
-            print(f"\n[warning] --write-pass is not set, passed api config will not be written to file tester/api_config/api_config_support2torch{args.id}.txt")
-            print("[hint]    set --write-pass=True to write passed api config to file for final step after you fix all errors")
+        process_log_entries(args.file, args.id, args.ckpt_id, args.write_pass, args.write_pass_amp)
+        if not args.write_pass and not args.write_pass_amp:
+            print(f"\n[warn] --write-pass and --write-pass-amp are not set, passed api config will not be written to file")
+            print("[hint] pass --write-pass or --write-pass-amp to write passed api config to file for final step after you fix all errors")
         else:
-            print(f"\n[info]    passed api config written to file tester/api_config/api_config_support2torch{args.id}.txt")
+            if args.write_pass:
+                print(f"\n[info] passed api config written to file tester/api_config/api_config_support2torch{args.id}.txt")
+            elif args.write_pass_amp:
+                print(f"\n[info] passed api config written to file tester/api_config/api_config_support2torch_amp{args.id}.txt")
     elif args.dir:
         # TODO: add directory processing for parsing array of log ids and ckpt-ids
         raise NotImplementedError("Directory processing not implemented yet")

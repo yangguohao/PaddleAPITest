@@ -1856,6 +1856,119 @@ result = fused_dropout_add(x, y, p, training, mode)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class FusedFeedforwardRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        preprocess = """
+x = locals().get('x')
+linear1_weight = locals().get('linear1_weight')
+linear2_weight = locals().get('linear2_weight')
+linear1_bias = locals().get('linear1_bias', None)
+linear2_bias = locals().get('linear2_bias', None)
+ln1_scale = locals().get('ln1_scale', None)
+ln1_bias = locals().get('ln1_bias', None)
+ln2_scale = locals().get('ln2_scale', None)
+ln2_bias = locals().get('ln2_bias', None)
+dropout1_rate = locals().get('dropout1_rate', 0.5)
+dropout2_rate = locals().get('dropout2_rate', 0.5)
+activation = locals().get('activation', 'relu')
+ln1_epsilon = locals().get('ln1_epsilon', 1e-5)
+ln2_epsilon = locals().get('ln2_epsilon', 1e-5)
+pre_layer_norm = locals().get('pre_layer_norm', False)
+training = locals().get('training', True)
+mode = locals().get('mode', 'upscale_in_train')
+
+def fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias=None, linear2_bias=None, ln1_scale=None, ln1_bias=None, ln2_scale=None, ln2_bias=None, dropout1_rate=0.5, dropout2_rate=0.5, activation='relu', ln1_epsilon=1e-5, ln2_epsilon=1e-5, pre_layer_norm=False, training=True, mode='upscale_in_train'):
+    # torch linear input [out_features, in_features], while paddle linear input [in_features, out_features]
+    linear1_weight = linear1_weight.transpose(-2, -1)
+    linear2_weight = linear2_weight.transpose(-2, -1)
+    layer_norm = torch.nn.functional.layer_norm
+    linear = torch.nn.functional.linear
+    dropout = torch.nn.functional.dropout if mode == 'upscale_in_train' else lambda x, p, training: (
+        x * torch.bernoulli(torch.full(x.shape, 1 - p)).to(x.device) if training else x * (1 - p)
+    )
+    activation = torch.nn.functional.relu if activation == 'relu' else torch.nn.functional.gelu
+    
+    residual = x
+    if pre_layer_norm:
+        x = layer_norm(x, [x.shape[-1]], weight=ln1_scale, bias=ln1_bias, eps=ln1_epsilon)
+    x = linear(dropout(activation(linear(x, linear1_weight, linear1_bias)), dropout1_rate, training), linear2_weight, linear2_bias)
+    x = residual + dropout(x, dropout2_rate, training)
+    if not pre_layer_norm:
+        x = layer_norm(x, [x.shape[-1]], weight=ln2_scale, bias=ln2_bias, eps=ln2_epsilon)
+    return x
+"""
+        core = """
+result = fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias, linear2_bias, ln1_scale, ln1_bias, ln2_scale, ln2_bias, dropout1_rate, dropout2_rate, activation, ln1_epsilon, ln2_epsilon, pre_layer_norm, training, mode)
+"""
+        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class FusedLayerNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre ="""
+x = locals().get('x')
+norm_weight = locals().get('norm_weight')
+norm_bias = locals().get('norm_bias')
+epsilon = locals().get('epsilon')
+residual_alpha = locals().get('residual_alpha', 1.0)
+begin_norm_axis = locals().get('begin_norm_axis', 1)
+bias = locals().get('bias', None)
+residual = locals().get('residual', None)
+quant_scale = locals().get('quant_scale', -1)
+quant_round_type = locals().get('quant_round_type', 0)
+quant_max_bound = locals().get('quant_max_bound', 0)
+quant_min_bound = locals().get('quant_min_bound', 0)
+
+if residual is None:
+    residual = torch.zeros_like(x, dtype=x.dtype)
+if bias is None:
+    bias = torch.zeros_like(x, dtype=x.dtype)
+# get min dims and reshape all tensor to min dims to squeeze extra dimensions
+if x.ndim > residual.ndim:
+    x = x.reshape(residual.shape)
+if residual.ndim > x.ndim:
+    residual = residual.reshape(x.shape)
+        
+# handle bias and residual is None outside of function
+def fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha=1.0, begin_norm_axis=1, bias=None, residual=None, quant_scale=-1, quant_round_type=0, quant_max_bound=0, quant_min_bound=0):
+        
+    # construct output tuple and keep out_{mean, var} dim == 1
+    # suppose bias.shape is whether zeros_like(x) or [num_layer_norm_cnt, ]
+    x_rb = x + residual * residual_alpha + bias
+    out_residual = x_rb
+    # flatten norm dims
+    x_rb = torch.flatten(x_rb, start_dim=begin_norm_axis)
+    out_mean = torch.mean(x_rb, dim=-1).reshape(-1)
+    out_var = torch.var(x_rb, dim=-1, unbiased=False).reshape(-1)
+
+    if norm_weight is not None or norm_bias is not None:
+        if norm_weight is None:
+            norm_weight = torch.ones(x_rb.shape[-1])
+        if norm_bias is None:
+            norm_bias = torch.zeros(x_rb.shape[-1])
+        x_rb = torch.nn.functional.layer_norm(x_rb, [x_rb.shape[-1]], weight=norm_weight, bias=norm_bias, eps=epsilon)
+
+    x = torch.reshape(x_rb, x.shape)
+
+    if quant_scale != -1:
+        x = quant_scale * x * quant_max_bound
+        # using banker's rounding
+        if quant_round_type == 0:
+            x = torch.round(x)
+        else: #  Round to nearest if type != 0
+            x = torch.floor(x + 0.5)
+        x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound).to(torch.int8)
+            
+    return (x, out_residual, out_mean, out_var)
+"""
+        core = """
+result = fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha, begin_norm_axis, bias, residual, quant_scale, quant_round_type, quant_max_bound, quant_min_bound)
+"""
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class FusedLinearActivationRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         preprocess = """
