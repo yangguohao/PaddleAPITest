@@ -1,13 +1,14 @@
 import collections
 import copy
 import math
+import os
 import re
 
 import numpy
 import paddle
 import torch
 
-USE_CACHED_NUMPY = False
+USE_CACHED_NUMPY = os.getenv("USE_CACHED_NUMPY", "False").lower() == "true"
 cached_numpy = {}
 
 not_zero_apis = [
@@ -281,6 +282,7 @@ class TensorConfig:
             
             # c
             elif api_config.api_name == "paddle.chunk":
+                import random
                 if self.check_arg(api_config, 2, "axis"):
                     x_tensor = self.get_arg(api_config, 0, "x")
                     chunks = self.get_arg(api_config, 1, "chunks")
@@ -928,6 +930,11 @@ class TensorConfig:
                     self.dtype='float32'
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
+            elif api_config.api_name == "paddle.nn.functional.hinge_embedding_loss":
+                if self.check_arg(api_config, 1, "label"):
+                    self.numpy_tensor = numpy.random.randint(0, 2, size=self.shape).astype(self.dtype)
+                    self.numpy_tensor[self.numpy_tensor == 0] = -1
+
             elif api_config.api_name == 'paddle.nn.functional.hsigmoid_loss':
                 nclass = self.get_arg(api_config, 2, "num_classes")
                 weight = self.get_arg(api_config, 3, "weight")
@@ -945,10 +952,7 @@ class TensorConfig:
                     self.numpy_tensor = numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
             
             elif api_config.api_name == 'paddle.nn.functional.binary_cross_entropy':
-                if index==0 or key=='input':
-                    self.numpy_tensor = numpy.random.rand(*self.shape).astype(self.dtype)
-                elif index==1 or key=='label':
-                    self.numpy_tensor = numpy.random.randint(0,2,size=self.shape).astype(self.dtype)
+                self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
             
             elif api_config.api_name == "paddle.nn.functional.embedding":
                 if self.check_arg(api_config, 0, "x") or self.check_arg(api_config, 0, "ids"):
