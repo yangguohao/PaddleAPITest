@@ -1,0 +1,7 @@
+paddle.linalg.cond
+paddle.nn.functional.normalize
+paddle.nn.functional.triplet_margin_with_distance_loss
+paddle.logsumexp
+paddle.nn.functional.pairwise_distance
+paddle.nanmean
+paddle.linalg.det
