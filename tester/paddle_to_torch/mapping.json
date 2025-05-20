@@ -1794,6 +1794,9 @@
             "output_size": "output_size"
         }
     },
+    "paddle.nn.quant.weight_only_linear": {
+        "Rule": "WeightOnlyLinearRule"
+    },
     "o": "API started with 'o' should be placed here",
     "paddle.ones":{
         "Rule": "OnesRule"

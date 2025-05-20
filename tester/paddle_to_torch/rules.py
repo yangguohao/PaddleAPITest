@@ -4274,62 +4274,64 @@ elif reduce_op == 'min':
 class SendUERecvRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
-E = src_index.shape[0]
-    F = x.shape[1]
-    device = x.device
-    dtype = x.dtype
+out_size = locals().get("out_size", None)
+# Determine output size
+out_shape = list(x.shape)
+if out_size is not None:
+    out_shape[0] = out_size
+if x.dim() > y.dim():
+    y = y.unsqueeze(1)
+    y = y.expand(-1,x.shape[1],-1)
+dtype = x.dtype
 
-    # Get messages from src_index
-    x_src = x[src_index]  # [E, F]
+# Get messages from src_index
+x_src = x[src_index]
 
-    # Handle y shape
-    if y.dim() == 1:
-        y = y.unsqueeze(1)  # [E, 1]
+# Apply message operation
+if message_op == 'add':
+    msg = x_src + y
+elif message_op == 'sub':
+    msg = x_src - y
+elif message_op == 'mul':
+    msg = x_src * y
+elif message_op == 'div':
+    msg = x_src / y
 
-    if y.shape[1] == 1 and F > 1:
-        y = y.expand(-1, F)
+out_shape[-1] = msg.shape[-1]
 
-    # Apply message operation
-    if message_op == 'add':
-        msg = x_src + y
-    elif message_op == 'sub':
-        msg = x_src - y
-    elif message_op == 'mul':
-        msg = x_src * y
-    elif message_op == 'div':
-        msg = x_src / (y + 1e-9)  # Avoid div by zero
+# Reduce operation
+if reduce_op in ['sum', 'mean']:
+    result = torch.zeros(out_shape, dtype=dtype)
+    count = torch.zeros(out_shape[:-1], dtype=dtype)
 
-    # Determine output size
-    if out_size is None:
-        out_size = int(dst_index.max().item()) + 1
+    for i in range(dst_index.shape[0]):
+        dst = dst_index[i].item()
+        if dst >= result.shape[0]:
+            continue
+        result[dst] += msg[i]
+        count[dst] += 1
 
-    # Reduce operation
-    if reduce_op in ['sum', 'mean']:
-        result = torch.zeros((out_size, F), dtype=dtype, device=device)
-        count = torch.zeros(out_size, dtype=dtype, device=device)
+    if reduce_op == 'mean':
+        mask = count > 0
+        result[mask] = result[mask] / count[mask].unsqueeze(1)
 
-        for i in range(E):
-            dst = dst_index[i].item()
-            result[dst] += msg[i]
-            count[dst] += 1
+elif reduce_op == "max":
+    result = torch.full(out_shape, float('-inf'), dtype=msg.dtype)
+    for i in range(dst_index.shape[0]):
+        dst = dst_index[i].item()
+        if dst >= result.shape[0]:
+            continue
+        result[dst] = torch.max(result[dst], msg[i])
+    result[result == float('-inf')] = 0
 
-        if reduce_op == 'mean':
-            mask = count > 0
-            result[mask] = result[mask] / count[mask].unsqueeze(1)
-
-    elif reduce_op in ['max', 'min']:
-        if reduce_op == 'max':
-            init_val = torch.finfo(dtype).min
-            reduce_fn = torch.maximum
-        else:
-            init_val = torch.finfo(dtype).max
-            reduce_fn = torch.minimum
-
-        result = torch.full((out_size, F), init_val, dtype=dtype, device=device)
-
-        for i in range(E):
-            dst = dst_index[i].item()
-            result[dst] = reduce_fn(result[dst], msg[i])        
+elif reduce_op == "min":
+    result = torch.full(out_shape, float('inf'), dtype=msg.dtype)
+    for i in range(dst_index.shape[0]):
+        dst = dst_index[i].item()
+        if dst >= result.shape[0]:
+            continue
+        result[dst] = torch.min(result[dst], msg[i])
+    result[result == float('inf')] = 0
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -4939,7 +4941,6 @@ def torch_take(x, index, mode='raise'):
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
-<<<<<<< HEAD
 class TemporalShiftRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -4977,7 +4978,6 @@ elif data_format == "NHWC":
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-=======
 class TensordotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -5027,7 +5027,6 @@ if len(axes) > 2:
             core=[core]
         )
         return ConvertResult.success(paddle_api, code)
->>>>>>> 0ae92c746541f13abaa7ec6f966a45194aa95f2f
 
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5337,6 +5336,16 @@ if "pos_weight" in _kwargs and not _kwargs["pos_weight"] is None:
         )
         return ConvertResult.success(paddle_api, code)
 
+class WeightOnlyLinearRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        core = """
+dequant_weight = weight.to(torch.float16) * weight_scale.view(-1, 1)
+result = torch.nn.functional.linear(x, dequant_weight, bias)
+"""
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+        
+        
 class WhereRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
