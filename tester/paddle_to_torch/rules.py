@@ -2496,8 +2496,6 @@ if num_classes is None:
 # 获取每个样本的目标 logit 值
 target_logits = input[torch.arange(batch_size), label]
 
-print(target_logits.shape)
-
 if bias is not None:
     target_logits += bias[label]
 
@@ -2507,7 +2505,6 @@ loss = torch.nn.functional.binary_cross_entropy_with_logits(target_logits, torch
 if weights is not None:
     loss = loss * weights
 result = loss
-print(result)
 """
         code = Code(
             core=core.splitlines(),
@@ -3028,7 +3025,6 @@ shape = list(x.shape)
 new_shape = shape[:axis] + [channels_per_group, groups] + shape[axis+1:]
     
 x = x.reshape(*new_shape)
-print(x.shape)
 result = x.max(dim=axis+1).values
 """
         code = Code(core=core.splitlines())
@@ -3220,7 +3216,6 @@ if input.dtype == torch.float16:
 if mat2.dtype == torch.float16:
     mat2 = mat2.to(torch.float32)
 
-print(input.dtype, mat2.dtype)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
@@ -3609,7 +3604,6 @@ else:
             dtype = getattr(torch, dtype_str)
         else:
             match = re.search(r"'(.+?)'", str(dtype))
-            print(dtype)
             dtype_str = match.group(1)
             dtype_str = dtype_str.split('.')[-1]
             dtype = getattr(torch, dtype_str)
@@ -5422,7 +5416,6 @@ if not dtype is None:
             dtype = getattr(torch, dtype_str)
         else:
             match = re.search(r"'(.+?)'", str(dtype))
-            print(dtype)
             dtype_str = match.group(1)
             dtype_str = dtype_str.split('.')[-1]
             dtype = getattr(torch, dtype_str)
