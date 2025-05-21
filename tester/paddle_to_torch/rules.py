@@ -339,7 +339,8 @@ for i in range(len(cutoff_values) - 1):
     row_indices = label_mask.nonzero().squeeze()
     if row_indices.numel() == 0:
         continue
-    
+    if row_indices.dim() == 0:
+        row_indices = row_indices.unsqueeze()
     if i == 0:
         scatter_output = scatter_nd(
             index = torch.unsqueeze(row_indices, 1),
