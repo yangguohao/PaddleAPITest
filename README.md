@@ -35,33 +35,27 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
 
 目前项目结构如下所示，主要分为report和tester文件夹，report用于储存内核报错的api信息，tester用于测试配置的正确性。
 
->在引擎补齐这一任务中，出现的内核报错均放置于report/fresh_report/paddle_only中。
->
->在引擎补齐这一任务中，出现的精度报错均放置于report/fresh_report/accuracy中。
+- 在引擎补齐这一任务中，出现的内核报错均放置于report/fresh_report/paddle_only中。
+
+- 在精度转换这一任务中，出现的精度报错均放置于report/fresh_report/accuracy中。
 
 对于paddle only的测试，tester/api_config中存放测试通过（merged*）/暂未通过（merged_not_support*）的配置。
 
 对于paddle2torch的测试，tester/api_config中存放：
 
->测试通过（api_config_support2torch*）
->
->存在精度问题的配置（api_config_accuracy_error*）
->
->存在随机性的配置（api_config_stochastic*）
->
->paddle报错的配置（api_config_paddle_only_error*）
->
+- 测试通过（api_config_support2torch*）
+
+- 存在精度问题的配置（api_config_accuracy_error*）
+
+- 存在随机性的配置（api_config_stochastic*）
+
+- paddle报错的配置（api_config_paddle_only_error*）
 
 tester/api_config/config_analyzer.py是引擎补齐任务的核心代码。
 
 tester/paddle2torch/是转换能力的核心代码。
 
 ```
-├── engine.py
-├── engineV2.py
-├── engineV3.py
-├── report
-├── run.sh
 ├── tester
 │   ├── accuracy.py
 │   ├── api_config
@@ -71,13 +65,18 @@ tester/paddle2torch/是转换能力的核心代码。
 │   ├── paddle_to_torch
 ├── test_pipline
 └── tools
+├── engine.py
+├── engineV2.py
+├── engineV3.py
+├── report
+├── run.sh
 ```
 
 tools文件夹中存放了一些实用的工具，例如move_config可以用来批量的移动配置，详见[move_config-README.md](./tools/move_config-README.md)。
 
 ## 3. 使用介绍
 
-### 环境配置
+#### 环境配置
 运行环境分为**cpu**环境与**gpu**环境，cpu和gpu上运行的结果**可能存在差异**，即存在cpu上能够正确运行，但gpu上报错的情况。因此需要根据需求正确安装环境。
 
 下载链接：https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html
@@ -89,7 +88,7 @@ tools文件夹中存放了一些实用的工具，例如move_config可以用来�
 paddle.device.set_device("cpu")
 ```
 
-### 使用说明
+#### 使用说明
 
 **A. engine v1**
 
