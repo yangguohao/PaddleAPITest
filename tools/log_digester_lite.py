@@ -1,4 +1,4 @@
-# 整理 log.log 小工具（engineV2版）
+# 整理 log.log 小工具（engineV2乱序版）
 # @author: cangtianhaung
 
 from pathlib import Path
@@ -11,8 +11,8 @@ categorized_logs = defaultdict(list)
 current_category = None
 current_content = []
 
-test_log_path = Path("tester/api_config/test_log")
-input_log = test_log_path / "log.log"
+TEST_LOG_PATH = Path("tester/api_config/test_log")
+input_log = TEST_LOG_PATH / "log.log"
 try:
     with input_log.open("r") as f:
         input_text = f.read()
@@ -41,7 +41,7 @@ for line in input_text.split('\n'):
 if current_category:
     categorized_logs[current_category].append('\n'.join(current_content))
 
-output_log = test_log_path / "log_categorized.log"
+output_log = TEST_LOG_PATH / "log_categorized.log"
 with open(output_log, 'w') as f:
     for category in sorted(categorized_logs.keys()):
         f.write(f"=== {category} ===\n")

@@ -1,4 +1,4 @@
-# 获取 api 集合小工具
+# 获取 api 配置集合小工具
 # @author: cangtianhaung
 
 from pathlib import Path
