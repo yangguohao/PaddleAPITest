@@ -1,21 +1,20 @@
-# test_log 一键整理小工具（engineV2版）：log_digester_lite + get_api_set + get_api_config_set
+# test_log 一键整理小工具（engineV2有序版）：log_digester_lite + get_api_set + get_api_config_set
 # @author: cangtianhuang
 
 from pathlib import Path
 import re
-from collections import defaultdict
 
 TEST_LOG_PATH = Path("tester/api_config/test_log")
-OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/paddleonly")
+OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/accuracy")
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # log_digester_lite
-pattern = re.compile(
-    r"^(\[[^\]]+\]|\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+|W\d{4} \d{2}:\d{2}:\d{2}\.\d+)"
-)
+pattern = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+")
+warning_pattern = re.compile(r"^W0521 \d{2}:\d{2}:\d{2}\.\d{6} \d+ gpu_resources.cc")
+test_config_pattern = re.compile(r"test begin: (.*)$")
 
-categorized_logs = defaultdict(list)
-current_category = None
+logs = []
+in_test_block = False
 current_content = []
 
 LOG_PATH = TEST_LOG_PATH / "log_inorder.log"
@@ -27,36 +26,50 @@ except Exception as err:
     exit(1)
 
 for line in input_text.split("\n"):
-    match = pattern.match(line)
-    if match:
-        if current_category:
-            categorized_logs[current_category].append("\n".join(current_content))
+    if warning_pattern.match(line):
+        continue
 
-        if match.group(1).startswith("W"):
-            current_category = None
+    if pattern.match(line):
+        if in_test_block:
+            if current_content:
+                logs.append("\n".join(current_content))
             current_content = []
-        elif match.group(1).startswith("["):
-            current_category = match.group(1)
+            in_test_block = False
+        if "test begin:" in line:
+            in_test_block = True
             current_content = [line]
-        else:
-            current_category = None
-            current_content = []
-    elif current_category:
+        continue
+    
+    if in_test_block:
         current_content.append(line)
 
-if current_category:
-    categorized_logs[current_category].append("\n".join(current_content))
+if current_content:
+    logs.append("\n".join(current_content))
+    current_content = []
+
+
+def get_sort_key(content):
+    for line in content.split("\n"):
+        match = test_config_pattern.search(line)
+        if match:
+            return match.group(1)
+    return ""
+
+
+sorted_logs = []
+for content in logs:
+    sorted_logs.append((get_sort_key(content), content))
+sorted_logs.sort(key=lambda x: x[0])
 
 output_log = OUTPUT_PATH / "error_log.log"
-with open(output_log, "w") as f:
-    for category in sorted(categorized_logs.keys()):
-        if category == "[Pass]":
-            continue
-        f.write(f"=== {category} ===\n\n")
-        categorized_logs[category].sort()
-        for content in categorized_logs[category]:
+try:
+    with open(output_log, "w") as f:
+        for _, content in sorted_logs:
             f.write(content + "\n\n")
-        f.write("\n")
+except Exception as err:
+    print(f"Error writing {output_log}: {err}", flush=True)
+    exit(0)
+print(f"Read and write {len(logs)} log(s)", flush=True)
 
 # get_api_set + get_api_config_set
 ERROR_LOG = [
