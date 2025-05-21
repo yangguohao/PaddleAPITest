@@ -329,9 +329,9 @@ Not equal to tolerance rtol=0.01, atol=0.01
 Not equal to tolerance rtol=0.01, atol=0.01
 
 (shapes (1, 100, 1, 40), (0, 100, 40) mismatch)
- ACTUAL: array([[[[-0.055065,  0.011174,  0.301001, ...,  0.      ,  0.      ,
-           0.      ]],
-...
+ ACTUAL: array([[[[0., 0., 0., ..., 0., 0., 0.]],
+
+        [[0., 0., 0., ..., 0., 0., 0.]],...
  DESIRED: array([], shape=(0, 100, 40), dtype=float64)
 
 [accuracy error] paddle.Tensor.matmul(Tensor([1, 100, 1],"float64"), Tensor([0, 1, 4],"float64"), ) 
@@ -525,9 +525,9 @@ nan location mismatch:
 Not equal to tolerance rtol=0.01, atol=0.01
 
 nan location mismatch:
- ACTUAL: array([[-inf,  inf, -inf],
-       [ inf,  inf,  inf],
-       [ inf, -inf, -inf]], dtype=float32)
+ ACTUAL: array([[-inf,  nan,  nan],
+       [ nan,  nan,  nan],
+       [ nan,  nan,  nan]], dtype=float32)
  DESIRED: array([[nan, nan, nan],
        [nan, nan, nan],
        [nan, nan, nan]], dtype=float32)
@@ -537,10 +537,10 @@ nan location mismatch:
 Not equal to tolerance rtol=0.01, atol=0.01
 
 nan location mismatch:
- ACTUAL: array([[-inf,  inf,  inf,  inf],
-       [-inf,  inf, -inf, -inf],
-       [ inf,  inf,  inf,  inf],
-       [ inf,  inf, -inf,  inf]], dtype=float32)
+ ACTUAL: array([[-inf,  inf, -inf,  inf],
+       [-inf, -inf, -inf,  inf],
+       [-inf,  inf, -inf,  inf],
+       [ inf, -inf,  inf, -inf]], dtype=float32)
  DESIRED: array([[nan, nan, nan, nan],
        [nan, nan, nan, nan],
        [nan, nan, nan, nan],
@@ -551,10 +551,10 @@ nan location mismatch:
 Not equal to tolerance rtol=0.01, atol=0.01
 
 nan location mismatch:
- ACTUAL: array([[-inf,  inf,  inf, -inf],
-       [ inf,  inf,  inf, -inf],
-       [-inf,  inf, -inf, -inf],
-       [ inf, -inf, -inf, -inf]])
+ ACTUAL: array([[-inf,  inf,  nan,  inf],
+       [ inf,  inf,  inf,  nan],
+       [ inf,  nan, -inf,  nan],
+       [-inf,  nan, -inf,  nan]])
  DESIRED: array([[nan, nan, nan, nan],
        [nan, nan, nan, nan],
        [nan, nan, nan, nan],
@@ -3681,12 +3681,17 @@ nan location mismatch:
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
+[cuda error] paddle.logcumsumexp(Tensor([0, 4],"float32"), axis=-1, ) 
+ (External) CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+
 [cuda error] paddle.logcumsumexp(Tensor([10, 0, 10],"float32"), axis=-1, ) 
  (External) CUDA error(9), invalid configuration argument. 
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
-[cuda error] paddle.logcumsumexp(Tensor([10, 0, 10],"float32"), axis=0, ) 
+[cuda error] paddle.logcumsumexp(Tensor([10, 10, 0],"float32"), axis=0, ) 
  (External) CUDA error(9), invalid configuration argument. 
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
@@ -5221,11 +5226,6 @@ nan location mismatch:
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
-[cuda error] paddle.nn.functional.pairwise_distance(Tensor([0, 100],"float32"), Tensor([0, 100],"float32"), -1, 1e-06, False, None, ) 
- (External) CUDA error(9), invalid configuration argument. 
-  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
-
-
 [cuda error] paddle.nn.functional.pairwise_distance(Tensor([0, 100],"float32"), Tensor([0, 100],"float32"), -1, 1e-06, True, None, ) 
  (External) CUDA error(9), invalid configuration argument. 
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
@@ -5247,6 +5247,11 @@ nan location mismatch:
 
 
 [cuda error] paddle.nn.functional.pairwise_distance(Tensor([0, 100],"float32"), Tensor([0, 100],"float32"), 1, 1e-06, True, None, ) 
+ (External) CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([0, 100],"float32"), Tensor([0, 100],"float32"), 2, 1e-06, False, None, ) 
  (External) CUDA error(9), invalid configuration argument. 
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
@@ -6726,21 +6731,6 @@ nan location mismatch:
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
-[cuda error] paddle.sinc(Tensor([0],"float64"), ) 
- (External) CUDA error(9), invalid configuration argument. 
-  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
-
-
-[cuda error] paddle.sinc(Tensor([16, 0],"float32"), ) 
- (External) CUDA error(9), invalid configuration argument. 
-  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
-
-
-[cuda error] paddle.sinc(Tensor([16, 0],"float64"), ) 
- (External) CUDA error(9), invalid configuration argument. 
-  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
-
-
 
 === [paddle error] ===
 
@@ -7424,6 +7414,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.Tensor.std(Tensor([0, 1, 36],"float32"), axis=-1, keepdim=True, ) 
  (InvalidArgument) Tensor need be reduced must not empty.
@@ -7954,6 +7945,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:206)
 
+ ** On entry to DgemmStridedBatched parameter number 8 had an illegal value
 
 [paddle error] paddle.cumulative_trapezoid(y=Tensor([0, 4],"float16"), x=Tensor([0, 4],"float16"), ) 
  (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
@@ -10230,24 +10222,19 @@ nan location mismatch:
   [Hint: Expected target_shape[i] != 0, but received target_shape[i]:0 == 0:0.] (at ../paddle/phi/kernels/gpu/expand_as_kernel.cu:46)
 
 
-[paddle error] paddle.linalg.solve(x=Tensor([4, 14, 14],"float64"), y=Tensor([4, 14, 0],"float64"), ) 
- (InvalidArgument) The value of target shape cannot be zero.
-  [Hint: Expected target_shape[i] != 0, but received target_shape[i]:0 == 0:0.] (at ../paddle/phi/kernels/gpu/expand_as_kernel.cu:46)
-
-
-[paddle error] paddle.linalg.svd_lowrank(Tensor([0, 17],"float64"), q=4, ) 
- q(=4) must be non-negative integer and not greater than min(m, n)=0
-
 [paddle error] paddle.linalg.svd_lowrank(Tensor([0, 4, 17],"float64"), q=4, ) 
  ([0, 4, 17, 4, 17, 4, 17, 4], 4)
 
 [paddle error] paddle.linalg.svd_lowrank(Tensor([1, 0, 17],"float64"), q=4, ) 
  q(=4) must be non-negative integer and not greater than min(m, n)=0
 
+[paddle error] paddle.linalg.svd_lowrank(Tensor([1, 4, 0],"float64"), q=4, ) 
+ q(=4) must be non-negative integer and not greater than min(m, n)=0
+
 [paddle error] paddle.linalg.svd_lowrank(Tensor([4, 0],"float64"), q=4, ) 
  q(=4) must be non-negative integer and not greater than min(m, n)=0
 
-[paddle error] paddle.linalg.vector_norm(x=Tensor([2, 3, 0],"float64"), p=math.inf, axis=list[0,1,], keepdim=True, ) 
+[paddle error] paddle.linalg.vector_norm(x=Tensor([2, 3, 0],"float64"), p=math.inf, axis=list[0,1,], keepdim=False, ) 
  (InvalidArgument) Tensor need be reduced must not empty.
   [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1092)
 
@@ -10616,16 +10603,19 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.mm(input=Tensor([2, 3],"float32"), mat2=Tensor([3, 0],"float32"), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.mm(input=Tensor([2, 3],"float64"), mat2=Tensor([3, 0],"float64"), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.nn.functional.adaptive_avg_pool1d(Tensor([0, 1024, 49],"float32"), 1, None, ) 
  (InvalidArgument) Tensor need be reduced must not empty.
@@ -10657,9 +10647,19 @@ nan location mismatch:
   [Hint: Expected e < dim_size, but received e:1 >= dim_size:1.] (at ../paddle/phi/kernels/funcs/reduce_function.h:112)
 
 
+[paddle error] paddle.nn.functional.normalize(Tensor([1, 0, 16, 16],"float32"), axis=1, ) 
+ (InvalidArgument) ReduceOp: invalid axis, when x_dims is 3, axis[i] should less than x_dims, but got 3.
+  [Hint: Expected e < dim_size, but received e:3 >= dim_size:3.] (at ../paddle/phi/kernels/funcs/reduce_function.h:112)
+
+
 [paddle error] paddle.nn.functional.normalize(Tensor([1, 0, 32, 32],"float32"), axis=1, ) 
  (InvalidArgument) ReduceOp: invalid axis, when x_dims is 3, axis[i] should less than x_dims, but got 3.
   [Hint: Expected e < dim_size, but received e:3 >= dim_size:3.] (at ../paddle/phi/kernels/funcs/reduce_function.h:112)
+
+
+[paddle error] paddle.nn.functional.normalize(Tensor([1, 0],"float32"), axis=1, ) 
+ (InvalidArgument) ReduceOp: invalid axis, when x_dims is 1, axis[i] should less than x_dims, but got 1.
+  [Hint: Expected e < dim_size, but received e:1 >= dim_size:1.] (at ../paddle/phi/kernels/funcs/reduce_function.h:112)
 
 
 [paddle error] paddle.nn.functional.normalize(Tensor([10, 0],"float16"), ) 
@@ -10668,11 +10668,6 @@ nan location mismatch:
 
 
 [paddle error] paddle.nn.functional.normalize(Tensor([10, 0],"float32"), ) 
- (InvalidArgument) ReduceOp: invalid axis, when x_dims is 1, axis[i] should less than x_dims, but got 1.
-  [Hint: Expected e < dim_size, but received e:1 >= dim_size:1.] (at ../paddle/phi/kernels/funcs/reduce_function.h:112)
-
-
-[paddle error] paddle.nn.functional.normalize(Tensor([10, 0],"float32"), p=1.5, ) 
  (InvalidArgument) ReduceOp: invalid axis, when x_dims is 1, axis[i] should less than x_dims, but got 1.
   [Hint: Expected e < dim_size, but received e:1 >= dim_size:1.] (at ../paddle/phi/kernels/funcs/reduce_function.h:112)
 
@@ -12025,7 +12020,17 @@ nan location mismatch:
   [Hint: Expected x.strides()[x.strides().size() - 1] == 1, but received x.strides()[x.strides().size() - 1]:2 != 1:1.] (at ../paddle/phi/kernels/stride/as_complex_kernel.cc:35)
 
 
+[paddle error] paddle.sgn(Tensor([0, 4],"complex64"), ) 
+ (InvalidArgument) Expected the stride of last dimension of input(X) to be 1.But received 2. This means that the last dimension of theTensor(x) is not continuous and cannot be as_complex directly.You can call x.contiguous() to make the Tensor(x) contiguous first.
+  [Hint: Expected x.strides()[x.strides().size() - 1] == 1, but received x.strides()[x.strides().size() - 1]:2 != 1:1.] (at ../paddle/phi/kernels/stride/as_complex_kernel.cc:35)
+
+
 [paddle error] paddle.sgn(Tensor([2, 0],"complex128"), ) 
+ (InvalidArgument) Expected the stride of last dimension of input(X) to be 1.But received 2. This means that the last dimension of theTensor(x) is not continuous and cannot be as_complex directly.You can call x.contiguous() to make the Tensor(x) contiguous first.
+  [Hint: Expected x.strides()[x.strides().size() - 1] == 1, but received x.strides()[x.strides().size() - 1]:2 != 1:1.] (at ../paddle/phi/kernels/stride/as_complex_kernel.cc:35)
+
+
+[paddle error] paddle.sgn(Tensor([2, 0],"complex64"), ) 
  (InvalidArgument) Expected the stride of last dimension of input(X) to be 1.But received 2. This means that the last dimension of theTensor(x) is not continuous and cannot be as_complex directly.You can call x.contiguous() to make the Tensor(x) contiguous first.
   [Hint: Expected x.strides()[x.strides().size() - 1] == 1, but received x.strides()[x.strides().size() - 1]:2 != 1:1.] (at ../paddle/phi/kernels/stride/as_complex_kernel.cc:35)
 
@@ -12041,11 +12046,6 @@ nan location mismatch:
 
 
 [paddle error] paddle.std(Tensor([0, 3, 4, 10],"float64"), list[1,2,], True, False, ) 
- (InvalidArgument) Tensor need be reduced must not empty.
-  [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1092)
-
-
-[paddle error] paddle.std(Tensor([0, 3, 4, 10],"float64"), list[1,3,], False, False, ) 
  (InvalidArgument) Tensor need be reduced must not empty.
   [Hint: Expected x.numel() > 0, but received x.numel():0 <= 0:0.] (at ../paddle/phi/kernels/funcs/reduce_function.h:1092)
 
@@ -12414,6 +12414,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([0, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[1,2,3,0,],list[3,2,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 0, 1, 1, 5.
@@ -12524,6 +12525,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 0, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[1,2,0,3,],list[0,2,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -12549,6 +12551,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 0, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[1,3,2,0,],list[1,3,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -12584,6 +12587,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 0, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[2,3,0,],list[1,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -12634,6 +12638,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 0, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[3,1,2,],list[2,3,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -12754,6 +12759,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 0, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[1,2,0,],list[1,2,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 1, 0, 1, 5.
@@ -12784,6 +12790,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 0, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[3,0,],list[2,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 1, 0, 5, 1.
@@ -12909,6 +12916,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 0, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[2,1,0,3,],list[2,0,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -12929,6 +12937,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 0, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[3,1,0,2,],list[3,1,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -12954,6 +12963,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 0, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[3,2,0,],list[3,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -13139,6 +13149,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[1,0,3,2,],list[2,3,0,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 5, 0, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 1, 5, 1, 0.
@@ -13179,6 +13190,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[2,0,1,],list[0,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13199,11 +13211,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[2,3,1,],list[1,0,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[2,3,],list[1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13219,6 +13233,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[3,1,0,2,],list[3,1,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13239,6 +13254,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[3,2,0,],list[3,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 5, 1, 0.
@@ -13254,6 +13270,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 0],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[3,2,],list[3,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13289,11 +13306,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[1,2,0,],list[1,3,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[1,2,3,0,],list[3,2,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 5, 1, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 0, 5, 1, 1.
@@ -13339,6 +13358,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[3,0,2,1,],list[2,1,0,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 0, 1, 1, 1.
@@ -13349,6 +13369,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[3,1,0,2,],list[2,3,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 0, 1, 1, 1.
@@ -13364,6 +13385,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[3,1,2,0,],list[1,2,3,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 5, 1, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 0, 5, 1, 1.
@@ -13379,16 +13401,19 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[3,1,2,],list[1,3,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[3,1,2,],list[2,3,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([0, 5, 1, 1],"float64"), list[list[3,1,2,],list[3,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 0, 1, 1, 1.
@@ -13409,6 +13434,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[0,1,2,],list[2,0,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -13444,6 +13470,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[1,2,0,3,],list[0,2,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -13454,6 +13481,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[1,3,2,0,],list[3,0,1,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -13484,6 +13512,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[3,1,0,2,],list[2,3,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -13504,6 +13533,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[3,1,2,],list[2,3,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -13514,6 +13544,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 0, 1, 1],"float64"), list[list[3,2,1,],list[2,0,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 0, 1, 1.
@@ -13534,6 +13565,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[0,2,3,],list[0,2,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 5, 0, 1.
@@ -13589,11 +13621,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[2,0,1,],list[0,1,3,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[2,1,0,3,],list[3,1,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -13609,6 +13643,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[2,3,1,],list[1,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -13619,6 +13654,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[3,1,0,2,],list[3,1,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -13639,6 +13675,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 0, 1],"float64"), list[list[3,2,1,0,],list[0,1,3,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 0, 1.
@@ -13649,11 +13686,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[0,1,2,],list[2,0,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[0,1,3,2,],list[0,2,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 5, 0, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 1, 5, 1, 0.
@@ -13679,11 +13718,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[0,2,3,],list[0,2,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[0,3,2,1,],list[2,1,3,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 5, 0, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 1, 5, 1, 0.
@@ -13724,6 +13765,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[2,0,1,],list[0,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13739,16 +13781,19 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[2,3,0,],list[1,2,0,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[2,3,1,],list[1,0,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[3,0,2,1,],list[2,1,0,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13759,6 +13804,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[3,1,2,0,],list[1,2,3,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 5, 0, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 1, 5, 1, 0.
@@ -13774,6 +13820,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 1, 5],"float64"), Tensor([1, 5, 1, 0],"float64"), list[list[3,2,1,0,],list[0,1,3,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13784,6 +13831,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 0],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[0,1,2,],list[2,0,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 5, 1, 0.
@@ -13794,6 +13842,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 0],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[1,2,0,3,],list[0,2,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13829,6 +13878,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 0],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[3,0,2,1,],list[2,1,0,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 5, 1, 1, 0.
@@ -13839,6 +13889,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 0],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[3,1,0,2,],list[3,1,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13859,6 +13910,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 0],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[3,2,0,],list[3,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13869,6 +13921,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 0],"float64"), Tensor([5, 5, 1, 5],"float64"), list[list[1,2,0,],list[1,2,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 1, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 1, 1, 1, 0.
@@ -13899,11 +13952,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[1,2,0,],list[1,3,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[1,2,3,0,],list[3,2,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 5, 1, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 0, 5, 1, 1.
@@ -13924,11 +13979,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[3,0,],list[2,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[3,1,0,2,],list[3,1,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 0, 1, 1, 5.
@@ -13939,6 +13996,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[3,1,2,0,],list[1,2,3,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 5, 5, Tensor layout is NCHW, Tensor stride is 25, 5, 1. New dims is 0, 5, 1, 5.
@@ -13954,21 +14012,25 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[3,1,2,],list[1,3,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[3,1,2,],list[2,3,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([0, 5, 1, 5],"float64"), list[list[3,2,],list[3,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[0,3,1,2,],list[3,2,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 5, 0, 1, 1.
@@ -13979,6 +14041,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[1,2,0,3,],list[0,2,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 1, 0, 1, 5.
@@ -13989,6 +14052,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[2,1,0,3,],list[2,0,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 0, 1, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 1, 0, 1, 5.
@@ -13999,6 +14063,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[3,1,0,2,],list[2,3,1,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 0, 1, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 5, 0, 1, 1.
@@ -14014,11 +14079,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 0, 1, 5],"float64"), list[list[3,2,0,],list[3,2,0,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[0,1,3,2,],list[0,2,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 0, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 1, 5, 0, 5.
@@ -14029,6 +14096,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[1,2,0,],list[1,3,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 0, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 5, 1, 0, 5.
@@ -14054,11 +14122,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[2,0,1,],list[0,1,3,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[2,1,0,3,],list[3,1,2,0,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 0, 5, Tensor layout is NCHW, Tensor stride is 5, 5, 1. New dims is 5, 1, 0, 5.
@@ -14069,16 +14139,19 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[2,3,],list[1,3,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[3,1,2,],list[3,1,0,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 0, 5],"float64"), list[list[3,2,1,0,],list[0,1,3,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 5, 0, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 5, 5, 0, 1.
@@ -14089,11 +14162,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[0,1,2,],list[2,0,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[0,1,3,2,],list[1,3,0,2,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 5, 1, 1, 0.
@@ -14114,11 +14189,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[0,2,3,],list[0,2,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[1,0,3,2,],list[2,3,0,1,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 5, 0, Tensor layout is NCHW, Tensor stride is 5, 1, 1. New dims is 5, 5, 1, 0.
@@ -14144,6 +14221,7 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[2,0,1,],list[0,1,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 5, 1, 1, 0.
@@ -14159,16 +14237,19 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[2,3,0,],list[1,2,0,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[2,3,1,],list[1,0,2,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[3,0,2,1,],list[2,1,0,3,],], ) 
  (InvalidArgument) Right now Resize is only supported for contiguous Tensor. Tensor dims is 5, 1, 0, Tensor layout is NCHW, Tensor stride is 1, 1, 1. New dims is 5, 1, 1, 0.
@@ -14179,81 +14260,97 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[3,2,0,],list[2,1,0,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([1, 1, 5, 5],"float64"), Tensor([5, 5, 1, 0],"float64"), list[list[3,2,1,],list[2,0,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([0, 4, 5],"float32"), 0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 0, 5],"float32"), 0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 0, 5],"float32"), 1, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 4, 0],"float32"), 0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 4, 0],"float32"), 1, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 4, 0],"float32"), 2, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 4, 0],"float32"), list[list[1,2,],list[0,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 4, 0],"float32"), tuple(list[1,2,],list[0,1,],), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float32"), Tensor([4, 4, 0],"float32"), tuple(tuple(1,2,),tuple(0,1,),), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:40)
 
+ ** On entry to SGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([0, 4, 5],"float64"), 0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 0, 5],"float64"), 0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 0, 5],"float64"), 1, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 4, 0],"float64"), 0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 4, 0],"float64"), 1, ) 
  (External) CUBLAS error(7). 
@@ -14264,11 +14361,13 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 4, 0],"float64"), list[list[1,2,],list[0,1,],], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(Tensor([3, 4, 4],"float64"), Tensor([4, 4, 0],"float64"), tuple(list[1,2,],list[0,1,],), ) 
  (External) CUBLAS error(7). 
@@ -14279,46 +14378,55 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 3, 4],"float64"), y=Tensor([0, 4, 3, 4],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 3, 4],"float64"), y=Tensor([3, 0, 3, 4],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 3, 4],"float64"), y=Tensor([3, 4, 0, 4],"float64"), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 3, 4],"float64"), y=Tensor([3, 4, 0, 4],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 3, 4],"float64"), y=Tensor([3, 4, 3, 0],"float64"), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 3, 4],"float64"), y=Tensor([3, 4, 3, 0],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 4, 4],"float64"), y=Tensor([0, 3, 4, 4],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 4, 4],"float64"), y=Tensor([2, 0, 4, 4],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 3, 4, 4],"float64"), y=Tensor([2, 3, 0, 4],"float64"), axes=0, ) 
  (External) CUBLAS error(7). 
@@ -14329,36 +14437,62 @@ nan location mismatch:
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 7, 4, 2],"float64"), y=Tensor([7, 0, 4, 2],"float64"), axes=list[tuple(1,2,3,),tuple(0,2,3,),], ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([2, 7, 4, 2],"float64"), y=Tensor([7, 0, 4, 2],"float64"), axes=tuple(list[1,2,3,],list[0,2,3,],), ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([3, 4, 3, 4],"float64"), y=Tensor([4, 0, 3, 4],"float64"), axes=1, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([3, 4, 3, 4],"float64"), y=Tensor([4, 4, 0, 4],"float64"), axes=1, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 [paddle error] paddle.tensordot(x=Tensor([3, 4, 3, 4],"float64"), y=Tensor([4, 4, 3, 0],"float64"), axes=1, ) 
  (External) CUBLAS error(7). 
   [Hint: 'CUBLAS_STATUS_INVALID_VALUE'.  An unsupported value or parameter was passed to the function (a negative vector size, for example). To correct: ensure that all the parameters being passed have valid values. ] (at ../paddle/phi/kernels/funcs/blas/blas_impl.cu.h:170)
 
+ ** On entry to DGEMM  parameter number 8 had an illegal value
 
 
 === [torch error] ===
 
-[torch error] paddle.linalg.svd_lowrank(Tensor([1, 4, 0],"float64"), q=4, )
+[torch error] paddle.linalg.solve(x=Tensor([4, 14, 14],"float64"), y=Tensor([4, 14, 0],"float64"), )
+Traceback (most recent call last):
+  File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 57, in test
+    if not self.gen_torch_input():
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/paddlejob/PaddleAPITest-dev/tester/base.py", line 766, in gen_torch_input
+    self.torch_kwargs[key] = arg_config.get_torch_tensor(self.api_config)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/paddlejob/PaddleAPITest-dev/tester/api_config/config_analyzer.py", line 1804, in get_torch_tensor
+    self.torch_tensor = torch.tensor(
+                        ^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/utils/_device.py", line 104, in __torch_function__
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: CUDA error: invalid configuration argument
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+[torch error] paddle.linalg.svd_lowrank(Tensor([0, 17],"float64"), q=4, )
 Traceback (most recent call last):
   File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 84, in test
     exec(code.core_compiled, exec_globals, exec_locals)
@@ -14384,15 +14518,7 @@ For debugging consider passing CUDA_LAUNCH_BLOCKING=1
 Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
 
 
-[torch error] paddle.linalg.vector_norm(x=Tensor([2, 3, 0],"float64"), p=math.inf, axis=list[0,1,], keepdim=False, )
-Traceback (most recent call last):
-  File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
-    paddle.base.core.eager._for_test_check_cuda_error()
-OSError: (External) CUDA error(9), invalid configuration argument. 
-  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
-
-
-[torch error] paddle.logcumsumexp(Tensor([0, 4],"float32"), axis=-1, )
+[torch error] paddle.linalg.vector_norm(x=Tensor([2, 3, 0],"float64"), p=math.inf, axis=list[0,1,], keepdim=True, )
 Traceback (most recent call last):
   File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
     paddle.base.core.eager._for_test_check_cuda_error()
@@ -14408,7 +14534,7 @@ OSError: (External) CUDA error(9), invalid configuration argument.
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
-[torch error] paddle.logcumsumexp(Tensor([10, 10, 0],"float32"), axis=0, )
+[torch error] paddle.logcumsumexp(Tensor([10, 0, 10],"float32"), axis=0, )
 Traceback (most recent call last):
   File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
     paddle.base.core.eager._for_test_check_cuda_error()
@@ -14416,7 +14542,7 @@ OSError: (External) CUDA error(9), invalid configuration argument.
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
-[torch error] paddle.sgn(Tensor([0, 4],"complex64"), )
+[torch error] paddle.sinc(Tensor([0],"float64"), )
 Traceback (most recent call last):
   File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
     paddle.base.core.eager._for_test_check_cuda_error()
@@ -14424,7 +14550,23 @@ OSError: (External) CUDA error(9), invalid configuration argument.
   [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
 
 
-[torch error] paddle.sgn(Tensor([2, 0],"complex64"), )
+[torch error] paddle.sinc(Tensor([16, 0],"float32"), )
+Traceback (most recent call last):
+  File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
+    paddle.base.core.eager._for_test_check_cuda_error()
+OSError: (External) CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+
+[torch error] paddle.sinc(Tensor([16, 0],"float64"), )
+Traceback (most recent call last):
+  File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
+    paddle.base.core.eager._for_test_check_cuda_error()
+OSError: (External) CUDA error(9), invalid configuration argument. 
+  [Hint: 'cudaErrorInvalidConfiguration'. This indicates that a kernel launch is requesting resources that can never be satisfied by the current device. Requestingmore shared memory per block than the device supports will trigger this error, as will requesting too many threads or blocks.See cudaDeviceProp for more device limitations.] (at ../paddle/fluid/pybind/eager_functions.cc:1388)
+
+
+[torch error] paddle.std(Tensor([0, 3, 4, 10],"float64"), list[1,3,], False, False, )
 Traceback (most recent call last):
   File "/root/paddlejob/PaddleAPITest-dev/tester/accuracy.py", line 113, in test
     paddle.base.core.eager._for_test_check_cuda_error()
