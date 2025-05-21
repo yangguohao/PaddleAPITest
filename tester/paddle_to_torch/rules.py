@@ -726,8 +726,6 @@ if dim is None:
     x = x.flatten()
     axis = 0
 dtype = locals().get('dtype')
-if dtype is not None:
-    dtype = getattr(torch, dtype)
 """
         core = "result = torch.cumprod(input=x, dim=dim, dtype=dtype)"
         code = Code(preprocess=pre.splitlines(), core=[core])
@@ -2409,8 +2407,7 @@ if isinstance(window, tuple):
 else:
     window_name, param = window, None
 fftbins = locals().get('fftbins', True)
-dtype = locals().get('dtype', 'float64')
-dtype = getattr(torch, dtype)
+dtype = locals().get('dtype', torch.float64)
 if window_name == 'hamming':
     window = torch.signal.windows.hamming(win_length, sym=not fftbins, dtype=dtype)
 elif window_name == 'hann':
@@ -3608,56 +3605,6 @@ result = x
         return ConvertResult.success(
             paddle_api, code, "result", is_torch_corresponding=False
         )
-
-
-class ProdRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
-import re
-dtype = locals().get("dtype", None)
-axis = locals().get("axis", None)
-keepdim = locals().get("keepdim", False)
-if dtype is None:
-    dtype = x.dtype
-else:
-    if isinstance(dtype, str):
-        dtype = getattr(torch, dtype)
-    else:
-        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
-            dtype_str = str(dtype).split('.')[-1]
-            dtype = getattr(torch, dtype_str)
-        else:
-            match = re.search(r"'(.+?)'", str(dtype))
-            print(dtype)
-            dtype_str = match.group(1)
-            dtype_str = dtype_str.split('.')[-1]
-            dtype = getattr(torch, dtype_str)
-if not axis is None:
-    dim = []
-    if isinstance(axis, (list, tuple)):
-        for i in axis:
-            if isinstance(i, torch.Tensor):
-                dim.append(i.item())
-            else:
-                dim.append(i)
-    elif isinstance(axis, torch.Tensor):
-        for i in axis:
-            dim.append(i.item())
-    else:
-        dim.append(axis)
-"""
-        core = """
-if axis is None:
-    result = torch.prod(x, dtype = dtype)
-else:
-    for i in dim:
-        x = torch.prod(x,dim = i,keepdim=True,dtype = dtype)
-    if not keepdim:
-        x = x.squeeze(dim)
-    result = x
-"""
-        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
 
 
 class Put_along_axisRule(BaseRule):
