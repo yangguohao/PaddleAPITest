@@ -73,7 +73,6 @@ no_signature_api_mappings = {
 
 # Todo: check paddle.prod paddle.cumprod @cangtianhuang
 int_too_big_fail_api = [
-    "paddle.pow",
     "paddle.Tensor.lcm",
 ]
 
