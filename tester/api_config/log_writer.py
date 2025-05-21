@@ -125,7 +125,7 @@ def aggregate_logs(end=False):
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     try:
         with log_file.open("a") as out_f:
-            files = list(TMP_LOG_PATH.glob(f"log_*.txt"))
+            files = list(TMP_LOG_PATH.glob(f"log_*.log"))
             for file_path in files:
                 try:
                     with file_path.open("r") as in_f:
@@ -200,46 +200,63 @@ def print_log_info(all_case, log_counts={}):
     print("=" * 50 + "\n")
 
 
-orig_stdout = None
-orig_stderr = None
+orig_stdout_fd = None
+orig_stderr_fd = None
 log_file = None
 
 
 def redirect_stdio():
     """执行 stdout 和 stderr 的重定向"""
-    global orig_stdout, orig_stderr, log_file
+    global orig_stdout_fd, orig_stderr_fd, log_file
+    stdout_r, stdout_w = os.pipe()
+    stderr_r, stderr_w = os.pipe()
 
-    class Tee:
-        def __init__(self, *files):
-            self.files = files
+    orig_stdout_fd = os.dup(1)
+    orig_stderr_fd = os.dup(2)
 
-        def write(self, obj):
-            for f in self.files:
-                f.write(obj)
-                f.flush()
+    os.dup2(stdout_w, 1)
+    os.dup2(stderr_w, 2)
 
-        def flush(self):
-            for f in self.files:
-                f.flush()
+    os.close(stdout_w)
+    os.close(stderr_w)
 
-    log_path = TMP_LOG_PATH / f"log_{os.getpid()}.txt"
+    log_path = TMP_LOG_PATH / f"log_{os.getpid()}.log"
     log_file = log_path.open("a", encoding="utf-8")
 
-    import sys
+    import threading
 
-    orig_stdout = sys.stdout
-    orig_stderr = sys.stderr
+    def tee_output(read_fd, write_fds):
+        while True:
+            data = os.read(read_fd, 1024)
+            if not data:
+                break
+            for fd in write_fds:
+                os.write(fd, data)
 
-    sys.stdout = Tee(orig_stdout, log_file)
-    sys.stderr = Tee(orig_stderr, log_file)
+    stdout_thread = threading.Thread(
+        target=tee_output, args=(stdout_r, [orig_stdout_fd, log_file.fileno()])
+    )
+    stderr_thread = threading.Thread(
+        target=tee_output, args=(stderr_r, [orig_stderr_fd, log_file.fileno()])
+    )
+
+    stdout_thread.start()
+    stderr_thread.start()
 
 
 def restore_stdio():
     """恢复 stdout 和 stderr 的重定向"""
-    global orig_stdout, orig_stderr, log_file
+    global orig_stdout_fd, orig_stderr_fd, log_file
     if log_file is not None:
         log_file.close()
-    import sys
+        log_file = None
 
-    sys.stdout = orig_stdout
-    sys.stderr = orig_stderr
+    if orig_stdout_fd is not None:
+        os.dup2(orig_stdout_fd, 1)
+        os.close(orig_stdout_fd)
+        orig_stdout_fd = None
+
+    if orig_stderr_fd is not None:
+        os.dup2(orig_stderr_fd, 2)
+        os.close(orig_stderr_fd)
+        orig_stderr_fd = None
