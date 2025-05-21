@@ -62,21 +62,21 @@ tester/paddle2torch/是转换能力的核心代码。
 │   ├── base.py
 │   ├── paddle_cinn_vs_dygraph.py
 │   ├── paddle_only.py
-│   ├── paddle_to_torch
+│   └── paddle_to_torch
 ├── test_pipline
-└── tools
+├── tools
 ├── engine.py
 ├── engineV2.py
 ├── engineV3.py
 ├── report
-├── run.sh
+└── run.sh
 ```
 
 tools文件夹中存放了一些实用的工具，例如move_config可以用来批量的移动配置，详见[move_config-README.md](./tools/move_config-README.md)。
 
 ## 3. 使用介绍
 
-#### 环境配置
+### 环境配置
 运行环境分为**cpu**环境与**gpu**环境，cpu和gpu上运行的结果**可能存在差异**，即存在cpu上能够正确运行，但gpu上报错的情况。因此需要根据需求正确安装环境。
 
 下载链接：https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html
@@ -88,9 +88,9 @@ tools文件夹中存放了一些实用的工具，例如move_config可以用来�
 paddle.device.set_device("cpu")
 ```
 
-#### 使用说明
+### 使用说明
 
-**A. engine v1**
+#### A. engine v1
 
 所有测试前，**必须创建**一个目录：PaddleAPITest/tester/api_config/test_log/，用于存放测试所产生的测试结果和checkpoint。
 
@@ -130,7 +130,7 @@ python engine.py --api_config_file=/host_home/wanghuan29/PaddleAPITest/tester/ap
 当测试配置中有**精度不统一**的情况，需要精度转换时，直接运行测试可能会报错，可加入--test_amp=True
 
 
-**B. engine v2**
+#### B. engine v2
 
 `engineV2.py` 是为 PaddleAPITest 项目设计的高性能测试框架，支持多 GPU 并行执行，具备负载均衡、超时处理和崩溃恢复能力。相比原始的 `engine.py` 实现，它能显著提升 Paddle API 配置测试效率，加速比约为 5-10 倍。
 
