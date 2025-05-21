@@ -5053,42 +5053,27 @@ axis = axis if axis >= 0 else logits.dim() + axis
 ogits = logits.transpose(axis, -1)
 orig_shape = ogits.shape
 
-if not soft_label:
-    logits_flat = ogits.reshape(-1, ogits.shape[-1])
-    label_flat = label.reshape(-1)  
-    if numeric_stable_mode:
-        max_logits = torch.max(logits_flat, dim=-1, keepdim=True).values
-        logits_flat = logits_flat - max_logits
-    log_softmax = torch.nn.functional.log_softmax(logits_flat, dim=-1)
-    loss = torch.nn.functional.nll_loss(
-        input=log_softmax,
-        target=label_flat,
-        reduction='none',
-        ignore_index=ignore_index
-    )
-    if loss.ndim < ogits.ndim:
-        loss = loss.reshape(*ogits.shape[:-1])
-    if return_softmax:
-        softmax = torch.nn.functional.softmax(logits, dim=-1)
-        softmax = softmax.transpose(-1, axis).contiguous()
-        result = (loss.unsqueeze(axis), softmax)
-    else:
-        result = loss.reshape(*label.shape)
+logits_flat = ogits.reshape(-1, ogits.shape[-1])
+label_flat = label.reshape(-1)  
+if numeric_stable_mode:
+    max_logits = torch.max(logits_flat, dim=-1, keepdim=True).values
+    logits_flat = logits_flat - max_logits
+log_softmax = torch.nn.functional.log_softmax(logits_flat, dim=-1)
 
+loss = torch.nn.functional.nll_loss(
+    input=log_softmax,
+    target=label_flat,
+    reduction='none',
+    ignore_index=ignore_index
+)
+if loss.ndim < ogits.ndim:
+    loss = loss.reshape(*ogits.shape[:-1])
+if return_softmax:
+    softmax = torch.nn.functional.softmax(logits, dim=-1)
+    softmax = softmax.transpose(-1, axis).contiguous()
+    result = (loss.unsqueeze(axis), softmax)
 else:
-    max_logits = torch.amax(logits, dim=axis, keepdim=True)
-    logits_sub = logits - max_logits
-    exp_logits = torch.exp(logits_sub)
-    sum_exp = torch.sum(exp_logits, dim=axis, keepdim=True)
-    softmax = exp_logits / sum_exp 
-    
-    log_softmax = torch.log(softmax + 1e-10)
-    loss = -torch.sum(label * log_softmax, dim=axis, keepdim=True)
-    
-    if return_softmax:
-        result = (loss, softmax)
-    else:
-        result = loss
+    result = loss.reshape(*label.shape)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)

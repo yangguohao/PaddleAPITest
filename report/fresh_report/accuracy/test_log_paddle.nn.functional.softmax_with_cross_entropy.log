@@ -1,6 +1,4 @@
 paddle.nn.functional.softmax_with_cross_entropy(Tensor([2, 16, 32, 64],"float32"), Tensor([2, 1, 32, 64],"int64"), axis=1, )
-paddle.nn.functional.softmax_with_cross_entropy(Tensor([4, 3],"float64"), Tensor([4, 3],"float64"), soft_label=True, axis=-1, )
-paddle.nn.functional.softmax_with_cross_entropy(logits=Tensor([128, 10000],"float32"), label=Tensor([128, 10000],"float32"), soft_label=True, )
 
 2025-05-19 07:02:20.375288 test begin: paddle.nn.functional.softmax_with_cross_entropy(Tensor([2, 16, 32, 64],"float32"), Tensor([2, 1, 32, 64],"int64"), axis=1, )
 One of the differentiated Tensors does not require grad
@@ -18,35 +16,3 @@ Max relative difference: 0.43620312
  y: array([[[[2.563411, 3.150524, 3.315639, ..., 2.484261, 2.863368,
           2.671428],
          [3.053305, 2.627642, 3.054472, ..., 2.658888, 2.992478,...
-
-2025-05-19 07:02:25.533734 test begin: paddle.nn.functional.softmax_with_cross_entropy(Tensor([4, 3],"float64"), Tensor([4, 3],"float64"), soft_label=True, axis=-1, )
-[accuracy error] backward  paddle.nn.functional.softmax_with_cross_entropy(Tensor([4, 3],"float64"), Tensor([4, 3],"float64"), soft_label=True, axis=-1, ) 
- 
-Not equal to tolerance rtol=0.01, atol=0.01
-
-Mismatched elements: 12 / 12 (100%)
-Max absolute difference: 0.73513491
-Max relative difference: 5.27475518
- x: array([[ 0.015983, -0.104266, -0.039519],
-       [ 0.41179 , -0.092483, -0.077777],
-       [ 0.792677,  0.813941,  0.290494],
-       [ 0.166697,  0.187949, -0.038856]])
- y: array([[ 0.047949, -0.057194,  0.009245],
-       [ 0.340519, -0.184965, -0.155554],
-       [ 0.169161,  0.27548 , -0.444641],
-       [ 0.035209,  0.120216, -0.155425]])
-
-2025-05-19 07:02:26.502357 test begin: paddle.nn.functional.softmax_with_cross_entropy(logits=Tensor([128, 10000],"float32"), label=Tensor([128, 10000],"float32"), soft_label=True, )
-[accuracy error] backward  paddle.nn.functional.softmax_with_cross_entropy(logits=Tensor([128, 10000],"float32"), label=Tensor([128, 10000],"float32"), soft_label=True, ) 
- 
-Not equal to tolerance rtol=0.01, atol=0.01
-
-Mismatched elements: 1280000 / 1280000 (100%)
-Max absolute difference: 3879.8877
-Max relative difference: 1775119.6
- x: array([[ -450.65054,  -313.8251 ,  -415.71637, ...,  -319.50192,
-         -214.7965 ,  -373.50427],
-       [ 1125.4504 ,   385.38742,   715.9978 , ...,   981.4029 ,...
- y: array([[ -203.2986  ,    20.208893,   -50.674385, ...,   -52.862747,
-           61.02453 ,  -225.07265 ],
-       [  684.21576 ,    31.64121 ,   337.84073 , ...,   318.01773 ,...

@@ -2006,3 +2006,5 @@ paddle.nn.quant.weight_quantize(Tensor([64, 64],"float16"), algo="weight_only_in
 paddle.nn.quant.weight_quantize(Tensor([768, 22016],"float16"), algo="weight_only_int8", )
 paddle.nn.quant.weight_quantize(Tensor([768, 2304],"float16"), algo="weight_only_int8", )
 paddle.nn.quant.weight_quantize(Tensor([768, 768],"float16"), algo="weight_only_int8", )
+paddle.nn.functional.softmax_with_cross_entropy(Tensor([4, 3],"float64"), Tensor([4, 3],"float64"), soft_label=True, axis=-1, )
+paddle.nn.functional.softmax_with_cross_entropy(logits=Tensor([128, 10000],"float32"), label=Tensor([128, 10000],"float32"), soft_label=True, )
