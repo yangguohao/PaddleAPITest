@@ -1185,6 +1185,7 @@ result = loss.mean()
 class Distribute_fpn_proposalsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
+import math
 def BBoxArea(box, pixel_offset):
     w = box[2] - box[0]
     h = box[3] - box[1]
