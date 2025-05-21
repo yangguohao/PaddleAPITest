@@ -261,3 +261,7 @@ paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), None
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, quant_scale=127, quant_round_type=0, quant_max_bound=127, quant_min_bound=-128)
 paddle.nn.functional.grid_sample(Tensor([4, 128, 128, 128],"float16"), Tensor([4, 128, 128, 2],"float16"), )
 paddle.nn.functional.grid_sample(Tensor([4, 128, 128, 128],"float16"), Tensor([4, 256, 256, 2],"float16"), )
+paddle.meshgrid(list[Tensor([2],"int64"),Tensor([2],"int64"),Tensor([1],"int64"),Tensor([0],"int64"),], )
+paddle.meshgrid(list[Tensor([3],"int32"),Tensor([5],"int32"),Tensor([3],"int32"),Tensor([0],"int32"),], )
+paddle.meshgrid(list[Tensor([4],"int32"),Tensor([4],"int32"),Tensor([5],"int32"),Tensor([0],"int32"),], )
+paddle.meshgrid(list[Tensor([5],"int64"),Tensor([4],"int64"),Tensor([4],"int64"),Tensor([0],"int64"),], )
