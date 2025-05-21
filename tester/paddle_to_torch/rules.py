@@ -5438,7 +5438,7 @@ else:
 
 class Zeropad2dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 data_format = locals().get('data_format', 'NCHW')
 pad_left, pad_right, pad_top, pad_bottom = padding
 if data_format == "NHWC":
@@ -5448,7 +5448,7 @@ if data_format == "NHWC":
 elif data_format == "NCHW":
     result = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom), mode="constant", value=0)
 """
-        code = impl.splitlines()
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)  
 
 # __
