@@ -1429,7 +1429,10 @@ else:
 class ExpandRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
-result = x.expand(*shape)  
+if (isinstance(shape, list) or isinstance(shape, tuple)) and len(shape) == 0:
+    result = x
+else:
+    result = x.expand(*shape)  
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
@@ -3436,11 +3439,10 @@ class MmRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if input.dtype == torch.float16:
+if input.dtype == torch.float16 and mat2.dtype != torch.float16:
     input = input.to(torch.float32)
-if mat2.dtype == torch.float16:
+if mat2.dtype == torch.float16 and input.dtype != torch.float16:
     mat2 = mat2.to(torch.float32)
-
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])

@@ -338,6 +338,9 @@
     "paddle.expand": {
         "Rule": "ExpandRule"
     },
+    "paddle.Tensor.expand": {
+        "Rule": "ExpandRule"
+    },
     "paddle.expand_as": {
         "Rule": "ExpandasRule"
     },
@@ -1351,9 +1354,13 @@
         }
     },
     "paddle.nonzero": {
-        "torch_api": "torch.argwhere",
+        "torch_api": "torch.nonzero",
         "paddle_torch_args_map": {
-            "x": "input"
+            "x": "input",
+            "as_tuple": "as_tuple"
+        },
+        "set_defaults": {
+            "as_tuple": "False"
         }
     },  
     "paddle.not_equal": {
@@ -2876,12 +2883,6 @@
             "y": "other"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.expand": {
-        "torch_api": "torch.Tensor.expand",
-        "torch_args": [
-            "*{shape}"
-        ]
     },
     "paddle.Tensor.expand_as": {
         "torch_api": "torch.Tensor.expand_as",
