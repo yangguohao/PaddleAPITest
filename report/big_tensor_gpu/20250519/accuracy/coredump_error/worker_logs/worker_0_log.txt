@@ -1,0 +1,2501 @@
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 0: paddle.all(Tensor([228170138, 10],"bool"), axis=0, )
+W0520 11:11:17.849882  8630 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:11:17.850629  8630 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.all(Tensor([228170138, 10],"bool"), axis=0, )
+[Worker 0] Completed Task 0
+[Worker 0] Processing Task 4: paddle.amax(Tensor([22817014, 10, 10],"float32"), axis=list[0,1,], keepdim=False, )
+[Pass] paddle.amax(Tensor([22817014, 10, 10],"float32"), axis=list[0,1,], keepdim=False, )
+[Worker 0] Completed Task 4
+[Worker 0] Processing Task 8: paddle.amax(Tensor([3, 2, 95070891, 4],"float32"), axis=2, keepdim=True, )
+[Pass] paddle.amax(Tensor([3, 2, 95070891, 4],"float32"), axis=2, keepdim=True, )
+[Worker 0] Completed Task 8
+[Worker 0] Processing Task 13: paddle.amax(Tensor([57042535, 2, 4, 5],"float32"), axis=-1, keepdim=True, )
+[Pass] paddle.amax(Tensor([57042535, 2, 4, 5],"float32"), axis=-1, keepdim=True, )
+[Worker 0] Completed Task 13
+[Worker 0] Processing Task 17: paddle.amin(Tensor([10, 22817014, 10],"float32"), axis=list[0,1,], keepdim=False, )
+[Pass] paddle.amin(Tensor([10, 22817014, 10],"float32"), axis=list[0,1,], keepdim=False, )
+[Worker 0] Completed Task 17
+[Worker 0] Processing Task 21: paddle.amin(Tensor([3, 2, 76056713, 5],"float32"), axis=-1, keepdim=True, )
+[Pass] paddle.amin(Tensor([3, 2, 76056713, 5],"float32"), axis=-1, keepdim=True, )
+[Worker 0] Completed Task 21
+[Worker 0] Processing Task 25: paddle.amin(Tensor([3, 38028357, 5, 4],"float32"), axis=2, keepdim=True, )
+[Pass] paddle.amin(Tensor([3, 38028357, 5, 4],"float32"), axis=2, keepdim=True, )
+[Worker 0] Completed Task 25
+[Worker 0] Processing Task 29: paddle.amin(Tensor([57042535, 2, 5, 4],"float32"), axis=tuple(1,2,), keepdim=True, )
+[Pass] paddle.amin(Tensor([57042535, 2, 5, 4],"float32"), axis=tuple(1,2,), keepdim=True, )
+[Worker 0] Completed Task 29
+[Worker 0] Processing Task 36: paddle.argmax(Tensor([13, 2, 2742430, 16, 2],"float32"), axis=-1, )
+[cuda error] paddle.argmax(Tensor([13, 2, 2742430, 16, 2],"float32"), axis=-1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747711409 (unix time) try "date -d @1747711409" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x21b6) received by PID 8630 (TID 0x7f66bfd56740) from PID 8630 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 39: paddle.argmax(Tensor([2281701379],"float32"), 0, )
+W0520 11:24:07.957384  8935 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:24:07.958124  8935 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.argmax(Tensor([2281701379],"float32"), 0, )
+[Worker 0] Completed Task 39
+[Worker 0] Processing Task 42: paddle.argmax(Tensor([3, 3, 17674763, 3, 3, 3],"float16"), axis=0, )
+[cuda error] paddle.argmax(Tensor([3, 3, 17674763, 3, 3, 3],"float16"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747711520 (unix time) try "date -d @1747711520" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x22e7) received by PID 8935 (TID 0x7f66bfd56740) from PID 8935 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 47: paddle.argmax(Tensor([3, 760567127],"float32"), keepdim=True, )
+W0520 11:26:12.394155  9382 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:26:12.394912  9382 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.argmax(Tensor([3, 760567127],"float32"), keepdim=True, )
+[Worker 0] Completed Task 47
+[Worker 0] Processing Task 49: paddle.argmax(Tensor([4, 16777217, 4, 4, 4],"float16"), axis=0, )
+[cuda error] paddle.argmax(Tensor([4, 16777217, 4, 4, 4],"float16"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747711644 (unix time) try "date -d @1747711644" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x24a6) received by PID 9382 (TID 0x7f66bfd56740) from PID 9382 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 52: paddle.argmax(Tensor([4, 4, 4, 4, 16777217],"float16"), axis=0, )
+W0520 11:28:45.710079  9608 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:28:45.710826  9608 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.argmax(Tensor([4, 4, 4, 4, 16777217],"float16"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747711727 (unix time) try "date -d @1747711727" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2588) received by PID 9608 (TID 0x7f66bfd56740) from PID 9608 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 59: paddle.argmax(x=Tensor([3, 477218589, 3],"float16"), )
+W0520 11:30:10.035705  9984 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:30:10.036432  9984 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.argmax(x=Tensor([3, 477218589, 3],"float16"), )
+[Worker 0] Completed Task 59
+[Worker 0] Processing Task 62: paddle.argmin(Tensor([10, 228170138],"float32"), )
+[Pass] paddle.argmin(Tensor([10, 228170138],"float32"), )
+[Worker 0] Completed Task 62
+[Worker 0] Processing Task 65: paddle.argmin(Tensor([3, 17674763, 3, 3, 3, 3],"float16"), axis=0, )
+[cuda error] paddle.argmin(Tensor([3, 17674763, 3, 3, 3, 3],"float16"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747711915 (unix time) try "date -d @1747711915" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2700) received by PID 9984 (TID 0x7f66bfd56740) from PID 9984 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 69: paddle.argmin(Tensor([3, 3, 3, 3, 3, 17674763],"float16"), axis=0, )
+W0520 11:33:25.389309 10210 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:33:25.390048 10210 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.argmin(Tensor([3, 3, 3, 3, 3, 17674763],"float16"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747712007 (unix time) try "date -d @1747712007" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x27e2) received by PID 10210 (TID 0x7f66bfd56740) from PID 10210 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 75: paddle.argmin(Tensor([4, 4, 4, 4, 16777217],"float16"), axis=0, )
+W0520 11:34:58.681023 10509 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:34:58.681778 10509 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.argmin(Tensor([4, 4, 4, 4, 16777217],"float16"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747712100 (unix time) try "date -d @1747712100" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x290d) received by PID 10509 (TID 0x7f66bfd56740) from PID 10509 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 82: paddle.argmin(x=Tensor([357913942, 3, 4],"float16"), axis=1, keepdim=False, )
+W0520 11:36:29.473377 10810 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:36:29.474126 10810 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.argmin(x=Tensor([357913942, 3, 4],"float16"), axis=1, keepdim=False, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747712191 (unix time) try "date -d @1747712191" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2a3a) received by PID 10810 (TID 0x7f66bfd56740) from PID 10810 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 86: paddle.broadcast_to(Tensor([8, 1, 219, 1302341],"bool"), list[8,8,219,113,], )
+[torch error] paddle.broadcast_to(Tensor([8, 1, 219, 1302341],"bool"), list[8,8,219,113,], )
+Traceback (most recent call last):
+  File "/luozeyu01_api_test/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 104, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: The expanded size of the tensor (113) must match the existing size (1302341) at non-singleton dimension 3.  Target sizes: [8, 8, 219, 113].  Tensor sizes: [8, 1, 219, 1302341]
+W0520 11:37:16.643437 10960 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:37:16.644280 10960 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Worker 0] Completed Task 86
+[Worker 0] Processing Task 89: paddle.copysign(Tensor([10, 228170138],"float32"), Tensor([10, 228170138],"float32"), )
+[cuda error] paddle.copysign(Tensor([10, 228170138],"float32"), Tensor([10, 228170138],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747712397 (unix time) try "date -d @1747712397" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2ad0) received by PID 10960 (TID 0x7f66bfd56740) from PID 10960 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 92: paddle.copysign(Tensor([114085069, 20],"float32"), Tensor([114085069, 20],"float32"), )
+W0520 11:42:17.444428 11039 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:42:17.445433 11039 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.copysign(Tensor([114085069, 20],"float32"), Tensor([114085069, 20],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747712593 (unix time) try "date -d @1747712593" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2b1f) received by PID 11039 (TID 0x7f66bfd56740) from PID 11039 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 94: paddle.copysign(Tensor([12, 20, 17895698],"float16"), Tensor([12, 20, 17895698],"float16"), )
+W0520 11:47:24.442032 11189 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:47:24.443077 11189 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.copysign(Tensor([12, 20, 17895698],"float16"), Tensor([12, 20, 17895698],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747713286 (unix time) try "date -d @1747713286" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2bb5) received by PID 11189 (TID 0x7f66bfd56740) from PID 11189 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 100: paddle.copysign(Tensor([2, 3, 4, 178956971],"float16"), Tensor([2, 3, 4, 178956971],"float16"), )
+W0520 11:58:46.682288 11642 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 11:58:46.683205 11642 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.copysign(Tensor([2, 3, 4, 178956971],"float16"), Tensor([2, 3, 4, 178956971],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747713963 (unix time) try "date -d @1747713963" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2d7a) received by PID 11642 (TID 0x7f66bfd56740) from PID 11642 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 104: paddle.copysign(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), )
+W0520 12:08:27.564651 11948 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 12:08:27.565678 11948 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.copysign(Tensor([2281701379],"float32"), Tensor([2281701379],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747714164 (unix time) try "date -d @1747714164" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2eac) received by PID 11948 (TID 0x7f66bfd56740) from PID 11948 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 105: paddle.copysign(Tensor([3, 286331154, 5],"float16"), Tensor([5],"float16"), )
+W0520 12:12:22.722075 12027 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 12:12:22.723042 12027 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.copysign(Tensor([3, 286331154, 5],"float16"), Tensor([5],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747714762 (unix time) try "date -d @1747714762" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x2efb) received by PID 12027 (TID 0x7f66bfd56740) from PID 12027 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 110: paddle.copysign(Tensor([8, 17, 5, 902305, 7],"float16"), Tensor([8, 17, 5, 902305, 7],"float16"), )
+W0520 12:23:23.099264 12405 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 12:23:23.100224 12405 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.copysign(Tensor([8, 17, 5, 902305, 7],"float16"), Tensor([8, 17, 5, 902305, 7],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747715449 (unix time) try "date -d @1747715449" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x3075) received by PID 12405 (TID 0x7f66bfd56740) from PID 12405 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 115: paddle.cross(x=Tensor([1431655766, 3],"float16"), y=Tensor([1431655766, 3],"float16"), )
+/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py:104: UserWarning: Using torch.cross without specifying the dim arg is deprecated.
+Please either pass the dim explicitly or simply use torch.linalg.cross.
+The default value of dim will change to agree with that of linalg.cross in a future release. (Triggered internally at /pytorch/aten/src/ATen/native/Cross.cpp:62.)
+  return func(*args, **kwargs)
+W0520 12:35:02.050588 12711 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 12:35:02.051566 12711 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.cross(x=Tensor([1431655766, 3],"float16"), y=Tensor([1431655766, 3],"float16"), )
+[Worker 0] Completed Task 115
+[Worker 0] Processing Task 119: paddle.cross(x=Tensor([3, 1431655766],"float16"), y=Tensor([3, 1431655766],"float16"), axis=0, )
+[Pass] paddle.cross(x=Tensor([3, 1431655766],"float16"), y=Tensor([3, 1431655766],"float16"), axis=0, )
+[Worker 0] Completed Task 119
+[Worker 0] Processing Task 123: paddle.cross(x=Tensor([3, 477218589, 3],"float16"), y=Tensor([3, 477218589, 3],"float16"), axis=2, )
+[Pass] paddle.cross(x=Tensor([3, 477218589, 3],"float16"), y=Tensor([3, 477218589, 3],"float16"), axis=2, )
+[Worker 0] Completed Task 123
+[Worker 0] Processing Task 138: paddle.cumsum(Tensor([22152441, 103],"int64"), 1, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.cumsum(Tensor([22152441, 103],"int64"), 1, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_cumsum(_object*, _object*, _object*)
+1   cumsum_ad_func(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor>, bool, bool, bool)
+2   paddle::experimental::cumsum(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor> const&, bool, bool, bool)
+3   long* phi::DeviceContext::Alloc<long>(phi::TensorBase*, unsigned long, bool) const
+4   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+5   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+6   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+9   std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+10  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 17.000000GB memory on GPU 0, 69.610352GB memory has been allocated and available memory is only 9.574524GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
+
+[Worker 0] Completed Task 138
+[Worker 0] Processing Task 140: paddle.cumsum(Tensor([22591103, 101],"int64"), 1, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.cumsum(Tensor([22591103, 101],"int64"), 1, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_cumsum(_object*, _object*, _object*)
+1   cumsum_ad_func(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor>, bool, bool, bool)
+2   paddle::experimental::cumsum(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor> const&, bool, bool, bool)
+3   long* phi::DeviceContext::Alloc<long>(phi::TensorBase*, unsigned long, bool) const
+4   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+5   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+6   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+9   std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+10  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 17.000000GB memory on GPU 0, 69.610352GB memory has been allocated and available memory is only 9.574524GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
+
+[Worker 0] Completed Task 140
+[Worker 0] Processing Task 142: paddle.cumsum(Tensor([24, 95070891],"int32"), axis=0, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[Pass] paddle.cumsum(Tensor([24, 95070891],"int32"), axis=0, )
+[Worker 0] Completed Task 142
+[Worker 0] Processing Task 144: paddle.cumsum(Tensor([3, 190141782, 4],"float32"), axis=1, )
+[accuracy error] paddle.cumsum(Tensor([3, 190141782, 4],"float32"), axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 26187520 / 2281701384 (1.15%)
+Max absolute difference: 1.9985352
+Max relative difference: 187867.53
+ x: array([[[ 1.035912e-02, -3.909548e-01, -1.151413e-01, -2.322178e-01],
+        [ 4.989392e-01, -7.057157e-01,  3.424385e-01, -3.275854e-01],
+        [ 1.703005e-01, -5.901264e-01,  6.180497e-01, -5.450794e-01],...
+ y: array([[[ 1.035912e-02, -3.909548e-01, -1.151413e-01, -2.322178e-01],
+        [ 4.989392e-01, -7.057157e-01,  3.424385e-01, -3.275854e-01],
+        [ 1.703005e-01, -5.901264e-01,  6.180497e-01, -5.450794e-01],...
+[Worker 0] Completed Task 144
+[Worker 0] Processing Task 150: paddle.cumsum(Tensor([49602204, 46],"int64"), axis=1, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.cumsum(Tensor([49602204, 46],"int64"), axis=1, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_cumsum(_object*, _object*, _object*)
+1   cumsum_ad_func(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor>, bool, bool, bool)
+2   paddle::experimental::cumsum(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor> const&, bool, bool, bool)
+3   long* phi::DeviceContext::Alloc<long>(phi::TensorBase*, unsigned long, bool) const
+4   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+5   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+6   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+9   std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+10  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 17.000000GB memory on GPU 0, 69.610352GB memory has been allocated and available memory is only 9.574524GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
+
+[Worker 0] Completed Task 150
+[Worker 0] Processing Task 153: paddle.cumsum(Tensor([570425345, 4],"int64"), axis=0, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.cumsum(Tensor([570425345, 4],"int64"), axis=0, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_cumsum(_object*, _object*, _object*)
+1   cumsum_ad_func(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor>, bool, bool, bool)
+2   paddle::experimental::cumsum(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor> const&, bool, bool, bool)
+3   long* phi::DeviceContext::Alloc<long>(phi::TensorBase*, unsigned long, bool) const
+4   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+5   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+6   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+9   std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+10  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 17.000000GB memory on GPU 0, 69.610352GB memory has been allocated and available memory is only 9.574524GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
+
+[Worker 0] Completed Task 153
+[Worker 0] Processing Task 157: paddle.cumsum(x=Tensor([1, 1398102, 96, 32],"float16"), axis=2, )
+[accuracy error] paddle.cumsum(x=Tensor([1, 1398102, 96, 32],"float16"), axis=2, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 54736 / 4294969344 (0.00127%)
+Max absolute difference: 0.0625
+Max relative difference: 1386.
+ x: array([[[[-1.8323e-01,  3.8330e-01,  2.5293e-01, ..., -4.9652e-02,
+          -2.6685e-01, -2.4704e-02],
+         [-5.1123e-01,  7.5684e-03, -1.0083e-01, ...,  3.9722e-01,...
+ y: array([[[[-1.8323e-01,  3.8330e-01,  2.5293e-01, ..., -4.9652e-02,
+          -2.6685e-01, -2.4704e-02],
+         [-5.1123e-01,  7.5684e-03, -1.0083e-01, ...,  3.9722e-01,...
+[Worker 0] Completed Task 157
+[Worker 0] Processing Task 162: paddle.cumsum(x=Tensor([715827883, 2, 1, 3],"float16"), axis=3, )
+[Pass] paddle.cumsum(x=Tensor([715827883, 2, 1, 3],"float16"), axis=3, )
+[Worker 0] Completed Task 162
+[Worker 0] Processing Task 167: paddle.diag(x=Tensor([2, 2147483649],"float16"), offset=-1, )
+Warning: The core code of paddle.diag is too complex.
+[Pass] paddle.diag(x=Tensor([2, 2147483649],"float16"), offset=-1, )
+[Worker 0] Completed Task 167
+[Worker 0] Processing Task 170: paddle.diff(Tensor([2, 2147483649],"float16"), axis=1, )
+[Pass] paddle.diff(Tensor([2, 2147483649],"float16"), axis=1, )
+[Worker 0] Completed Task 170
+[Worker 0] Processing Task 173: paddle.diff(x=Tensor([4, 4, 268435457],"float16"), )
+[Pass] paddle.diff(x=Tensor([4, 4, 268435457],"float16"), )
+[Worker 0] Completed Task 173
+[Worker 0] Processing Task 178: paddle.dist(Tensor([2, 1140850690],"float32"), Tensor([2, 1140850690],"float32"), 0, )
+Expected a proper Tensor but got None (or an undefined Tensor in C++) for argument #0 'self'
+[cuda error] paddle.dist(Tensor([2, 1140850690],"float32"), Tensor([2, 1140850690],"float32"), 0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Error on Task 178: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] OOM on Task 178: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 181: paddle.dist(x=Tensor([2, 2147483649],"float16"), y=Tensor([2, 2147483649],"float16"), p=0, )
+Expected a proper Tensor but got None (or an undefined Tensor in C++) for argument #0 'self'
+W0520 15:02:34.373019 13165 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 15:02:34.373988 13165 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.dist(x=Tensor([2, 2147483649],"float16"), y=Tensor([2, 2147483649],"float16"), p=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Error on Task 181: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] OOM on Task 181: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 184: paddle.dist(x=Tensor([4, 1073741825],"float16"), y=Tensor([4, 1073741825],"float16"), p=1, )
+W0520 15:05:04.193902 13317 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 15:05:04.195013 13317 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.dist(x=Tensor([4, 1073741825],"float16"), y=Tensor([4, 1073741825],"float16"), p=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747724711 (unix time) try "date -d @1747724711" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x3405) received by PID 13317 (TID 0x7f66bfd56740) from PID 13317 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 188: paddle.frac(Tensor([10, 20, 11408507],"float32"), )
+W0520 15:06:30.406555 13619 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 15:06:30.410138 13619 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.frac(Tensor([10, 20, 11408507],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747724791 (unix time) try "date -d @1747724791" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x3533) received by PID 13619 (TID 0x7f66bfd56740) from PID 13619 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 190: paddle.frac(Tensor([114085069, 20, 1],"float32"), )
+W0520 15:07:51.590833 13773 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 15:07:51.591830 13773 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.frac(Tensor([114085069, 20, 1],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747724873 (unix time) try "date -d @1747724873" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x35cd) received by PID 13773 (TID 0x7f66bfd56740) from PID 13773 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 196: paddle.isfinite(Tensor([11, 20742740, 10],"int32"), )
+W0520 15:08:57.239843 14225 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 15:08:57.240562 14225 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.isfinite(Tensor([11, 20742740, 10],"int32"), )
+[Worker 0] Completed Task 196
+[Worker 0] Processing Task 199: paddle.isfinite(Tensor([1431655765, 3],"float32"), )
+[Pass] paddle.isfinite(Tensor([1431655765, 3],"float32"), )
+[Worker 0] Completed Task 199
+[Worker 0] Processing Task 206: paddle.isfinite(Tensor([252645135, 17],"float32"), )
+[Pass] paddle.isfinite(Tensor([252645135, 17],"float32"), )
+[Worker 0] Completed Task 206
+[Worker 0] Processing Task 213: paddle.isfinite(Tensor([4, 280, 376, 25, 217],"float32"), )
+[Pass] paddle.isfinite(Tensor([4, 280, 376, 25, 217],"float32"), )
+[Worker 0] Completed Task 213
+[Worker 0] Processing Task 217: paddle.isin(Tensor([285212673, 8],"float32"), Tensor([2, 3],"float32"), False, True, )
+[Pass] paddle.isin(Tensor([285212673, 8],"float32"), Tensor([2, 3],"float32"), False, True, )
+[Worker 0] Completed Task 217
+[Worker 0] Processing Task 221: paddle.isin(Tensor([285212673, 8],"int64"), Tensor([2, 3],"int64"), False, True, )
+[Pass] paddle.isin(Tensor([285212673, 8],"int64"), Tensor([2, 3],"int64"), False, True, )
+[Worker 0] Completed Task 221
+[Worker 0] Processing Task 225: paddle.isinf(Tensor([10, 228170138],"float32"), )
+[Pass] paddle.isinf(Tensor([10, 228170138],"float32"), )
+[Worker 0] Completed Task 225
+[Worker 0] Processing Task 228: paddle.isinf(Tensor([11, 17, 12201612],"int32"), )
+[Pass] paddle.isinf(Tensor([11, 17, 12201612],"int32"), )
+[Worker 0] Completed Task 228
+[Worker 0] Processing Task 232: paddle.isinf(Tensor([134217729, 17],"float32"), )
+[Pass] paddle.isinf(Tensor([134217729, 17],"float32"), )
+[Worker 0] Completed Task 232
+[Worker 0] Processing Task 236: paddle.isinf(Tensor([14, 5093084, 32],"float32"), )
+[Pass] paddle.isinf(Tensor([14, 5093084, 32],"float32"), )
+[Worker 0] Completed Task 236
+[Worker 0] Processing Task 240: paddle.isinf(Tensor([190141782, 12],"float32"), )
+[Pass] paddle.isinf(Tensor([190141782, 12],"float32"), )
+[Worker 0] Completed Task 240
+[Worker 0] Processing Task 244: paddle.isinf(Tensor([2, 3, 71582789, 5],"float64"), )
+[Pass] paddle.isinf(Tensor([2, 3, 71582789, 5],"float64"), )
+[Worker 0] Completed Task 244
+[Worker 0] Processing Task 248: paddle.isinf(Tensor([214748365, 5, 2],"float64"), )
+[Pass] paddle.isinf(Tensor([214748365, 5, 2],"float64"), )
+[Worker 0] Completed Task 248
+[Worker 0] Processing Task 252: paddle.isinf(Tensor([252645135, 17],"float32"), )
+[Pass] paddle.isinf(Tensor([252645135, 17],"float32"), )
+[Worker 0] Completed Task 252
+[Worker 0] Processing Task 259: paddle.isinf(Tensor([8912897, 64, 4],"float32"), )
+[Pass] paddle.isinf(Tensor([8912897, 64, 4],"float32"), )
+[Worker 0] Completed Task 259
+[Worker 0] Processing Task 260: paddle.isnan(Tensor([10186167, 7, 32],"float32"), )
+[Pass] paddle.isnan(Tensor([10186167, 7, 32],"float32"), )
+[Worker 0] Completed Task 260
+[Worker 0] Processing Task 264: paddle.isnan(Tensor([11, 207427399],"float32"), )
+[Pass] paddle.isnan(Tensor([11, 207427399],"float32"), )
+[Worker 0] Completed Task 264
+[Worker 0] Processing Task 266: paddle.isnan(Tensor([114, 18837576],"float64"), )
+[Pass] paddle.isnan(Tensor([114, 18837576],"float64"), )
+[Worker 0] Completed Task 266
+[Worker 0] Processing Task 271: paddle.isnan(Tensor([14, 1646250, 99],"float32"), )
+[Pass] paddle.isnan(Tensor([14, 1646250, 99],"float32"), )
+[Worker 0] Completed Task 271
+[Worker 0] Processing Task 275: paddle.isnan(Tensor([14, 7, 23282668],"float32"), )
+[Pass] paddle.isnan(Tensor([14, 7, 23282668],"float32"), )
+[Worker 0] Completed Task 275
+[Worker 0] Processing Task 279: paddle.isnan(Tensor([16, 268435456],"float32"), )
+[Pass] paddle.isnan(Tensor([16, 268435456],"float32"), )
+[Worker 0] Completed Task 279
+[Worker 0] Processing Task 284: paddle.isnan(Tensor([2, 3, 4, 95070891],"float32"), )
+[Pass] paddle.isnan(Tensor([2, 3, 4, 95070891],"float32"), )
+[Worker 0] Completed Task 284
+[Worker 0] Processing Task 288: paddle.isnan(Tensor([2, 4, 536870912],"float32"), )
+[Pass] paddle.isnan(Tensor([2, 4, 536870912],"float32"), )
+[Worker 0] Completed Task 288
+[Worker 0] Processing Task 293: paddle.isnan(Tensor([2147483649, 1],"float64"), )
+[Pass] paddle.isnan(Tensor([2147483649, 1],"float64"), )
+[Worker 0] Completed Task 293
+[Worker 0] Processing Task 296: paddle.isnan(Tensor([2228225, 64, 16],"float32"), )
+[Pass] paddle.isnan(Tensor([2228225, 64, 16],"float32"), )
+[Worker 0] Completed Task 296
+[Worker 0] Processing Task 300: paddle.isnan(Tensor([268435457, 4, 2],"float64"), )
+[Pass] paddle.isnan(Tensor([268435457, 4, 2],"float64"), )
+[Worker 0] Completed Task 300
+[Worker 0] Processing Task 304: paddle.isnan(Tensor([3, 1431655765],"float32"), )
+[Pass] paddle.isnan(Tensor([3, 1431655765],"float32"), )
+[Worker 0] Completed Task 304
+[Worker 0] Processing Task 308: paddle.isnan(Tensor([3, 4, 178956971],"int64"), )
+[Pass] paddle.isnan(Tensor([3, 4, 178956971],"int64"), )
+[Worker 0] Completed Task 308
+[Worker 0] Processing Task 312: paddle.isnan(Tensor([35651585, 64],"float32"), )
+[Pass] paddle.isnan(Tensor([35651585, 64],"float32"), )
+[Worker 0] Completed Task 312
+[Worker 0] Processing Task 316: paddle.isnan(Tensor([4, 22283, 160, 160],"float32"), )
+[Pass] paddle.isnan(Tensor([4, 22283, 160, 160],"float32"), )
+[Worker 0] Completed Task 316
+[Worker 0] Processing Task 320: paddle.isnan(Tensor([4, 64, 55706, 160],"float32"), )
+[Pass] paddle.isnan(Tensor([4, 64, 55706, 160],"float32"), )
+[Worker 0] Completed Task 320
+[Worker 0] Processing Task 324: paddle.isnan(Tensor([4294967295],"int32"), )
+[Pass] paddle.isnan(Tensor([4294967295],"int32"), )
+[Worker 0] Completed Task 324
+[Worker 0] Processing Task 328: paddle.isnan(Tensor([536870912, 4, 2],"int32"), )
+[Pass] paddle.isnan(Tensor([536870912, 4, 2],"int32"), )
+[Worker 0] Completed Task 328
+[Worker 0] Processing Task 333: paddle.isneginf(Tensor([11, 17, 12201612],"int32"), )
+[Pass] paddle.isneginf(Tensor([11, 17, 12201612],"int32"), )
+[Worker 0] Completed Task 333
+[Worker 0] Processing Task 337: paddle.isneginf(Tensor([13421773, 17, 10],"int32"), )
+[Pass] paddle.isneginf(Tensor([13421773, 17, 10],"int32"), )
+[Worker 0] Completed Task 337
+[Worker 0] Processing Task 341: paddle.isposinf(Tensor([11, 20742740, 10],"int32"), )
+[Pass] paddle.isposinf(Tensor([11, 20742740, 10],"int32"), )
+[Worker 0] Completed Task 341
+[Worker 0] Processing Task 344: paddle.isposinf(Tensor([4294967295],"uint8"), )
+[Pass] paddle.isposinf(Tensor([4294967295],"uint8"), )
+[Worker 0] Completed Task 344
+[Worker 0] Processing Task 351: paddle.linalg.lstsq(Tensor([10, 228170138],"float32"), Tensor([10, 8],"float32"), rcond=None, driver="gels", )
+[torch error] paddle.linalg.lstsq(Tensor([10, 228170138],"float32"), Tensor([10, 8],"float32"), rcond=None, driver="gels", )
+Traceback (most recent call last):
+  File "/luozeyu01_api_test/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 104, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Error on Task 351: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] OOM on Task 351: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 352: paddle.linalg.lstsq(Tensor([253522376, 9],"float32"), Tensor([253522376, 5],"float32"), rcond=1e-15, driver="gels", )
+[torch error] paddle.linalg.lstsq(Tensor([253522376, 9],"float32"), Tensor([253522376, 5],"float32"), rcond=1e-15, driver="gels", )
+Traceback (most recent call last):
+  File "/luozeyu01_api_test/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 104, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Error on Task 352: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] OOM on Task 352: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 355: paddle.linalg.matrix_rank(Tensor([114085069, 4, 5],"float32"), tol=0.1, )
+[torch error] paddle.linalg.matrix_rank(Tensor([114085069, 4, 5],"float32"), tol=0.1, )
+Traceback (most recent call last):
+  File "/luozeyu01_api_test/PaddleAPITest/tester/accuracy.py", line 84, in test
+    exec(code.core_compiled, exec_globals, exec_locals)
+  File "<string>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/_device.py", line 104, in __torch_function__
+    return func(*args, **kwargs)
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Error on Task 355: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] OOM on Task 355: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 359: paddle.linalg.norm(Tensor([5, 91268056, 5],"float32"), p="fro", axis=list[0,1,], keepdim=True, )
+W0520 15:58:35.589253 15050 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 15:58:35.590246 15050 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.linalg.norm(Tensor([5, 91268056, 5],"float32"), p="fro", axis=list[0,1,], keepdim=True, )
+[Worker 0] Completed Task 359
+[Worker 0] Processing Task 363: paddle.linalg.solve(Tensor([10, 10],"float32"), Tensor([10, 228170138],"float32"), )
+[paddle error] paddle.linalg.solve(Tensor([10, 10],"float32"), Tensor([10, 228170138],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/backends/gpu/cuda/cuda_info.cc:283)
+
+[Worker 0] Error on Task 363: (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/backends/gpu/cuda/cuda_info.cc:283)
+
+[Worker 0] OOM on Task 363: (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/backends/gpu/cuda/cuda_info.cc:283)
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 367: paddle.mean(Tensor([1, 1, 64, 67108864],"float16"), )
+W0520 16:02:07.794709 15282 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 16:02:07.795857 15282 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.mean(Tensor([1, 1, 64, 67108864],"float16"), )
+[Worker 0] Completed Task 367
+[Worker 0] Processing Task 371: paddle.mean(Tensor([1, 2, 2, 2, 2, 268435456],"float16"), )
+[Pass] paddle.mean(Tensor([1, 2, 2, 2, 2, 268435456],"float16"), )
+[Worker 0] Completed Task 371
+[Worker 0] Processing Task 375: paddle.mean(Tensor([1, 3, 1, 1431655765, 1],"float16"), )
+[Pass] paddle.mean(Tensor([1, 3, 1, 1431655765, 1],"float16"), )
+[Worker 0] Completed Task 375
+[Worker 0] Processing Task 379: paddle.mean(Tensor([1, 4, 33554432, 32],"float16"), )
+[Pass] paddle.mean(Tensor([1, 4, 33554432, 32],"float16"), )
+[Worker 0] Completed Task 379
+[Worker 0] Processing Task 383: paddle.mean(Tensor([1, 4294967295],"float16"), )
+[Pass] paddle.mean(Tensor([1, 4294967295],"float16"), )
+[Worker 0] Completed Task 383
+[Worker 0] Processing Task 387: paddle.mean(Tensor([1073741824, 4],"float16"), )
+[Pass] paddle.mean(Tensor([1073741824, 4],"float16"), )
+[Worker 0] Completed Task 387
+[Worker 0] Processing Task 391: paddle.mean(Tensor([1431655765, 3, 1, 1, 1],"float16"), )
+[Pass] paddle.mean(Tensor([1431655765, 3, 1, 1, 1],"float16"), )
+[Worker 0] Completed Task 391
+[Worker 0] Processing Task 395: paddle.mean(Tensor([16777216, 1, 8, 32],"float16"), )
+[Pass] paddle.mean(Tensor([16777216, 1, 8, 32],"float16"), )
+[Worker 0] Completed Task 395
+[Worker 0] Processing Task 399: paddle.mean(Tensor([2, 1, 1073741824, 2],"float16"), )
+[Pass] paddle.mean(Tensor([2, 1, 1073741824, 2],"float16"), )
+[Worker 0] Completed Task 399
+[Worker 0] Processing Task 403: paddle.mean(Tensor([2, 1073741824, 1, 2],"float16"), )
+[Pass] paddle.mean(Tensor([2, 1073741824, 1, 2],"float16"), )
+[Worker 0] Completed Task 403
+[Worker 0] Processing Task 407: paddle.mean(Tensor([2, 2147483648],"float16"), )
+[Pass] paddle.mean(Tensor([2, 2147483648],"float16"), )
+[Worker 0] Completed Task 407
+[Worker 0] Processing Task 411: paddle.mean(Tensor([2097152, 1, 64, 32],"float16"), )
+[Pass] paddle.mean(Tensor([2097152, 1, 64, 32],"float16"), )
+[Worker 0] Completed Task 411
+[Worker 0] Processing Task 415: paddle.mean(Tensor([268435456, 4, 2, 2],"float16"), )
+[Pass] paddle.mean(Tensor([268435456, 4, 2, 2],"float16"), )
+[Worker 0] Completed Task 415
+[Worker 0] Processing Task 419: paddle.mean(Tensor([3, 1431655765, 1],"float16"), )
+[Pass] paddle.mean(Tensor([3, 1431655765, 1],"float16"), )
+[Worker 0] Completed Task 419
+[Worker 0] Processing Task 423: paddle.mean(Tensor([4, 1, 1, 1073741824],"float16"), )
+[Pass] paddle.mean(Tensor([4, 1, 1, 1073741824],"float16"), )
+[Worker 0] Completed Task 423
+[Worker 0] Processing Task 427: paddle.mean(Tensor([4, 1, 2, 2, 268435456],"float16"), )
+[Pass] paddle.mean(Tensor([4, 1, 2, 2, 268435456],"float16"), )
+[Worker 0] Completed Task 427
+[Worker 0] Processing Task 431: paddle.mean(Tensor([4, 1, 536870912, 2],"float16"), )
+[Pass] paddle.mean(Tensor([4, 1, 536870912, 2],"float16"), )
+[Worker 0] Completed Task 431
+[Worker 0] Processing Task 435: paddle.mean(Tensor([4, 134217728, 2, 2, 2],"float16"), )
+[Pass] paddle.mean(Tensor([4, 134217728, 2, 2, 2],"float16"), )
+[Worker 0] Completed Task 435
+[Worker 0] Processing Task 439: paddle.mean(Tensor([4, 4, 2, 134217728],"float16"), )
+[Pass] paddle.mean(Tensor([4, 4, 2, 134217728],"float16"), )
+[Worker 0] Completed Task 439
+[Worker 0] Processing Task 443: paddle.mean(Tensor([4294967295, 1, 1, 1],"float16"), )
+[Pass] paddle.mean(Tensor([4294967295, 1, 1, 1],"float16"), )
+[Worker 0] Completed Task 443
+[Worker 0] Processing Task 447: paddle.mean(Tensor([5, 858993459],"float16"), )
+[Pass] paddle.mean(Tensor([5, 858993459],"float16"), )
+[Worker 0] Completed Task 447
+[Worker 0] Processing Task 451: paddle.mean(Tensor([536870912, 1, 2, 4],"float16"), )
+[Pass] paddle.mean(Tensor([536870912, 1, 2, 4],"float16"), )
+[Worker 0] Completed Task 451
+[Worker 0] Processing Task 455: paddle.mean(Tensor([67108864, 4, 4, 4],"float16"), )
+[Pass] paddle.mean(Tensor([67108864, 4, 4, 4],"float16"), )
+[Worker 0] Completed Task 455
+[Worker 0] Processing Task 459: paddle.mean(x=Tensor([2, 2147483648],"float16"), )
+[Pass] paddle.mean(x=Tensor([2, 2147483648],"float16"), )
+[Worker 0] Completed Task 459
+[Worker 0] Processing Task 463: paddle.nansum(Tensor([1431655765, 3],"float32"), axis=list[0,], keepdim=True, name=None, )
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 467: paddle.nansum(Tensor([3, 1431655765],"float32"), axis=None, keepdim=False, name=None, )
+W0520 19:48:33.117259 15434 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 19:48:33.118258 15434 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 471: paddle.nansum(Tensor([858993459, 5],"float32"), axis=None, keepdim=False, name=None, )
+W0520 20:18:48.090487 15738 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 20:18:48.091545 15738 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 475: paddle.nn.functional.adaptive_max_pool1d(Tensor([2, 67108864, 32],"float32"), output_size=16, )
+(External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Error on Task 475: (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] OOM on Task 475: (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 478: paddle.nn.functional.adaptive_max_pool2d(Tensor([29217465, 3, 7, 7],"float32"), output_size=list[None,3,], return_mask=False, name=None, )
+(External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Error on Task 478: (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] OOM on Task 478: (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 482: paddle.nn.functional.grid_sample(Tensor([56, 3, 6790778, 2],"float32"), Tensor([56, 2, 2, 2],"float32"), mode="bilinear", padding_mode="border", align_corners=True, )
+W0520 20:51:33.577085 16570 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 20:51:33.578107 16570 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.grid_sample(Tensor([56, 3, 6790778, 2],"float32"), Tensor([56, 2, 2, 2],"float32"), mode="bilinear", padding_mode="border", align_corners=True, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747745494 (unix time) try "date -d @1747745494" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x40ba) received by PID 16570 (TID 0x7f66bfd56740) from PID 16570 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 483: paddle.nn.functional.grid_sample(Tensor([56, 3, 6790778, 2],"float32"), Tensor([56, 2, 6790778, 2],"float32"), mode="bilinear", padding_mode="border", align_corners=True, )
+W0520 20:53:30.694623 16648 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 20:53:30.695631 16648 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.grid_sample(Tensor([56, 3, 6790778, 2],"float32"), Tensor([56, 2, 6790778, 2],"float32"), mode="bilinear", padding_mode="border", align_corners=True, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747745670 (unix time) try "date -d @1747745670" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4108) received by PID 16648 (TID 0x7f66bfd56740) from PID 16648 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 488: paddle.nn.functional.grid_sample(Tensor([5821, 4, 280, 350],"float32"), Tensor([5821, 280, 350, 2],"float32"), mode="nearest", padding_mode="zeros", align_corners=False, )
+W0520 20:56:36.265139 17029 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 20:56:36.266153 17029 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.grid_sample(Tensor([5821, 4, 280, 350],"float32"), Tensor([5821, 280, 350, 2],"float32"), mode="nearest", padding_mode="zeros", align_corners=False, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747745854 (unix time) try "date -d @1747745854" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4285) received by PID 17029 (TID 0x7f66bfd56740) from PID 17029 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 493: paddle.nn.functional.grid_sample(Tensor([73661, 1, 176, 176],"float32"), Tensor([73661, 1, 12544, 2],"float32"), align_corners=False, )
+W0520 20:59:41.696810 17406 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 20:59:41.697935 17406 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.grid_sample(Tensor([73661, 1, 176, 176],"float32"), Tensor([73661, 1, 12544, 2],"float32"), align_corners=False, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747746011 (unix time) try "date -d @1747746011" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x43fe) received by PID 17406 (TID 0x7f66bfd56740) from PID 17406 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 495: paddle.nn.functional.grid_sample(x=Tensor([16, 64, 80, 94, 311],"float32"), grid=Tensor([16, 280, 376, 25, 3],"float32"), mode="bilinear", padding_mode="zeros", align_corners=False, )
+W0520 21:01:45.960501 17560 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:01:45.961506 17560 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.grid_sample(x=Tensor([16, 64, 80, 94, 311],"float32"), grid=Tensor([16, 280, 376, 25, 3],"float32"), mode="bilinear", padding_mode="zeros", align_corners=False, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747746107 (unix time) try "date -d @1747746107" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4498) received by PID 17560 (TID 0x7f66bfd56740) from PID 17560 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 497: paddle.nn.functional.layer_norm(Tensor([8, 1114113, 256],"float32"), list[256,], weight=Tensor([256],"float32"), bias=Tensor([256],"float32"), epsilon=1e-05, )
+W0520 21:03:04.440186 17714 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:03:04.441249 17714 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.layer_norm(Tensor([8, 1114113, 256],"float32"), list[256,], weight=Tensor([256],"float32"), bias=Tensor([256],"float32"), epsilon=1e-05, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747746241 (unix time) try "date -d @1747746241" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4532) received by PID 17714 (TID 0x7f66bfd56740) from PID 17714 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 501: paddle.nn.functional.normalize(Tensor([1, 256, 16, 557057],"float32"), axis=1, )
+W0520 21:05:49.288028 18018 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:05:49.289004 18018 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([1, 256, 16, 557057],"float32"), axis=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747746402 (unix time) try "date -d @1747746402" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4662) received by PID 18018 (TID 0x7f66bfd56740) from PID 18018 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 505: paddle.nn.functional.normalize(Tensor([1, 64, 64, 557057],"float32"), axis=1, )
+W0520 21:08:32.010953 18322 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:08:32.012032 18322 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([1, 64, 64, 557057],"float32"), axis=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747746565 (unix time) try "date -d @1747746565" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4792) received by PID 18322 (TID 0x7f66bfd56740) from PID 18322 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 509: paddle.nn.functional.normalize(Tensor([10, 228170138],"float32"), p=1.5, )
+W0520 21:11:19.714681 18626 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:11:19.715695 18626 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([10, 228170138],"float32"), p=1.5, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747746856 (unix time) try "date -d @1747746856" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x48c2) received by PID 18626 (TID 0x7f66bfd56740) from PID 18626 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 515: paddle.nn.functional.normalize(Tensor([2, 8, 14260634, 10],"float32"), axis=1, )
+W0520 21:16:05.064944 19082 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:16:05.065929 19082 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([2, 8, 14260634, 10],"float32"), axis=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747747021 (unix time) try "date -d @1747747021" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4a8a) received by PID 19082 (TID 0x7f66bfd56740) from PID 19082 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 518: paddle.nn.functional.normalize(Tensor([228170138, 10],"float32"), )
+W0520 21:18:29.191992 19307 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:18:29.193063 19307 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([228170138, 10],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747747179 (unix time) try "date -d @1747747179" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4b6b) received by PID 19307 (TID 0x7f66bfd56740) from PID 19307 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 522: paddle.nn.functional.normalize(Tensor([2970966, 768],"float32"), axis=-1, )
+W0520 21:21:38.584316 19613 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:21:38.585641 19613 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([2970966, 768],"float32"), axis=-1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747747364 (unix time) try "date -d @1747747364" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4c9d) received by PID 19613 (TID 0x7f66bfd56740) from PID 19613 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 526: paddle.nn.functional.normalize(Tensor([35651585, 64],"float32"), axis=1, )
+W0520 21:24:37.804507 19916 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:24:37.805541 19916 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([35651585, 64],"float32"), axis=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747747531 (unix time) try "date -d @1747747531" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4dcc) received by PID 19916 (TID 0x7f66bfd56740) from PID 19916 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 529: paddle.nn.functional.normalize(Tensor([4074467, 8, 7, 10],"float32"), axis=1, )
+W0520 21:27:25.475993 20145 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:27:25.477116 20145 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([4074467, 8, 7, 10],"float32"), axis=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747747703 (unix time) try "date -d @1747747703" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4eb1) received by PID 20145 (TID 0x7f66bfd56740) from PID 20145 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 533: paddle.nn.functional.normalize(Tensor([456340276, 5],"float32"), axis=0, )
+W0520 21:30:08.952113 20448 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:30:08.953083 20448 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([456340276, 5],"float32"), axis=0, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747748082 (unix time) try "date -d @1747748082" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x4fe0) received by PID 20448 (TID 0x7f66bfd56740) from PID 20448 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 537: paddle.nn.functional.normalize(Tensor([80, 28521268],"float32"), axis=-1, )
+W0520 21:36:27.170224 20754 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:36:27.171198 20754 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(Tensor([80, 28521268],"float32"), axis=-1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747748251 (unix time) try "date -d @1747748251" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5112) received by PID 20754 (TID 0x7f66bfd56740) from PID 20754 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 540: paddle.nn.functional.normalize(x=Tensor([1073741825, 4],"float16"), )
+W0520 21:40:47.237584 20978 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:40:47.238829 20978 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(x=Tensor([1073741825, 4],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747748861 (unix time) try "date -d @1747748861" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x51f2) received by PID 20978 (TID 0x7f66bfd56740) from PID 20978 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 544: paddle.nn.functional.normalize(x=Tensor([20452226, 5, 6, 7],"float16"), p=1, )
+W0520 21:50:28.832134 21284 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 21:50:28.833165 21284 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(x=Tensor([20452226, 5, 6, 7],"float16"), p=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747749450 (unix time) try "date -d @1747749450" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5324) received by PID 21284 (TID 0x7f66bfd56740) from PID 21284 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 548: paddle.nn.functional.normalize(x=Tensor([4, 25565282, 6, 7],"float16"), p=1, )
+W0520 22:00:07.217288 21590 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:00:07.218439 21590 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(x=Tensor([4, 25565282, 6, 7],"float16"), p=1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747750058 (unix time) try "date -d @1747750058" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5456) received by PID 21590 (TID 0x7f66bfd56740) from PID 21590 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 552: paddle.nn.functional.normalize(x=Tensor([4, 5, 30678338, 7],"float16"), p=4, axis=3, )
+W0520 22:10:39.980832 21892 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:10:39.984304 21892 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.normalize(x=Tensor([4, 5, 30678338, 7],"float16"), p=4, axis=3, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747750663 (unix time) try "date -d @1747750663" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5584) received by PID 21892 (TID 0x7f66bfd56740) from PID 21892 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 556: paddle.nn.functional.pairwise_distance(Tensor([100, 22817014],"float32"), Tensor([100, 22817014],"float32"), -1, 1e-06, False, None, )
+W0520 22:19:37.932796 22197 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:19:37.933737 22197 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([100, 22817014],"float32"), Tensor([100, 22817014],"float32"), -1, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747750793 (unix time) try "date -d @1747750793" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x56b5) received by PID 22197 (TID 0x7f66bfd56740) from PID 22197 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 559: paddle.nn.functional.pairwise_distance(Tensor([100, 22817014],"float32"), Tensor([100, 22817014],"float32"), 2, 1e-06, True, None, )
+W0520 22:21:38.738483 22422 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:21:38.739451 22422 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[accuracy error] paddle.nn.functional.pairwise_distance(Tensor([100, 22817014],"float32"), Tensor([100, 22817014],"float32"), 2, 1e-06, True, None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 100 / 100 (100%)
+Max absolute difference: 42.552612
+Max relative difference: 0.02181693
+ x: array([[1907.6168],
+       [1907.6055],
+       [1907.7177],...
+ y: array([[1950.0526],
+       [1949.9965],
+       [1950.1245],...
+[Worker 0] Completed Task 559
+[Worker 0] Processing Task 562: paddle.nn.functional.pairwise_distance(Tensor([100, 22817014],"float32"), Tensor([100, 22817014],"float32"), -math.inf, 1e-06, False, None, )
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([100, 22817014],"float32"), Tensor([100, 22817014],"float32"), -math.inf, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747750991 (unix time) try "date -d @1747750991" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5796) received by PID 22422 (TID 0x7f66bfd56740) from PID 22422 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 565: paddle.nn.functional.pairwise_distance(Tensor([100, 42949673],"float16"), Tensor([100, 42949673],"float16"), -1, 1e-06, False, None, )
+W0520 22:25:47.819955 22654 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:25:47.821058 22654 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([100, 42949673],"float16"), Tensor([100, 42949673],"float16"), -1, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747751184 (unix time) try "date -d @1747751184" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x587e) received by PID 22654 (TID 0x7f66bfd56740) from PID 22654 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 571: paddle.nn.functional.pairwise_distance(Tensor([100, 42949673],"float16"), Tensor([100, 42949673],"float16"), math.inf, 1e-06, True, None, )
+W0520 22:29:25.160046 23030 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:29:25.161087 23030 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([100, 42949673],"float16"), Tensor([100, 42949673],"float16"), math.inf, 1e-06, True, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747751374 (unix time) try "date -d @1747751374" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x59f6) received by PID 23030 (TID 0x7f66bfd56740) from PID 23030 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 573: paddle.nn.functional.pairwise_distance(Tensor([1431655766, 3],"float16"), Tensor([1431655766, 3],"float16"), 1, 1e-06, False, None, )
+W0520 22:32:16.199016 23110 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:32:16.199976 23110 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([1431655766, 3],"float16"), Tensor([1431655766, 3],"float16"), 1, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747751674 (unix time) try "date -d @1747751674" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5a46) received by PID 23110 (TID 0x7f66bfd56740) from PID 23110 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 581: paddle.nn.functional.pairwise_distance(Tensor([22817014, 100],"float32"), Tensor([22817014, 100],"float32"), 1, 1e-06, True, None, )
+W0520 22:36:30.814826 23640 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:36:30.815943 23640 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([22817014, 100],"float32"), Tensor([22817014, 100],"float32"), 1, 1e-06, True, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747751795 (unix time) try "date -d @1747751795" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5c58) received by PID 23640 (TID 0x7f66bfd56740) from PID 23640 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 584: paddle.nn.functional.pairwise_distance(Tensor([22817014, 100],"float32"), Tensor([22817014, 100],"float32"), 2, 1e-06, True, None, )
+W0520 22:37:51.164238 23792 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:37:51.165266 23792 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([22817014, 100],"float32"), Tensor([22817014, 100],"float32"), 2, 1e-06, True, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747751874 (unix time) try "date -d @1747751874" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5cf0) received by PID 23792 (TID 0x7f66bfd56740) from PID 23792 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 590: paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), -1, 1e-06, False, None, )
+W0520 22:40:47.834429 24244 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:40:47.835395 24244 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), -1, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747752061 (unix time) try "date -d @1747752061" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5eb4) received by PID 24244 (TID 0x7f66bfd56740) from PID 24244 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 593: paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), 2, 1e-06, False, None, )
+W0520 22:43:41.036943 24474 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:43:41.037935 24474 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), 2, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747752231 (unix time) try "date -d @1747752231" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x5f9a) received by PID 24474 (TID 0x7f66bfd56740) from PID 24474 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 597: paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), math.inf, 1e-06, True, None, )
+W0520 22:46:13.651154 24778 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:46:13.652168 24778 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), math.inf, 1e-06, True, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747752383 (unix time) try "date -d @1747752383" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x60ca) received by PID 24778 (TID 0x7f66bfd56740) from PID 24778 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 601: paddle.nn.functional.pairwise_distance(Tensor([858993460, 5],"float16"), Tensor([858993460, 5],"float16"), 2, 1e-06, False, None, )
+W0520 22:49:37.121935 25086 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:49:37.122907 25086 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.nn.functional.pairwise_distance(Tensor([858993460, 5],"float16"), Tensor([858993460, 5],"float16"), 2, 1e-06, False, None, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747752662 (unix time) try "date -d @1747752662" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x61fe) received by PID 25086 (TID 0x7f66bfd56740) from PID 25086 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 611: paddle.std(Tensor([1, 3, 143165577, 10],"float16"), list[1,2,], True, False, )
+W0520 22:52:54.177922 25390 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 22:52:54.179214 25390 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+W0520 22:52:54.222327 25390 dygraph_functions.cc:85067] got different data type, run type promotion automatically, this may cause data type been changed.
+W0520 22:52:54.222541 25390 dygraph_functions.cc:87101] got different data type, run type promotion automatically, this may cause data type been changed.
+W0520 22:52:54.225011 25390 dygraph_functions.cc:82416] got different data type, run type promotion automatically, this may cause data type been changed.
+[Pass] paddle.std(Tensor([1, 3, 143165577, 10],"float16"), list[1,2,], True, False, )
+[Worker 0] Completed Task 611
+[Worker 0] Processing Task 615: paddle.std(Tensor([35791395, 3, 4, 10],"float16"), list[1,2,], True, False, )
+[Pass] paddle.std(Tensor([35791395, 3, 4, 10],"float16"), list[1,2,], True, False, )
+[Worker 0] Completed Task 615
+[Worker 0] Processing Task 618: paddle.std(Tensor([35791395, 3, 4, 10],"float16"), tuple(1,3,), True, False, )
+[Pass] paddle.std(Tensor([35791395, 3, 4, 10],"float16"), tuple(1,3,), True, False, )
+[Worker 0] Completed Task 618
+[Worker 0] Processing Task 622: paddle.std(x=Tensor([3, 3, 477218589],"float16"), axis=tuple(0,1,), )
+[Pass] paddle.std(x=Tensor([3, 3, 477218589],"float16"), axis=tuple(0,1,), )
+[Worker 0] Completed Task 622
+[Worker 0] Processing Task 628: paddle.std(x=Tensor([3, 477218589, 3],"float16"), axis=tuple(0,1,), keepdim=True, )
+[Pass] paddle.std(x=Tensor([3, 477218589, 3],"float16"), axis=tuple(0,1,), keepdim=True, )
+[Worker 0] Completed Task 628
+[Worker 0] Processing Task 632: paddle.std(x=Tensor([477218589, 3, 3],"float16"), axis=tuple(0,1,), )
+[Pass] paddle.std(x=Tensor([477218589, 3, 3],"float16"), axis=tuple(0,1,), )
+[Worker 0] Completed Task 632
+[Worker 0] Processing Task 639: paddle.sum(Tensor([2, 2147483649],"float16"), None, keepdim=False, name=None, )
+[Pass] paddle.sum(Tensor([2, 2147483649],"float16"), None, keepdim=False, name=None, )
+[Worker 0] Completed Task 639
+[Worker 0] Processing Task 643: paddle.take_along_axis(Tensor([52, 4, 7, 14],"float32"), axis=-1, indices=Tensor([52, 4, 7, 1567103],"int64"), )
+One of the differentiated Tensors does not require grad
+[Pass] paddle.take_along_axis(Tensor([52, 4, 7, 14],"float32"), axis=-1, indices=Tensor([52, 4, 7, 1567103],"int64"), )
+[Worker 0] Completed Task 643
+[Worker 0] Processing Task 647: paddle.Tensor.amax(Tensor([3, 2, 95070891, 4],"float32"), axis=2, keepdim=True, )
+[Pass] paddle.Tensor.amax(Tensor([3, 2, 95070891, 4],"float32"), axis=2, keepdim=True, )
+[Worker 0] Completed Task 647
+[Worker 0] Processing Task 650: paddle.Tensor.amax(Tensor([3, 38028357, 5, 4],"float32"), axis=2, keepdim=True, )
+[Pass] paddle.Tensor.amax(Tensor([3, 38028357, 5, 4],"float32"), axis=2, keepdim=True, )
+[Worker 0] Completed Task 650
+[Worker 0] Processing Task 655: paddle.Tensor.amin(Tensor([3, 2, 4, 95070891],"float32"), axis=-1, keepdim=True, )
+[Pass] paddle.Tensor.amin(Tensor([3, 2, 4, 95070891],"float32"), axis=-1, keepdim=True, )
+[Worker 0] Completed Task 655
+[Worker 0] Processing Task 658: paddle.Tensor.amin(Tensor([3, 2, 95070891, 4],"float32"), axis=tuple(1,2,), keepdim=True, )
+[Pass] paddle.Tensor.amin(Tensor([3, 2, 95070891, 4],"float32"), axis=tuple(1,2,), keepdim=True, )
+[Worker 0] Completed Task 658
+[Worker 0] Processing Task 662: paddle.Tensor.amin(Tensor([57042535, 2, 4, 5],"float32"), axis=-1, keepdim=True, )
+[Pass] paddle.Tensor.amin(Tensor([57042535, 2, 4, 5],"float32"), axis=-1, keepdim=True, )
+[Worker 0] Completed Task 662
+[Worker 0] Processing Task 666: paddle.Tensor.argmax(Tensor([1, 2281701379],"int64"), axis=-1, )
+[Pass] paddle.Tensor.argmax(Tensor([1, 2281701379],"int64"), axis=-1, )
+[Worker 0] Completed Task 666
+[Worker 0] Processing Task 669: paddle.Tensor.argmax(Tensor([67908, 1, 33600],"float32"), axis=-2, )
+[cuda error] paddle.Tensor.argmax(Tensor([67908, 1, 33600],"float32"), axis=-2, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747757475 (unix time) try "date -d @1747757475" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x632e) received by PID 25390 (TID 0x7f66bfd56740) from PID 25390 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 672: paddle.Tensor.argmax(Tensor([83837, 1, 27216],"float32"), axis=-2, )
+W0521 00:12:12.735508 25615 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 00:12:12.736325 25615 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.Tensor.argmax(Tensor([83837, 1, 27216],"float32"), axis=-2, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747757534 (unix time) try "date -d @1747757534" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x640f) received by PID 25615 (TID 0x7f66bfd56740) from PID 25615 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 676: paddle.Tensor.cumsum(Tensor([1, 11408507, 200],"float32"), 2, )
+W0521 00:13:37.423731 25914 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 00:13:37.424713 25914 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[Pass] paddle.Tensor.cumsum(Tensor([1, 11408507, 200],"float32"), 2, )
+[Worker 0] Completed Task 676
+[Worker 0] Processing Task 681: paddle.Tensor.cumsum(Tensor([1, 15845149, 144],"float32"), 2, )
+[Pass] paddle.Tensor.cumsum(Tensor([1, 15845149, 144],"float32"), 2, )
+[Worker 0] Completed Task 681
+[Worker 0] Processing Task 685: paddle.Tensor.cumsum(Tensor([1, 192, 11883862],"float32"), 2, )
+[accuracy error] paddle.Tensor.cumsum(Tensor([1, 192, 11883862],"float32"), 2, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2315 / 2281701504 (0.000101%)
+Max absolute difference: 0.04858398
+Max relative difference: 2268.336
+ x: array([[[-6.583440e-02, -5.141679e-01, -7.833129e-01, ...,
+         -2.417896e+02, -2.421922e+02, -2.421546e+02],
+        [-3.091795e-02,  1.077436e-01,  2.913323e-01, ...,...
+ y: array([[[-6.583440e-02, -5.141679e-01, -7.833129e-01, ...,
+         -2.417967e+02, -2.421993e+02, -2.421617e+02],
+        [-3.091795e-02,  1.077436e-01,  2.913323e-01, ...,...
+[Worker 0] Completed Task 685
+[Worker 0] Processing Task 688: paddle.Tensor.cumsum(Tensor([1, 285212673, 8],"float32"), 1, )
+[accuracy error] paddle.Tensor.cumsum(Tensor([1, 285212673, 8],"float32"), 1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 10329319 / 2281701384 (0.453%)
+Max absolute difference: 6.8896484
+Max relative difference: 737079.4
+ x: array([[[-3.334616e-01, -2.874986e-01, -1.893375e-01, ...,
+         -1.500977e-01, -1.046325e-01, -1.821327e-01],
+        [-2.890608e-01, -2.256431e-01,  2.395827e-01, ...,...
+ y: array([[[-3.334616e-01, -2.874986e-01, -1.893375e-01, ...,
+         -1.500977e-01, -1.046325e-01, -1.821327e-01],
+        [-2.890608e-01, -2.256431e-01,  2.395827e-01, ...,...
+[Worker 0] Completed Task 688
+[Worker 0] Processing Task 693: paddle.Tensor.cumsum(Tensor([1140850690, 2],"float32"), axis=-1, )
+[Pass] paddle.Tensor.cumsum(Tensor([1140850690, 2],"float32"), axis=-1, )
+[Worker 0] Completed Task 693
+[Worker 0] Processing Task 697: paddle.Tensor.cumsum(Tensor([2228225, 1024],"int32"), axis=-1, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[Pass] paddle.Tensor.cumsum(Tensor([2228225, 1024],"int32"), axis=-1, )
+[Worker 0] Completed Task 697
+[Worker 0] Processing Task 702: paddle.Tensor.cumsum(Tensor([28521268, 10, 8],"float32"), 2, )
+[Pass] paddle.Tensor.cumsum(Tensor([28521268, 10, 8],"float32"), 2, )
+[Worker 0] Completed Task 702
+[Worker 0] Processing Task 707: paddle.Tensor.cumsum(Tensor([3, 4, 190141782],"int64"), axis=1, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.Tensor.cumsum(Tensor([3, 4, 190141782],"int64"), axis=1, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_cumsum(_object*, _object*, _object*)
+1   cumsum_ad_func(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor>, bool, bool, bool)
+2   paddle::experimental::cumsum(paddle::Tensor const&, paddle::experimental::ScalarBase<paddle::Tensor> const&, bool, bool, bool)
+3   long* phi::DeviceContext::Alloc<long>(phi::TensorBase*, unsigned long, bool) const
+4   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+5   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+6   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+7   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+9   std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+10  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 17.000000GB memory on GPU 0, 69.610352GB memory has been allocated and available memory is only 9.574524GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
+
+[Worker 0] Completed Task 707
+[Worker 0] Processing Task 711: paddle.Tensor.cumsum(Tensor([5070448, 18, 25],"float32"), 2, )
+[Pass] paddle.Tensor.cumsum(Tensor([5070448, 18, 25],"float32"), 2, )
+[Worker 0] Completed Task 711
+[Worker 0] Processing Task 716: paddle.Tensor.cumsum(Tensor([79226, 144, 200],"float32"), 2, )
+[Pass] paddle.Tensor.cumsum(Tensor([79226, 144, 200],"float32"), 2, )
+[Worker 0] Completed Task 716
+[Worker 0] Processing Task 720: paddle.Tensor.diff(x=Tensor([4, 4, 268435457],"float16"), )
+[Pass] paddle.Tensor.diff(x=Tensor([4, 4, 268435457],"float16"), )
+[Worker 0] Completed Task 720
+[Worker 0] Processing Task 725: paddle.Tensor.repeat_interleave(Tensor([2281701379, 1],"int64"), 1, axis=0, )
+element 0 of tensors does not require grad and does not have a grad_fn
+[paddle error] paddle.Tensor.repeat_interleave(Tensor([2281701379, 1],"int64"), 1, axis=0, ) 
+ 
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_repeat_interleave(_object*, _object*, _object*)
+1   repeat_interleave_ad_func(paddle::Tensor const&, int, int)
+2   paddle::experimental::repeat_interleave(paddle::Tensor const&, int, int)
+3   void phi::RepeatInterleaveKernel<long, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, int, int, phi::DenseTensor*)
+4   long* phi::DeviceContext::Alloc<long>(phi::TensorBase*, unsigned long, bool) const
+5   phi::DenseTensor::AllocateFrom(phi::Allocator*, phi::DataType, unsigned long, bool)
+6   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+7   paddle::memory::allocation::StatAllocator::AllocateImpl(unsigned long)
+8   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+9   paddle::memory::allocation::Allocator::Allocate(unsigned long)
+10  std::string phi::enforce::GetCompleteTraceBackString<std::string >(std::string&&, char const*, int)
+11  common::enforce::GetCurrentTraceBackString[abi:cxx11](bool)
+
+----------------------
+Error Message Summary:
+----------------------
+ResourceExhaustedError: 
+
+Out of memory error on GPU 0. Cannot allocate 17.000000GB memory on GPU 0, 78.112305GB memory has been allocated and available memory is only 1.072571GB.
+
+Please check whether there is any other process using GPU 0.
+1. If yes, please stop them, or start PaddlePaddle on another GPU.
+2. If no, please decrease the batch size of your model. 
+ (at /paddle/paddle/phi/core/memory/allocation/cuda_allocator.cc:71)
+
+[Worker 0] Completed Task 725
+[Worker 0] Processing Task 728: paddle.trunc(input=Tensor([119304648, 6, 6],"float16"), )
+[cuda error] paddle.trunc(input=Tensor([119304648, 6, 6],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747760068 (unix time) try "date -d @1747760068" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x653a) received by PID 25914 (TID 0x7f66bfd56740) from PID 25914 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 729: paddle.trunc(input=Tensor([19884108, 6, 6, 6],"float16"), )
+W0521 00:57:17.611649 26146 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 00:57:17.612646 26146 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.trunc(input=Tensor([19884108, 6, 6, 6],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747760239 (unix time) try "date -d @1747760239" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x6622) received by PID 26146 (TID 0x7f66bfd56740) from PID 26146 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 732: paddle.trunc(input=Tensor([3, 6, 6628036, 6, 6],"float16"), )
+W0521 01:00:09.531095 26296 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:00:09.532084 26296 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.trunc(input=Tensor([3, 6, 6628036, 6, 6],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747760410 (unix time) try "date -d @1747760410" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x66b8) received by PID 26296 (TID 0x7f66bfd56740) from PID 26296 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 735: paddle.trunc(input=Tensor([380283564, 6],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+W0521 01:01:29.119920 26523 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:01:29.120849 26523 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.trunc(input=Tensor([380283564, 6],"int32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+[Worker 0] Error on Task 735: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] OOM on Task 735: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 736: paddle.trunc(input=Tensor([6, 119304648, 6],"float16"), )
+W0521 01:03:55.048813 26600 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:03:55.049822 26600 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.trunc(input=Tensor([6, 119304648, 6],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747760636 (unix time) try "date -d @1747760636" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x67e8) received by PID 26600 (TID 0x7f66bfd56740) from PID 26600 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 741: paddle.trunc(input=Tensor([6, 6, 6, 19884108],"float16"), )
+W0521 01:06:51.388420 26976 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:06:51.389384 26976 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.trunc(input=Tensor([6, 6, 6, 19884108],"float16"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747760812 (unix time) try "date -d @1747760812" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x6960) received by PID 26976 (TID 0x7f66bfd56740) from PID 26976 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 744: paddle.trunc(Tensor([114085069, 20, 1],"float32"), )
+W0521 01:08:44.259681 27205 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:08:44.260651 27205 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.trunc(Tensor([114085069, 20, 1],"float32"), ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/fluid/pybind/eager_functions.cc:1385)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747760925 (unix time) try "date -d @1747760925" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x6a45) received by PID 27205 (TID 0x7f66bfd56740) from PID 27205 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 747: paddle.unique_consecutive(x=Tensor([570425345, 4],"float32"), return_inverse=True, return_counts=True, axis=0, )
+W0521 01:10:00.130276 27434 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:10:00.131014 27434 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::pybind::eager_api_unique_consecutive(_object*, _object*, _object*)
+1   unique_consecutive_ad_func(paddle::Tensor const&, bool, bool, std::vector<int, std::allocator<int> >, phi::DataType)
+2   paddle::experimental::unique_consecutive(paddle::Tensor const&, bool, bool, std::vector<int, std::allocator<int> > const&, phi::DataType)
+3   void phi::UniqueConsecutiveKernel<float, phi::GPUContext>(phi::GPUContext const&, phi::DenseTensor const&, bool, bool, std::vector<int, std::allocator<int> > const&, phi::DataType, phi::DenseTensor*, phi::DenseTensor*, phi::DenseTensor*)
+4   void phi::IndexSelect<phi::GPUContext, float, long>(phi::GPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor*, int)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Segmentation fault` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1747761012 (unix time) try "date -d @1747761012" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x7f4a09ffe010) received by PID 27434 (TID 0x7f66bfd56740) from PID 167763984 ***]
+
+[Worker 0] Started on GPU 0
+[Worker 0] Processing Task 750: paddle.var(Tensor([1, 3, 143165577, 10],"float16"), 2, True, False, )
+W0521 01:11:59.780902 27659 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0521 01:11:59.781893 27659 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+W0521 01:11:59.828007 27659 dygraph_functions.cc:85067] got different data type, run type promotion automatically, this may cause data type been changed.
+W0521 01:11:59.828205 27659 dygraph_functions.cc:87101] got different data type, run type promotion automatically, this may cause data type been changed.
+W0521 01:11:59.830643 27659 dygraph_functions.cc:82416] got different data type, run type promotion automatically, this may cause data type been changed.
+[Pass] paddle.var(Tensor([1, 3, 143165577, 10],"float16"), 2, True, False, )
+[Worker 0] Completed Task 750
+[Worker 0] Processing Task 752: paddle.var(Tensor([1, 3, 4, 357913942],"float16"), 2, True, False, )
+[Pass] paddle.var(Tensor([1, 3, 4, 357913942],"float16"), 2, True, False, )
+[Worker 0] Completed Task 752
+[Worker 0] Processing Task 759: paddle.var(Tensor([19014179, 3, 4, 10],"float32"), list[1,3,], True, False, )
+[Pass] paddle.var(Tensor([19014179, 3, 4, 10],"float32"), list[1,3,], True, False, )
+[Worker 0] Completed Task 759
+[Worker 0] Processing Task 761: paddle.var(Tensor([192, 48, 1, 247581],"float32"), axis=list[1,2,3,], keepdim=True, unbiased=False, )
+[Pass] paddle.var(Tensor([192, 48, 1, 247581],"float32"), axis=list[1,2,3,], keepdim=True, unbiased=False, )
+[Worker 0] Completed Task 761
+[Worker 0] Processing Task 764: paddle.var(Tensor([192, 96, 123791, 1],"float32"), axis=list[1,2,3,], keepdim=True, unbiased=False, )
+[Pass] paddle.var(Tensor([192, 96, 123791, 1],"float32"), axis=list[1,2,3,], keepdim=True, unbiased=False, )
+[Worker 0] Completed Task 764
+[Worker 0] Processing Task 767: paddle.var(Tensor([35791395, 3, 4, 10],"float16"), list[1,3,], False, False, )
+[Pass] paddle.var(Tensor([35791395, 3, 4, 10],"float16"), list[1,3,], False, False, )
+[Worker 0] Completed Task 767
+[Worker 0] Processing Task 772: paddle.var(x=Tensor([16, 71303169, 2],"float32"), axis=tuple(1,), keepdim=True, unbiased=False, )
+[Pass] paddle.var(x=Tensor([16, 71303169, 2],"float32"), axis=tuple(1,), keepdim=True, unbiased=False, )
+[Worker 0] Completed Task 772
+[Worker 0] Processing Task 774: paddle.var(x=Tensor([3, 3, 477218589],"float16"), axis=0, )
+[Pass] paddle.var(x=Tensor([3, 3, 477218589],"float16"), axis=0, )
+[Worker 0] Completed Task 774
+[Worker 0] Processing Task 778: paddle.var(x=Tensor([3, 3, 477218589],"float16"), axis=tuple(0,1,), keepdim=True, )
+[Pass] paddle.var(x=Tensor([3, 3, 477218589],"float16"), axis=tuple(0,1,), keepdim=True, )
+[Worker 0] Completed Task 778
+[Worker 0] Processing Task 782: paddle.var(x=Tensor([3, 477218589, 3],"float16"), axis=tuple(0,1,), )
+[Pass] paddle.var(x=Tensor([3, 477218589, 3],"float16"), axis=tuple(0,1,), )
+[Worker 0] Completed Task 782
+[Worker 0] Processing Task 786: paddle.var(x=Tensor([477218589, 3, 3],"float16"), axis=list[0,1,], )
+[Pass] paddle.var(x=Tensor([477218589, 3, 3],"float16"), axis=list[0,1,], )
+[Worker 0] Completed Task 786
+[Worker 0] Received stop signal.
