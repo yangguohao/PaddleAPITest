@@ -460,6 +460,7 @@ if data_format == "NDHWC":
         )
         return ConvertResult.success(paddle_api, code)
 
+
 class ArgminRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -470,13 +471,11 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
-# b 
+
+# b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -501,7 +500,9 @@ distribution = torch.distributions.binomial.Binomial(total_count=total_count, pr
 """
         core = "result = distribution.sample()"
         code = Code(preprocess=pre.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
+        return ConvertResult.success(
+            paddle_api, code, "result", is_torch_corresponding=False
+        )
 
 
 class BroadcastShapeRule(BaseRule):
@@ -575,6 +576,7 @@ else:
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
+
 class CrossEntropyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -612,10 +614,14 @@ if "reduction" in _kwargs and _kwargs['reduction'] == "none":
     else:
         result = result.reshape(shp)
 """
-        code = Code(preprocess=pre.splitlines(),
-                    core=core.splitlines(),
-                    postprocess=post.splitlines())
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
+
+
 class ChunkRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -624,11 +630,9 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 class CovRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -637,7 +641,7 @@ class CovRule(BaseRule):
 if 'rowvar' in locals() and rowvar is False:
     if torch.is_tensor(x) and x.dim() > 1:
         x = torch.transpose(x, 0, 1)
-"""   
+"""
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
@@ -671,6 +675,7 @@ result = x[slices]
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class CtcLossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -694,6 +699,7 @@ result = torch.nn.functional.ctc_loss(**_kwargs)
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+
 class CumRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         torch_api = paddle_api.replace("paddle.", "torch.")
@@ -702,9 +708,7 @@ axis = locals().get('axis')
 if axis is None:
     x = x.flatten()
     axis = 0
-dtype = locals().get('dtype', 'int64')
-if dtype is not None:
-    dtype = getattr(torch, dtype)
+dtype = locals().get('dtype', torch.int64)
 """
         core = f"result = {torch_api}(input=x, dim=axis)"
         post = "result.values.to(dtype)"
@@ -722,12 +726,11 @@ if dim is None:
     x = x.flatten()
     axis = 0
 dtype = locals().get('dtype')
-if dtype is not None:
-    dtype = getattr(torch, dtype)
 """
         core = "result = torch.cumprod(input=x, dim=dim, dtype=dtype)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 class CumsumRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -740,11 +743,9 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 class ClassCenterSampleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1078,7 +1079,6 @@ if data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
-
 # d
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1181,6 +1181,7 @@ result = (multi_rois, restore_ind, rois_num_per_level)
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class DiagRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, _ = self.apply_generic()
@@ -1199,6 +1200,7 @@ elif x.ndim == 2:
 """
         code = Code(core=defaults_code + core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
 
 class DropoutRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1322,6 +1324,8 @@ else:
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
+
 class EmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -1331,12 +1335,20 @@ elif isinstance(shape, (list, tuple)):
     size_list = []
     for s in shape:
         if isinstance(s, torch.Tensor):
-            size_list.append(s.item())
+            if s.numel() == 1:
+                size_list.append(s.item())
+            else:
+                size_list.append(s.flatten()[0].item())
         else:
             size_list.append(s)
 """
-        core = "result = torch.empty(*size_list)"
-        code = Code(preprocess=pre.splitlines(), core=[core])
+        core = """
+if len(size_list) == 0:
+    result = torch.empty([])
+else:
+    result = torch.empty(*size_list)
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1375,11 +1387,9 @@ if _kwargs.get("m") is None:
     _kwargs.pop("m")
 result = {self.torch_api}(**_kwargs)
 """
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code, 
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 # f
 class FillDiagonalTensorRule(BaseRule):
@@ -2400,8 +2410,7 @@ if isinstance(window, tuple):
 else:
     window_name, param = window, None
 fftbins = locals().get('fftbins', True)
-dtype = locals().get('dtype', 'float64')
-dtype = getattr(torch, dtype)
+dtype = locals().get('dtype', torch.float64)
 if window_name == 'hamming':
     window = torch.signal.windows.hamming(win_length, sym=not fftbins, dtype=dtype)
 elif window_name == 'hann':
@@ -2434,6 +2443,7 @@ result = window
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
 
 class GroupNormRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2470,9 +2480,11 @@ elif data_format == "NDHWC":
         code = Code(
             preprocess=pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
+
 # h
 class HessianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2667,9 +2679,10 @@ elif data_format == "NWC":
         code = Code(
             preprocess=pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
 
 class IsEmptyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2871,7 +2884,8 @@ result = torch.abs(lcm)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class LinearRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2889,12 +2903,11 @@ if isinstance(_kwargs['input'], tuple):
 else:
     result = torch.nn.functional.linear(**_kwargs)
 """
-        code = Code(
-            preprocess=map_code + pre.splitlines(),
-            core=core.splitlines()
-        )
+        code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
-class  LocalResponseNormRule(BaseRule):
+
+
+class LocalResponseNormRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
@@ -2920,9 +2933,10 @@ elif data_format == "NDHWC":
         code = Code(
             preprocess=map_code + pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
 
 class LogcumsumexpRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2957,6 +2971,7 @@ y = to_float_if_needed(y)
         )
         return ConvertResult.success(paddle_api, code)
 
+
 class LogSoftMaxRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2968,10 +2983,12 @@ if not "dim" in _kwargs:
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess = map_code + pre.splitlines() ,
-            core = core.splitlines(),
+            preprocess=map_code + pre.splitlines(),
+            core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
+
 class LogNormalRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -2989,14 +3006,11 @@ result = torch.exp(result)
 class LstsqRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
-        pre="""
+        pre = """
 driver='gels'
-"""  
+"""
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code( 
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=True)
 
 
@@ -3017,10 +3031,9 @@ if transpose_y == True and y.dim() >=2:
     y = y.transpose(-2, -1)
 """
         core = f"result = {self.torch_api}(x, y)"
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines())
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
 
 class Matrix_transposeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -3030,10 +3043,11 @@ result = x.transpose(-1, -2)
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class MatmulTensorRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
-        pre = """
+        pre = r"""
 if transpose_x == True:
     x = x.transpose(-1, -2)
 if transpose_y == True:
@@ -3052,12 +3066,10 @@ x, y = x.to(target_dtype), y.to(target_dtype)
 
 """
         core = "result = x.matmul(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class MaskedScatterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         _, map_code = self.apply_generic()
@@ -3243,6 +3255,7 @@ def masked_multihead_attention(
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class MmRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -3253,12 +3266,10 @@ if mat2.dtype == torch.float16 and input.dtype != torch.float16:
     mat2 = mat2.to(torch.float32)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
-    
+
+
 # n
 class NanmedianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -3414,10 +3425,7 @@ elif len(x.shape)>2 and axis is None:
 else:
     result = {self.torch_api}(**_kwargs)
 """
-        code = Code( 
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -3507,6 +3515,7 @@ else:
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
+
 class OuterRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -3515,11 +3524,9 @@ x = x.flatten()
 y = y.flatten()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 # p
 class PadRule(BaseRule):
@@ -3572,9 +3579,10 @@ elif data_format == "NHWC":
         code = Code(
             preprocess=pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
 
 class PolarRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -3598,56 +3606,6 @@ result = x
         return ConvertResult.success(
             paddle_api, code, "result", is_torch_corresponding=False
         )
-
-
-class ProdRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
-import re
-dtype = locals().get("dtype", None)
-axis = locals().get("axis", None)
-keepdim = locals().get("keepdim", False)
-if dtype is None:
-    dtype = x.dtype
-else:
-    if isinstance(dtype, str):
-        dtype = getattr(torch, dtype)
-    else:
-        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
-            dtype_str = str(dtype).split('.')[-1]
-            dtype = getattr(torch, dtype_str)
-        else:
-            match = re.search(r"'(.+?)'", str(dtype))
-            print(dtype)
-            dtype_str = match.group(1)
-            dtype_str = dtype_str.split('.')[-1]
-            dtype = getattr(torch, dtype_str)
-if not axis is None:
-    dim = []
-    if isinstance(axis, (list, tuple)):
-        for i in axis:
-            if isinstance(i, torch.Tensor):
-                dim.append(i.item())
-            else:
-                dim.append(i)
-    elif isinstance(axis, torch.Tensor):
-        for i in axis:
-            dim.append(i.item())
-    else:
-        dim.append(axis)
-"""
-        core = """
-if axis is None:
-    result = torch.prod(x, dtype = dtype)
-else:
-    for i in dim:
-        x = torch.prod(x,dim = i,keepdim=True,dtype = dtype)
-    if not keepdim:
-        x = x.squeeze(dim)
-    result = x
-"""
-        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
 
 
 class Put_along_axisRule(BaseRule):
@@ -3920,10 +3878,11 @@ if keepdim and axis0 != axis:
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=[core],
-            postprocess=post.splitlines()
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
-    
+
+
 class QrRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -4509,11 +4468,13 @@ if act is not None:
         code = Code(preprocess=defaults_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class ShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = "result = torch.tensor(input.shape)"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 class ScaledDotProductAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4533,10 +4494,13 @@ if "is_causal" in  _kwargs and _kwargs["is_causal"]:
         post = """
 result = result.permute(0, 2, 1, 3)
 """
-        code = Code(preprocess=map_code + pre.splitlines(),
-                    core=core.splitlines(),
-                    postprocess=post.splitlines())
+        code = Code(
+            preprocess=map_code + pre.splitlines(),
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
+
 
 class SubtractRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4622,6 +4586,7 @@ result = torch.where(empty_mask, torch.tensor(0.0, dtype=result.dtype), result)
         )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class SoftMaxRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -4630,10 +4595,7 @@ if "dim" not in _kwargs:
     _kwargs["dim"] = -1
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess = map_code + pre.splitlines(),
-            core = core.splitlines()
-        )
+        code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 class SendUvRule(BaseRule):
@@ -4675,6 +4637,7 @@ result = torch.softmax(x + mask, dim=-1)
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
 class SoftMarginLossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -4683,10 +4646,12 @@ _kwargs['target'] = _kwargs['target'].detach()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess= map_code + pre.splitlines() ,
+            preprocess=map_code + pre.splitlines(),
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
+
 # t
 class TakeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4717,6 +4682,7 @@ def torch_take(x, index, mode='raise'):
         core = "result = torch_take(x, index, mode)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 
 class TensordotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4762,11 +4728,9 @@ if len(axes) > 2:
     axes = [axes[0], axes[1]]
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4855,6 +4819,7 @@ class UnfoldRule(BaseRule):
         code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+
 class UpsampleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -4901,13 +4866,14 @@ elif data_format == "NDHWC":
     result = result.permute(0,2,3,4,1)
 elif data_format == "NWC":
     result = result.permute(0,2,1)
-""" 
+"""
         code = Code(
             preprocess=map_code + pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
 
 class UnsqueezeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4936,6 +4902,7 @@ else:
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
 
 # v
 class VanderRule(BaseRule):
@@ -5083,10 +5050,11 @@ if "pos_weight" in _kwargs and not _kwargs["pos_weight"] is None:
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(
-            preprocess=map_code+ pre.splitlines(),
+            preprocess=map_code + pre.splitlines(),
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
+
 
 class WhereRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
