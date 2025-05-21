@@ -166,7 +166,7 @@ class APITestBase:
         #         return True
         # return True
 
-        if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) and isinstance(self.paddle_args[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args) > 1 and self.paddle_args[1] is not None):
+        if not self.is_forward_only() and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args_config) and isinstance(self.paddle_args_config[0], list)) and not (self.api_config.api_name == "paddle.assign" and len(self.paddle_args_config) > 1 and self.paddle_args_config[1] is not None):
             if len(self.api_config.args) > 0 and isinstance(self.api_config.args[0], TensorConfig):
                 dtype = self.api_config.args[0].dtype
                 if dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
