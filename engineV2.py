@@ -527,11 +527,10 @@ def main():
                             fail_case += 1
                         except Exception as err:
                             # write_to_log("crash", config)
-                            # print(
-                            #     f"[fatal] Worker crashed for {config}: {err}",
-                            #     flush=True,
-                            # )
-                            fail_case += 1
+                            print(
+                                f"[fatal] Worker failed for {config}: {err}",
+                                flush=True,
+                            )
                     aggregate_logs()
                 print(f"{all_case} cases tested, {fail_case} failed.", flush=True)
                 pool.close()
