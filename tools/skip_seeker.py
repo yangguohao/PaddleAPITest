@@ -1,8 +1,9 @@
+# 筛选 skip 配置小工具
+# @author: cangtianhaung
+
 from pathlib import Path
 
-DIR_PATH = Path(__file__).resolve().parent
-TEST_LOG_PATH = DIR_PATH.parent / "tester/api_config/test_log"
-TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
+TEST_LOG_PATH = Path("tester/api_config/test_log")
 
 LOG_PREFIXES = {
     "checkpoint": "checkpoint",
@@ -13,6 +14,7 @@ LOG_PREFIXES = {
     "accuracy_error": "api_config_accuracy_error",
     "timeout": "api_config_timeout",
     "crash": "api_config_crash",
+    "oom": "api_config_oom",
 }
 
 log_counts = {}
@@ -53,13 +55,13 @@ if api_configs:
 for log_type, count in log_counts.items():
     print(f"{log_type}: {count}", flush=True)
 
-if api_configs:
-    try:
-        with checkpoint_file.open("r") as f:
-            lines = set(line.strip() for line in f if line.strip())
-            lines -= api_configs
-            print(f"checkpoint remaining: {len(lines)}", flush=True)
-        with checkpoint_file.open("w") as f:
-            f.writelines(f"{line}\n" for line in sorted(lines))
-    except Exception as err:
-        print(f"Error reading {checkpoint_file}: {err}", flush=True)
+# if api_configs:
+#     try:
+#         with checkpoint_file.open("r") as f:
+#             lines = set(line.strip() for line in f if line.strip())
+#             lines -= api_configs
+#             print(f"checkpoint remaining: {len(lines)}", flush=True)
+#         with checkpoint_file.open("w") as f:
+#             f.writelines(f"{line}\n" for line in sorted(lines))
+#     except Exception as err:
+#         print(f"Error reading {checkpoint_file}: {err}", flush=True)
