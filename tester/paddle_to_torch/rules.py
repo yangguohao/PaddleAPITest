@@ -708,9 +708,7 @@ axis = locals().get('axis')
 if axis is None:
     x = x.flatten()
     axis = 0
-dtype = locals().get('dtype', 'int64')
-if dtype is not None:
-    dtype = getattr(torch, dtype)
+dtype = locals().get('dtype', torch.int64)
 """
         core = f"result = {torch_api}(input=x, dim=axis)"
         post = "result.values.to(dtype)"
