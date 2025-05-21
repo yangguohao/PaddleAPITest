@@ -2186,6 +2186,8 @@ class GatherRule(BaseRule):
 x = locals().get('x')
 index = locals().get('index')
 axis = locals().get('axis', 0)
+if isinstance(axis,torch.Tensor):
+    axis = axis.item()
 if len(index.shape) == 0:
     result = torch.squeeze(torch.narrow(x, axis, index, 1),axis)
 else:
@@ -2193,7 +2195,10 @@ else:
     for i in index:
         temp = torch.narrow(x, axis, i.reshape([]), 1)
         ans.append(torch.squeeze(temp, axis))
-    result = torch.stack(ans,axis)
+    if len(ans) == 0:
+        result = torch.zeros([x.shape[0],0])
+    else:
+        result = torch.stack(ans,axis)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
