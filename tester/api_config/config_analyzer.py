@@ -1,13 +1,14 @@
 import collections
 import copy
 import math
+import os
 import re
 
 import numpy
 import paddle
 import torch
 
-USE_CACHED_NUMPY = False
+USE_CACHED_NUMPY = os.getenv("USE_CACHED_NUMPY", "False").lower() == "true"
 cached_numpy = {}
 
 not_zero_apis = [
@@ -510,7 +511,7 @@ class TensorConfig:
                         dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                         self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
                 else:
-                    self.numpy_tensor = (numpy.random.randint(0, 2048, size=self.shape)).astype(self.dtype)
+                    self.numpy_tensor = (numpy.random.randint(0, 64, size=self.shape)).astype(self.dtype)
             elif api_config.api_name in {"paddle.gammainc", "paddle.gammaincc"}:
                 if "int" in self.dtype:
                     self.numpy_tensor = numpy.random.randint(0, 65535, size=self.shape).astype(self.dtype)

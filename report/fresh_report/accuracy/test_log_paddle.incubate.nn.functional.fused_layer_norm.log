@@ -1,0 +1,677 @@
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([1, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([1, 64],"float16"), )
+W0520 06:52:45.780185 982959 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
+W0520 06:52:45.780748 982959 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([1, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([1, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (1, 64, 0), (1, 64) mismatch)
+ x: array([], shape=(1, 64, 0), dtype=float16)
+ y: array([[ 0.6484 , -0.04468,  0.59   , -0.0802 , -0.0379 ,  0.105  ,
+        -0.5293 ,  0.1373 ,  0.8125 ,  0.4307 , -0.879  , -0.09753,
+        -0.4758 , -0.512  , -0.3452 , -0.01172,  0.05017, -0.02051,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([100, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([100, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([100, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([100, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (100, 512, 0), (100, 512) mismatch)
+ x: array([], shape=(100, 512, 0), dtype=float16)
+ y: array([[-0.216  , -0.4753 ,  0.633  , ..., -0.2473 , -0.812  ,  0.0121 ],
+       [-0.535  ,  0.391  ,  0.0654 , ...,  0.1565 , -0.0619 , -0.619  ],
+       [ 0.3345 , -0.1621 , -0.05054, ...,  0.1506 , -0.09863,  0.5547 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([101, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([101, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (101, 64, 0), (101, 64) mismatch)
+ x: array([], shape=(101, 64, 0), dtype=float16)
+ y: array([[ 6.831e-01,  4.663e-01,  6.646e-01, ..., -1.746e-01, -9.062e-01,
+        -1.410e-01],
+       [ 3.369e-01,  3.232e-01,  4.414e-01, ..., -4.922e-01, -3.638e-01,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([101, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([101, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (101, 64, 0), (101, 64) mismatch)
+ x: array([], shape=(101, 64, 0), dtype=float16)
+ y: array([[-0.02441, -0.0712 ,  0.09314, ...,  0.2737 , -0.2454 , -0.2236 ],
+       [-0.1813 ,  0.8164 ,  0.0586 , ...,  0.748  , -0.508  , -0.103  ],
+       [ 0.3506 ,  0.04077, -0.2217 , ..., -0.683  ,  0.538  ,  0.01654],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([104, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([104, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([104, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([104, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (104, 512, 0), (104, 512) mismatch)
+ x: array([], shape=(104, 512, 0), dtype=float16)
+ y: array([[ 0.10876, -0.758  ,  0.4797 , ..., -0.07983, -0.6416 ,  0.172  ],
+       [ 0.135  ,  0.2461 , -0.4827 , ..., -0.2905 ,  0.623  ,  0.1461 ],
+       [ 0.3086 ,  0.4883 ,  0.878  , ..., -0.9087 ,  0.02328,  0.4595 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([123, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([123, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([123, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([123, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (123, 768, 0), (123, 768) mismatch)
+ x: array([], shape=(123, 768, 0), dtype=float16)
+ y: array([[ 0.9155  ,  0.438   , -0.1785  , ..., -0.003662, -0.64    ,
+        -0.1807  ],
+       [ 0.3394  , -0.1788  ,  0.2029  , ..., -0.438   , -0.2563  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([131, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([131, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([131, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([131, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (131, 768, 0), (131, 768) mismatch)
+ x: array([], shape=(131, 768, 0), dtype=float16)
+ y: array([[ 0.3638  , -0.1958  ,  0.04907 , ..., -0.406   , -0.145   ,
+         0.01489 ],
+       [-0.609   ,  0.5     ,  0.6714  , ...,  0.9224  , -0.3784  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([136, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([136, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([136, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([136, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (136, 768, 0), (136, 768) mismatch)
+ x: array([], shape=(136, 768, 0), dtype=float16)
+ y: array([[ 0.539  ,  0.3242 ,  0.594  , ...,  0.2756 , -0.582  , -0.1423 ],
+       [-0.01184, -0.268  ,  0.3083 , ...,  0.5576 , -0.6865 , -0.543  ],
+       [ 0.9365 ,  0.10645, -0.539  , ..., -0.92   ,  0.11646,  0.706  ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([145, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([145, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([145, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([145, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (145, 768, 0), (145, 768) mismatch)
+ x: array([], shape=(145, 768, 0), dtype=float16)
+ y: array([[ 0.754  ,  0.884  , -0.2214 , ...,  0.1553 , -0.4424 , -0.4805 ],
+       [-0.4048 , -0.1781 ,  0.359  , ..., -0.719  , -0.787  ,  0.6865 ],
+       [-0.4836 ,  0.721  ,  0.3845 , ...,  0.04224,  0.1956 ,  0.11914],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([154, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([154, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([154, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([154, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (154, 768, 0), (154, 768) mismatch)
+ x: array([], shape=(154, 768, 0), dtype=float16)
+ y: array([[ 0.1577  , -0.4773  ,  0.709   , ...,  0.762   ,  0.1554  ,
+         0.265   ],
+       [ 0.005188, -0.1871  , -0.2251  , ...,  0.722   , -0.592   ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (16, 256, 0), (16, 256) mismatch)
+ x: array([], shape=(16, 256, 0), dtype=float16)
+ y: array([[ 0.2336  ,  0.8687  ,  0.08655 , ...,  0.5205  , -0.856   ,
+        -0.144   ],
+       [ 0.2805  ,  0.4248  ,  0.643   , ...,  0.0332  , -0.94    ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), None, None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (16, 256, 0), (16, 256) mismatch)
+ x: array([], shape=(16, 256, 0), dtype=float32)
+ y: array([[-0.630561,  0.484271, -0.118545, ..., -0.233951,  0.166444,
+         0.230697],
+       [-1.104711,  0.138204, -0.509428, ..., -0.671509,  0.533432,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (16, 256, 0), (16, 256) mismatch)
+ x: array([], shape=(16, 256, 0), dtype=float32)
+ y: array([[ 0.488514,  0.429082, -0.023991, ..., -0.064966,  0.063464,
+         0.157534],
+       [ 0.317828,  0.34197 ,  0.210837, ..., -0.380218, -0.476946,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([167, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([167, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([167, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([167, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (167, 768, 0), (167, 768) mismatch)
+ x: array([], shape=(167, 768, 0), dtype=float16)
+ y: array([[ 0.4526  ,  0.664   , -0.726   , ...,  0.1019  ,  0.2395  ,
+        -0.746   ],
+       [ 0.04504 ,  0.22    ,  0.07544 , ..., -0.8657  ,  0.4248  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([172, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([172, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([172, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([172, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (172, 768, 0), (172, 768) mismatch)
+ x: array([], shape=(172, 768, 0), dtype=float16)
+ y: array([[ 0.0709 , -0.0918 , -0.511  , ..., -0.1167 ,  0.3145 ,  0.3525 ],
+       [ 0.199  , -0.7324 ,  0.0803 , ..., -0.1913 ,  0.04456, -0.6704 ],
+       [-0.2554 ,  0.2776 ,  0.19   , ...,  0.514  , -0.0343 ,  0.508  ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([181, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([181, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([181, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([181, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (181, 768, 0), (181, 768) mismatch)
+ x: array([], shape=(181, 768, 0), dtype=float16)
+ y: array([[ 0.2534 ,  0.4873 ,  0.1691 , ...,  0.8516 , -0.279  ,  0.04172],
+       [ 0.873  , -0.5205 ,  0.4597 , ...,  0.1276 , -0.3037 ,  0.5664 ],
+       [-0.6094 ,  0.1392 ,  0.2155 , ...,  0.4321 , -0.376  ,  0.278  ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([2, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([2, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (2, 512, 0), (2, 512) mismatch)
+ x: array([], shape=(2, 512, 0), dtype=float16)
+ y: array([[ 0.264 , -0.2856,  0.8896, ...,  0.653 , -0.1091, -0.1536],
+       [ 0.2676,  0.3425, -0.1477, ..., -0.373 , -0.783 ,  0.3906]],
+      dtype=float16)
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([2, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([2, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (2, 64, 0), (2, 64) mismatch)
+ x: array([], shape=(2, 64, 0), dtype=float16)
+ y: array([[ 1.3672e-01,  6.9336e-02,  4.2383e-01,  4.8584e-02,  1.3311e+00,
+         6.0693e-01, -8.8184e-01,  2.1973e-02, -9.7119e-01,  2.8076e-01,
+         5.5762e-01,  5.2246e-01, -8.7500e-01, -1.0669e-01, -1.5381e-02,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([2, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([2, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (2, 64, 0), (2, 64) mismatch)
+ x: array([], shape=(2, 64, 0), dtype=float16)
+ y: array([[ 0.0358  , -0.04456 ,  0.1768  , -0.1586  ,  0.1298  , -0.329   ,
+         0.07104 , -0.01361 , -0.07935 , -0.0454  , -0.745   ,  0.126   ,
+        -0.384   ,  0.3037  ,  0.0842  , -0.175   , -0.2196  ,  0.8945  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([2, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([2, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (2, 768, 0), (2, 768) mismatch)
+ x: array([], shape=(2, 768, 0), dtype=float16)
+ y: array([[-0.3606 , -0.1929 , -0.6245 , ...,  0.425  ,  0.1869 ,  0.6963 ],
+       [-0.04822, -0.4797 ,  0.3525 , ..., -0.6104 , -0.6973 ,  0.542  ]],
+      dtype=float16)
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([203, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([203, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([203, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([203, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (203, 768, 0), (203, 768) mismatch)
+ x: array([], shape=(203, 768, 0), dtype=float16)
+ y: array([[ 0.07983,  0.6685 , -0.3706 , ..., -0.0901 , -0.2173 , -0.8237 ],
+       [ 0.04752, -0.352  ,  0.042  , ..., -0.04932,  0.1321 ,  0.5825 ],
+       [-0.04028,  0.8535 ,  0.2372 , ...,  0.4397 , -0.559  ,  0.0327 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([221, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([221, 768],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([221, 768],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([221, 768],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (221, 768, 0), (221, 768) mismatch)
+ x: array([], shape=(221, 768, 0), dtype=float16)
+ y: array([[-0.0813 ,  0.2974 , -0.1954 , ..., -0.4622 , -0.3333 , -0.2373 ],
+       [-0.7637 , -0.4326 ,  0.5127 , ...,  0.2202 ,  0.03735,  0.03247],
+       [-0.4348 ,  0.2386 ,  0.1495 , ..., -0.01758, -0.0864 ,  0.2725 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([31, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([31, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([31, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([31, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (31, 64, 0), (31, 64) mismatch)
+ x: array([], shape=(31, 64, 0), dtype=float16)
+ y: array([[ 0.0442 ,  0.396  ,  0.958  , ..., -0.1462 ,  0.3801 ,  0.2974 ],
+       [-0.1582 , -0.4932 , -0.4473 , ..., -0.0648 ,  0.05664, -0.2395 ],
+       [-0.2725 ,  0.3047 , -0.3801 , ..., -0.4375 , -0.5645 ,  0.691  ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([464, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([464, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([464, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([464, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (464, 64, 0), (464, 64) mismatch)
+ x: array([], shape=(464, 64, 0), dtype=float16)
+ y: array([[-0.534   , -0.5283  , -0.1257  , ..., -0.0481  , -0.8066  ,
+        -0.0909  ],
+       [ 0.0719  , -0.2452  , -0.04858 , ...,  0.2373  ,  0.6333  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([58, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([58, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([58, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([58, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (58, 64, 0), (58, 64) mismatch)
+ x: array([], shape=(58, 64, 0), dtype=float16)
+ y: array([[ 0.1831  ,  0.573   ,  0.746   , ..., -0.1406  ,  0.031   ,
+         0.4258  ],
+       [ 0.4556  , -0.042   ,  0.2947  , ...,  0.7188  , -0.3855  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([59, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([59, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([59, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([59, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (59, 64, 0), (59, 64) mismatch)
+ x: array([], shape=(59, 64, 0), dtype=float16)
+ y: array([[ 0.2744 ,  0.2942 ,  0.3079 , ..., -0.8604 ,  0.3682 ,  0.2239 ],
+       [-0.2576 , -0.1123 ,  0.4119 , ...,  0.0952 , -0.2467 ,  0.3423 ],
+       [ 0.6416 ,  0.1313 , -0.174  , ..., -0.3215 ,  0.1842 , -0.1307 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([60, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([60, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (60, 64, 0), (60, 64) mismatch)
+ x: array([], shape=(60, 64, 0), dtype=float16)
+ y: array([[-0.3264 , -1.09   ,  0.708  , ..., -0.167  , -0.1367 , -0.3025 ],
+       [-0.0586 , -0.581  ,  0.2123 , ..., -0.619  ,  0.0676 , -0.3445 ],
+       [-0.371  , -0.8867 , -0.4424 , ..., -0.7197 ,  0.671  ,  0.423  ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([60, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([60, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (60, 64, 0), (60, 64) mismatch)
+ x: array([], shape=(60, 64, 0), dtype=float16)
+ y: array([[-0.4692  ,  0.2467  ,  0.014046, ..., -0.2145  , -0.279   ,
+        -0.6357  ],
+       [-0.3735  ,  0.2025  , -0.2155  , ...,  0.914   , -0.796   ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([64, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([64, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([64, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([64, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (64, 512, 0), (64, 512) mismatch)
+ x: array([], shape=(64, 512, 0), dtype=float16)
+ y: array([[-0.614   , -0.2952  ,  0.01166 , ..., -0.4192  , -0.0937  ,
+        -0.4456  ],
+       [ 0.06445 ,  0.8906  , -0.1428  , ..., -0.386   ,  0.2268  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([67, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([67, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (67, 64, 0), (67, 64) mismatch)
+ x: array([], shape=(67, 64, 0), dtype=float16)
+ y: array([[-0.0432, -0.1261, -0.3591, ..., -1.134 , -0.3464, -0.751 ],
+       [ 0.2568,  0.165 ,  0.7666, ..., -0.702 , -0.7285, -0.7324],
+       [ 0.5967, -0.4824,  0.9434, ..., -0.753 , -0.199 , -0.882 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([67, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([67, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (67, 64, 0), (67, 64) mismatch)
+ x: array([], shape=(67, 64, 0), dtype=float16)
+ y: array([[-0.0642  , -0.1481  ,  0.845   , ..., -0.01587 ,  0.0515  ,
+         0.3022  ],
+       [-0.2524  ,  0.1025  , -0.2377  , ..., -0.1675  , -0.708   ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([68, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([68, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([68, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([68, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (68, 64, 0), (68, 64) mismatch)
+ x: array([], shape=(68, 64, 0), dtype=float16)
+ y: array([[ 0.0902  , -0.527   , -0.543   , ...,  0.1967  , -0.007698,
+         0.02649 ],
+       [-0.6484  ,  0.06226 ,  0.7124  , ...,  0.2837  , -0.07904 ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([71, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([71, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([71, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([71, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (71, 512, 0), (71, 512) mismatch)
+ x: array([], shape=(71, 512, 0), dtype=float16)
+ y: array([[-0.09143 , -0.4517  ,  0.00928 , ..., -0.8115  , -0.1792  ,
+        -0.1338  ],
+       [-0.1815  , -0.2478  ,  0.3096  , ...,  0.5967  , -0.00464 ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([74, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([74, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([74, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([74, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (74, 64, 0), (74, 64) mismatch)
+ x: array([], shape=(74, 64, 0), dtype=float16)
+ y: array([[ 0.04956 ,  0.736   , -0.2043  , ..., -0.397   ,  0.166   ,
+        -0.6426  ],
+       [ 0.2812  , -0.658   ,  0.647   , ..., -0.696   , -0.11975 ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([76, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([76, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([76, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([76, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (76, 64, 0), (76, 64) mismatch)
+ x: array([], shape=(76, 64, 0), dtype=float16)
+ y: array([[ 1.441   , -0.22    , -0.53    , ..., -0.2109  ,  0.121   ,
+         0.0897  ],
+       [-0.1101  , -0.3315  ,  0.1693  , ...,  0.7334  ,  0.5186  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([77, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([77, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([77, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([77, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (77, 512, 0), (77, 512) mismatch)
+ x: array([], shape=(77, 512, 0), dtype=float16)
+ y: array([[-0.218  ,  0.02197,  0.1605 , ..., -0.6187 ,  0.1448 , -0.0845 ],
+       [ 0.04517,  0.2201 ,  0.6064 , ..., -0.3975 ,  0.307  ,  0.2727 ],
+       [ 0.4019 , -0.63   , -0.4236 , ..., -0.4736 ,  0.1749 ,  0.1709 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([78, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([78, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (78, 64, 0), (78, 64) mismatch)
+ x: array([], shape=(78, 64, 0), dtype=float16)
+ y: array([[-1.051  , -0.813  , -0.1547 , ..., -0.5615 ,  0.6357 ,  0.628  ],
+       [-0.1687 , -1.002  ,  0.681  , ..., -1.195  ,  0.0304 ,  0.2305 ],
+       [-1.029  , -0.07874, -0.5283 , ..., -0.792  ,  0.1608 ,  0.3154 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([78, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([78, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (78, 64, 0), (78, 64) mismatch)
+ x: array([], shape=(78, 64, 0), dtype=float16)
+ y: array([[-0.707  , -0.3074 , -0.751  , ...,  0.5454 ,  0.236  ,  0.0962 ],
+       [ 0.3044 , -0.0945 ,  0.208  , ...,  0.1128 ,  0.576  , -0.1438 ],
+       [ 0.5645 ,  0.2    ,  0.1357 , ...,  0.2018 ,  0.4895 , -0.6196 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([81, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([81, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([81, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([81, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (81, 512, 0), (81, 512) mismatch)
+ x: array([], shape=(81, 512, 0), dtype=float16)
+ y: array([[ 0.4646 , -0.0779 ,  0.5645 , ...,  0.06274, -0.4883 , -0.1577 ],
+       [ 0.4502 , -0.3096 ,  0.03748, ..., -0.6567 ,  0.2876 , -0.02441],
+       [ 0.1447 , -0.275  , -0.0668 , ..., -0.4583 , -0.1555 , -0.4075 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([87, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([87, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([87, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([87, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (87, 64, 0), (87, 64) mismatch)
+ x: array([], shape=(87, 64, 0), dtype=float16)
+ y: array([[-0.3818 ,  0.08374, -0.1637 , ...,  0.2262 , -0.206  , -0.442  ],
+       [-0.076  ,  0.458  ,  0.4287 , ...,  0.1477 ,  0.1023 , -0.2308 ],
+       [ 0.03137,  0.13   ,  0.4414 , ...,  0.1763 , -0.2021 , -0.03467],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([88, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([88, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([88, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([88, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (88, 64, 0), (88, 64) mismatch)
+ x: array([], shape=(88, 64, 0), dtype=float16)
+ y: array([[ 0.1802  , -0.08746 ,  0.832   , ...,  0.695   ,  0.2122  ,
+         0.772   ],
+       [-0.2622  ,  0.2246  ,  0.3765  , ..., -0.1704  ,  0.663   ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([89, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([89, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([89, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([89, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (89, 512, 0), (89, 512) mismatch)
+ x: array([], shape=(89, 512, 0), dtype=float16)
+ y: array([[ 0.41   , -0.1976 , -0.04077, ..., -0.322  , -0.8965 ,  0.1985 ],
+       [ 0.2544 ,  0.5923 ,  0.1794 , ...,  0.2856 ,  0.2756 ,  0.2817 ],
+       [ 0.1859 ,  0.7603 , -0.4167 , ...,  0.2457 , -0.05334, -0.1758 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([90, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([90, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (90, 64, 0), (90, 64) mismatch)
+ x: array([], shape=(90, 64, 0), dtype=float16)
+ y: array([[ 0.5093  , -0.2473  , -0.4226  , ..., -0.0654  , -0.5073  ,
+         0.08545 ],
+       [-0.2964  ,  0.09106 , -0.204   , ..., -0.2354  , -0.7734  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([91, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([91, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (91, 64, 0), (91, 64) mismatch)
+ x: array([], shape=(91, 64, 0), dtype=float16)
+ y: array([[ 0.474  ,  0.517  ,  1.182  , ..., -0.05878, -0.1453 ,  1.153  ],
+       [ 0.8193 ,  0.07495,  0.2048 , ...,  0.2776 ,  0.6377 ,  1.01   ],
+       [ 0.2524 , -0.343  , -0.1294 , ..., -0.1232 ,  0.829  ,  0.3213 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([92, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([92, 512],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([92, 512],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=None, residual=Tensor([92, 512],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (92, 512, 0), (92, 512) mismatch)
+ x: array([], shape=(92, 512, 0), dtype=float16)
+ y: array([[-0.2764 ,  0.282  , -0.11224, ..., -0.2073 , -0.5967 ,  0.2642 ],
+       [ 0.2725 ,  0.511  ,  0.8    , ...,  0.1838 , -0.6533 ,  0.632  ],
+       [-0.2727 ,  0.3872 ,  0.0409 , ...,  0.448  , -0.031  , -0.315  ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([97, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([97, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([97, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-06, begin_norm_axis=1, bias=None, residual=Tensor([97, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (97, 64, 0), (97, 64) mismatch)
+ x: array([], shape=(97, 64, 0), dtype=float16)
+ y: array([[-0.5186 ,  0.692  , -0.02924, ..., -0.6914 , -0.374  , -0.07666],
+       [-0.4778 ,  0.0315 ,  0.5195 , ...,  0.031  , -0.2212 ,  0.1824 ],
+       [-0.3376 , -0.3503 ,  0.4067 , ...,  0.05212, -0.3877 , -0.07275],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([98, 64],"float16"), )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), norm_weight=None, norm_bias=None, epsilon=1e-05, begin_norm_axis=1, bias=Tensor([64],"float16"), residual=Tensor([98, 64],"float16"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (98, 64, 0), (98, 64) mismatch)
+ x: array([], shape=(98, 64, 0), dtype=float16)
+ y: array([[-1.061  ,  0.2035 , -0.1006 , ..., -0.2084 , -0.6484 , -0.2876 ],
+       [-0.338  ,  0.2593 , -0.3079 , ..., -0.1412 ,  0.4592 ,  0.5493 ],
+       [-0.8    ,  0.4893 , -0.5957 , ..., -0.3916 , -0.2922 ,  0.5596 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (101, 64, 0), (101, 64) mismatch)
+ x: array([], shape=(101, 64, 0), dtype=float32)
+ y: array([[ 0.1267  , -0.189   , -0.4553  , ...,  0.01811 ,  0.355   ,
+         0.2125  ],
+       [-0.3591  ,  0.3208  ,  0.3713  , ..., -0.4583  ,  0.03223 ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (16, 256, 0), (16, 256) mismatch)
+ x: array([], shape=(16, 256, 0), dtype=float32)
+ y: array([[-0.3306 , -0.4119 ,  0.331  , ...,  0.1506 ,  0.1438 , -0.172  ],
+       [-0.01096,  0.2032 , -0.07056, ..., -0.1495 ,  0.1643 ,  0.03168],
+       [-0.2068 ,  0.2805 ,  0.4717 , ..., -0.4578 ,  0.4658 ,  0.3286 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 4096 (0.0977%)
+Max absolute difference: 1
+Max relative difference: 0.33333333
+ x: array([[  8,   0,   4, ..., -14,   4,  -7],
+       [  8,  -8,   4, ...,  -7,   7, -12],
+       [  3, -15,   4, ...,  -9, -11, -16],...
+ y: array([[  8,   0,   4, ..., -14,   4,  -7],
+       [  8,  -8,   4, ...,  -7,   7, -12],
+       [  3, -15,   4, ...,  -9, -11, -16],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (16, 256, 0), (16, 256) mismatch)
+ x: array([], shape=(16, 256, 0), dtype=float32)
+ y: array([[-0.295  ,  0.0871 , -0.2974 , ..., -0.2727 , -0.4656 , -0.242  ],
+       [-0.451  ,  0.294  ,  0.0215 , ...,  0.4172 , -0.1073 ,  0.0859 ],
+       [-0.10944, -0.4395 ,  0.4531 , ..., -0.1313 , -0.3438 , -0.1967 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 1, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 1, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (2, 1, 64, 0), (2, 1, 64) mismatch)
+ x: array([], shape=(2, 1, 64, 0), dtype=float32)
+ y: array([[[ 0.2074 , -0.10333, -0.3018 ,  0.4424 ,  0.1029 , -0.1204 ,
+         -0.4436 ,  0.0712 ,  0.4263 , -0.1976 ,  0.04877, -0.1729 ,
+         -0.2098 ,  0.4255 ,  0.3857 , -0.04498,  0.3567 , -0.4814 ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([59, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([59, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (59, 64, 0), (59, 64) mismatch)
+ x: array([], shape=(59, 64, 0), dtype=float32)
+ y: array([[ 0.2566  , -0.12494 , -0.3335  , ...,  0.45    , -0.1888  ,
+        -0.1382  ],
+       [-0.408   , -0.03787 ,  0.06116 , ..., -0.4487  ,  0.2185  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (60, 64, 0), (60, 64) mismatch)
+ x: array([], shape=(60, 64, 0), dtype=float32)
+ y: array([[ 0.449  ,  0.492  , -0.4927 , ...,  0.2058 , -0.3525 , -0.05817],
+       [ 0.2678 , -0.3457 , -0.3374 , ...,  0.4321 , -0.1797 ,  0.3123 ],
+       [ 0.4421 , -0.1735 , -0.408  , ..., -0.3264 ,  0.4614 ,  0.0688 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (67, 64, 0), (67, 64) mismatch)
+ x: array([], shape=(67, 64, 0), dtype=float32)
+ y: array([[ 0.1965 ,  0.2284 , -0.03223, ...,  0.2544 ,  0.28   , -0.4744 ],
+       [-0.406  , -0.066  ,  0.3267 , ...,  0.1499 ,  0.2673 ,  0.12036],
+       [ 0.4504 ,  0.1799 ,  0.2    , ...,  0.277  , -0.2727 , -0.3735 ],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([68, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([68, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (68, 64, 0), (68, 64) mismatch)
+ x: array([], shape=(68, 64, 0), dtype=float32)
+ y: array([[-0.1725  ,  0.4133  ,  0.4412  , ...,  0.3687  ,  0.3198  ,
+        -0.1351  ],
+       [-0.3245  , -0.3252  ,  0.4094  , ...,  0.1992  ,  0.06525 ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([76, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([76, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (76, 64, 0), (76, 64) mismatch)
+ x: array([], shape=(76, 64, 0), dtype=float32)
+ y: array([[ 0.04285,  0.3225 , -0.07153, ..., -0.441  ,  0.3376 , -0.1169 ],
+       [-0.2147 , -0.4307 , -0.05917, ..., -0.3796 ,  0.3982 , -0.2426 ],
+       [-0.4485 , -0.4731 ,  0.03513, ..., -0.0986 , -0.11304, -0.06903],...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (78, 64, 0), (78, 64) mismatch)
+ x: array([], shape=(78, 64, 0), dtype=float32)
+ y: array([[-0.2676  ,  0.1829  , -0.4724  , ...,  0.4602  ,  0.3857  ,
+        -0.0784  ],
+       [ 0.01203 ,  0.05603 ,  0.00824 , ...,  0.1063  ,  0.4756  ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (90, 64, 0), (90, 64) mismatch)
+ x: array([], shape=(90, 64, 0), dtype=float32)
+ y: array([[-0.4497  ,  0.0732  ,  0.2151  , ..., -0.3208  ,  0.0751  ,
+         0.06616 ],
+       [ 0.44    ,  0.2637  ,  0.1398  , ..., -0.194   ,  0.261   ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (91, 64, 0), (91, 64) mismatch)
+ x: array([], shape=(91, 64, 0), dtype=float32)
+ y: array([[-0.2659  ,  0.3987  , -0.4478  , ...,  0.11804 ,  0.0651  ,
+        -0.07965 ],
+       [ 0.1854  ,  0.03214 , -0.2194  , ...,  0.2451  ,  0.348   ,...
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+(shapes (98, 64, 0), (98, 64) mismatch)
+ x: array([], shape=(98, 64, 0), dtype=float32)
+ y: array([[-0.481  , -0.3064 ,  0.1915 , ..., -0.2257 ,  0.1782 ,  0.2646 ],
+       [-0.2776 ,  0.4312 ,  0.4165 , ..., -0.444  , -0.3582 ,  0.00583],
+       [-0.3018 ,  0.02596, -0.0886 , ...,  0.2703 ,  0.391  , -0.4482 ],...
+

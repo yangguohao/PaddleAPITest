@@ -186,6 +186,10 @@
         }
     },
     "c": "API started with 'c' should be placed here",
+    "paddle.cartesian_prod":{
+        "torch_api": "torch.cartesian_prod",
+        "torch_args":["*{x}"]
+    },
     "paddle.cast":{
         "Rule": "CastRule"
     },
@@ -305,6 +309,10 @@
         "Rule": "Dropout3dRule"
     },
     "e": "API started with 'e' should be placed here",
+    "paddle.einsum": {
+        "Rule": "EinsumRule",
+        "torch_api": "torch.einsum"
+    },
     "paddle.equal_all": {
         "torch_api": "torch.equal",
         "paddle_torch_args_map": {
@@ -382,6 +390,9 @@
         "paddle_torch_args_map": {
             "x": "input"
         }
+    },
+    "paddle.Tensor.fill_diagonal_tensor":{
+        "Rule": "FillDiagonalTensorRule"
     },   
     "paddle.Tensor.floor": {
         "torch_api": "torch.Tensor.floor"
@@ -415,6 +426,12 @@
     },
     "paddle.incubate.nn.functional.fused_dropout_add": {
         "Rule": "FusedDropoutAddRule"
+    },
+    "paddle.incubate.nn.functional.fused_layer_norm": {
+        "Rule": "FusedLayerNormRule"
+    },
+    "paddle.incubate.nn.functional.fused_feedforward": {
+        "Rule": "FusedFeedforwardRule"
     },
     "paddle.incubate.nn.functional.fused_linear_activation": {
         "Rule": "FusedLinearActivationRule"
@@ -476,6 +493,9 @@
     },
     "paddle.geometric.send_ue_recv": {
         "Rule": "SendUERecvRule"
+    },
+    "paddle.geometric.send_uv": {
+        "Rule": "SendUvRule"
     },
     "paddle.greater_equal": {
         "torch_api": "torch.ge",
@@ -828,6 +848,14 @@
         }
     },
     "m": "API started with 'm' should be placed here",
+    "paddle.matmul": {
+        "Rule": "MatmulRule",
+        "torch_api": "torch.matmul",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "y": "other"
+        }
+    },
     "paddle.matrix_transpose":{
         "Rule": "Matrix_transposeRule"
     },
@@ -2210,6 +2238,9 @@
         }
     },
     "v": "API started with 'v' should be placed here",
+    "paddle.vander": {
+        "Rule": "VanderRule"
+    },
     "paddle.vecdot": {
         "Rule": "VecdotRule"
     },
@@ -5205,14 +5236,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.matmul": {
-        "torch_api": "torch.linalg.matmul",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "other"
-        },
-        "min_input_args": 2
-    },
     "paddle.linalg.matrix_norm": {
         "torch_api": "torch.linalg.matrix_norm",
         "paddle_torch_args_map": {
@@ -7473,15 +7496,6 @@
             "x": "tensor"
         },
         "min_input_args": 0
-    },
-    "paddle.vander": {
-        "torch_api": "torch.vander",
-        "paddle_torch_args_map": {
-            "x": "x",
-            "n": "N",
-            "increasing": "increasing"
-        },
-        "min_input_args": 1
     },
     "paddle.var": {
         "torch_api": "torch.var",

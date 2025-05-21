@@ -1,4 +1,8 @@
 paddle.meshgrid(list[Tensor([0],"float64"),Tensor([0],"float64"),Tensor([0],"float64"),], )
+paddle.meshgrid(list[Tensor([2],"int64"),Tensor([2],"int64"),Tensor([1],"int64"),Tensor([0],"int64"),], )
+paddle.meshgrid(list[Tensor([3],"int32"),Tensor([5],"int32"),Tensor([3],"int32"),Tensor([0],"int32"),], )
+paddle.meshgrid(list[Tensor([4],"int32"),Tensor([4],"int32"),Tensor([5],"int32"),Tensor([0],"int32"),], )
+paddle.meshgrid(list[Tensor([5],"int64"),Tensor([4],"int64"),Tensor([4],"int64"),Tensor([0],"int64"),], )
 
 W0415 09:36:04.423480 121099 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.9, Driver API Version: 12.2, Runtime API Version: 11.8
 W0415 09:36:04.424443 121099 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
