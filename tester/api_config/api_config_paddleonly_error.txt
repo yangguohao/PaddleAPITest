@@ -259,3 +259,7 @@ paddle.incubate.nn.functional.fused_multi_head_attention(x=Tensor([8, 128, 256],
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=None, residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, quant_scale=127, quant_round_type=0, quant_max_bound=127, quant_min_bound=-128)
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), None, Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, quant_scale=127, quant_round_type=0, quant_max_bound=127, quant_min_bound=-128)
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), None, 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, quant_scale=127, quant_round_type=0, quant_max_bound=127, quant_min_bound=-128)
+paddle.meshgrid(list[Tensor([2],"int64"),Tensor([2],"int64"),Tensor([1],"int64"),Tensor([0],"int64"),], )
+paddle.meshgrid(list[Tensor([3],"int32"),Tensor([5],"int32"),Tensor([3],"int32"),Tensor([0],"int32"),], )
+paddle.meshgrid(list[Tensor([4],"int32"),Tensor([4],"int32"),Tensor([5],"int32"),Tensor([0],"int32"),], )
+paddle.meshgrid(list[Tensor([5],"int64"),Tensor([4],"int64"),Tensor([4],"int64"),Tensor([0],"int64"),], )
