@@ -922,11 +922,6 @@ class TensorConfig:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(dtype)
 
-            # elif api_config.api_name == 'paddle.nn.functional.grid_sample':
-            #     if self.dtype=='float16':
-            #         self.dtype='float32'
-            #         self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
-
             elif api_config.api_name == "paddle.nn.functional.hinge_embedding_loss":
                 if self.check_arg(api_config, 1, "label"):
                     self.numpy_tensor = numpy.random.randint(0, 2, size=self.shape).astype(self.dtype)
