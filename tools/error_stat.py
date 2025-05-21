@@ -6,7 +6,7 @@ import re
 from collections import defaultdict
 
 TEST_LOG_PATH = Path("tester/api_config/test_log")
-OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/accuracy")
+OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/paddleonly")
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # log_digester_lite
@@ -64,11 +64,15 @@ ERROR_LOG = [
     "api_config_crash.txt",
     "api_config_paddle_error.txt",
     "api_config_torch_error.txt",
+    "api_config_paddle_to_torch_failed.txt",
+    "api_config_timeout",
 ]
 api_names = set()
 api_configs = set()
 for file_name in ERROR_LOG:
     FILE_PATH = TEST_LOG_PATH / file_name
+    if not FILE_PATH.exists():
+        continue
     try:
         with open(FILE_PATH, "r") as f:
             for line in f:
