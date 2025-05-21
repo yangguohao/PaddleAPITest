@@ -1141,6 +1141,19 @@ if data_format == "NDHWC":
 
 
 # d
+class DeformConv2dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+import torchvision
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=map_code+ pre.splitlines(),
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
