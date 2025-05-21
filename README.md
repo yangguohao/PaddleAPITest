@@ -79,7 +79,7 @@ tools文件夹中存放了一些实用的工具，例如move_config可以用来�
 ### 环境配置
 运行环境分为**cpu**环境与**gpu**环境，cpu和gpu上运行的结果**可能存在差异**，即存在cpu上能够正确运行，但gpu上报错的情况。因此需要根据需求正确安装环境。
 
-下载链接：https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/windows-pip.html
+[PaddlePaddle 安装链接](https://www.paddlepaddle.org.cn/install/quick)
 
 若需要本地编译paddle，可参考链接：https://www.paddlepaddle.org.cn/documentation/docs/zh/install/compile/linux-compile-by-make.html
 
