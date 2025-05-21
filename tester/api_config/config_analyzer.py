@@ -500,9 +500,6 @@ class TensorConfig:
                                 if i>=dis and s[i-dis]!=1:
                                     self.numpy_tensor[i]=s[i-dis]
 
-            elif api_config.api_name == "paddle.expand_as":
-                if self.dtype=='float16':
-                    self.dtype='float32'
             elif api_config.api_name == "paddle.full":
                 if self.check_arg(api_config, 1, "fill_value"):
                     if "int" in self.dtype:
@@ -924,11 +921,6 @@ class TensorConfig:
                 if self.check_arg(api_config, 2, "var"):
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(dtype)
-
-            elif api_config.api_name == 'paddle.nn.functional.grid_sample':
-                if self.dtype=='float16':
-                    self.dtype='float32'
-                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             elif api_config.api_name == "paddle.nn.functional.hinge_embedding_loss":
                 if self.check_arg(api_config, 1, "label"):
@@ -1752,6 +1744,9 @@ class TensorConfig:
                 min_dim = min(arr.shape)
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
                 self.numpy_tensor = indices.reshape(self.shape)
+            
+            elif api_config.api_name == "paddle.poisson":
+                self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
             
             elif api_config.api_name in {"paddle.Tensor.__pow__","paddle.Tensor.pow", "paddle.pow"}:
                 # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other

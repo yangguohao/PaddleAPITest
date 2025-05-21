@@ -1,0 +1,18 @@
+paddle.nn.functional.dice_loss(Tensor([5, 2],"float64"), label=Tensor([5, 1],"int64"), epsilon=1e-05, )
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-16 06:32:29.598359 test begin: paddle.nn.functional.dice_loss(Tensor([5, 2],"float64"), label=Tensor([5, 1],"int64"), epsilon=1e-05, )
+One of the differentiated Tensors does not require grad
+W0516 06:32:36.022114 26528 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 6.1, Driver API Version: 12.0, Runtime API Version: 11.8
+W0516 06:32:36.023464 26528 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+W0516 06:33:08.612398 26528 multiply_fwd_func.cc:76] got different data type, run type promotion automatically, this may cause data type been changed.
+W0516 06:33:08.618446 26528 dygraph_functions.cc:83529] got different data type, run type promotion automatically, this may cause data type been changed.
+[accuracy error] paddle.nn.functional.dice_loss(Tensor([5, 2],"float64"), label=Tensor([5, 1],"int64"), epsilon=1e-05, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 0.07141084
+Max relative difference: 0.07123232
+ x: array(0.931095)
+ y: array(1.002506)

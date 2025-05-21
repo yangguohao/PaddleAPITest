@@ -256,3 +256,5 @@ paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1],"float16"), Ten
 paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([2, 1],"float16"), Tensor([2, 1],"float16"), reduction="mean", )
 paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([1, 1],"float16"), Tensor([1, 1],"float16"), reduction="mean", )
 paddle.nn.functional.binary_cross_entropy_with_logits(Tensor([8, 1],"float16"), Tensor([8, 1],"float16"), reduction="mean", ) 
+paddle.nn.functional.grid_sample(Tensor([4, 128, 128, 128],"float16"), Tensor([4, 128, 128, 2],"float16"), )
+paddle.nn.functional.grid_sample(Tensor([4, 128, 128, 128],"float16"), Tensor([4, 256, 256, 2],"float16"), )
