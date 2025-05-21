@@ -410,7 +410,7 @@ def main():
 
         # Batch execution
         finish_configs = read_log("checkpoint")
-        print(len(finish_configs), "cases have been tested.", flush=True)
+        print(len(finish_configs), "cases in checkpoint.", flush=True)
 
         api_config_count = 0
         api_configs = set()
