@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 
 TEST_LOG_PATH = Path("tester/api_config/test_log")
-OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/paddleonly")
+OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # log_digester_lite
@@ -55,12 +55,13 @@ def get_sort_key(content):
 
 pass_file = TEST_LOG_PATH / "api_config_pass.txt"
 pass_set = set()
-try:
-    with open(pass_file, "r") as f:
-        pass_set = set(line.strip() for line in f if line.strip())
-except Exception as err:
-    print(f"Error reading {pass_file}: {err}", flush=True)
-    exit(0)
+if pass_file.exists():
+    try:
+        with open(pass_file, "r") as f:
+            pass_set = set(line.strip() for line in f if line.strip())
+    except Exception as err:
+        print(f"Error reading {pass_file}: {err}", flush=True)
+        exit(0)
 
 sorted_logs = []
 for content in logs:
@@ -69,6 +70,10 @@ for content in logs:
         continue
     sorted_logs.append((key, content))
 sorted_logs.sort(key=lambda x: x[0])
+
+if not sorted_logs:
+    print("No error found", flush=True)
+    exit(0)
 
 output_log = OUTPUT_PATH / "error_log.log"
 try:
