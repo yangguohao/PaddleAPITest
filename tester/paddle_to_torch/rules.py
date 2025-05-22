@@ -339,7 +339,8 @@ for i in range(len(cutoff_values) - 1):
     row_indices = label_mask.nonzero().squeeze()
     if row_indices.numel() == 0:
         continue
-    
+    if row_indices.dim() == 0:
+        row_indices = row_indices.unsqueeze(0)
     if i == 0:
         scatter_output = scatter_nd(
             index = torch.unsqueeze(row_indices, 1),
@@ -618,7 +619,21 @@ else:
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
-
+class CosineEmbeddingLossRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if input1.dim() == 1:
+    input1 = input1.unsqueeze(1)
+if input2.dim() == 1:
+    input2 = input2.unsqueeze(1)
+"""    
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
 class CrossEntropyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -1141,6 +1156,19 @@ if data_format == "NDHWC":
 
 
 # d
+class DeformConv2dRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+import torchvision
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=map_code+ pre.splitlines(),
+            core=[core],
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class DataFormatRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -1185,6 +1213,7 @@ result = loss.mean()
 class Distribute_fpn_proposalsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
+import math
 def BBoxArea(box, pixel_offset):
     w = box[2] - box[0]
     h = box[3] - box[1]
@@ -2157,6 +2186,8 @@ class GatherRule(BaseRule):
 x = locals().get('x')
 index = locals().get('index')
 axis = locals().get('axis', 0)
+if isinstance(axis,torch.Tensor):
+    axis = axis.item()
 if len(index.shape) == 0:
     result = torch.squeeze(torch.narrow(x, axis, index, 1),axis)
 else:
@@ -2164,7 +2195,10 @@ else:
     for i in index:
         temp = torch.narrow(x, axis, i.reshape([]), 1)
         ans.append(torch.squeeze(temp, axis))
-    result = torch.stack(ans,axis)
+    if len(ans) == 0:
+        result = torch.zeros([x.shape[0],0])
+    else:
+        result = torch.stack(ans,axis)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -5658,7 +5692,6 @@ result = torch.where(**_kwargs)
 class ZerosRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-import re
 dtype = locals().get("dtype", None)
 if isinstance(shape,torch.Tensor):
     if shape.numel() == 1:
@@ -5668,18 +5701,6 @@ if isinstance(shape,torch.Tensor):
         for i in shape:
             li.append(i.item())
         shape = li
-if not dtype is None:
-    if isinstance(dtype, str):
-        dtype = getattr(torch, dtype)
-    else:
-        if str(dtype).split('.')[0] in ["paddle", "numpy"]:
-            dtype_str = str(dtype).split('.')[-1]
-            dtype = getattr(torch, dtype_str)
-        else:
-            match = re.search(r"'(.+?)'", str(dtype))
-            dtype_str = match.group(1)
-            dtype_str = dtype_str.split('.')[-1]
-            dtype = getattr(torch, dtype_str)
 """
         core = """
 if dtype is None:

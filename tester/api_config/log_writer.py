@@ -122,6 +122,19 @@ def aggregate_logs(end=False):
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
 
+    log_file = TEST_LOG_PATH / f"log_inorder.log"
+    try:
+        with log_file.open("a") as out_f:
+            files = list(TMP_LOG_PATH.glob(f"log_*.txt"))
+            for file_path in files:
+                try:
+                    with file_path.open("r") as in_f:
+                        out_f.writelines(in_f.read())
+                except Exception as err:
+                    print(f"Error reading {file_path}: {err}", flush=True)
+    except Exception as err:
+        print(f"Error writing to {log_file}: {err}", flush=True)
+
     try:
         shutil.rmtree(TMP_LOG_PATH)
     except OSError:
@@ -185,3 +198,48 @@ def print_log_info(all_case, log_counts={}):
         for log_type, count in log_counts.items():
             print(f"  {log_type:<28}: {count}")
     print("=" * 50 + "\n")
+
+
+orig_stdout = None
+orig_stderr = None
+log_file = None
+
+
+def redirect_stdio():
+    """执行 stdout 和 stderr 的重定向"""
+    global orig_stdout, orig_stderr, log_file
+
+    class Tee:
+        def __init__(self, *files):
+            self.files = files
+
+        def write(self, obj):
+            for f in self.files:
+                f.write(obj)
+                f.flush()
+
+        def flush(self):
+            for f in self.files:
+                f.flush()
+
+    log_path = TMP_LOG_PATH / f"log_{os.getpid()}.txt"
+    log_file = log_path.open("a", encoding="utf-8")
+
+    import sys
+
+    orig_stdout = sys.stdout
+    orig_stderr = sys.stderr
+
+    sys.stdout = Tee(orig_stdout, log_file)
+    sys.stderr = Tee(orig_stderr, log_file)
+
+
+def restore_stdio():
+    """恢复 stdout 和 stderr 的重定向"""
+    global orig_stdout, orig_stderr, log_file
+    if log_file is not None:
+        log_file.close()
+    import sys
+
+    sys.stdout = orig_stdout
+    sys.stderr = orig_stderr
