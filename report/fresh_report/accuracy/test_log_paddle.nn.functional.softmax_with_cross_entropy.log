@@ -1,0 +1,18 @@
+paddle.nn.functional.softmax_with_cross_entropy(Tensor([2, 16, 32, 64],"float32"), Tensor([2, 1, 32, 64],"int64"), axis=1, )
+
+2025-05-19 07:02:20.375288 test begin: paddle.nn.functional.softmax_with_cross_entropy(Tensor([2, 16, 32, 64],"float32"), Tensor([2, 1, 32, 64],"int64"), axis=1, )
+One of the differentiated Tensors does not require grad
+W0519 07:02:20.530047 13880 gpu_resources.cc:306] WARNING: device: 0. The installed Paddle is compiled with CUDNN 8.9, but CUDNN version in your machine is 8.8, which may cause serious incompatible bug. Please recompile or reinstall Paddle with compatible CUDNN version.
+[accuracy error] paddle.nn.functional.softmax_with_cross_entropy(Tensor([2, 16, 32, 64],"float32"), Tensor([2, 1, 32, 64],"int64"), axis=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3774 / 4096 (92.1%)
+Max absolute difference: 1.091259
+Max relative difference: 0.43620312
+ x: array([[[[2.563412, 2.781289, 2.467878, ..., 2.888059, 2.773165,
+          2.901366],
+         [2.943337, 3.222766, 2.960828, ..., 3.386206, 2.690162,...
+ y: array([[[[2.563411, 3.150524, 3.315639, ..., 2.484261, 2.863368,
+          2.671428],
+         [3.053305, 2.627642, 3.054472, ..., 2.658888, 2.992478,...

@@ -1,0 +1,254 @@
+paddle.clip(Tensor([10, 2],"float64"), min=1e-06, )
+paddle.clip(Tensor([5, 2],"float64"), min=0.0, )
+paddle.clip(Tensor([5],"float64"), min=0, )
+paddle.clip(Tensor([5],"float64"), min=0.0, )
+paddle.clip(x=Tensor([1, 2, 3],"float64"), min=None, max=1, )
+paddle.clip(x=Tensor([3, 3, 3],"float64"), min=None, max=5, )
+paddle.clip(x=Tensor([3, 3],"float64"), min=1.0, max=None, )
+paddle.clip(x=Tensor([3, 3],"float64"), min=5, max=None, )
+paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=None, )
+paddle.clip(x=Tensor([3],"float64"), )
+paddle.clip(Tensor([16, 256],"float64"), -127, 127, )
+paddle.clip(Tensor([2, 20],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([2, 25],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([2, 30],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([20, 1],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([20, 20],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([24, 17, 128, 128],"float64"), min=0, max=2, )
+paddle.clip(Tensor([24, 17, 256, 256],"float64"), min=0, max=2, )
+paddle.clip(Tensor([25, 1],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([25, 25],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([30, 1],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([30, 30],"float64"), min=-2.0, max=2.0, )
+paddle.clip(Tensor([4, 4],"float64"), -1, 1, )
+paddle.clip(Tensor([5, 5],"float64"), -1, 1, )
+paddle.clip(Tensor([],"float64"), min=0, )
+paddle.clip(x=Tensor([1, 2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+paddle.clip(x=Tensor([10, 10],"float64"), min=-1.0, max=1.0, )
+paddle.clip(x=Tensor([10, 10],"float64"), min=-2.0, max=-1.0, )
+paddle.clip(x=Tensor([10, 10],"float64"), min=2.0, max=2.0, )
+paddle.clip(x=Tensor([2, 2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+paddle.clip(x=Tensor([2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), name="test name", )
+paddle.clip(x=Tensor([3, 3],"float64"), min=-5.0, max=5.0, )
+paddle.clip(x=Tensor([3, 3],"float64"), min=0.0, max=5, )
+paddle.clip(x=Tensor([3, 3],"float64"), min=1, max=Tensor([1],"float64"), )
+paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+paddle.clip(x=Tensor([3],"float64"), min=2.0, max=2.0, )
+paddle.clip(x=Tensor([3],"float64"), min=None, max=-1, )
+paddle.clip(x=Tensor([3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+paddle.clip(x=Tensor([4, 10, 10],"float64"), min=-1.0, max=1.0, )
+
+grep: warning: GREP_OPTIONS is deprecated; please use an alias or script
+2025-05-20 08:52:28.157788 test begin: paddle.clip(Tensor([10, 2],"float64"), min=1e-06, )
+W0520 08:52:37.089871 134687 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0520 08:52:37.090991 134687 gpu_resources.cc:164] device: 0, cuDNN Version: 8.8.
+[accuracy error] paddle.clip(Tensor([10, 2],"float64"), min=1e-06, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 12 / 20 (60%)
+Max absolute difference: 8.55641789e+307
+Max relative difference: 1.
+ x: array([[3.402823e+38, 1.000000e-06],
+       [1.000000e-06, 3.402823e+38],
+       [1.000000e-06, 3.402823e+38],...
+ y: array([[4.185656e+306, 1.000000e-006],
+       [1.000000e-006, 8.556418e+307],
+       [1.000000e-006, 6.232906e+307],...
+2025-05-20 08:52:37.310930 test begin: paddle.clip(Tensor([16, 256],"float64"), -127, 127, )
+[Pass] paddle.clip(Tensor([16, 256],"float64"), -127, 127, )
+2025-05-20 08:52:37.529068 test begin: paddle.clip(Tensor([2, 20],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([2, 20],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:37.641146 test begin: paddle.clip(Tensor([2, 25],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([2, 25],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:37.750431 test begin: paddle.clip(Tensor([2, 30],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([2, 30],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:38.506550 test begin: paddle.clip(Tensor([20, 1],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([20, 1],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:38.640357 test begin: paddle.clip(Tensor([20, 20],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([20, 20],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:38.747156 test begin: paddle.clip(Tensor([24, 17, 128, 128],"float64"), min=0, max=2, )
+[Pass] paddle.clip(Tensor([24, 17, 128, 128],"float64"), min=0, max=2, )
+2025-05-20 08:52:40.472947 test begin: paddle.clip(Tensor([24, 17, 256, 256],"float64"), min=0, max=2, )
+[Pass] paddle.clip(Tensor([24, 17, 256, 256],"float64"), min=0, max=2, )
+2025-05-20 08:52:45.713279 test begin: paddle.clip(Tensor([25, 1],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([25, 1],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:45.842715 test begin: paddle.clip(Tensor([25, 25],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([25, 25],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:45.944932 test begin: paddle.clip(Tensor([30, 1],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([30, 1],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:46.108936 test begin: paddle.clip(Tensor([30, 30],"float64"), min=-2.0, max=2.0, )
+[Pass] paddle.clip(Tensor([30, 30],"float64"), min=-2.0, max=2.0, )
+2025-05-20 08:52:46.209978 test begin: paddle.clip(Tensor([4, 4],"float64"), -1, 1, )
+[Pass] paddle.clip(Tensor([4, 4],"float64"), -1, 1, )
+2025-05-20 08:52:46.306813 test begin: paddle.clip(Tensor([5, 2],"float64"), min=0.0, )
+[accuracy error] paddle.clip(Tensor([5, 2],"float64"), min=0.0, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 10 (40%)
+Max absolute difference: 8.71299217e+307
+Max relative difference: 1.
+ x: array([[3.402823e+38, 0.000000e+00],
+       [0.000000e+00, 0.000000e+00],
+       [0.000000e+00, 3.402823e+38],...
+ y: array([[8.248556e+306, 0.000000e+000],
+       [0.000000e+000, 0.000000e+000],
+       [0.000000e+000, 7.745003e+307],...
+2025-05-20 08:52:46.399656 test begin: paddle.clip(Tensor([5, 5],"float64"), -1, 1, )
+[Pass] paddle.clip(Tensor([5, 5],"float64"), -1, 1, )
+2025-05-20 08:52:46.891903 test begin: paddle.clip(Tensor([5],"float64"), min=0, )
+[accuracy error] paddle.clip(Tensor([5],"float64"), min=0, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3 / 5 (60%)
+Max absolute difference: 5.47666031e+307
+Max relative difference: 1.
+ x: array([3.402823e+38, 3.402823e+38, 3.402823e+38, 0.000000e+00,
+       0.000000e+00])
+ y: array([4.161243e+307, 7.786332e+305, 5.476660e+307, 0.000000e+000,
+       0.000000e+000])
+2025-05-20 08:52:47.031825 test begin: paddle.clip(Tensor([5],"float64"), min=0.0, )
+[accuracy error] paddle.clip(Tensor([5],"float64"), min=0.0, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3 / 5 (60%)
+Max absolute difference: 5.10186366e+307
+Max relative difference: 1.
+ x: array([3.402823e+38, 3.402823e+38, 0.000000e+00, 3.402823e+38,
+       0.000000e+00])
+ y: array([1.123077e+307, 5.101864e+307, 0.000000e+000, 2.861554e+307,
+       0.000000e+000])
+2025-05-20 08:52:47.133434 test begin: paddle.clip(Tensor([],"float64"), min=0, )
+[accuracy error] paddle.clip(Tensor([],"float64"), min=0, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference: 8.1762514e+307
+Max relative difference: 1.
+ x: array(3.402823e+38)
+ y: array(8.176251e+307)
+2025-05-20 08:52:47.224726 test begin: paddle.clip(x=Tensor([1, 2, 3],"float64"), min=None, max=1, )
+[accuracy error] paddle.clip(x=Tensor([1, 2, 3],"float64"), min=None, max=1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 4 / 6 (66.7%)
+Max absolute difference: 5.76407978e+307
+Max relative difference: 1.
+ x: array([[[-3.402823e+38, -3.402823e+38,  1.000000e+00],
+        [ 1.000000e+00, -3.402823e+38, -3.402823e+38]]])
+ y: array([[[-5.764080e+307, -3.803001e+307,  1.000000e+000],
+        [ 1.000000e+000, -3.934414e+307, -3.938157e+307]]])
+2025-05-20 08:52:47.327909 test begin: paddle.clip(x=Tensor([1, 2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[Pass] paddle.clip(x=Tensor([1, 2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+2025-05-20 08:52:47.434653 test begin: paddle.clip(x=Tensor([10, 10],"float64"), min=-1.0, max=1.0, )
+[Pass] paddle.clip(x=Tensor([10, 10],"float64"), min=-1.0, max=1.0, )
+2025-05-20 08:52:47.535572 test begin: paddle.clip(x=Tensor([10, 10],"float64"), min=-2.0, max=-1.0, )
+[Pass] paddle.clip(x=Tensor([10, 10],"float64"), min=-2.0, max=-1.0, )
+2025-05-20 08:52:47.629431 test begin: paddle.clip(x=Tensor([10, 10],"float64"), min=2.0, max=2.0, )
+[Pass] paddle.clip(x=Tensor([10, 10],"float64"), min=2.0, max=2.0, )
+2025-05-20 08:52:48.066008 test begin: paddle.clip(x=Tensor([2, 2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[Pass] paddle.clip(x=Tensor([2, 2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+2025-05-20 08:52:48.194100 test begin: paddle.clip(x=Tensor([2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), name="test name", )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[Pass] paddle.clip(x=Tensor([2],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), name="test name", )
+2025-05-20 08:52:48.293335 test begin: paddle.clip(x=Tensor([3, 3, 3],"float64"), min=None, max=5, )
+[accuracy error] paddle.clip(x=Tensor([3, 3, 3],"float64"), min=None, max=5, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 13 / 27 (48.1%)
+Max absolute difference: 8.45896534e+307
+Max relative difference: 1.
+ x: array([[[-3.402823e+38,  5.000000e+00, -3.402823e+38],
+        [-3.402823e+38,  5.000000e+00,  5.000000e+00],
+        [-3.402823e+38,  5.000000e+00, -3.402823e+38]],...
+ y: array([[[-8.458965e+307,  5.000000e+000, -1.454193e+307],
+        [-3.122725e+307,  5.000000e+000,  5.000000e+000],
+        [-2.466834e+307,  5.000000e+000, -4.333595e+307]],...
+2025-05-20 08:52:48.388947 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=-5.0, max=5.0, )
+[Pass] paddle.clip(x=Tensor([3, 3],"float64"), min=-5.0, max=5.0, )
+2025-05-20 08:52:48.488797 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=0.0, max=5, )
+[Pass] paddle.clip(x=Tensor([3, 3],"float64"), min=0.0, max=5, )
+2025-05-20 08:52:48.587565 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=1, max=Tensor([1],"float64"), )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[Pass] paddle.clip(x=Tensor([3, 3],"float64"), min=1, max=Tensor([1],"float64"), )
+2025-05-20 08:52:48.684563 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=1.0, max=None, )
+[accuracy error] paddle.clip(x=Tensor([3, 3],"float64"), min=1.0, max=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2 / 9 (22.2%)
+Max absolute difference: 6.69383143e+307
+Max relative difference: 1.
+ x: array([[1.000000e+00, 1.000000e+00, 3.402823e+38],
+       [1.000000e+00, 1.000000e+00, 1.000000e+00],
+       [1.000000e+00, 3.402823e+38, 1.000000e+00]])
+ y: array([[1.000000e+000, 1.000000e+000, 3.976976e+307],
+       [1.000000e+000, 1.000000e+000, 1.000000e+000],
+       [1.000000e+000, 6.693831e+307, 1.000000e+000]])
+2025-05-20 08:52:48.779819 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=5, max=None, )
+[accuracy error] paddle.clip(x=Tensor([3, 3],"float64"), min=5, max=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3 / 9 (33.3%)
+Max absolute difference: 8.52016158e+307
+Max relative difference: 1.
+ x: array([[5.000000e+00, 5.000000e+00, 5.000000e+00],
+       [5.000000e+00, 3.402823e+38, 5.000000e+00],
+       [3.402823e+38, 5.000000e+00, 3.402823e+38]])
+ y: array([[5.000000e+000, 5.000000e+000, 5.000000e+000],
+       [5.000000e+000, 7.952162e+306, 5.000000e+000],
+       [2.995360e+307, 5.000000e+000, 8.520162e+307]])
+2025-05-20 08:52:49.232055 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=None, )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[accuracy error] paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=None, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 2 / 9 (22.2%)
+Max absolute difference: 8.4520176e+307
+Max relative difference: 1.
+ x: array([[4.217404e-01, 4.217404e-01, 4.217404e-01],
+       [4.217404e-01, 3.402823e+38, 4.217404e-01],
+       [3.402823e+38, 4.217404e-01, 4.217404e-01]])
+ y: array([[4.217404e-001, 4.217404e-001, 4.217404e-001],
+       [4.217404e-001, 5.828954e+307, 4.217404e-001],
+       [8.452018e+307, 4.217404e-001, 4.217404e-001]])
+2025-05-20 08:52:49.357220 test begin: paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[Pass] paddle.clip(x=Tensor([3, 3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+2025-05-20 08:52:49.453748 test begin: paddle.clip(x=Tensor([3],"float64"), )
+[accuracy error] paddle.clip(x=Tensor([3],"float64"), ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 3 / 3 (100%)
+Max absolute difference: 8.80912975e+307
+Max relative difference: 1.
+ x: array([-3.402823e+38,  3.402823e+38, -3.402823e+38])
+ y: array([-2.843079e+306,  8.809130e+307, -3.747963e+305])
+2025-05-20 08:52:49.555393 test begin: paddle.clip(x=Tensor([3],"float64"), min=2.0, max=2.0, )
+[Pass] paddle.clip(x=Tensor([3],"float64"), min=2.0, max=2.0, )
+2025-05-20 08:52:49.661709 test begin: paddle.clip(x=Tensor([3],"float64"), min=None, max=-1, )
+[accuracy error] paddle.clip(x=Tensor([3],"float64"), min=None, max=-1, ) 
+ 
+Not equal to tolerance rtol=0.01, atol=0.01
+
+Mismatched elements: 1 / 3 (33.3%)
+Max absolute difference: 6.53718122e+307
+Max relative difference: 1.
+ x: array([-1.000000e+00, -1.000000e+00, -3.402823e+38])
+ y: array([-1.000000e+000, -1.000000e+000, -6.537181e+307])
+2025-05-20 08:52:49.765987 test begin: paddle.clip(x=Tensor([3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+[Pass] paddle.clip(x=Tensor([3],"float64"), min=Tensor([1],"float64"), max=Tensor([1],"float64"), )
+2025-05-20 08:52:49.876820 test begin: paddle.clip(x=Tensor([4, 10, 10],"float64"), min=-1.0, max=1.0, )
+[Pass] paddle.clip(x=Tensor([4, 10, 10],"float64"), min=-1.0, max=1.0, )

@@ -1,0 +1,8 @@
+[paddle error] paddle.nn.functional.grid_sample(Tensor([4, 128, 128, 128],"float16"), Tensor([4, 128, 128, 2],"float16"), ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), float16) of kernel `grid_sample` is not registered and fail to fallback to CPU one. Selected wrong DataType `float16`. Paddle support following DataTypes: float64, float32.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at /paddle/paddle/phi/core/kernel_factory.cc:380)
+
+
+[paddle error] paddle.nn.functional.grid_sample(Tensor([4, 128, 128, 128],"float16"), Tensor([4, 256, 256, 2],"float16"), ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), float16) of kernel `grid_sample` is not registered and fail to fallback to CPU one. Selected wrong DataType `float16`. Paddle support following DataTypes: float64, float32.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at /paddle/paddle/phi/core/kernel_factory.cc:380)

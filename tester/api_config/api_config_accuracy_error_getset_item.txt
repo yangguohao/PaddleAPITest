@@ -1,7 +1,0 @@
-paddle.Tensor.__setitem__(Tensor([11661],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
-paddle.Tensor.__setitem__(Tensor([128, 128, 64],"float32"), tuple(Tensor([128],"int64"),Tensor([128],"int64"),), Tensor([128, 64],"float32"), )
-paddle.Tensor.__setitem__(Tensor([15548],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
-paddle.Tensor.__setitem__(Tensor([26736],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), )
-paddle.Tensor.__setitem__(Tensor([3029],"int64"), Tensor([458],"int64"), Tensor([458],"int64"), )
-paddle.Tensor.__setitem__(Tensor([3887],"int64"), Tensor([1358],"int64"), Tensor([1358],"int64"), )
-paddle.Tensor.__setitem__(Tensor([6684],"int64"), Tensor([3029],"int64"), Tensor([3029],"int64"), )

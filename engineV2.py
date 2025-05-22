@@ -22,7 +22,9 @@ if TYPE_CHECKING:
     )
 
 from tester.api_config.log_writer import (aggregate_logs, print_log_info,
-                                          read_log, set_engineV2, write_to_log)
+                                          read_log, redirect_stdio,
+                                          restore_stdio, set_engineV2,
+                                          write_to_log)
 
 
 def cleanup(pool):
@@ -202,6 +204,7 @@ def init_worker_gpu(
         def signal_handler(*args):
             torch.cuda.empty_cache()
             paddle.device.cuda.empty_cache()
+            restore_stdio()
             sys.exit(0)
 
         signal.signal(signal.SIGINT, signal_handler)
@@ -209,6 +212,8 @@ def init_worker_gpu(
 
         if test_cpu:
             paddle.device.set_device("cpu")
+
+        redirect_stdio()
 
         print(
             f"{datetime.now()} Worker PID: {my_pid}, Assigned GPU ID: {assigned_gpu}",
@@ -405,7 +410,7 @@ def main():
 
         # Batch execution
         finish_configs = read_log("checkpoint")
-        print(len(finish_configs), "cases have been tested.", flush=True)
+        print(len(finish_configs), "cases in checkpoint.", flush=True)
 
         api_config_count = 0
         api_configs = set()
