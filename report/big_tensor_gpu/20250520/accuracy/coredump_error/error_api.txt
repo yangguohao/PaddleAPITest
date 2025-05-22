@@ -1,0 +1,2 @@
+paddle.nn.functional.pairwise_distance
+paddle.tensordot
