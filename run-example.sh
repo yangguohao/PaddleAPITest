@@ -25,6 +25,7 @@ nohup python engineV2.py --accuracy=True \
 # --test_amp=True \
 # --test_cpu=True \
 # --use_numpy_cache=True \
+# --log_dir="$LOG_DIR" \
 
 PYTHON_PID=$!
 
