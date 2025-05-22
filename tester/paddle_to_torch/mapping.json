@@ -1175,6 +1175,7 @@
         }
     },
     "paddle.nn.functional.cosine_embedding_loss": {
+        "Rule": "CosineEmbeddingLossRule",
         "torch_api": "torch.nn.functional.cosine_embedding_loss",
         "paddle_torch_args_map": {
             "input1": "input1",
@@ -7592,6 +7593,7 @@
         "min_input_args": 0
     },
     "paddle.vision.ops.deform_conv2d": {
+        "Rule": "DeformConv2dRule",
         "torch_api": "torchvision.ops.deform_conv2d",
         "paddle_torch_args_map": {
             "x": "input",
