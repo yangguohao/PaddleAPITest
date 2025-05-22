@@ -28,7 +28,7 @@ with open(os.path.join(output_dir, "error_log.log"), "w") as error_log:
                     if "[Worker" in line and "Processing Task" in line:
                         # 遇到新的Task，先检查上一个Task是否是出错的
                         if log_str:
-                            if "[torch error]" not in log_str and ("[accuracy error]" in log_str or
+                            if ("[torch error]" in log_str or "[accuracy error]" in log_str or
                                     "[cuda error]" in log_str or
                                     "[paddle error]" in log_str or
                                     "FatalError" in log_str or
@@ -36,7 +36,8 @@ with open(os.path.join(output_dir, "error_log.log"), "w") as error_log:
                                     "cudaErrorLaunchFailure" in log_str or
                                     "CUDA error" in log_str or
                                     "CUDNN error" in log_str or
-                                    "TID" in log_str):
+                                    "TID" in log_str or
+                                    "Completed Task" not in log_str):
                                 error_log.write(log_str + "\n")
                                 error_configs.add(config)
                                 error_apis.add(api)
@@ -58,7 +59,7 @@ with open(os.path.join(output_dir, "error_log.log"), "w") as error_log:
 
                 # 文件结束，处理最后一个Task
                 if log_str:
-                    if "[torch error]" not in log_str and ("[accuracy error]" in log_str or
+                    if ("[torch error]" in log_str or "[accuracy error]" in log_str or
                             "[cuda error]" in log_str or
                             "[paddle error]" in log_str or
                             "FatalError" in log_str or
@@ -66,7 +67,8 @@ with open(os.path.join(output_dir, "error_log.log"), "w") as error_log:
                             "cudaErrorLaunchFailure" in log_str or
                             "CUDA error" in log_str or
                             "CUDNN error" in log_str or
-                            "TID" in log_str):
+                            "TID" in log_str or
+                            "Completed Task" not in log_str):
                         error_log.write(log_str + "\n")
                         error_configs.add(config)
                         error_apis.add(api)
