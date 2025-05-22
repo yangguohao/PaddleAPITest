@@ -5,13 +5,12 @@ from pathlib import Path
 import re
 
 TEST_LOG_PATH = Path("tester/api_config/test_log")
-OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/accuracy")
+OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/paddleonly")
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # log_digester_lite
 pattern = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+")
-warning_pattern = re.compile(r"^W0521 \d{2}:\d{2}:\d{2}\.\d{6} \d+ gpu_resources.cc")
-test_config_pattern = re.compile(r"test begin: (.*)$")
+warning_pattern = re.compile(r"^W0521 \d{2}:\d{2}:\d{2}\.\d+\s+\d+ gpu_resources.cc")
 
 logs = []
 in_test_block = False
@@ -49,16 +48,26 @@ if current_content:
 
 
 def get_sort_key(content):
-    for line in content.split("\n"):
-        match = test_config_pattern.search(line)
-        if match:
-            return match.group(1)
+    match = re.search(r"test begin: (.*?)\n", content)
+    if match:
+        return match.group(1).strip()
     return ""
 
+pass_file = TEST_LOG_PATH / "api_config_pass.txt"
+pass_set = set()
+try:
+    with open(pass_file, "r") as f:
+        pass_set = set(line.strip() for line in f if line.strip())
+except Exception as err:
+    print(f"Error reading {pass_file}: {err}", flush=True)
+    exit(0)
 
 sorted_logs = []
 for content in logs:
-    sorted_logs.append((get_sort_key(content), content))
+    key = get_sort_key(content)
+    if key and key in pass_set:
+        continue
+    sorted_logs.append((key, content))
 sorted_logs.sort(key=lambda x: x[0])
 
 output_log = OUTPUT_PATH / "error_log.log"

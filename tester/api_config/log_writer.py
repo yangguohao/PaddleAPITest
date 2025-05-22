@@ -199,7 +199,8 @@ def print_log_info(all_case, log_counts={}):
             print(f"  {log_type:<28}: {count}")
     print("=" * 50 + "\n")
 
-
+stdout_fd = None
+stderr_fd = None
 orig_stdout_fd = None
 orig_stderr_fd = None
 log_file = None
@@ -207,56 +208,42 @@ log_file = None
 
 def redirect_stdio():
     """执行 stdout 和 stderr 的重定向"""
-    global orig_stdout_fd, orig_stderr_fd, log_file
-    stdout_r, stdout_w = os.pipe()
-    stderr_r, stderr_w = os.pipe()
-
-    orig_stdout_fd = os.dup(1)
-    orig_stderr_fd = os.dup(2)
-
-    os.dup2(stdout_w, 1)
-    os.dup2(stderr_w, 2)
-
-    os.close(stdout_w)
-    os.close(stderr_w)
+    global stdout_fd, stderr_fd, orig_stdout_fd, orig_stderr_fd, log_file
 
     log_path = TMP_LOG_PATH / f"log_{os.getpid()}.log"
     log_file = log_path.open("a", encoding="utf-8")
+    log_fd = log_file.fileno()
 
-    import threading
+    import sys
 
-    def tee_output(read_fd, write_fds):
-        while True:
-            data = os.read(read_fd, 1024)
-            if not data:
-                break
-            for fd in write_fds:
-                os.write(fd, data)
+    stdout_fd = sys.stdout.fileno()
+    stderr_fd = sys.stderr.fileno()
 
-    stdout_thread = threading.Thread(
-        target=tee_output, args=(stdout_r, [orig_stdout_fd, log_file.fileno()])
-    )
-    stderr_thread = threading.Thread(
-        target=tee_output, args=(stderr_r, [orig_stderr_fd, log_file.fileno()])
-    )
+    orig_stdout_fd = os.dup(stdout_fd)
+    orig_stderr_fd = os.dup(stderr_fd)
 
-    stdout_thread.start()
-    stderr_thread.start()
+    os.dup2(log_fd, stdout_fd)
+    os.dup2(log_fd, stderr_fd)
+
+    sys.stdout = os.fdopen(stdout_fd, 'a', buffering=1)
+    sys.stderr = os.fdopen(stderr_fd, 'a', buffering=1)
+
+    os.close(log_fd)
 
 
 def restore_stdio():
     """恢复 stdout 和 stderr 的重定向"""
-    global orig_stdout_fd, orig_stderr_fd, log_file
+    global stdout_fd, stderr_fd, orig_stdout_fd, orig_stderr_fd, log_file
     if log_file is not None:
         log_file.close()
         log_file = None
 
-    if orig_stdout_fd is not None:
-        os.dup2(orig_stdout_fd, 1)
+    if orig_stdout_fd is not None and stdout_fd is not None:
+        os.dup2(orig_stdout_fd, stdout_fd)
         os.close(orig_stdout_fd)
         orig_stdout_fd = None
 
-    if orig_stderr_fd is not None:
-        os.dup2(orig_stderr_fd, 2)
+    if orig_stderr_fd is not None and stderr_fd is not None:
+        os.dup2(orig_stderr_fd, stderr_fd)
         os.close(orig_stderr_fd)
         orig_stderr_fd = None

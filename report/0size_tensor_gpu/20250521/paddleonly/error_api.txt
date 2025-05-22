@@ -39,6 +39,7 @@ paddle.logaddexp
 paddle.logcumsumexp
 paddle.masked_fill
 paddle.matmul
+paddle.meshgrid
 paddle.mm
 paddle.nanmedian
 paddle.nanquantile
