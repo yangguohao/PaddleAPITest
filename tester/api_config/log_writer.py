@@ -116,6 +116,7 @@ def aggregate_logs(end=False):
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
+                os.remove(str(file_path))
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
 
@@ -139,14 +140,12 @@ def aggregate_logs(end=False):
     except Exception as err:
         print(f"Error writing to {log_file}: {err}", flush=True)
 
-    try:
-        shutil.rmtree(TMP_LOG_PATH)
-    except OSError:
-        pass
+    if end:
+        try:
+            shutil.rmtree(TMP_LOG_PATH)
+        except OSError:
+            pass
 
-    if not end:
-        TMP_LOG_PATH.mkdir(exist_ok=True)
-    else:
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
         api_configs = set()
@@ -203,6 +202,7 @@ def print_log_info(all_case, log_counts={}):
             print(f"  {log_type:<28}: {count}")
     print("=" * 50 + "\n")
 
+
 stdout_fd = None
 stderr_fd = None
 orig_stdout_fd = None
@@ -229,8 +229,8 @@ def redirect_stdio():
     os.dup2(log_fd, stdout_fd)
     os.dup2(log_fd, stderr_fd)
 
-    sys.stdout = os.fdopen(stdout_fd, 'a', buffering=1)
-    sys.stderr = os.fdopen(stderr_fd, 'a', buffering=1)
+    sys.stdout = os.fdopen(stdout_fd, "a", buffering=1)
+    sys.stderr = os.fdopen(stderr_fd, "a", buffering=1)
 
     os.close(log_fd)
 
