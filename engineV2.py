@@ -157,9 +157,9 @@ def check_gpu_memory(
 
 
 def init_worker_gpu(
-    gpu_worker_list, lock, available_gpus, max_workers_per_gpu, test_cpu
+    gpu_worker_list, lock, available_gpus, max_workers_per_gpu, options
 ):
-    set_engineV2()
+    set_engineV2(log_dir=options.log_dir)
     my_pid = os.getpid()
 
     def pid_exists(pid):
@@ -210,7 +210,7 @@ def init_worker_gpu(
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
-        if test_cpu:
+        if options.test_cpu:
             paddle.device.set_device("cpu")
 
         redirect_stdio()
@@ -347,9 +347,13 @@ def main():
     )
     parser.add_argument("--use_cached_numpy", type=bool, default=False)
     parser.add_argument(
-        "--retry", type=bool, default=False, help="whether to test on cpu"
+        "--log_dir",
+        type=str,
+        default="",
+        help="Log directory",
     )
     options = parser.parse_args()
+    print(f"Options: {vars(options)}", flush=True)
 
     os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
 
@@ -442,7 +446,7 @@ def main():
 
         if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
-            set_engineV2()
+            set_engineV2(log_dir=options.log_dir)
             BATCH_SIZE = 20000
 
             gpu_ids = validate_gpu_options(options)
@@ -480,7 +484,7 @@ def main():
                     lock,
                     available_gpus,
                     max_workers_per_gpu,
-                    options.test_cpu,
+                    options,
                 ],
             )
 
@@ -494,6 +498,7 @@ def main():
             signal.signal(signal.SIGTERM, cleanup_handler)
 
             try:
+                i = 0
                 for batch_start in range(0, len(api_configs), BATCH_SIZE):
                     batch = api_configs[batch_start : batch_start + BATCH_SIZE]
                     futures = {}
@@ -509,20 +514,26 @@ def main():
                     for future in as_completed(futures):
                         config = futures[future]
                         try:
+                            i += 1
+                            print(f"[{i}/{all_case}] Testing {config}", flush=True)
                             future.result()
+                            print(
+                                f"[info] Test case succeeded for {config}", flush=True
+                            )
                         except TimeoutError as err:
                             write_to_log("timeout", config)
                             print(
-                                f"[timeout] Test case timed out for {config}: {err}",
+                                f"[error] Test case timed out for {config}: {err}",
                                 flush=True,
                             )
                             fail_case += 1
                         except ProcessExpired as err:
                             if err.exitcode == 99:
                                 write_to_log("oom", config)
-                                # print(
-                                #     f"[oom] CUDA out of memory for {config}", flush=True
-                                # )
+                                print(
+                                    f"[error] CUDA out of memory for {config}",
+                                    flush=True,
+                                )
                             else:
                                 write_to_log("crash", config)
                                 print(
@@ -531,9 +542,8 @@ def main():
                                 )
                             fail_case += 1
                         except Exception as err:
-                            # write_to_log("crash", config)
                             print(
-                                f"[fatal] Worker failed for {config}: {err}",
+                                f"[warn] Test case failed for {config}: {err}",
                                 flush=True,
                             )
                     aggregate_logs()

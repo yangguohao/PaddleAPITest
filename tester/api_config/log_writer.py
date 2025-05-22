@@ -42,9 +42,13 @@ def set_cfg(cfg):
     CMD_CONFIG = cfg
 
 
-def set_engineV2():
-    global is_engineV2
+def set_engineV2(log_dir=""):
+    global is_engineV2, TEST_LOG_PATH, TMP_LOG_PATH
     is_engineV2 = True
+    if log_dir:
+        TEST_LOG_PATH = DIR_PATH / log_dir
+        TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
+        TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
     TMP_LOG_PATH.mkdir(exist_ok=True)
 
 
@@ -112,6 +116,7 @@ def aggregate_logs(end=False):
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
+                os.remove(str(file_path))
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
 
@@ -125,7 +130,7 @@ def aggregate_logs(end=False):
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     try:
         with log_file.open("a") as out_f:
-            files = list(TMP_LOG_PATH.glob(f"log_*.txt"))
+            files = list(TMP_LOG_PATH.glob(f"log_*.log"))
             for file_path in files:
                 try:
                     with file_path.open("r") as in_f:
@@ -135,14 +140,12 @@ def aggregate_logs(end=False):
     except Exception as err:
         print(f"Error writing to {log_file}: {err}", flush=True)
 
-    try:
-        shutil.rmtree(TMP_LOG_PATH)
-    except OSError:
-        pass
+    if end:
+        try:
+            shutil.rmtree(TMP_LOG_PATH)
+        except OSError:
+            pass
 
-    if not end:
-        TMP_LOG_PATH.mkdir(exist_ok=True)
-    else:
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
         api_configs = set()
@@ -200,46 +203,51 @@ def print_log_info(all_case, log_counts={}):
     print("=" * 50 + "\n")
 
 
-orig_stdout = None
-orig_stderr = None
+stdout_fd = None
+stderr_fd = None
+orig_stdout_fd = None
+orig_stderr_fd = None
 log_file = None
 
 
 def redirect_stdio():
     """执行 stdout 和 stderr 的重定向"""
-    global orig_stdout, orig_stderr, log_file
+    global stdout_fd, stderr_fd, orig_stdout_fd, orig_stderr_fd, log_file
 
-    class Tee:
-        def __init__(self, *files):
-            self.files = files
-
-        def write(self, obj):
-            for f in self.files:
-                f.write(obj)
-                f.flush()
-
-        def flush(self):
-            for f in self.files:
-                f.flush()
-
-    log_path = TMP_LOG_PATH / f"log_{os.getpid()}.txt"
+    log_path = TMP_LOG_PATH / f"log_{os.getpid()}.log"
     log_file = log_path.open("a", encoding="utf-8")
+    log_fd = log_file.fileno()
 
     import sys
 
-    orig_stdout = sys.stdout
-    orig_stderr = sys.stderr
+    stdout_fd = sys.stdout.fileno()
+    stderr_fd = sys.stderr.fileno()
 
-    sys.stdout = Tee(orig_stdout, log_file)
-    sys.stderr = Tee(orig_stderr, log_file)
+    orig_stdout_fd = os.dup(stdout_fd)
+    orig_stderr_fd = os.dup(stderr_fd)
+
+    os.dup2(log_fd, stdout_fd)
+    os.dup2(log_fd, stderr_fd)
+
+    sys.stdout = os.fdopen(stdout_fd, "a", buffering=1)
+    sys.stderr = os.fdopen(stderr_fd, "a", buffering=1)
+
+    os.close(log_fd)
 
 
 def restore_stdio():
     """恢复 stdout 和 stderr 的重定向"""
-    global orig_stdout, orig_stderr, log_file
+    global stdout_fd, stderr_fd, orig_stdout_fd, orig_stderr_fd, log_file
     if log_file is not None:
         log_file.close()
-    import sys
+        log_file = None
 
-    sys.stdout = orig_stdout
-    sys.stderr = orig_stderr
+    if orig_stdout_fd is not None and stdout_fd is not None:
+        os.dup2(orig_stdout_fd, stdout_fd)
+        os.close(orig_stdout_fd)
+        orig_stdout_fd = None
+
+    if orig_stderr_fd is not None and stderr_fd is not None:
+        os.dup2(orig_stderr_fd, stderr_fd)
+        os.close(orig_stderr_fd)
+        orig_stderr_fd = None
