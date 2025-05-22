@@ -10,7 +10,7 @@ OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # log_digester_lite
 pattern = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+")
-warning_pattern = re.compile(r"^W0521 \d{2}:\d{2}:\d{2}\.\d+\s+\d+ gpu_resources.cc")
+warning_pattern = re.compile(r"^W\d{4} \d{2}:\d{2}:\d{2}\.\d+\s+\d+ gpu_resources.cc")
 
 logs = []
 in_test_block = False
