@@ -739,9 +739,9 @@ class CtcLossRule(BaseRule):
 _kwargs = {}
 for paddle_param, torch_param in {
     "log_probs": "log_probs",
-    "targets": "labels",
+    "labels": "targets",
     "input_lengths": "input_lengths",
-    "target_lengths": "label_lengths",
+    "label_lengths":"target_lengths",
     "blank": "blank",
     "reduction": "reduction",
 }.items():

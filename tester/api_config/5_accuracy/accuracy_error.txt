@@ -21299,8 +21299,6 @@ paddle.nn.functional.sigmoid_focal_loss(Tensor([85932, 4],"float32"), Tensor([85
 paddle.nn.functional.sigmoid_focal_loss(Tensor([9, 4],"float32"), Tensor([9, 4],"float32"), alpha=0.25, gamma=2.0, reduction="none", )
 paddle.nn.functional.sigmoid_focal_loss(Tensor([95480, 4],"float32"), Tensor([95480, 4],"float32"), )
 paddle.nn.functional.softmax_with_cross_entropy(Tensor([2, 16, 32, 64],"float32"), Tensor([2, 1, 32, 64],"int64"), axis=1, )
-paddle.nn.functional.softmax_with_cross_entropy(Tensor([4, 3],"float64"), Tensor([4, 3],"float64"), soft_label=True, axis=-1, )
-paddle.nn.functional.softmax_with_cross_entropy(logits=Tensor([128, 10000],"float32"), label=Tensor([128, 10000],"float32"), soft_label=True, )
 paddle.einsum("i, i", Tensor([2],"float64"), Tensor([1],"float64"), )
 paddle.einsum("ij,ij->j", Tensor([10, 2],"float64"), Tensor([1, 2],"float64"), )
 paddle.einsum("mixy,bmxy,kmxy->bixy", Tensor([32, 32, 1, 1],"float32"), Tensor([8, 32, 241, 241],"float32"), Tensor([1, 32, 1, 1],"float32"), )
