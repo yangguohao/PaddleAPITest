@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 
 TEST_LOG_PATH = Path("tester/api_config/test_log")
-OUTPUT_PATH = Path("report/0size_tensor_gpu/20250521/paddleonly")
+OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # log_digester_lite
@@ -38,7 +38,7 @@ for line in input_text.split("\n"):
             in_test_block = True
             current_content = [line]
         continue
-    
+
     if in_test_block:
         current_content.append(line)
 
@@ -48,37 +48,44 @@ if current_content:
 
 
 def get_sort_key(content):
-    match = re.search(r"test begin: (.*?)\n", content)
+    lines = content.split("\n")
+    match = re.search(r"test begin: (.*)$", lines[0])
     if match:
         return match.group(1).strip()
     return ""
 
+
 pass_file = TEST_LOG_PATH / "api_config_pass.txt"
 pass_set = set()
-try:
-    with open(pass_file, "r") as f:
-        pass_set = set(line.strip() for line in f if line.strip())
-except Exception as err:
-    print(f"Error reading {pass_file}: {err}", flush=True)
-    exit(0)
+if pass_file.exists():
+    try:
+        with open(pass_file, "r") as f:
+            pass_set = set(line.strip() for line in f if line.strip())
+    except Exception as err:
+        print(f"Error reading {pass_file}: {err}", flush=True)
+        exit(0)
 
-sorted_logs = []
+key_logs = {}
 for content in logs:
     key = get_sort_key(content)
-    if key and key in pass_set:
+    if not key or key in pass_set:
         continue
-    sorted_logs.append((key, content))
-sorted_logs.sort(key=lambda x: x[0])
+    key_logs[key] = content
+
+if not key_logs:
+    print("No error found", flush=True)
+    exit(0)
 
 output_log = OUTPUT_PATH / "error_log.log"
 try:
     with open(output_log, "w") as f:
-        for _, content in sorted_logs:
+        for key in sorted(key_logs.keys()):
+            content = key_logs[key]
             f.write(content + "\n\n")
 except Exception as err:
     print(f"Error writing {output_log}: {err}", flush=True)
     exit(0)
-print(f"Read and write {len(logs)} log(s)", flush=True)
+print(f"Read and write {len(key_logs)} log(s)", flush=True)
 
 # get_api_set + get_api_config_set
 ERROR_LOG = [
@@ -87,7 +94,8 @@ ERROR_LOG = [
     "api_config_paddle_error.txt",
     "api_config_torch_error.txt",
     "api_config_paddle_to_torch_failed.txt",
-    "api_config_timeout",
+    "api_config_timeout.txt",
+    "api_config_skip.txt",
 ]
 api_names = set()
 api_configs = set()
