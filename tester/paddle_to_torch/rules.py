@@ -2053,6 +2053,13 @@ def fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias=None, line
 """
         core = """
 result = fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias, linear2_bias, ln1_scale, ln1_bias, ln2_scale, ln2_bias, dropout1_rate, dropout2_rate, activation, ln1_epsilon, ln2_epsilon, pre_layer_norm, training, mode)
+
+# Force tensors to float16 when autocast is enabled, as all our test cases using autocast expect fp16
+# https://docs.pytorch.org/docs/stable/amp.html#autocast-op-reference
+# Note: Autocast detection must happen inside the core execution block because preprocess and postprocess
+# do not use autocast context manager
+if torch.is_autocast_enabled():
+    result = result.to(torch.float16)
 """
         code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -2118,6 +2125,13 @@ def fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha=1.0, beg
 """
         core = """
 result = fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha, begin_norm_axis, bias, residual, quant_scale, quant_round_type, quant_max_bound, quant_min_bound)
+
+# Force tensors to lower dtype when autocast is enabled since layer_norm are not autocast to fp16
+# https://docs.pytorch.org/docs/stable/amp.html#autocast-op-reference
+# Note: Autocast detection must happen inside the core execution block because preprocess and postprocess
+# do not use autocast context manager
+# if torch.is_autocast_enabled() and quant_scale == -1:
+#     result = [tensor.to(torch.float16) for tensor in result]
 """
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
