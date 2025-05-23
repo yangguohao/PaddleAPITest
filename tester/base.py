@@ -59,6 +59,7 @@ stochastic_behavior_apis =[
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
     "paddle.nn.functional.feature_alpha_dropout",
+    "paddle.incubate.nn.functional.fused_multi_head_attention",
 ]
 
 single_op_no_signature_apis = ["__eq__", "__ge__", "__gt__", "__le__", "__lt__", "__add__", "__div__", "__floordiv__", "__matmul__", "__mod__", "__ne__", "__pow__", "__radd__", "__rmatmul__", "__rmod__", "__rmul__", "__rpow__", "__rsub__", "__rtruediv__", "__truediv__", "__mul__", "__sub__"]
