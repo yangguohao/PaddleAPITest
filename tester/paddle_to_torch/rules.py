@@ -4697,7 +4697,7 @@ for i,dim in enumerate(axes):
     if ends[i] < 0:
         ends[i] = ends[i] + input.shape[dim]
     ends[i] = min(ends[i],input.shape[dim])
-    input = torch.narrow(input, dim, starts[i], ends[i]-starts[i])
+    input = torch.narrow(input, dim, starts[i], max(0, ends[i]-starts[i]))
 result = input
 """
         code = Code(core=core.splitlines())
