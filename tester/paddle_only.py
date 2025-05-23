@@ -14,7 +14,7 @@ class APITestPaddleOnly(APITestBase):
     #@func_set_timeout(600)
     def test(self):
         
-        if self.need_skip():
+        if self.need_skip(paddle_only=True):
             print("[Skip]", flush=True)
             return
 

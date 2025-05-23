@@ -55,13 +55,15 @@ if api_configs:
 for log_type, count in log_counts.items():
     print(f"{log_type}: {count}", flush=True)
 
-# if api_configs:
-#     try:
-#         with checkpoint_file.open("r") as f:
-#             lines = set(line.strip() for line in f if line.strip())
-#             lines -= api_configs
-#             print(f"checkpoint remaining: {len(lines)}", flush=True)
-#         with checkpoint_file.open("w") as f:
-#             f.writelines(f"{line}\n" for line in sorted(lines))
-#     except Exception as err:
-#         print(f"Error reading {checkpoint_file}: {err}", flush=True)
+if api_configs:
+    try:
+        with checkpoint_file.open("r") as f:
+            lines = set(line.strip() for line in f if line.strip())
+            lines -= api_configs
+            print(f"checkpoint remaining: {len(lines)}", flush=True)
+        with checkpoint_file.open("w") as f:
+            f.writelines(f"{line}\n" for line in sorted(lines))
+    except Exception as err:
+        print(f"Error reading {checkpoint_file}: {err}", flush=True)
+else:
+    print("No skip configs found.", flush=True)
