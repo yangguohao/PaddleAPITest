@@ -25017,3 +25017,4 @@ paddle.incubate.nn.functional.fused_dropout_add(Tensor([2, 1024, 1, 1],"float64"
 paddle.incubate.nn.functional.fused_dropout_add(Tensor([2, 1024, 1, 1],"float64"), Tensor([2, 1024, 1, 1],"float64"), p=1.0, training=False, mode="upscale_in_train", )
 paddle.incubate.nn.functional.fused_dropout_add(Tensor([2, 1024, 1, 1],"float64"), Tensor([2, 1024, 1, 1],"float64"), p=1.0, training=True, mode="downscale_in_infer", )
 paddle.incubate.nn.functional.fused_dropout_add(Tensor([2, 1024, 1, 1],"float64"), Tensor([2, 1024, 1, 1],"float64"), p=1.0, training=True, mode="upscale_in_train", )
+paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm(Tensor([8, 128, 1024],"float32"), Tensor([8, 128, 1024],"float32"), None, Tensor([1024],"float32"), Tensor([1024],"float32"), 0.0, 1e-05, )
