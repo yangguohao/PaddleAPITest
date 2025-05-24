@@ -4,7 +4,7 @@
 import os
 from pathlib import Path
 
-TEST_LOG_PATH = Path("tester/api_config/5_accuracy/test_log_accuracy")
+TEST_LOG_PATH = Path("tester/api_config/test_log")
 
 LOG_FILES = [
     "api_config_timeout",

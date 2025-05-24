@@ -6,7 +6,7 @@ from collections import defaultdict
 from pathlib import Path
 import re
 
-TEST_LOG_PATH = Path("tester/api_config/5_accuracy/test_log_accuracy")
+TEST_LOG_PATH = Path("tester/api_config/test_log")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -19,6 +19,7 @@ LOG_PREFIXES = {
     "timeout": "api_config_timeout",
     "crash": "api_config_crash",
     "oom": "api_config_oom",
+    "skip": "api_config_skip",
 }
 
 # log_digester_lite
