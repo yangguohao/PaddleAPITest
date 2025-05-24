@@ -49,7 +49,7 @@
 | `--gpu_ids`                 | str   | 使用的 GPU 序号，以逗号分隔（默认""，"-1" 动态最大）                      |
 | `--required_memory`         | float | 每 worker 进程预估使用显存（默认 10.0）                                   |
 | `--test_cpu`                | bool  | 启用 Paddle CPU 模式测试（默认 False）                                    |
-| `--use_numpy_cache`         | bool  | 启用 Numpy 缓存（默认 False）                                             |
+| `--use_cached_numpy`        | bool  | 启用 Numpy 缓存（默认 False）                                             |
 | `--log_dir`                 | str   | 日志输出路径（默认 "tester/api_config/test_log"）                         |
 
 ### 示例命令
