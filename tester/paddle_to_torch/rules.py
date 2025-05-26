@@ -739,9 +739,9 @@ class CtcLossRule(BaseRule):
 _kwargs = {}
 for paddle_param, torch_param in {
     "log_probs": "log_probs",
-    "targets": "labels",
+    "labels": "targets",
     "input_lengths": "input_lengths",
-    "target_lengths": "label_lengths",
+    "label_lengths":"target_lengths",
     "blank": "blank",
     "reduction": "reduction",
 }.items():
@@ -4692,12 +4692,20 @@ class SliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
 for i,dim in enumerate(axes):
+    if isinstance(starts[i], torch.Tensor):
+        starts[i] = starts[i].item()
+    if isinstance(ends[i], torch.Tensor):
+        ends[i] = ends[i].item()
     if starts[i] < 0:
         starts[i] = starts[i] + input.shape[dim]
     if ends[i] < 0:
         ends[i] = ends[i] + input.shape[dim]
+    starts[i] = max(starts[i],0)
+    starts[i] = min(starts[i], input.shape[dim])
+    ends[i] = min(ends[i], input.shape[dim])
+    ends[i] = max(ends[i],0)
     ends[i] = min(ends[i],input.shape[dim])
-    input = torch.narrow(input, dim, starts[i], ends[i]-starts[i])
+    input = torch.narrow(input, dim, starts[i], max(0, ends[i]-starts[i]))
 result = input
 """
         code = Code(core=core.splitlines())
