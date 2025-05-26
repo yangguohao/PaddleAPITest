@@ -1,5 +1,6 @@
 # test_log 一键整理小工具（engineV2有序版）：log_digester_lite + get_api_set + get_api_config_set
 # @author: cangtianhuang
+# 整理效果：error_api.txt + error_config.txt + error_log.log
 
 from pathlib import Path
 import re
