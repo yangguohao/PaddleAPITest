@@ -2138,6 +2138,9 @@
     "paddle.slice":{
         "Rule": "SliceRule"
     },
+    "paddle.Tensor.slice":{
+        "Rule": "SliceRule"
+    },
     "paddle.split":{
        "Rule": "SplitRule"
     },
