@@ -1,3 +1,8 @@
 paddle.argmin(Tensor([10, 10],"float32"), axis=-1, keepdim=True, dtype="int32", )
 paddle.argmin(x=Tensor([3, 3],"float64"), axis=0, dtype=type(numpy.int32), keepdim=False, )
 paddle.argmin(x=Tensor([3, 3],"int64"), dtype="int32", )               
+paddle.take(Tensor([3, 4],"float32"), Tensor([2, 3],"int64"), mode="raise", )
+paddle.take(Tensor([3, 4],"float64"), Tensor([2, 3],"int64"), mode="raise", )
+paddle.take(Tensor([3, 4],"int32"), Tensor([2, 3],"int64"), mode="raise", )
+paddle.take(Tensor([3, 4],"int64"), Tensor([2, 3],"int64"), mode="raise", )
+paddle.take(Tensor([],"float32"), Tensor([],"int64"), )

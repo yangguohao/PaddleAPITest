@@ -1542,8 +1542,7 @@ class TensorConfig:
                                 while not api_config.shape2[self.numpy_tensor[i]] == api_config.shape1[api_config.tensor1[i]] or self.numpy_tensor[i] in used:
                                     self.numpy_tensor[i] = numpy.random.randint(0, num)
                                 used.append(self.numpy_tensor[i])
-                        print(api_config.tensor1)
-                        print(self.numpy_tensor)
+
                     elif isinstance(item,TensorConfig):
                         self.tensor = numpy.random.randint(0, 2, size=self.shape).astype(self.dtype)
                         if self.numel() == 1:
@@ -1590,6 +1589,12 @@ class TensorConfig:
                          flat_indices[positions_to_replace[1]] = dim_size - 1
                          indices = flat_indices
                     self.numpy_tensor = indices.reshape(self.shape)
+
+            elif api_config.api_name == "paddle.take":
+                if self.check_arg(api_config, 1, "index"):
+                    x = self.get_arg(api_config, 0, 'x')
+                    dim_size = numpy.prod(x.shape)
+                    self.numpy_tensor = numpy.random.randint(0, dim_size, size=self.shape).astype(self.dtype)
 
 
             elif api_config.api_name == "paddle.Tensor.clip":
