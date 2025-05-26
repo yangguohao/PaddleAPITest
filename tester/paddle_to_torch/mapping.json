@@ -106,7 +106,8 @@
         },
         "set_defaults": {
             "axis": "None",
-            "keepdim": false
+            "keepdim": false,
+            "dtype": "torch.int64" 
         }
     },
     "paddle.assign": {

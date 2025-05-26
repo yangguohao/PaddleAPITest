@@ -35,3 +35,4 @@ paddle.Tensor.__mul__
 paddle.Tensor.__setitem__
 paddle.nn.functional.binary_cross_entropy_with_logits
 paddle.nn.functional.grid_sample
+paddle.expand_as

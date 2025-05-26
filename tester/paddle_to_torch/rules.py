@@ -472,7 +472,8 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        post = "result  = result.to(dtype)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core], postprocess=[post])
         return ConvertResult.success(paddle_api, code)
 
 

@@ -1,0 +1,3 @@
+paddle.argmin(Tensor([10, 10],"float32"), axis=-1, keepdim=True, dtype="int32", )
+paddle.argmin(x=Tensor([3, 3],"float64"), axis=0, dtype=type(numpy.int32), keepdim=False, )
+paddle.argmin(x=Tensor([3, 3],"int64"), dtype="int32", )               

@@ -189,8 +189,8 @@ class TensorConfig:
 
             elif api_config.api_name in {"paddle.argmax", "paddle.argmin", "paddle.Tensor.argmax", "paddle.Tensor.argmin"}:
                 if self.check_arg(api_config, 1, "axis"):
-                    arr = self.get_arg(api_config, 0, 'x')                
-                    min_dim = numpy.min(arr.shape)
+                    arr = self.get_arg(api_config, 0, 'x')              
+                    min_dim = len(arr.shape)
                     self.numpy_tensor = numpy.random.randint(-min_dim, min_dim-1, size=self.shape).astype("int64")
                     self.dtype = "int64"
 
