@@ -830,7 +830,7 @@ class APITestBase:
             flat_paddle = converted_paddle_tensor.flatten()[:display_count]
             flat_torch = torch_tensor.flatten()[:display_count]
 
-            msg = "\n".join(msg.splitlines()[2:])
+            # msg = "\n".join(msg.splitlines()[2:])
             elements_text = (
                 f"First {display_count} elements"
                 if display_count < total_count
