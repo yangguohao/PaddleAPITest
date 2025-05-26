@@ -115,8 +115,8 @@ class APITestAccuracy(APITestBase):
             print("[torch error]", self.api_config.config, flush=True)
             traceback.print_exc()
             write_to_log("torch_error", self.api_config.config)
-            if "CUDA error" in str(err) or "memory corruption" in str(err):
-                raise Exception(err)
+            if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
+                raise err
             return
 
         if self.need_check_grad():
@@ -140,7 +140,7 @@ class APITestAccuracy(APITestBase):
                 print(str(err), flush=True)
                 torch_grad_success = False
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
-                    raise Exception(err)
+                    raise err
         else:
             del self.torch_args, self.torch_kwargs
 
@@ -207,7 +207,9 @@ class APITestAccuracy(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
-                raise Exception(err)
+                raise err
+            if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
+                raise err
             return
 
         try:
@@ -332,7 +334,9 @@ class APITestAccuracy(APITestBase):
                 print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
-                    raise Exception(err)
+                    raise err
+                if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
+                    raise err
                 return
 
             try:

@@ -1,5 +1,6 @@
 import argparse
 import errno
+import gc
 import math
 import os
 import signal
@@ -192,11 +193,12 @@ def init_worker_gpu(
         import paddle
         import torch
 
+        globals()["torch"] = torch
+        globals()["paddle"] = paddle
+
         from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                             APITestPaddleOnly)
 
-        globals()["torch"] = torch
-        globals()["paddle"] = paddle
         globals()["APIConfig"] = APIConfig
         globals()["APITestAccuracy"] = APITestAccuracy
         globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
@@ -283,7 +285,8 @@ def run_test_case(api_config_str, options):
         print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
-        del case
+        del test_class, case, api_config
+        gc.collect()
         torch.cuda.empty_cache()
         paddle.device.cuda.empty_cache()
 
