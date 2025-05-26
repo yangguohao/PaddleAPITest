@@ -20,11 +20,10 @@ if TYPE_CHECKING:
         APITestCINNVSDygraph,
         APITestPaddleOnly,
     )
+    import torch
+    import paddle
 
-from tester.api_config.log_writer import (aggregate_logs, print_log_info,
-                                          read_log, redirect_stdio,
-                                          restore_stdio, set_engineV2,
-                                          write_to_log)
+from tester.api_config.log_writer import *
 
 
 def cleanup(pool):
@@ -159,7 +158,9 @@ def check_gpu_memory(
 def init_worker_gpu(
     gpu_worker_list, lock, available_gpus, max_workers_per_gpu, options
 ):
-    set_engineV2(log_dir=options.log_dir)
+    if options.log_dir:
+        set_test_log_path(options.log_dir)
+    set_engineV2()
     my_pid = os.getpid()
 
     def pid_exists(pid):
@@ -282,8 +283,9 @@ def run_test_case(api_config_str, options):
         print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
-        case.clear_tensor()
         del case
+        torch.cuda.empty_cache()
+        paddle.device.cuda.empty_cache()
 
 
 def main():
@@ -356,6 +358,8 @@ def main():
     print(f"Options: {vars(options)}", flush=True)
 
     os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
+    if options.log_dir:
+        set_test_log_path(options.log_dir)
 
     if options.api_config:
         # Single config execution
@@ -446,7 +450,7 @@ def main():
 
         if options.num_gpus != 0 or options.gpu_ids:
             # Multi GPUs
-            set_engineV2(log_dir=options.log_dir)
+            set_engineV2()
             BATCH_SIZE = 20000
 
             gpu_ids = validate_gpu_options(options)
