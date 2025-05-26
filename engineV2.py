@@ -285,7 +285,7 @@ def run_test_case(api_config_str, options):
         print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
-        del test_class, case, api_config
+        del test_class, api_config, case 
         gc.collect()
         torch.cuda.empty_cache()
         paddle.device.cuda.empty_cache()
