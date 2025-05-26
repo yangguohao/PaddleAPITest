@@ -1,0 +1,3 @@
+paddle.diag(x=Tensor([1],"float64"), offset=-1, padding_value=-0.001, )
+paddle.diag(x=Tensor([3],"float64"), offset=-1, )
+paddle.diag(x=Tensor([3],"float64"), offset=-2, padding_value=0, )
