@@ -4221,18 +4221,22 @@ elif isinstance(shape,tuple):
 else:
     sh = shape
 sum = x.numel()
-for i in range(len(sh)):
-    if sh[i] != -1 and sh[i] != 0:
-        sum = sum // sh[i]
-    elif sh[i] == 0:
-        sh[i] = x.shape[i]
-        sum = sum // sh[i]
-for i in range(len(sh)):
-    if sh[i] == -1:
-        sh[i] = sum
+if sum != 0:
+    for i in range(len(sh)):
+        if sh[i] != -1 and sh[i] != 0:
+            sum = sum // sh[i]
+        elif sh[i] == 0:
+            sh[i] = x.shape[i]
+            sum = sum // sh[i]
+    for i in range(len(sh)):
+        if sh[i] == -1:
+            sh[i] = sum
 """
         core = """
-result = torch.reshape(x,sh)
+if sum != 0:
+    result = torch.reshape(x,sh)
+else:
+    result = torch.zeros(sh,dtype=x.dtype)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
