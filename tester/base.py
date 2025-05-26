@@ -59,6 +59,8 @@ stochastic_behavior_apis =[
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
     "paddle.nn.functional.feature_alpha_dropout",
+    "paddle.incubate.nn.functional.fused_multi_head_attention",
+    "paddle.nn.functional.scaled_dot_product_attention",
 ]
 
 single_op_no_signature_apis = ["__eq__", "__ge__", "__gt__", "__le__", "__lt__", "__add__", "__div__", "__floordiv__", "__matmul__", "__mod__", "__ne__", "__pow__", "__radd__", "__rmatmul__", "__rmod__", "__rmul__", "__rpow__", "__rsub__", "__rtruediv__", "__truediv__", "__mul__", "__sub__"]
@@ -71,10 +73,6 @@ no_signature_api_mappings = {
     for method in single_op_no_signature_apis
 }
 
-# Todo: check paddle.prod paddle.cumprod @cangtianhuang
-int_too_big_fail_api = [
-    "paddle.Tensor.lcm",
-]
 
 handle_axes_api = [
     "paddle.mean",
@@ -91,17 +89,15 @@ class APITestBase:
         self.outputs_grad_numpy = []
         torch.set_num_threads(20)
 
-    def need_skip(self):
+    def need_skip(self, paddle_only=False):
         # not support
         if "sparse" in self.api_config.api_name:
             return True
         if self.api_config.api_name in not_support_api:
             return True
-        if self.api_config.api_name in rand_apis:
+        if not paddle_only and self.api_config.api_name in rand_apis:
             return True
-        if self.api_config.api_name in stochastic_behavior_apis:
-            return True
-        if self.api_config.api_name in int_too_big_fail_api:
+        if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
@@ -834,7 +830,7 @@ class APITestBase:
             flat_paddle = converted_paddle_tensor.flatten()[:display_count]
             flat_torch = torch_tensor.flatten()[:display_count]
 
-            msg = "\n".join(msg.splitlines()[2:])
+            # msg = "\n".join(msg.splitlines()[2:])
             elements_text = (
                 f"First {display_count} elements"
                 if display_count < total_count

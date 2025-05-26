@@ -42,13 +42,16 @@ def set_cfg(cfg):
     CMD_CONFIG = cfg
 
 
-def set_engineV2(log_dir=""):
-    global is_engineV2, TEST_LOG_PATH, TMP_LOG_PATH
+def set_test_log_path(log_dir):
+    global TEST_LOG_PATH, TMP_LOG_PATH
+    TEST_LOG_PATH = DIR_PATH / log_dir
+    TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
+    TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
+
+
+def set_engineV2():
+    global is_engineV2
     is_engineV2 = True
-    if log_dir:
-        TEST_LOG_PATH = DIR_PATH / log_dir
-        TEST_LOG_PATH.mkdir(parents=True, exist_ok=True)
-        TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
     TMP_LOG_PATH.mkdir(exist_ok=True)
 
 
@@ -135,6 +138,7 @@ def aggregate_logs(end=False):
                 try:
                     with file_path.open("r") as in_f:
                         out_f.writelines(in_f.read())
+                    os.remove(str(file_path))
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
     except Exception as err:
