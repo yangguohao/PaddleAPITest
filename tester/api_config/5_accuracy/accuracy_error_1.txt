@@ -20025,4 +20025,3 @@ paddle.Tensor.logit(x=Tensor([4],"float64"), )
 paddle.Tensor.median(Tensor([1000, 784],"float32"), )
 paddle.unique_consecutive(x=Tensor([4, 1],"float32"), return_inverse=True, )
 paddle.unique_consecutive(x=Tensor([6, 1],"float32"), return_inverse=True, return_counts=True, )
->>>>>>> e0645b7295e7633fc8485757d4eff3af48e37027
