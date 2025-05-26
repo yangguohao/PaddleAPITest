@@ -2125,13 +2125,6 @@ def fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha=1.0, beg
 """
         core = """
 result = fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha, begin_norm_axis, bias, residual, quant_scale, quant_round_type, quant_max_bound, quant_min_bound)
-
-# Force tensors to lower dtype when autocast is enabled since layer_norm are not autocast to fp16
-# https://docs.pytorch.org/docs/stable/amp.html#autocast-op-reference
-# Note: Autocast detection must happen inside the core execution block because preprocess and postprocess
-# do not use autocast context manager
-# if torch.is_autocast_enabled() and quant_scale == -1:
-#     result = [tensor.to(torch.float16) for tensor in result]
 """
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
