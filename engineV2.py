@@ -278,7 +278,7 @@ def run_test_case(api_config_str, options):
     try:
         case.test()
     except Exception as err:
-        if "CUDA out of memory" in str(err):
+        if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
             os._exit(99)
         if "CUDA error" in str(err) or "memory corruption" in str(err):
             os._exit(1)
