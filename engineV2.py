@@ -20,6 +20,8 @@ if TYPE_CHECKING:
         APITestCINNVSDygraph,
         APITestPaddleOnly,
     )
+    import torch
+    import paddle
 
 from tester.api_config.log_writer import *
 
@@ -281,8 +283,9 @@ def run_test_case(api_config_str, options):
         print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
-        case.clear_tensor()
         del case
+        torch.cuda.empty_cache()
+        paddle.device.cuda.empty_cache()
 
 
 def main():
