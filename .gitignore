@@ -3,5 +3,4 @@ __pycache__
 tester/api_config/test_log/
 .vscode
 .mypy_cache
-run-example.sh
-tester/api_config/mytmp.txt
+run.sh
