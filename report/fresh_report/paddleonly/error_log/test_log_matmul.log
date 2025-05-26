@@ -2,6 +2,14 @@ paddle.Tensor.matmul(Tensor([125, 1],"float32"), Tensor([1, 0],"float32"), )
 paddle.matmul(Tensor([1, 2, 2048, 2048],"bfloat16"), Tensor([1, 2, 2048, 128],"bfloat16"), )
 paddle.matmul(x=Tensor([1, 2, 2048, 128],"bfloat16"), y=Tensor([1, 2, 2048, 128],"bfloat16"), transpose_x=False, transpose_y=True, )
 paddle.matmul(x=Tensor([3, 2, 2, 5],"float64"), y=Tensor([5],"float64"), transpose_x=False, transpose_y=True, )
+paddle.matmul(Tensor([2, 11008],"int8"), Tensor([64, 11008],"int8"), False, True, )
+paddle.matmul(Tensor([2, 64],"int8"), Tensor([192, 64],"int8"), False, True, )
+paddle.matmul(Tensor([2, 64],"int8"), Tensor([22016, 64],"int8"), False, True, )
+paddle.matmul(Tensor([2, 64],"int8"), Tensor([64, 64],"int8"), False, True, )
+paddle.matmul(Tensor([464, 11008],"int8"), Tensor([64, 11008],"int8"), False, True, )
+paddle.matmul(Tensor([464, 64],"int8"), Tensor([192, 64],"int8"), False, True, )
+paddle.matmul(Tensor([464, 64],"int8"), Tensor([22016, 64],"int8"), False, True, )
+paddle.matmul(Tensor([464, 64],"int8"), Tensor([64, 64],"int8"), False, True, )
 
 2025-04-09 10:25:25.818139 test begin: paddle.Tensor.matmul(Tensor([125, 1],"float32"), Tensor([1, 0],"float32"), )
 W0409 10:25:26.281720 24089 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
@@ -25,3 +33,58 @@ W0409 10:25:26.948030 24106 backward.cc:437] While running Node (MatmulGradNode)
 [paddle error] paddle.matmul(x=Tensor([3, 2, 2, 5],"float64"), y=Tensor([5],"float64"), transpose_x=False, transpose_y=True, ) 
  (PreconditionNotMet) Tensor's dimension is out of bound.Tensor's dimension must be equal or less than the size of its memory.But received Tensor's dimension is 480, memory's size is 256.
   [Hint: Expected numel() * SizeOf(dtype()) <= memory_size(), but received numel() * SizeOf(dtype()):480 > memory_size():256.] (at ../paddle/phi/core/dense_tensor_impl.cc:48)
+
+2025-05-22 16:16:58.024271 GPU 4 51187 test begin: paddle.matmul(Tensor([2, 11008],"int8"), Tensor([64, 11008],"int8"), False, True, )
+W0522 16:17:00.678776 51187 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([2, 11008],"int8"), Tensor([64, 11008],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.025114 GPU 4 51179 test begin: paddle.matmul(Tensor([2, 64],"int8"), Tensor([192, 64],"int8"), False, True, )
+W0522 16:17:00.039047 51179 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([2, 64],"int8"), Tensor([192, 64],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.033746 GPU 4 51181 test begin: paddle.matmul(Tensor([2, 64],"int8"), Tensor([22016, 64],"int8"), False, True, )
+W0522 16:17:00.739172 51181 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([2, 64],"int8"), Tensor([22016, 64],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.125681 GPU 4 51183 test begin: paddle.matmul(Tensor([2, 64],"int8"), Tensor([64, 64],"int8"), False, True, )
+W0522 16:17:00.477478 51183 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([2, 64],"int8"), Tensor([64, 64],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.161143 GPU 4 51188 test begin: paddle.matmul(Tensor([464, 11008],"int8"), Tensor([64, 11008],"int8"), False, True, )
+W0522 16:17:01.524539 51188 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([464, 11008],"int8"), Tensor([64, 11008],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.193672 GPU 4 51185 test begin: paddle.matmul(Tensor([464, 64],"int8"), Tensor([192, 64],"int8"), False, True, )
+W0522 16:17:00.564901 51185 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([464, 64],"int8"), Tensor([192, 64],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.201644 GPU 4 51180 test begin: paddle.matmul(Tensor([464, 64],"int8"), Tensor([22016, 64],"int8"), False, True, )
+W0522 16:17:00.822585 51180 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([464, 64],"int8"), Tensor([22016, 64],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
+
+
+2025-05-22 16:16:58.222025 GPU 4 51186 test begin: paddle.matmul(Tensor([464, 64],"int8"), Tensor([64, 64],"int8"), False, True, )
+W0522 16:17:01.059484 51186 backward.cc:437] While running Node (MatmulGradNode) raises an EnforceNotMet exception
+[paddle error] paddle.matmul(Tensor([464, 64],"int8"), Tensor([64, 64],"int8"), False, True, ) 
+ (NotFound) The kernel with key (GPU, Undefined(AnyLayout), int32) of kernel `matmul_grad` is not registered and fail to fallback to CPU one. Selected wrong DataType `int32`. Paddle support following DataTypes: float16, float32, complex128, bfloat16, float64, complex64.
+  [Hint: Expected kernel_iter != iter->second.end(), but received kernel_iter == iter->second.end().] (at ../paddle/phi/core/kernel_factory.cc:380)
