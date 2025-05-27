@@ -2087,7 +2087,7 @@ result = fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias, line
 if torch.is_autocast_enabled():
     result = result.to(torch.float16)
 """
-        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        code = Code(preprocess=preprocess.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
