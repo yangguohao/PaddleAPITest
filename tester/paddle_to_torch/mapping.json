@@ -229,12 +229,15 @@
         "Rule": "CropRule"
     },
     "paddle.cummax": {
+        "torch_api": "torch.cummax",
         "Rule": "CumRule"
     },
     "paddle.cummin": {
+        "torch_api": "torch.cummin",
         "Rule": "CumRule"
     },
     "paddle.cumprod": {
+        "torch_api": "torch.cumprod",
         "Rule": "CumprodRule"
     },
     "paddle.cumsum": {
@@ -242,6 +245,30 @@
         "Rule": "CumsumRule",
         "paddle_torch_args_map": {
             "x": "input",
+            "axis": "dim",
+            "dtype": "dtype"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "dtype": "None"            
+        }
+    },
+    "paddle.Tensor.cumsum": {
+        "torch_api": "torch.Tensor.cumsum",
+        "Rule": "CumsumRule",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "dtype": "dtype"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "dtype": "None"            
+        }
+    },
+    "paddle.Tensor.cumsum_": {
+        "torch_api": "torch.Tensor.cumsum_",
+        "Rule": "CumsumRule",
+        "paddle_torch_args_map": {
             "axis": "dim",
             "dtype": "dtype"
         },
@@ -986,6 +1013,14 @@
     },
     "paddle.mean": {
         "torch_api": "torch.mean",
+        "Rule": "ReduceRule",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False"
+        }
+    },
+    "paddle.Tensor.mean": {
+        "torch_api": "torch.Tensor.mean",
         "Rule": "ReduceRule",
         "set_defaults": {
             "axis": "None",
@@ -2788,22 +2823,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.Tensor.cumsum": {
-        "torch_api": "torch.Tensor.cumsum",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.cumsum_": {
-        "torch_api": "torch.Tensor.cumsum_",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
-    },
     "paddle.Tensor.diag": {
         "torch_api": "torch.Tensor.diag",
         "paddle_torch_args_map": {
@@ -3225,15 +3244,6 @@
             "y": "other"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.mean": {
-        "torch_api": "torch.Tensor.mean",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 0
     },
     "paddle.Tensor.median": {
         "torch_api": "torch.Tensor.median",

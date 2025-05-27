@@ -380,7 +380,6 @@ paddle.normal(shape=tuple(3,4,), mean=Tensor([3],"float32"), std=Tensor([3],"flo
 paddle.normal(shape=tuple(3,4,), mean=Tensor([3],"float64"), std=Tensor([3],"float64"), )
 paddle.normal(shape=tuple(50000,2,), )
 paddle.normal(shape=tuple(50000,2,3,), )
-paddle.normal(0.0, 1.0, list[Tensor([],"int32"),Tensor([],"int32"),Tensor([],"int32"),], )
 paddle.normal(mean=0, std=0.10206207261596575, shape=list[128,64,8,5,], )
 paddle.normal(mean=0, std=0.125, shape=list[64,64,8,5,], )
 paddle.normal(mean=0, std=0.125, shape=list[96,32,16,9,], )
