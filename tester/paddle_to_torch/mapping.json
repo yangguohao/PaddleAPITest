@@ -2355,6 +2355,18 @@
             "perm": "dims"
         }
     },
+    "paddle.nn.functional.thresholded_relu": {
+        "torch_api": "torch.nn.functional.threshold",
+        "set_defaults": {
+            "threshold": 1.0,
+            "value": 0.0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "threshold": "threshold",
+            "value": "value"
+        }
+    },
     "paddle.Tensor.trunc": {
         "torch_api": "torch.Tensor.trunc"
     },
@@ -6624,16 +6636,6 @@
             "x": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.thresholded_relu": {
-        "torch_api": "torch.nn.functional.threshold",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "threshold": "threshold",
-            "value": "value",
-            "inplace": "inplace"
-        },
-        "min_input_args": 3
     },
     "paddle.nn.functional.thresholded_relu_": {
         "torch_api": "torch.nn.functional.threshold_",
