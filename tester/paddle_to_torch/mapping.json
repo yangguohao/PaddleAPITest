@@ -2765,7 +2765,7 @@
         "min_input_args": 1
     },
     "paddle.Tensor.bitwise_right_shift": {
-        "rule": "__rshift__Rule"
+        "Rule": "__rshift__Rule"
     },
     "paddle.Tensor.bitwise_right_shift_": {
         "rule": "__rshift__Rule"
