@@ -2474,8 +2474,8 @@
     },
     "paddle.Tensor.__floordiv__": {
         "torch_api": "torch.Tensor.__floordiv__",
-        "paddle_torch_args_map": {
-            "y": "other"
+        "torch_kwargs": {
+            "other": "y if isinstance(y, torch.Tensor) else torch.tensor([y], dtype=_tmp_tensor.dtype if (isinstance(y, int) and 'int' in str(_tmp_tensor.dtype)) or (isinstance(y, float) and 'float' in str(_tmp_tensor.dtype)) else None)"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__floordiv__(other=y)"
     },

@@ -1,6 +1,3 @@
-paddle.Tensor.__floordiv__(Tensor([],"int32"), 2, )
-paddle.Tensor.__floordiv__(Tensor([],"int64"), 2, )
-paddle.Tensor.__floordiv__(Tensor([],"int64"), 8, )
 paddle.Tensor.__matmul__(Tensor([1, 1, 16384, 32],"float32"), Tensor([1, 1, 32, 256],"float32"), )
 paddle.Tensor.__matmul__(Tensor([2, 1, 16384, 256],"float32"), Tensor([2, 1, 256, 64],"float32"), )
 paddle.Tensor.__matmul__(Tensor([5, 1, 1280],"float32"), Tensor([1280, 51865],"float32"), )
