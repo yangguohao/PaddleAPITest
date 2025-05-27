@@ -18,9 +18,9 @@ not_support_api = frozenset(
     ]
 )
 
+# TODO: check all rand calc/create api (i.e. rand_apis and stochastic_behavior_apis list) and move config to accuracy_error.txt or random_calculation.txt / random_creation.txt. Eliminate configs in fresh report. API level skipping check is breaking down to config level txt managing. @Cutelemon6
 rand_apis = frozenset(
     [
-        "paddle.bernoulli",
         "paddle.bernoulli_",
         "paddle.binomial",
         "paddle.cauchy_",
@@ -56,11 +56,11 @@ rand_apis = frozenset(
 stochastic_behavior_apis = frozenset(
     [
         "paddle.Tensor.top_p_sampling",
-        "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
+        # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
         "paddle.incubate.nn.functional.fused_dropout_add",
         "paddle.incubate.nn.functional.moe_dispatch",
         "paddle.nn.functional.alpha_dropout",
-        "paddle.nn.functional.fused_feedforward",
+        # "paddle.nn.functional.fused_feedforward",
         "paddle.nn.functional.dropout",
         "paddle.nn.functional.dropout2d",
         "paddle.nn.functional.dropout3d",
@@ -601,7 +601,7 @@ class APITestBase:
             return torch.int8
         elif dtype in ['bool', numpy.bool_, paddle.bool, paddle.base.libpaddle.VarDesc.VarType.BOOL, bool]:
             return torch.bool
-        elif dtype in ['bfloat16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
+        elif dtype in ['bfloat16','uint16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
             return torch.bfloat16
         elif dtype in ['uint8', numpy.uint8, paddle.uint8, paddle.base.libpaddle.VarDesc.VarType.UINT8]:
             return torch.uint8
