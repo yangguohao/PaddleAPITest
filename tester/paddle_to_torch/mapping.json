@@ -2765,18 +2765,10 @@
         "min_input_args": 1
     },
     "paddle.Tensor.bitwise_right_shift": {
-        "torch_api": "torch.Tensor.bitwise_right_shift",
-        "paddle_torch_args_map": {
-            "y": "other"
-        },
-        "min_input_args": 1
+        "rule": "__rshift__Rule"
     },
     "paddle.Tensor.bitwise_right_shift_": {
-        "torch_api": "torch.Tensor.bitwise_right_shift_",
-        "paddle_torch_args_map": {
-            "y": "other"
-        },
-        "min_input_args": 1
+        "rule": "__rshift__Rule"
     },
     "paddle.Tensor.bitwise_xor": {
         "torch_api": "torch.Tensor.bitwise_xor",
@@ -3996,12 +3988,7 @@
         "min_input_args": 2
     },
     "paddle.bitwise_right_shift": {
-        "torch_api": "torch.bitwise_right_shift",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "other"
-        },
-        "min_input_args": 2
+        "rule": "__rshift__Rule"
     },
     "paddle.bitwise_xor": {
         "torch_api": "torch.bitwise_xor",
