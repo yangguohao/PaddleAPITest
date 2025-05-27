@@ -854,7 +854,7 @@ class APITestBase:
         )
 
     def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol):
-        is_check_dtype = self.api_config.name not in not_check_dtype
+        is_check_dtype = self.api_config.api_name not in not_check_dtype
 
         paddle_tensor = paddle_tensor.cpu().detach()
         torch_tensor = torch_tensor.cpu().detach()
