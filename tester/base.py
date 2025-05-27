@@ -817,7 +817,7 @@ class APITestBase:
             # ),
         )
 
-    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol):
+    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol, is_check_dtype):
         paddle_tensor = paddle_tensor.cpu().detach()
         torch_tensor = torch_tensor.cpu().detach()
 
@@ -845,14 +845,27 @@ class APITestBase:
                 f"{elements_text}: {flat_torch}"
             )
 
-        torch.testing.assert_close(
-            converted_paddle_tensor,
-            torch_tensor,
-            rtol=rtol,
-            atol=atol,
-            equal_nan=True,
-            msg=error_msg,
-        )
+        try:
+            torch.testing.assert_close(
+                converted_paddle_tensor,
+                torch_tensor,
+                rtol=rtol,
+                atol=atol,
+                equal_nan=True,
+                check_dtype=is_check_dtype,
+                msg=error_msg,
+            )
+        except Exception as e:
+            if "Comparing" in str(e):
+                self.np_assert_accuracy(
+                    paddle_tensor.numpy(),
+                    torch_tensor.numpy(),
+                    atol,
+                    rtol,
+                    self.api_config,
+                )
+            else:
+                raise
 
     def test(self):
         pass

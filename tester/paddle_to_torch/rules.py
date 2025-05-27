@@ -804,6 +804,32 @@ if not isinstance(axis, int) and axis != None:
         return ConvertResult.success(paddle_api, code)
 
 
+class CumulativeTrapezoidRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if dx is not None:
+    if hasattr(dx, 'numel'): 
+        if dx.numel() == 0:  
+            dx = None
+        elif dx.numel() == 1:  
+            dx = dx.item()
+        else:  
+            dx = dx.flatten()[0].item()
+"""
+        core = f"""
+if x is not None:
+    result = {self.torch_api}(y, x, dim=axis)
+elif dx is not None:
+    result = {self.torch_api}(y, dx=dx, dim=axis)
+else:
+    result = torch.cumulative_trapezoid(y, dim=axis)
+"""
+        
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
 class ClassCenterSampleRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -4743,6 +4769,19 @@ else:
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+class SsplitRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if isinstance(num_or_indices, int):
+    result = {self.torch_api}(x, sections=num_or_indices)
+else:
+    result = {self.torch_api}(x, indices=tuple(num_or_indices))
+"""      
+        code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
 class SquareErrorCostRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -5300,6 +5339,18 @@ if len(axes) > 2:
         return ConvertResult.success(paddle_api, code)
 
 
+class TensorOuterRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+x = x.flatten()
+y = y.flatten()
+"""
+        core = "result = x.outer(y)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+        
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
