@@ -2079,8 +2079,15 @@ def fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias=None, line
 """
         core = """
 result = fused_feedforward(x, linear1_weight, linear2_weight, linear1_bias, linear2_bias, ln1_scale, ln1_bias, ln2_scale, ln2_bias, dropout1_rate, dropout2_rate, activation, ln1_epsilon, ln2_epsilon, pre_layer_norm, training, mode)
+
+# Force tensors to float16 when autocast is enabled, as all our test cases using autocast expect fp16
+# https://docs.pytorch.org/docs/stable/amp.html#autocast-op-reference
+# Note: Autocast detection must happen inside the core execution block because preprocess and postprocess
+# do not use autocast context manager
+if torch.is_autocast_enabled():
+    result = result.to(torch.float16)
 """
-        code = Code(preprocess=preprocess.splitlines(), core=[core])
+        code = Code(preprocess=preprocess.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 

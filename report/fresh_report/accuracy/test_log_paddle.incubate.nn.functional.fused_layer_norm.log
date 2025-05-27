@@ -675,3 +675,106 @@ Not equal to tolerance rtol=0.01, atol=0.01
        [-0.2776 ,  0.4312 ,  0.4165 , ..., -0.444  , -0.3582 ,  0.00583],
        [-0.3018 ,  0.02596, -0.0886 , ...,  0.2703 ,  0.391  , -0.4482 ],...
 
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([101, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float16"), residual=Tensor([16, 256],"float16"), residual_alpha=0.69204696, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Mismatched elements: 5 / 4096 (0.1%)
+Greatest absolute difference: 1 at index (3, 102) (up to 0.01 allowed)
+Greatest relative difference: inf at index (4, 137) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([16, 256]), dtype=torch.int8)
+First 100 elements: tensor([  1,  -4,   0,  -5,   5,   5,  -4,   3,  -8,   4,  10,   7,  -5, -20,
+         -6,  -8,  -1,   0, -12,   6,  15,   2,   0, -10,   2,  -2,  -6,   5,
+          4,   7,  -7, -11,   1,   0,   0,   3,  13,   6,   5,   4,  -9,   9,
+          9,   3,  -9,   8,  17,  15,   5,  -2,  11,   1,  -5,   3,   0,  -2,
+          9,   4,   2,   0,  -7,  14,   0,   6,  -6,  -9,  10,  -9, -10,  -5,
+          8,   6,   8,   3,   8, -16,   1,  -1,   2,  -7,   8,  10, -21,  -1,
+         -6,   9,   4,  -3,   7,  10,  -5,   5,  -8,   4, -11, -14,   0,   2,
+         -3,   7], dtype=torch.int8)
+DESIRED: (shape=torch.Size([16, 256]), dtype=torch.int8)
+First 100 elements: tensor([  1,  -4,   0,  -5,   5,   5,  -4,   3,  -8,   4,  10,   7,  -5, -20,
+         -6,  -8,  -1,   0, -12,   6,  15,   2,   0, -10,   2,  -2,  -6,   5,
+          4,   7,  -7, -11,   1,   0,   0,   3,  13,   6,   5,   4,  -9,   9,
+          9,   3,  -9,   8,  17,  15,   5,  -2,  11,   1,  -5,   3,   0,  -2,
+          9,   4,   2,   0,  -7,  14,   0,   6,  -6,  -9,  10,  -9, -10,  -5,
+          8,   6,   8,   3,   8, -16,   1,  -1,   2,  -7,   8,  10, -21,  -1,
+         -6,   9,   4,  -3,   7,  10,  -5,   5,  -8,   4, -11, -14,   0,   2,
+         -3,   7], dtype=torch.int8)
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float16"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, quant_scale=0.15, quant_round_type=1, quant_max_bound=127, quant_min_bound=-127, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 1, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([2, 1, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([59, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([59, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([60, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([67, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([68, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([68, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([76, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([76, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
+paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+[accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, ) 
+ (PreconditionNotMet) Tensor not initialized yet when DenseTensor::place() is called.
+  [Hint: holder_ should not be null.] (at ../paddle/phi/core/dense_tensor_impl.cc:62)
+
+
