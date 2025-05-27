@@ -1,5 +1,6 @@
 import argparse
 import errno
+import gc
 import math
 import os
 import signal
@@ -192,11 +193,12 @@ def init_worker_gpu(
         import paddle
         import torch
 
+        globals()["torch"] = torch
+        globals()["paddle"] = paddle
+
         from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                             APITestPaddleOnly)
 
-        globals()["torch"] = torch
-        globals()["paddle"] = paddle
         globals()["APIConfig"] = APIConfig
         globals()["APITestAccuracy"] = APITestAccuracy
         globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
@@ -276,14 +278,15 @@ def run_test_case(api_config_str, options):
     try:
         case.test()
     except Exception as err:
-        if "CUDA out of memory" in str(err):
+        if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
             os._exit(99)
         if "CUDA error" in str(err) or "memory corruption" in str(err):
             os._exit(1)
         print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
-        del case
+        del test_class, api_config, case 
+        gc.collect()
         torch.cuda.empty_cache()
         paddle.device.cuda.empty_cache()
 

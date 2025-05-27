@@ -1,0 +1,28 @@
+paddle.slice(Tensor([1, 11, 32],"float64"), axes=list[1,], starts=list[Tensor([1],"int32"),], ends=list[Tensor([1],"int32"),], )
+paddle.slice(Tensor([1],"int32"), axes=list[0,], starts=list[0,], ends=list[Tensor([],"int64"),], )
+paddle.slice(Tensor([4, 5, 6],"float32"), axes=list[0,1,2,], starts=Tensor([3],"int32"), ends=Tensor([3],"int32"), )
+paddle.slice(Tensor([4, 5, 6],"float32"), axes=list[0,1,2,], starts=Tensor([3],"int64"), ends=Tensor([3],"int64"), )
+paddle.slice(Tensor([5, 3, 3],"float32"), list[1,2,], list[Tensor([],"int32"),Tensor([],"int32"),], list[Tensor([],"int32"),Tensor([],"int32"),], )
+paddle.slice(Tensor([7],"int64"), axes=list[0,], starts=list[16,], ends=list[16,], )
+
+2025-05-26 17:48:03.832745 test begin: paddle.slice(Tensor([1, 11, 32],"float64"), axes=list[1,], starts=list[Tensor([1],"int32"),], ends=list[Tensor([1],"int32"),], )
+Warning: The core code of paddle.slice is too complex.
+W0526 17:48:08.027781 73251 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0526 17:48:08.028836 73251 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[accuracy error] backward  paddle.slice(Tensor([1, 11, 32],"float64"), axes=list[1,], starts=list[Tensor([1],"int32"),], ends=list[Tensor([1],"int32"),], ) 
+[output type diff error2],  3 1
+2025-05-26 17:48:31.132580 test begin: paddle.slice(Tensor([1],"int32"), axes=list[0,], starts=list[0,], ends=list[Tensor([],"int64"),], )
+element 0 of tensors does not require grad and does not have a grad_fn
+[Pass] paddle.slice(Tensor([1],"int32"), axes=list[0,], starts=list[0,], ends=list[Tensor([],"int64"),], )
+2025-05-26 17:48:31.273213 test begin: paddle.slice(Tensor([4, 5, 6],"float32"), axes=list[0,1,2,], starts=Tensor([3],"int32"), ends=Tensor([3],"int32"), )
+One of the differentiated Tensors does not require grad
+[Pass] paddle.slice(Tensor([4, 5, 6],"float32"), axes=list[0,1,2,], starts=Tensor([3],"int32"), ends=Tensor([3],"int32"), )
+2025-05-26 17:48:31.353337 test begin: paddle.slice(Tensor([4, 5, 6],"float32"), axes=list[0,1,2,], starts=Tensor([3],"int64"), ends=Tensor([3],"int64"), )
+One of the differentiated Tensors does not require grad
+[Pass] paddle.slice(Tensor([4, 5, 6],"float32"), axes=list[0,1,2,], starts=Tensor([3],"int64"), ends=Tensor([3],"int64"), )
+2025-05-26 17:48:31.437595 test begin: paddle.slice(Tensor([5, 3, 3],"float32"), list[1,2,], list[Tensor([],"int32"),Tensor([],"int32"),], list[Tensor([],"int32"),Tensor([],"int32"),], )
+[accuracy error] backward  paddle.slice(Tensor([5, 3, 3],"float32"), list[1,2,], list[Tensor([],"int32"),Tensor([],"int32"),], list[Tensor([],"int32"),Tensor([],"int32"),], ) 
+[output type diff error2],  5 1
+2025-05-26 17:48:31.523740 test begin: paddle.slice(Tensor([7],"int64"), axes=list[0,], starts=list[16,], ends=list[16,], )
+element 0 of tensors does not require grad and does not have a grad_fn
+[Pass] paddle.slice(Tensor([7],"int64"), axes=list[0,], starts=list[16,], ends=list[16,], )
