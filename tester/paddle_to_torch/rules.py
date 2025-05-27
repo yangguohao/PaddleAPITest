@@ -5322,7 +5322,6 @@ class TolistRule(BaseRule):
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code)
 
-
 # u
 class UnflattenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

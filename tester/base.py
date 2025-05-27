@@ -565,7 +565,7 @@ class APITestBase:
             return torch.int8
         elif dtype in ['bool', numpy.bool_, paddle.bool, paddle.base.libpaddle.VarDesc.VarType.BOOL, bool]:
             return torch.bool
-        elif dtype in ['bfloat16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
+        elif dtype in ['bfloat16','uint16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
             return torch.bfloat16
         elif dtype in ['uint8', numpy.uint8, paddle.uint8, paddle.base.libpaddle.VarDesc.VarType.UINT8]:
             return torch.uint8

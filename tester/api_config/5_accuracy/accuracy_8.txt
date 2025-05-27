@@ -1,1 +1,2 @@
 paddle.Tensor.slice(Tensor([4, 4],"float32"), list[1,], list[0,], list[1,], )
+paddle.zeros(name="x", shape=list[100,10,], dtype="uint16", )
