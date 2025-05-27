@@ -2768,7 +2768,7 @@
         "Rule": "__rshift__Rule"
     },
     "paddle.Tensor.bitwise_right_shift_": {
-        "rule": "__rshift__Rule"
+        "Rule": "__rshift__Rule"
     },
     "paddle.Tensor.bitwise_xor": {
         "torch_api": "torch.Tensor.bitwise_xor",
