@@ -1580,7 +1580,6 @@ if isinstance(output_size, (list, tuple)):
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
 
-
 class FusedBiasActRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
