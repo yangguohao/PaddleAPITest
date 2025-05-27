@@ -576,6 +576,13 @@
         }, 
         "description": "result = torch.ge(input=x, other=y)"
     },
+    "paddle.Tensor.greater_equal": {
+        "torch_api": "torch.Tensor.ge",
+        "paddle_torch_args_map": {
+            "y": "other"
+        }, 
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.ge(other=y)"
+    },
     "paddle.greater_than": {
         "torch_api": "torch.gt",
         "paddle_torch_args_map": {
@@ -2263,6 +2270,9 @@
         "Rule": "ShapeRule"
     },
     "paddle.slice":{
+        "Rule": "SliceRule"
+    },
+    "paddle.Tensor.slice":{
         "Rule": "SliceRule"
     },
     "paddle.split":{
