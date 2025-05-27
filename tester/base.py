@@ -16,7 +16,6 @@ not_support_api = ["paddle.Tensor.coalesce",
  ]
 
 rand_apis = [
-    "paddle.bernoulli",
     "paddle.bernoulli_",
     "paddle.binomial",
     "paddle.cauchy_",
