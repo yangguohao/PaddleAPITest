@@ -921,6 +921,16 @@
         }
     },
     "m": "API started with 'm' should be placed here",
+    "paddle.masked_fill": {
+        "torch_api": "torch.masked_fill",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "mask": "mask"
+        },
+        "torch_kwargs": {
+            "value": "value.squeeze() if torch.is_tensor(value) and value.ndim == 1 else value"
+        }
+    },
     "paddle.matmul": {
         "Rule": "MatmulRule",
         "torch_api": "torch.matmul",
@@ -2246,6 +2256,17 @@
         }
     },
     "t": "API started with 't' should be placed here",
+    "paddle.tensor_split": {
+        "torch_api": "torch.tensor_split",
+        "set_defaults": {
+            "axis": 0
+        },
+        "torch_args": [
+            "x",
+            "num_or_indices",
+            "axis"
+        ]
+    },
     "paddle.take_along_axis": {
         "torch_api": "torch.take_along_dim",
         "paddle_torch_args_map": {
@@ -5433,15 +5454,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.masked_fill": {
-        "torch_api": "torch.masked_fill",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "mask": "mask",
-            "value": "value"
-        },
-        "min_input_args": 3
-    },
     "paddle.masked_select": {
         "torch_api": "torch.masked_select",
         "paddle_torch_args_map": {
@@ -7234,15 +7246,6 @@
             "x": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.tensor_split": {
-        "torch_api": "torch.tensor_split",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "num_or_indices": "indices",
-            "axis": "dim"
-        },
-        "min_input_args": 2
     },
     "paddle.trace": {
         "torch_api": "torch.trace",
