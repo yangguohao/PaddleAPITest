@@ -425,6 +425,10 @@
             "y": "other"
         }
     },
+    "paddle.frac": {
+        "Rule": "FracRule",
+        "description": "result = torch.frac(input=x) if x.dtype not in [float16, float32, float64] else result = torch.frac(input=x.to(torch.float64)).to(src_x_dtype), since torch.frac only support float16, float32, float64"
+    },
     "paddle.frexp": {
         "torch_api": "torch.frexp",
         "paddle_torch_args_map": {
@@ -5029,13 +5033,6 @@
             "y": "other"
         },
         "min_input_args": 2
-    },
-    "paddle.frac": {
-        "torch_api": "torch.frac",
-        "paddle_torch_args_map": {
-            "x": "input"
-        },
-        "min_input_args": 1
     },
     "paddle.gcd": {
         "torch_api": "torch.gcd",

@@ -1537,6 +1537,27 @@ result = torch.diagonal_scatter(result, y, offset=offset, dim1=dim1, dim2=dim2)
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+
+class FracRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+input = locals().get('x')
+if isinstance(input, torch.Tensor):
+    src_dtype = input.dtype
+    if input.dtype not in [torch.float16, torch.float32, torch.float64]:
+        input = input.to(torch.float64)
+else:
+    raise ValueError(f"input must be a tensor, but got {type(input)}")
+"""
+        core = "result = torch.frac(input)"
+        post_process = """
+if src_dtype != result.dtype:
+    result = result.to(src_dtype)
+"""
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post_process.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
 class FractionalMaxPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
