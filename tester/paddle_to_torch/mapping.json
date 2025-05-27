@@ -5322,6 +5322,7 @@
         "min_input_args": 2
     },
     "paddle.linalg.matrix_rank": {
+        "Rule": "MatrixRankRule",
         "torch_api": "torch.linalg.matrix_rank",
         "paddle_torch_args_map": {
             "x": "input",
@@ -5329,6 +5330,12 @@
             "hermitian": "hermitian",
             "atol": "atol",
             "rtol": "rtol"
+        },
+        "set_defaults": {
+            "tol": "None",
+            "hermitian": "False",
+            "atol": "None",
+            "rtol": "None"
         },
         "min_input_args": 1
     },

@@ -3268,6 +3268,32 @@ result = x.transpose(-1, -2)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class MatrixRankRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if atol is not None and rtol is not None:
+    if isinstance(rtol, float):
+        rtol = torch.tensor(rtol)
+    if isinstance(atol, float):
+        atol = torch.tensor(atol)     
+"""
+        core = f"""
+if  _kwargs["tol"] == None:
+    _kwargs.pop('tol', None) 
+else:
+    _kwargs.pop('atol', None) 
+    _kwargs.pop('rtol', None) 
+
+result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines()+ map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class MatmulTensorRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
