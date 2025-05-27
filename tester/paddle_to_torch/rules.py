@@ -740,9 +740,9 @@ class CtcLossRule(BaseRule):
 _kwargs = {}
 for paddle_param, torch_param in {
     "log_probs": "log_probs",
-    "targets": "labels",
+    "labels": "targets",
     "input_lengths": "input_lengths",
-    "target_lengths": "label_lengths",
+    "label_lengths":"target_lengths",
     "blank": "blank",
     "reduction": "reduction",
 }.items():
@@ -802,6 +802,32 @@ if not isinstance(axis, int) and axis != None:
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
+class CumulativeTrapezoidRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if dx is not None:
+    if hasattr(dx, 'numel'): 
+        if dx.numel() == 0:  
+            dx = None
+        elif dx.numel() == 1:  
+            dx = dx.item()
+        else:  
+            dx = dx.flatten()[0].item()
+"""
+        core = f"""
+if x is not None:
+    result = {self.torch_api}(y, x, dim=axis)
+elif dx is not None:
+    result = {self.torch_api}(y, dx=dx, dim=axis)
+else:
+    result = torch.cumulative_trapezoid(y, dim=axis)
+"""
+        
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -4692,12 +4718,20 @@ class SliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
 for i,dim in enumerate(axes):
+    if isinstance(starts[i], torch.Tensor):
+        starts[i] = starts[i].item()
+    if isinstance(ends[i], torch.Tensor):
+        ends[i] = ends[i].item()
     if starts[i] < 0:
         starts[i] = starts[i] + input.shape[dim]
     if ends[i] < 0:
         ends[i] = ends[i] + input.shape[dim]
+    starts[i] = max(starts[i],0)
+    starts[i] = min(starts[i], input.shape[dim])
+    ends[i] = min(ends[i], input.shape[dim])
+    ends[i] = max(ends[i],0)
     ends[i] = min(ends[i],input.shape[dim])
-    input = torch.narrow(input, dim, starts[i], ends[i]-starts[i])
+    input = torch.narrow(input, dim, starts[i], max(0, ends[i]-starts[i]))
 result = input
 """
         code = Code(core=core.splitlines())
@@ -4730,6 +4764,19 @@ else:
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
+
+class SsplitRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if isinstance(num_or_indices, int):
+    result = {self.torch_api}(x, sections=num_or_indices)
+else:
+    result = {self.torch_api}(x, indices=tuple(num_or_indices))
+"""      
+        code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
 
 class SquareErrorCostRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5288,6 +5335,18 @@ if len(axes) > 2:
         return ConvertResult.success(paddle_api, code)
 
 
+class TensorOuterRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+x = x.flatten()
+y = y.flatten()
+"""
+        core = "result = x.outer(y)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+        
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
