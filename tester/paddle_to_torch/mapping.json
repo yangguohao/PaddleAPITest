@@ -3988,7 +3988,7 @@
         "min_input_args": 2
     },
     "paddle.bitwise_right_shift": {
-        "rule": "__rshift__Rule"
+        "Rule": "__rshift__Rule"
     },
     "paddle.bitwise_xor": {
         "torch_api": "torch.bitwise_xor",
