@@ -1541,15 +1541,14 @@ result = torch.diagonal_scatter(result, y, offset=offset, dim1=dim1, dim2=dim2)
 class FracRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-input = locals().get('x')
-if isinstance(input, torch.Tensor):
-    src_dtype = input.dtype
-    if input.dtype not in [torch.float16, torch.float32, torch.float64]:
-        input = input.to(torch.float64)
+if isinstance(x, torch.Tensor):
+    src_dtype = x.dtype
+    if x.dtype not in [torch.float16, torch.float32, torch.float64]:
+        x = x.to(torch.float64)
 else:
-    raise ValueError(f"input must be a tensor, but got {type(input)}")
+    raise ValueError(f"x must be a tensor, but got {type(x)}")
 """
-        core = "result = torch.frac(input)"
+        core = "result = torch.frac(input=x)"
         post_process = """
 if src_dtype != result.dtype:
     result = result.to(src_dtype)
