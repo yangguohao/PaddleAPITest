@@ -57,39 +57,80 @@ def get_sort_key(content):
 
 
 pass_file = TEST_LOG_PATH / "api_config_pass.txt"
-pass_set = set()
+pass_names = set()
+pass_configs = set()
 if pass_file.exists():
     try:
         with open(pass_file, "r") as f:
-            pass_set = set(line.strip() for line in f if line.strip())
+            for line in f:
+                line = line.strip()
+                if line:
+                    pass_name = line.split("(", 1)[0]
+                    pass_names.add(pass_name)
+                    pass_configs.add(line)
     except Exception as err:
         print(f"Error reading {pass_file}: {err}", flush=True)
         exit(0)
+print(f"Read {len(pass_names)} pass api(s)", flush=True)
+print(f"Read {len(pass_configs)} pass api config(s)", flush=True)
 
+pass_logs = {}
 key_logs = {}
 for content in logs:
     key = get_sort_key(content)
-    if not key or key in pass_set:
+    if not key:
         continue
-    key_logs[key] = content
+    if key in pass_configs:
+        pass_logs[key] = content
+    else:
+        key_logs[key] = content
 
-if not key_logs:
-    print("No error found", flush=True)
-    exit(0)
 
-output_log = OUTPUT_PATH / "error_log.log"
+pass_log = OUTPUT_PATH / "pass_log.log"
 try:
-    with open(output_log, "w") as f:
+    with open(pass_log, "w") as f:
+        for key in sorted(pass_logs.keys()):
+            content = pass_logs[key]
+            f.write(content + "\n\n")
+except Exception as err:
+    print(f"Error writing {pass_log}: {err}", flush=True)
+    exit(0)
+print(f"Read and write {len(pass_logs)} pass log(s)", flush=True)
+
+error_log = OUTPUT_PATH / "error_log.log"
+try:
+    with open(error_log, "w") as f:
         for key in sorted(key_logs.keys()):
             content = key_logs[key]
             f.write(content + "\n\n")
 except Exception as err:
-    print(f"Error writing {output_log}: {err}", flush=True)
+    print(f"Error writing {error_log}: {err}", flush=True)
     exit(0)
-print(f"Read and write {len(key_logs)} log(s)", flush=True)
+print(f"Read and write {len(key_logs)} error log(s)", flush=True)
 
 # get_api_set + get_api_config_set
-ERROR_LOG = [
+# pass
+API_OUTPUT_PATH = OUTPUT_PATH / "pass_api.txt"
+try:
+    with open(API_OUTPUT_PATH, "w") as f:
+        f.writelines(f"{line}\n" for line in sorted(pass_names))
+except Exception as err:
+    print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
+    exit(0)
+print(f"Write {len(pass_names)} pass api(s)", flush=True)
+
+# get_api_config_set
+CONFIG_OUTPUT_PATH = OUTPUT_PATH / "pass_config.txt"
+try:
+    with open(CONFIG_OUTPUT_PATH, "w") as f:
+        f.writelines(f"{line}\n" for line in sorted(pass_configs))
+except Exception as err:
+    print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
+    exit(0)
+print(f"Write {len(pass_configs)} pass api config(s)", flush=True)
+
+# error
+ERROR_FILES = [
     "api_config_accuracy_error.txt",
     "api_config_crash.txt",
     "api_config_paddle_error.txt",
@@ -98,9 +139,9 @@ ERROR_LOG = [
     "api_config_timeout.txt",
     "api_config_skip.txt",
 ]
-api_names = set()
-api_configs = set()
-for file_name in ERROR_LOG:
+error_names = set()
+error_configs = set()
+for file_name in ERROR_FILES:
     FILE_PATH = TEST_LOG_PATH / file_name
     if not FILE_PATH.exists():
         continue
@@ -109,32 +150,29 @@ for file_name in ERROR_LOG:
             for line in f:
                 line = line.strip()
                 if line:
-                    api_name = line.split("(", 1)[0]
-                    api_names.add(api_name)
-                    api_configs.add(line)
+                    error_name = line.split("(", 1)[0]
+                    error_names.add(error_name)
+                    error_configs.add(line)
     except Exception as err:
         print(f"Error reading {file_name}: {err}", flush=True)
         exit(0)
-print(f"Read {len(api_names)} api(s)", flush=True)
-print(f"Read {len(api_configs)} api config(s)", flush=True)
+print(f"Read {len(error_names)} error api(s)", flush=True)
+print(f"Read {len(error_configs)} error api config(s)", flush=True)
 
-# get_api_set
 API_OUTPUT_PATH = OUTPUT_PATH / "error_api.txt"
 try:
     with open(API_OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(api_names))
+        f.writelines(f"{line}\n" for line in sorted(error_names))
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(api_names)} api(s)", flush=True)
+print(f"Write {len(error_names)} error api(s)", flush=True)
 
-# get_api_config_set
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "error_config.txt"
 try:
     with open(CONFIG_OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(api_configs))
+        f.writelines(f"{line}\n" for line in sorted(error_configs))
 except Exception as err:
     print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-
-print(f"Write {len(api_configs)} api config(s)", flush=True)
+print(f"Write {len(error_configs)} error api config(s)", flush=True)
