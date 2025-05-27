@@ -48,13 +48,14 @@ rand_apis = [
     "paddle.Tensor.__dir__",
 ]
 
+# TODO: check all rand calc/create api and move config to accuracy_error.txt or random_calculation.txt / random_creation.txt. Eliminate configs in fresh report. API level skipping check is breaking down to config level txt managing.
 stochastic_behavior_apis =[
     "paddle.Tensor.top_p_sampling", 
-    "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
+    # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
     "paddle.incubate.nn.functional.fused_dropout_add",
     "paddle.incubate.nn.functional.moe_dispatch",
     "paddle.nn.functional.alpha_dropout", 
-    "paddle.nn.functional.fused_feedforward",
+    # "paddle.nn.functional.fused_feedforward",
     "paddle.nn.functional.dropout",
     "paddle.nn.functional.dropout2d",
     "paddle.nn.functional.dropout3d",
