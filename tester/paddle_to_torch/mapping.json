@@ -401,6 +401,16 @@
         }
     },
     "f": "API started with 'f' should be placed here",
+    "paddle.flip": {
+        "torch_api": "torch.flip",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "torch_kwargs": {
+            "dims": "[axis] if isinstance(axis, int) else axis"
+        }, 
+        "description": "no need to use locals().get('axis') sice axis is a positional argument without default value (must input)"
+    },
     "paddle.floor_divide": {
         "torch_api": "torch.floor_divide",
         "paddle_torch_args_map": {
@@ -4996,14 +5006,6 @@
             "stop_axis": "end_dim"
         },
         "min_input_args": 1
-    },
-    "paddle.flip": {
-        "torch_api": "torch.flip",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dims"
-        },
-        "min_input_args": 2
     },
     "paddle.floor": {
         "torch_api": "torch.floor",
