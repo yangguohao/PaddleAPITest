@@ -2071,7 +2071,6 @@
         "torch_api": "torch.fft.rfft2",
         "set_defaults": {
             "s": "None", 
-            "dim": "(-2, -1)", 
             "norm": "None"
         }, 
         "paddle_torch_args_map": {
