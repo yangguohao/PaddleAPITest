@@ -362,6 +362,14 @@
             "x": "input"
         }
     },
+    "paddle.dot": {
+        "torch_api": "torch.dot",
+        "Rule": "DotRule"
+    },
+    "paddle.Tensor.dot": {
+        "torch_api": "torch.Tensor.dot",
+        "Rule": "DotRule"
+    },
     "e": "API started with 'e' should be placed here",
     "paddle.einsum": {
         "Rule": "EinsumRule",
@@ -2387,6 +2395,20 @@
             "axis": "dim"
         }
     },
+    "paddle.Tensor.unsqueeze": {
+        "Rule": "UnsqueezeRule",
+        "torch_api": "torch.Tensor.unsqueeze",
+        "paddle_torch_args_map": {
+            "axis": "dim"
+        }
+    },
+    "paddle.Tensor.unsqueeze_": {
+        "Rule": "UnsqueezeRule",
+        "torch_api": "torch.Tensor.unsqueeze_",
+        "paddle_torch_args_map": {
+            "axis": "dim"
+        }
+    },
     "paddle.unstack":{
         "torch_api": "torch.unbind",
         "paddle_torch_args_map": {
@@ -2980,13 +3002,6 @@
         "paddle_torch_args_map": {
             "y": "other",
             "p": "p"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.dot": {
-        "torch_api": "torch.Tensor.dot",
-        "paddle_torch_args_map": {
-            "y": "tensor"
         },
         "min_input_args": 1
     },
@@ -3709,20 +3724,6 @@
             "axis": "dim"
         },
         "min_input_args": 0
-    },
-    "paddle.Tensor.unsqueeze": {
-        "torch_api": "torch.Tensor.unsqueeze",
-        "paddle_torch_args_map": {
-            "axis": "dim"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.unsqueeze_": {
-        "torch_api": "torch.Tensor.unsqueeze_",
-        "paddle_torch_args_map": {
-            "axis": "dim"
-        },
-        "min_input_args": 1
     },
     "paddle.Tensor.var": {
         "torch_api": "torch.Tensor.var",
@@ -4741,14 +4742,6 @@
             "rate": "rate"
         },
         "min_input_args": 1
-    },
-    "paddle.dot": {
-        "torch_api": "torch.dot",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "tensor"
-        },
-        "min_input_args": 2
     },
     "paddle.dstack": {
         "torch_api": "torch.dstack",
