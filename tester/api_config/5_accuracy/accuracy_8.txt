@@ -1,0 +1,1 @@
+paddle.Tensor.slice(Tensor([4, 4],"float32"), list[1,], list[0,], list[1,], )
