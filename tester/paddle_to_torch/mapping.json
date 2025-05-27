@@ -2256,6 +2256,16 @@
         }
     },
     "t": "API started with 't' should be placed here",
+    "paddle.trapezoid": {
+        "torch_api": "torch.trapezoid",
+        "Rule": "TrapezoidRule",
+        "paddle_torch_args_map": {
+            "y": "y",
+            "x": "x",
+            "dx": "dx",
+            "axis": "dim"
+        }
+    },
     "paddle.trace": {
         "Rule": "TraceRule",
         "paddle_torch_args_map": {
@@ -7256,16 +7266,6 @@
             "x": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.trapezoid": {
-        "torch_api": "torch.trapezoid",
-        "paddle_torch_args_map": {
-            "y": "y",
-            "x": "x",
-            "dx": "dx",
-            "axis": "dim"
-        },
-        "min_input_args": 0
     },
     "paddle.tril": {
         "torch_api": "torch.tril",
