@@ -1,4 +1,3 @@
-paddle.Tensor.any(Tensor([1],"bool"), axis=tuple(), )
 paddle.Tensor.argmax(Tensor([12, 7],"int32"), axis=-1, dtype="int32", )
 paddle.Tensor.argmax(Tensor([2, 10],"int64"), -1, dtype="int32", )
 paddle.Tensor.argmax(Tensor([4, 50],"float32"), axis=1, dtype="int32", )
