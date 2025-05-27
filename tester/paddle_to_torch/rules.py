@@ -5219,6 +5219,16 @@ _kwargs['target'] = _kwargs['target'].detach()
 
 
 # t
+class TraceRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        _, map_code = self.apply_generic()
+        core = """
+diag = torch.diagonal(**_kwargs)
+result = diag.sum(dim=-1)
+"""
+        code = Code(preprocess=map_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
 class TakeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()

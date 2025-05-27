@@ -2256,6 +2256,24 @@
         }
     },
     "t": "API started with 't' should be placed here",
+    "paddle.trace": {
+        "Rule": "TraceRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "offset": "offset",
+            "axis1": "dim1",
+            "axis2": "dim2"
+        }
+    },
+    "paddle.transpose": {
+        "torch_api": "torch.permute",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "torch_kwargs": {
+            "dims": "tuple(perm) + tuple(range(len(perm), x.ndim))"
+        }
+    },
     "paddle.tensor_split": {
         "torch_api": "torch.tensor_split",
         "set_defaults": {
@@ -6801,14 +6819,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.transpose": {
-        "torch_api": "torch.permute",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "perm": "dims"
-        },
-        "min_input_args": 2
-    },
     "paddle.pow": {
         "torch_api": "torch.pow",
         "paddle_torch_args_map": {
@@ -7242,13 +7252,6 @@
     },
     "paddle.tan": {
         "torch_api": "torch.tan",
-        "paddle_torch_args_map": {
-            "x": "input"
-        },
-        "min_input_args": 1
-    },
-    "paddle.trace": {
-        "torch_api": "torch.trace",
         "paddle_torch_args_map": {
             "x": "input"
         },
