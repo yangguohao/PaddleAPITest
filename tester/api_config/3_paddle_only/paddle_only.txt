@@ -2536,3 +2536,4 @@ paddle.nn.functional.cross_entropy(input=Tensor([32, 125, 33712],"float32"), lab
 paddle.nn.functional.cross_entropy(input=Tensor([32, 126, 33712],"float32"), label=Tensor([32, 126, 33712],"float32"), reduction="none", soft_label=True, )
 paddle.nn.functional.cross_entropy(input=Tensor([32, 127, 33712],"float32"), label=Tensor([32, 127, 33712],"float32"), reduction="none", soft_label=True, )
 paddle.nn.functional.cross_entropy(input=Tensor([32, 128, 33712],"float32"), label=Tensor([32, 128, 33712],"float32"), reduction="none", soft_label=True, )
+paddle.dot(Tensor([0, 0],"float32"), Tensor([0, 0],"float32"), )
