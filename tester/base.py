@@ -8,79 +8,115 @@ import torch
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
 
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
-not_support_api = ["paddle.Tensor.coalesce",
- "paddle.Tensor.is_coalesced",
- "paddle.Tensor.index_put",
- "paddle.Tensor.index_sample",
- "paddle.linalg.pca_lowrank"
- ]
+not_support_api = frozenset(
+    [
+        "paddle.Tensor.coalesce",
+        "paddle.Tensor.is_coalesced",
+        "paddle.Tensor.index_put",
+        "paddle.Tensor.index_sample",
+        "paddle.linalg.pca_lowrank",
+    ]
+)
 
-rand_apis = [
-    "paddle.bernoulli",
-    "paddle.bernoulli_",
-    "paddle.binomial",
-    "paddle.cauchy_",
-    "paddle.geometric_",
-    "paddle.log_normal",
-    "paddle.log_normal_",
-    "paddle.multinomial",
-    "paddle.normal",
-    "paddle.normal_",
-    "paddle.poisson",
-    "paddle.rand",
-    "paddle.randn",
-    "paddle.randint",
-    "paddle.randint_like",
-    "paddle.randperm",
-    "paddle.uniform",
-    "paddle.standard_gamma",
-    "paddle.standard_normal", 
-    "paddle.Tensor.bernoulli_",
-    "paddle.Tensor.cauchy_",
-    "paddle.Tensor.exponential_",
-    "paddle.Tensor.geometric_",
-    "paddle.Tensor.log_normal_",
-    "paddle.Tensor.multinomial",
-    "paddle.Tensor.normal_",
-    "paddle.Tensor.uniform_",
-    "paddle.empty",
-    "paddle.empty_like",
-    "paddle.Tensor.__dir__",
-]
+# TODO: check all rand calc/create api (i.e. rand_apis and stochastic_behavior_apis list) and move config to accuracy_error.txt or random_calculation.txt / random_creation.txt. Eliminate configs in fresh report. API level skipping check is breaking down to config level txt managing. @Cutelemon6
+rand_apis = frozenset(
+    [
+        "paddle.bernoulli_",
+        "paddle.binomial",
+        "paddle.cauchy_",
+        "paddle.geometric_",
+        "paddle.log_normal",
+        "paddle.log_normal_",
+        "paddle.multinomial",
+        "paddle.normal",
+        "paddle.normal_",
+        "paddle.poisson",
+        "paddle.rand",
+        "paddle.randn",
+        "paddle.randint",
+        "paddle.randint_like",
+        "paddle.randperm",
+        "paddle.uniform",
+        "paddle.standard_gamma",
+        "paddle.standard_normal",
+        "paddle.Tensor.bernoulli_",
+        "paddle.Tensor.cauchy_",
+        "paddle.Tensor.exponential_",
+        "paddle.Tensor.geometric_",
+        "paddle.Tensor.log_normal_",
+        "paddle.Tensor.multinomial",
+        "paddle.Tensor.normal_",
+        "paddle.Tensor.uniform_",
+        "paddle.empty",
+        "paddle.empty_like",
+        "paddle.Tensor.__dir__",
+    ]
+)
 
-stochastic_behavior_apis =[
-    "paddle.Tensor.top_p_sampling", 
-    "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
-    "paddle.incubate.nn.functional.fused_dropout_add",
-    "paddle.incubate.nn.functional.moe_dispatch",
-    "paddle.nn.functional.alpha_dropout", 
-    "paddle.nn.functional.fused_feedforward",
-    "paddle.nn.functional.dropout",
-    "paddle.nn.functional.dropout2d",
-    "paddle.nn.functional.dropout3d",
-    "paddle.nn.functional.feature_alpha_dropout",
-    "paddle.incubate.nn.functional.fused_multi_head_attention",
-    "paddle.nn.functional.scaled_dot_product_attention",
-]
+stochastic_behavior_apis = frozenset(
+    [
+        "paddle.Tensor.top_p_sampling",
+        # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
+        "paddle.incubate.nn.functional.fused_dropout_add",
+        "paddle.incubate.nn.functional.moe_dispatch",
+        "paddle.nn.functional.alpha_dropout",
+        # "paddle.nn.functional.fused_feedforward",
+        "paddle.nn.functional.dropout",
+        "paddle.nn.functional.dropout2d",
+        "paddle.nn.functional.dropout3d",
+        "paddle.nn.functional.feature_alpha_dropout",
+        "paddle.incubate.nn.functional.fused_multi_head_attention",
+        "paddle.nn.functional.scaled_dot_product_attention",
+    ]
+)
 
-single_op_no_signature_apis = ["__eq__", "__ge__", "__gt__", "__le__", "__lt__", "__add__", "__div__", "__floordiv__", "__matmul__", "__mod__", "__ne__", "__pow__", "__radd__", "__rmatmul__", "__rmod__", "__rmul__", "__rpow__", "__rsub__", "__rtruediv__", "__truediv__", "__mul__", "__sub__"]
+single_op_no_signature_apis = frozenset(
+    [
+        "__eq__",
+        "__ge__",
+        "__gt__",
+        "__le__",
+        "__lt__",
+        "__add__",
+        "__div__",
+        "__floordiv__",
+        "__matmul__",
+        "__mod__",
+        "__ne__",
+        "__pow__",
+        "__radd__",
+        "__rmatmul__",
+        "__rmod__",
+        "__rmul__",
+        "__rpow__",
+        "__rsub__",
+        "__rtruediv__",
+        "__truediv__",
+        "__mul__",
+        "__sub__",
+    ]
+)
 
 no_signature_api_mappings = {
     f"paddle.Tensor.{method}": {
         "self": lambda cfg: get_arg(cfg, 0, "self"),
-        "y": lambda cfg: get_arg(cfg, 1, "y")
+        "y": lambda cfg: get_arg(cfg, 1, "y"),
     }
     for method in single_op_no_signature_apis
 }
 
 
-handle_axes_api = [
-    "paddle.mean",
-    "paddle.max",
-    "paddle.min",
-    "paddle.sum",
-    "paddle.prod",
-]
+handle_axes_api = frozenset(
+    [
+        "paddle.mean",
+        "paddle.max",
+        "paddle.min",
+        "paddle.sum",
+        "paddle.prod",
+    ]
+)
+
+not_check_dtype = frozenset(["paddle.where", "paddle.nn.functional.one_hot"])
 
 
 class APITestBase:
@@ -565,7 +601,7 @@ class APITestBase:
             return torch.int8
         elif dtype in ['bool', numpy.bool_, paddle.bool, paddle.base.libpaddle.VarDesc.VarType.BOOL, bool]:
             return torch.bool
-        elif dtype in ['bfloat16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
+        elif dtype in ['bfloat16','uint16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
             return torch.bfloat16
         elif dtype in ['uint8', numpy.uint8, paddle.uint8, paddle.base.libpaddle.VarDesc.VarType.UINT8]:
             return torch.uint8
@@ -817,7 +853,9 @@ class APITestBase:
             # ),
         )
 
-    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol, is_check_dtype):
+    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol):
+        is_check_dtype = self.api_config.api_name not in not_check_dtype
+
         paddle_tensor = paddle_tensor.cpu().detach()
         torch_tensor = torch_tensor.cpu().detach()
 
