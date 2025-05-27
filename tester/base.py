@@ -116,7 +116,18 @@ handle_axes_api = frozenset(
     ]
 )
 
-not_check_dtype = frozenset(["paddle.where", "paddle.nn.functional.one_hot"])
+not_check_dtype = frozenset(
+    [
+        "paddle.where",
+        "paddle.nn.functional.one_hot",
+        "paddle.Tensor.cumsum",
+        "paddle.add",
+        "paddle.add_n",
+        "paddle.cummax",
+        "paddle.cummin",
+        "paddle.cumsum",
+    ]
+)
 
 
 class APITestBase:

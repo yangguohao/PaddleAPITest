@@ -2107,9 +2107,9 @@
             "stride": "stride"
         },
         "torch_kwargs": {
-            "source": "{source} if locals().get('{source}') is not None else torch.empty([])",
-            "size": "locals().get('{shape}') or ({source}.size() if locals().get('{source}') is not None else [])",
-            "storage_offset": "(locals().get('{offset}') or 0) // _tmp_tensor.itemsize"
+            "source": "source if locals().get('source') is not None else torch.empty([])",
+            "size": "locals().get('shape') or (source.size() if locals().get('source') is not None else [])",
+            "storage_offset": "(locals().get('offset') or 0) // _tmp_tensor.itemsize"
         }
     },
     "paddle.shard_index":{

@@ -518,7 +518,7 @@ def convert_list2tensor(tlist):
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
-# b 
+# b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -1624,7 +1624,6 @@ def fused_bias_act(
 ) -> torch.Tensor:
     import torch.nn.functional as F
 
-    x_dtype = x.dtype
     if compute_dtype != 'default':
         if compute_dtype == 'fp16':
             compute_dtype = 'float16'
@@ -1687,7 +1686,7 @@ def fused_bias_act(
             raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
         x = x * quant_scale
         x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
-    return x.to(x_dtype)
+    return x
 """
         core = "result = fused_bias_act(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])
@@ -2942,9 +2941,13 @@ else:
 
 class IncrementRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = "value = locals().get('value', 1)"
+        pre = """
+value = locals().get("value", 1)
+x_dtype = x.dtype
+"""
         core = "result = x + value"
-        code = Code(preprocess=[pre], core=[core])
+        post = "result = result.to(x_dtype)"
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=[post])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -3610,7 +3613,7 @@ result = loss_ce + l2_loss
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-    
+
 class NmsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -4556,7 +4559,7 @@ elif reduce_op == 'min':
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-    
+
 class SendUERecvRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -4696,7 +4699,7 @@ else:
             core=core.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
-    
+
 class SigmoidFocalLossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -5173,7 +5176,7 @@ result = torch.softmax(x + mask, dim=-1)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-    
+
 class SoftmaxWithCrossEntropyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -5357,7 +5360,7 @@ y = y.flatten()
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
-        
+
 class TriangularSolveRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
