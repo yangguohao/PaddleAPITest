@@ -10,9 +10,7 @@ from .api_config.log_writer import write_to_log
 from .base import APITestBase
 from .paddle_to_torch import get_converter
 
-not_check_dtype_list = ["paddle.frexp"]
-
-not_check_dtype = ["paddle.where", "paddle.nn.functional.one_hot"]
+not_check_dtype = ["paddle.where", "paddle.nn.functional.one_hot", "paddle.frexp"]
 
 class APITestAccuracy(APITestBase):
     def __init__(self, api_config, test_amp):
