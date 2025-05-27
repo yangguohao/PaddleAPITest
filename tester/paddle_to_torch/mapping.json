@@ -2046,6 +2046,22 @@
     "paddle.reverse":{
         "Rule":"ReverseRule"
     },
+    "paddle.fft.rfft2": {
+        "torch_api": "torch.fft.rfft2",
+        "set_defaults": {
+            "s": "None", 
+            "dim": "(-2, -1)", 
+            "norm": "None"
+        }, 
+        "paddle_torch_args_map": {
+            "x": "input",
+            "s": "s",
+            "norm": "norm"
+        }, 
+        "torch_kwargs": {
+            "dim": "(-2, -1) if locals().get('axes') is None else axes"
+        }
+    },
     "paddle.vision.ops.roi_align":{
         "Rule": "Roi_aignRule"
     },
@@ -4946,16 +4962,6 @@
             "x": "input",
             "n": "n",
             "axis": "dim",
-            "norm": "norm"
-        },
-        "min_input_args": 1
-    },
-    "paddle.fft.rfft2": {
-        "torch_api": "torch.fft.rfft2",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "s": "s",
-            "axes": "dim",
             "norm": "norm"
         },
         "min_input_args": 1
