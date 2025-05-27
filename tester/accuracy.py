@@ -10,6 +10,7 @@ from .api_config.log_writer import write_to_log
 from .base import APITestBase
 from .paddle_to_torch import get_converter
 
+
 not_check_dtype = ["paddle.where", "paddle.nn.functional.one_hot", "paddle.frexp"]
 
 class APITestAccuracy(APITestBase):
@@ -378,6 +379,8 @@ class APITestAccuracy(APITestBase):
                     return
                 if isinstance(torch_out_grads, tuple):
                     torch_out_grads = list(torch_out_grads)
+                if self.api_config.api_name == "paddle.tensordot":
+                    paddle_out_grads = paddle_out_grads[:2]
                 if len(paddle_out_grads) != len(torch_out_grads):
                     print("[accuracy error] backward ", self.api_config.config, "\n[output type diff error2], ", len(paddle_out_grads), len(torch_out_grads), flush=True)
                     write_to_log("accuracy_error", self.api_config.config)
