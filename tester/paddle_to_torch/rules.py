@@ -1597,6 +1597,25 @@ result = torch.diagonal_scatter(result, y, offset=offset, dim1=dim1, dim2=dim2)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class FracRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+if isinstance(x, torch.Tensor):
+    src_dtype = x.dtype
+    if x.dtype not in [torch.float16, torch.float32, torch.float64]:
+        x = x.to(torch.float64)
+else:
+    raise ValueError(f"x must be a tensor, but got {type(x)}")
+"""
+        core = "result = torch.frac(input=x)"
+        post_process = """
+if src_dtype != result.dtype:
+    result = result.to(src_dtype)
+"""
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post_process.splitlines())
+        return ConvertResult.success(paddle_api, code)
+
+
 class FractionalMaxPoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -3114,6 +3133,24 @@ result = (1 - epsilon) * label + epsilon * prior_dist
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class LayerNormRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if isinstance(normalized_shape, int):
+    normalized_shape = (normalized_shape,)
+elif isinstance(normalized_shape, list):
+    normalized_shape = tuple(normalized_shape)
+if weight is not None:
+    weight = weight.view(normalized_shape).to(x.dtype)
+if bias is not None:
+    bias = bias.view(normalized_shape).to(x.dtype)
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+        
 class LcmRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
