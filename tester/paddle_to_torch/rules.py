@@ -1218,7 +1218,13 @@ if x.dtype in {torch.int32, torch.int64, torch.bool}:
         if paddle_api == "paddle.dot":
             core = """
 if x.ndim == 2:
-    result = torch.stack([torch.dot(x[i], y[i]) for i in range(x.shape[0])])
+    result = []
+    for xi, yi in zip(x, y):
+        _sum = 0
+        for xi_j, yi_j in zip(xi, yi):
+            _sum += xi_j * yi_j
+        result.append(_sum)
+    result = torch.tensor(result)
 else:
     result = torch.dot(x, y)
 """
@@ -4088,8 +4094,8 @@ else:
 
 class PoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        func1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre_1d = """
 kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
 stride = tuple(stride) if isinstance(stride, list) else stride
 
@@ -4120,7 +4126,7 @@ elif isinstance(padding, (list, tuple)):
         x = torch.nn.functional.pad(x, (pad_left, pad_right))
         padding = 0
 """
-        func2 = """
+        pre_2d = """
 kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
 stride = tuple(stride) if isinstance(stride, list) else stride
 if data_format == "NHWC":
@@ -4167,7 +4173,7 @@ elif isinstance(padding, (list, tuple)):
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
         padding = 0
 """
-        func3 = """
+        pre_3d = """
 kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
 stride = tuple(stride) if isinstance(stride, list) else stride
 if data_format == 'NDHWC':
@@ -4227,36 +4233,53 @@ elif isinstance(padding, (list, tuple)):
         padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post_1d = """
+if data_format == "NLC":
+    result = result.permute(0, 2, 1)
+"""
+        post_2d = """
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
-        impl3 = """
+        post_3d = """
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
         if paddle_api.endswith("_pool1d"):
-            code = head_code + func1.splitlines() + map_code + core.splitlines()
+            if paddle_api == "paddle.nn.functional.lp_pool1d":
+                pre_1d = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)
+""" + pre_1d + """
+if isinstance(padding, int) and padding != 0:
+    x = torch.nn.functional.pad(x, (padding, padding))
+elif isinstance(padding, tuple):
+    x = torch.nn.functional.pad(x, (padding[0], padding[0]))
+"""
+            pre = pre_1d
+            post = post_1d
         elif paddle_api.endswith("_pool2d"):
-            code = (
-                head_code
-                + func2.splitlines()
-                + map_code
-                + core.splitlines()
-                + impl2.splitlines()
-            )
+            if paddle_api == "paddle.nn.functional.lp_pool2d":
+                pre_2d += """
+if isinstance(padding, int) and padding != 0:
+    x = torch.nn.functional.pad(x, (padding, padding, padding, padding))
+elif isinstance(padding, tuple):
+    x = torch.nn.functional.pad(x, (padding[1], padding[1], padding[0], padding[0]))
+"""
+            pre = pre_2d
+            post = post_2d
         elif paddle_api.endswith("_pool3d"):
-            code = (
-                head_code
-                + func3.splitlines()
-                + map_code
-                + core.splitlines()
-                + impl3.splitlines()
-            )
+            pre = pre_3d
+            post = post_3d
         else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported pooling api: {paddle_api}"
             )
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
