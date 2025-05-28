@@ -1230,14 +1230,14 @@ if x.ndim == 2:
         result_list.append(sum_)
     result = torch.tensor(result_list)
 else:
-    result = torch.dot(input, tensor)
+    result = torch.dot(x, y)
 """
         elif paddle_api == "paddle.Tensor.dot":
             core = """
-if input.ndim == 2:
-    result = torch.stack([input[i].dot(tensor[i]) for i in range(input.shape[0])])
+if x.ndim == 2:
+    result = torch.stack([x[i].dot(y[i]) for i in range(x.shape[0])])
 else:
-    result = input.dot(tensor)
+    result = x.dot(y)
 """
         else:
             return ConvertResult.error(paddle_api, f"Unsupported dot API: {paddle_api}")
