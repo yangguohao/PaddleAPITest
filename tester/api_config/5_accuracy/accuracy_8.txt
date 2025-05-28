@@ -224,3 +224,7 @@ paddle.nn.functional.max_pool3d(Tensor([1, 3, 4, 4, 6],"float32"), kernel_size=2
 paddle.nn.functional.max_pool3d(Tensor([1, 3, 4, 4, 6],"float64"), kernel_size=2, stride=2, padding=0, return_mask=True, ceil_mode=False, data_format="NCDHW", name=None, )
 paddle.nn.functional.max_pool3d(Tensor([1, 3, 4, 4, 6],"float64"), kernel_size=2, stride=2, return_mask=True, )
 paddle.nn.functional.max_pool3d(Tensor([2, 3, 32, 32, 32],"float32"), kernel_size=2, stride=None, padding="SAME", return_mask=True, )
+paddle.scale(x=Tensor([3, 3, 3],"int32"), scale=1.0, bias=0.0, bias_after_scale=True, act=None, )
+paddle.scale(x=Tensor([3, 3, 3],"int64"), scale=1.0, bias=0.0, bias_after_scale=True, act=None, )
+paddle.shape(Tensor([],"float32"), )
+paddle.shape(Tensor([],"int64"), )

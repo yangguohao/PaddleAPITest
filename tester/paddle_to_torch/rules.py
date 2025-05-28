@@ -5001,6 +5001,7 @@ if act is not None:
         result = torch.relu(result)
     elif act == 'softmax':
         result = torch.softmax(result, dim=-1)
+result = result.to(x.dtype)
 """
         code = Code(preprocess=defaults_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -5008,7 +5009,7 @@ if act is not None:
 
 class ShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        core = "result = torch.tensor(input.shape)"
+        core = "result = torch.tensor(input.shape, dtype=torch.int64)"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
