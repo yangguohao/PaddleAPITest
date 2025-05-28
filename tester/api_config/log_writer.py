@@ -138,7 +138,8 @@ def aggregate_logs(end=False):
                 try:
                     with file_path.open("r") as in_f:
                         out_f.writelines(in_f.read())
-                    os.remove(str(file_path))
+                    with file_path.open("w") as f:
+                        pass
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
     except Exception as err:
