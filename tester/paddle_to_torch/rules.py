@@ -472,7 +472,8 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        post = "result  = result.to(dtype)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core], postprocess=[post])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1225,7 +1226,13 @@ if x.dtype in {torch.int32, torch.int64, torch.bool}:
         if paddle_api == "paddle.dot":
             core = """
 if x.ndim == 2:
-    result = torch.stack([torch.dot(x[i], y[i]) for i in range(x.shape[0])])
+    result = []
+    for xi, yi in zip(x, y):
+        _sum = 0
+        for xi_j, yi_j in zip(xi, yi):
+            _sum += xi_j * yi_j
+        result.append(_sum)
+    result = torch.tensor(result)
 else:
     result = torch.dot(x, y)
 """
@@ -1690,7 +1697,6 @@ if isinstance(output_size, (list, tuple)):
         pre += pre3.splitlines()
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
-
 
 class FusedBiasActRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -2718,7 +2724,22 @@ elif data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
-# h
+# h  
+
+class HardtanhRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if _kwargs["max_val"] < _kwargs["min_val"] :
+    _kwargs["min_val"] = float('-inf')
+result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class HessianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -3402,6 +3423,32 @@ result = x.transpose(-1, -2)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class MatrixRankRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if atol is not None and rtol is not None:
+    if isinstance(rtol, float):
+        rtol = torch.tensor(rtol)
+    if isinstance(atol, float):
+        atol = torch.tensor(atol)     
+"""
+        core = f"""
+if  _kwargs["tol"] == None:
+    _kwargs.pop('tol') 
+else:
+    _kwargs.pop('atol') 
+    _kwargs.pop('rtol') 
+
+result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines()+ map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 class MatmulTensorRule(BaseRule):

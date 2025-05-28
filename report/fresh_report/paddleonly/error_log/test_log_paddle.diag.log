@@ -1,0 +1,28 @@
+2025-05-26 15:24:53.709243 GPU 5 74062 test begin: paddle.diag(Tensor([2000],"float32"), offset=-1, )
+Warning: The core code of paddle.diag is too complex.
+W0526 15:24:58.680173 74062 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0526 15:24:58.681304 74062 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[cuda error] paddle.diag(Tensor([2000],"float32"), offset=-1, ) 
+ (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /root/Paddle/paddle/fluid/pybind/eager_functions.cc:1381)
+
+terminate called after throwing an instance of 'common::enforce::EnforceNotMet'
+  what():  (External) CUDA error(700), an illegal memory access was encountered. 
+  [Hint: 'cudaErrorIllegalAddress'. The device encountered a load or store instruction on an invalid memory address. This leaves the process in an inconsistentstate and any further CUDA work will return the same error. To continue using CUDA, the process must be terminated and relaunched. ] (at /root/Paddle/paddle/phi/core/platform/device/gpu/gpu_info.cc:348)
+
+
+
+--------------------------------------
+C++ Traceback (most recent call last):
+--------------------------------------
+0   paddle::platform::EmptyCache()
+1   paddle::memory::allocation::StreamSafeCUDAAllocator::ReleaseImpl(phi::Place const&)
+2   paddle::memory::allocation::AutoGrowthBestFitAllocator::FreeIdleChunks()
+3   paddle::memory::allocation::CUDAAllocator::FreeImpl(phi::Allocation*)
+
+----------------------
+Error Message Summary:
+----------------------
+FatalError: `Process abort signal` is detected by the operating system.
+  [TimeInfo: *** Aborted at 1748244299 (unix time) try "date -d @1748244299" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1214e) received by PID 74062 (TID 0x7fdf16463740) from PID 74062 ***]
