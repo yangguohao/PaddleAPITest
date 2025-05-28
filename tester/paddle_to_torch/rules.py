@@ -1210,6 +1210,7 @@ if data_format == "NDHWC":
 # d
 class DotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
         pre = """
 x_dtype = x.dtype
 if x.dtype in {torch.int32, torch.int64, torch.bool}:
@@ -1219,16 +1220,24 @@ if x.dtype in {torch.int32, torch.int64, torch.bool}:
         if paddle_api == "paddle.dot":
             core = """
 if x.ndim == 2:
-    result = torch.stack([torch.dot(x[i], y[i]) for i in range(x.shape[0])])
+    result_list = []
+    for i in range(x.shape[0]):
+        xi = x[i]
+        yi = y[i]
+        sum_ = 0.0
+        for j in range(xi.shape[0]):
+            sum_ += xi[j] * yi[j]
+        result_list.append(sum_)
+    result = torch.tensor(result_list)
 else:
-    result = torch.dot(x, y)
+    result = torch.dot(input, tensor)
 """
         elif paddle_api == "paddle.Tensor.dot":
             core = """
-if x.ndim == 2:
-    result = torch.stack([x[i].dot(y[i]) for i in range(x.shape[0])])
+if input.ndim == 2:
+    result = torch.stack([input[i].dot(tensor[i]) for i in range(input.shape[0])])
 else:
-    result = x.dot(y)
+    result = input.dot(tensor)
 """
         else:
             return ConvertResult.error(paddle_api, f"Unsupported dot API: {paddle_api}")
@@ -2718,7 +2727,7 @@ result = {self.torch_api}(**_kwargs)
 """
         code = Code(
             preprocess=defaults_code + map_code,
-            core=[core]
+            core=core.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 
