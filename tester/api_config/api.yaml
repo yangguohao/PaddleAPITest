@@ -310,7 +310,6 @@ apis:
  - paddle.Tensor.std
  - paddle.Tensor.stft
  - paddle.Tensor.strided_slice
- - paddle.Tensor.strides
  - paddle.Tensor.subtract
  - paddle.Tensor.sum
  - paddle.Tensor.svd_lowrank

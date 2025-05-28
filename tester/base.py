@@ -18,9 +18,9 @@ not_support_api = frozenset(
     ]
 )
 
+# TODO: check all rand calc/create api (i.e. rand_apis and stochastic_behavior_apis list) and move config to accuracy_error.txt or random_calculation.txt / random_creation.txt. Eliminate configs in fresh report. API level skipping check is breaking down to config level txt managing. @Cutelemon6
 rand_apis = frozenset(
     [
-        "paddle.bernoulli",
         "paddle.bernoulli_",
         "paddle.binomial",
         "paddle.cauchy_",
@@ -56,11 +56,11 @@ rand_apis = frozenset(
 stochastic_behavior_apis = frozenset(
     [
         "paddle.Tensor.top_p_sampling",
-        "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
+        # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
         "paddle.incubate.nn.functional.fused_dropout_add",
         "paddle.incubate.nn.functional.moe_dispatch",
         "paddle.nn.functional.alpha_dropout",
-        "paddle.nn.functional.fused_feedforward",
+        # "paddle.nn.functional.fused_feedforward",
         "paddle.nn.functional.dropout",
         "paddle.nn.functional.dropout2d",
         "paddle.nn.functional.dropout3d",
@@ -124,6 +124,7 @@ class APITestBase:
         self.api_config = api_config
         self.outputs_grad_numpy = []
         torch.set_num_threads(20)
+        torch.set_printoptions(threshold=100)
 
     def need_skip(self, paddle_only=False):
         # not support
@@ -601,7 +602,7 @@ class APITestBase:
             return torch.int8
         elif dtype in ['bool', numpy.bool_, paddle.bool, paddle.base.libpaddle.VarDesc.VarType.BOOL, bool]:
             return torch.bool
-        elif dtype in ['bfloat16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
+        elif dtype in ['bfloat16','uint16', numpy.uint16, paddle.bfloat16, paddle.base.libpaddle.VarDesc.VarType.BF16]:
             return torch.bfloat16
         elif dtype in ['uint8', numpy.uint8, paddle.uint8, paddle.base.libpaddle.VarDesc.VarType.UINT8]:
             return torch.uint8
@@ -863,24 +864,13 @@ class APITestBase:
         converted_paddle_tensor = torch.utils.dlpack.from_dlpack(paddle_dlpack)
 
         def error_msg(msg):
-            total_count = converted_paddle_tensor.numel()
-            display_count = min(total_count, 100)
-            flat_paddle = converted_paddle_tensor.flatten()[:display_count]
-            flat_torch = torch_tensor.flatten()[:display_count]
-
-            # msg = "\n".join(msg.splitlines()[2:])
-            elements_text = (
-                f"First {display_count} elements"
-                if display_count < total_count
-                else "All elements"
-            )
             return (
                 f"Not equal to tolerance rtol={rtol}, atol={atol}\n"
                 f"{msg}\n"
                 f"ACTUAL: (shape={converted_paddle_tensor.shape}, dtype={converted_paddle_tensor.dtype})\n"
-                f"{elements_text}: {flat_paddle}\n"
+                f"{converted_paddle_tensor}\n"
                 f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
-                f"{elements_text}: {flat_torch}"
+                f"{torch_tensor}"
             )
 
         try:
