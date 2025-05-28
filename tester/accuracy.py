@@ -4,7 +4,7 @@ import traceback
 import numpy
 import paddle
 import torch
-#from func_timeout import func_set_timeout
+# from func_timeout import func_set_timeout
 
 from .api_config.log_writer import write_to_log
 from .base import APITestBase
@@ -115,8 +115,8 @@ class APITestAccuracy(APITestBase):
             print("[torch error]", self.api_config.config, flush=True)
             traceback.print_exc()
             write_to_log("torch_error", self.api_config.config)
-            if "CUDA error" in str(err) or "memory corruption" in str(err):
-                raise Exception(err)
+            if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
+                raise err
             return
 
         if self.need_check_grad():
@@ -140,7 +140,7 @@ class APITestAccuracy(APITestBase):
                 print(str(err), flush=True)
                 torch_grad_success = False
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
-                    raise Exception(err)
+                    raise err
         else:
             del self.torch_args, self.torch_kwargs
 
@@ -207,7 +207,9 @@ class APITestAccuracy(APITestBase):
             print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
-                raise Exception(err)
+                raise err
+            if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
+                raise err
             return
 
         try:
@@ -332,7 +334,9 @@ class APITestAccuracy(APITestBase):
                 print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
-                    raise Exception(err)
+                    raise err
+                if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
+                    raise err
                 return
 
             try:
@@ -345,7 +349,9 @@ class APITestAccuracy(APITestBase):
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
                 paddle_out_grads = paddle_out_grads[0]
-
+            if self.api_config.api_name == "paddle.tensordot":
+                paddle_out_grads = paddle_out_grads[:2]
+                
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:
