@@ -472,7 +472,8 @@ if not isinstance(axis, int) and axis != None:
     axis = int(axis)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        post = "result  = result.to(dtype)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core], postprocess=[post])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -892,16 +893,23 @@ class ClipRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         pre = """
 if 'min' not in _kwargs:
-    _kwargs['min'] = float('-inf')
+    _kwargs['min'] = torch.tensor([float('-inf')]).to(dtype=_kwargs['input'].dtype)
 if 'max' not in _kwargs:
-    _kwargs['max'] = float('inf')
+    _kwargs['max'] = torch.tensor([float('inf')]).to(dtype=_kwargs['input'].dtype)
 if isinstance(_kwargs['min'],torch.Tensor):
     _kwargs['min'] = _kwargs['min'].item()
 if isinstance(_kwargs['max'],torch.Tensor):
     _kwargs['max'] = _kwargs['max'].item()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
+        post = """
+result = result.to(_kwargs['input'].dtype)
+"""
+        code = Code(
+            preprocess=map_code + pre.splitlines(),
+            core=core.splitlines(),
+            postprocess=post.splitlines()
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1694,7 +1702,6 @@ if isinstance(output_size, (list, tuple)):
         code = Code(preprocess=pre, core=[core])
         return ConvertResult.success(paddle_api, code)
 
-
 class FusedBiasActRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2312,6 +2319,10 @@ if isinstance(axis,torch.Tensor):
     axis = axis.item()
 if len(index.shape) == 0:
     result = torch.squeeze(torch.narrow(x, axis, index, 1),axis)
+elif index.numel()==0:
+    s = list(x.shape)
+    s[axis] = 0
+    result = torch.zeros(s).to(dtype=x.dtype)
 else:
     ans = []
     for i in index:
@@ -2366,6 +2377,7 @@ for batch in range(batch_size):
         for step in range(max_time-2,-1,-1):
             result[step,batch,beam] = ids[step,batch,pa]
             pa = parents[step,batch,pa]
+result = result.to(dtype=ids.dtype)
 """
         code = impl.splitlines()
         return ConvertResult.success(paddle_api, code)
@@ -2715,7 +2727,22 @@ elif data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
-# h
+# h  
+
+class HardtanhRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if _kwargs["max_val"] < _kwargs["min_val"] :
+    _kwargs["min_val"] = float('-inf')
+result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class HessianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2789,6 +2816,19 @@ class Hessian:
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class HistogramRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+result =result.to(dtype=torch.int64)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class HistogramddRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -3392,6 +3432,32 @@ result = x.transpose(-1, -2)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class MatrixRankRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if atol is not None and rtol is not None:
+    if isinstance(rtol, float):
+        rtol = torch.tensor(rtol)
+    if isinstance(atol, float):
+        atol = torch.tensor(atol)     
+"""
+        core = f"""
+if  _kwargs["tol"] == None:
+    _kwargs.pop('tol') 
+else:
+    _kwargs.pop('atol') 
+    _kwargs.pop('rtol') 
+
+result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines()+ map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class MatmulTensorRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -3887,6 +3953,20 @@ else:
 
 
 # o
+class OneHotRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+result =result.to(dtype=torch.int64)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class OnesRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -4369,8 +4449,12 @@ if mode == "r":
 class RankRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = f"result = torch.tensor(input.dim(),dtype=torch.int64)"
+        post = """
+result = result.to(torch.int32)
+"""
         code = Code(
             core=core.splitlines(),
+            postprocess=post.splitlines()
         )
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
@@ -4719,6 +4803,7 @@ elif reduce_op == 'min':
 
     # 若某些 dst 没收到消息，设为 0
     result[result == float('inf')] = 0
+result = result.to(dtype=x.dtype)
 """
         code = Code(
             core=core.splitlines(),
@@ -4920,6 +5005,19 @@ result = input
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+class SmoothL1LossRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+result =result.to(dtype=label.dtype)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class SplitRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5006,6 +5104,7 @@ if maxlen <= 0:
 range_row = torch.arange(maxlen, device=x.device)
 mask = range_row < x.unsqueeze(-1)
 result = mask.to(dtype)
+result = result.to(dtype=torch.int64)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -5981,6 +6080,9 @@ if "input" in _kwargs and not isinstance(_kwargs['input'], torch.Tensor):
 """
         core = """
 result = torch.where(**_kwargs)
+"""
+        post = """
+result = result.to(torch.float64)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
