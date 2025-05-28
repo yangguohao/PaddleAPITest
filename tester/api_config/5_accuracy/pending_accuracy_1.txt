@@ -2068,8 +2068,6 @@ paddle.nn.functional.hardsigmoid(Tensor([8, 72, 1, 1],"float32"), slope=0.2, off
 paddle.nn.functional.hardsigmoid(Tensor([8, 96, 1, 1],"float16"), slope=0.2, offset=0.5, )
 paddle.nn.functional.hardsigmoid(Tensor([8, 96, 1, 1],"float32"), slope=0.2, offset=0.5, )
 paddle.nn.functional.hardsigmoid(Tensor([8, 960, 1, 1],"float32"), slope=0.2, offset=0.5, )
-paddle.nn.functional.hardtanh(Tensor([3, 3, 3],"float64"), 3.3, -3.3, None, )
-paddle.nn.functional.hardtanh(x=Tensor([3, 3, 3],"float64"), max=-3.3, min=3.3, )
 paddle.nn.functional.interpolate(Tensor([1, 2, 512, 512],"float32"), list[Tensor([1],"int64"),Tensor([1],"int64"),], mode="bilinear", )
 paddle.nn.functional.interpolate(Tensor([16, 32, 19, 19],"float32"), size=tuple(20,20,), mode="bicubic", align_corners=True, )
 paddle.nn.functional.interpolate(Tensor([16, 32, 20, 20],"float32"), size=list[19,19,], mode="bicubic", align_corners=True, )

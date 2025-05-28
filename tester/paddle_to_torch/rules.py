@@ -2711,16 +2711,13 @@ elif data_format == "NDHWC":
 class HardtanhRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
-        pre = """
-
-"""
         core = f"""
 if _kwargs["max_val"] < _kwargs["min_val"] :
     _kwargs["min_val"] = float('-inf')
 result = {self.torch_api}(**_kwargs)
 """
         code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
+            preprocess=defaults_code + map_code,
             core=[core]
         )
         return ConvertResult.success(paddle_api, code)

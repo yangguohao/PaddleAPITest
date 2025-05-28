@@ -356,6 +356,21 @@
     "paddle.nn.functional.dropout3d": {
         "Rule": "Dropout3dRule"
     },
+    "paddle.nn.functional.hardtanh": {
+        "Rule": "HardtanhRule",
+        "torch_api": "torch.nn.functional.hardtanh",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "min": "min_val",
+            "max": "max_val",
+            "inplace": "inplace"
+        },
+        "set_defaults": {
+            "min": "-1.0",
+            "max": "1.0"
+        },
+        "min_input_args": 1
+    },
     "paddle.dsplit": {
         "Rule": "SsplitRule",
         "torch_api": "torch.dsplit",
@@ -6564,17 +6579,6 @@
         "torch_api": "torch.nn.functional.hardswish",
         "paddle_torch_args_map": {
             "x": "input",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.hardtanh": {
-        "Rule": "HardtanhRule",
-        "torch_api": "torch.nn.functional.hardtanh",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "min": "min_val",
-            "max": "max_val",
             "inplace": "inplace"
         },
         "min_input_args": 1
