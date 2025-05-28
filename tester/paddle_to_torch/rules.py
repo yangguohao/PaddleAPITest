@@ -3797,6 +3797,8 @@ elif len(x.shape)>=2 and axis is None:
             result = x.abs().amin()
     else:
         _kwargs["input"] = x.flatten()
+        if p == "fro":
+            _kwargs["ord"] = 2
         result = {self.torch_api}(**_kwargs)
         if keepdim:
             result = result.reshape([1] * x.ndim)
