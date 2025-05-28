@@ -1278,7 +1278,7 @@
             "dilations": "dilation"
         },
         "torch_kwargs": {
-            "padding": "({paddings}[0], {paddings}[2]) if isinstance({paddings}, list) and len({paddings}) == 4 else {paddings}"
+            "padding": "(paddings[0], paddings[2]) if isinstance(paddings, list) and len(paddings) == 4 else paddings"
         }
     },
     "paddle.nn.functional.fractional_max_pool2d": {
@@ -2402,7 +2402,7 @@
             "dtype": "dtype"
         },
         "torch_kwargs": {
-            "col": "{row} if {col} is None else {col}"
+            "col": "row if col is None else col"
         }
     },
     "paddle.triu_indices": {
@@ -2413,7 +2413,7 @@
             "dtype": "dtype"
         },
         "torch_kwargs": {
-            "col": "{row} if {col} is None else {col}"
+            "col": "row if col is None else col"
         }
     },
     "u": "API started with 'u' should be placed here",
