@@ -1218,7 +1218,7 @@ if x.dtype in {torch.int32, torch.int64, torch.bool}:
 """
         if paddle_api == "paddle.dot":
             core = """
-f x.ndim == 2:
+if x.ndim == 2:
     result = []
     for xi, yi in zip(x, y):
         _sum = 0
