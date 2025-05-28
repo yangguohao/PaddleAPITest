@@ -389,7 +389,7 @@ class TensorConfig:
                 len_shape = len(x_tensor_config.shape)
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
-            elif api_config.api_name == "paddle.clip" and self.check_arg(api_config, 0, "x"):
+            elif api_config.api_name in ["paddle.clip", "paddle.tensor.clip"] and self.check_arg(api_config, 0, "x"):
                 # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
                 self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
                 
@@ -1590,14 +1590,6 @@ class TensorConfig:
                          flat_indices[positions_to_replace[1]] = dim_size - 1
                          indices = flat_indices
                     self.numpy_tensor = indices.reshape(self.shape)
-
-
-            elif api_config.api_name == "paddle.Tensor.clip":
-                if index>0 and key!='x':
-                    self.numpy_tensor=numpy.random.random()-0.5
-                if key == "max" or index == 2:
-                    pre=self.get_arg(api_config, 1, "min")
-                    self.numpy_tensor=numpy.clip(self.numpy_tensor,pre.numpy_tensor,None)
             
             elif api_config.api_name in {'paddle.Tensor.gather',"paddle.gather"}:
                 if key == "index" or index == 1:

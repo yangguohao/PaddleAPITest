@@ -25413,3 +25413,7 @@ paddle.nn.functional.scaled_dot_product_attention(Tensor([4, 346, 8, 96],"float1
 paddle.nn.functional.scaled_dot_product_attention(Tensor([4, 377, 8, 96],"float16"), Tensor([4, 377, 8, 96],"float16"), Tensor([4, 377, 8, 96],"float16"), attn_mask=Tensor([4, 1, 377, 377],"float16"), is_causal=True, )
 paddle.nn.functional.scaled_dot_product_attention(Tensor([4, 396, 4, 96],"float16"), Tensor([4, 396, 4, 96],"float16"), Tensor([4, 396, 4, 96],"float16"), attn_mask=Tensor([4, 1, 396, 396],"float16"), is_causal=True, )
 paddle.nn.functional.scaled_dot_product_attention(Tensor([4, 396, 8, 96],"float16"), Tensor([4, 396, 8, 96],"float16"), Tensor([4, 396, 8, 96],"float16"), attn_mask=Tensor([4, 1, 396, 396],"float16"), is_causal=True, )
+paddle.linalg.eigvals(x=Tensor([3, 3],"float64"), )
+paddle.linalg.eigvals(x=Tensor([4, 4],"float64"), )
+paddle.linalg.eigvals(x=Tensor([4, 4],"float32"), )
+paddle.linalg.eigvalsh(Tensor([0, 5, 5],"float32"), )
