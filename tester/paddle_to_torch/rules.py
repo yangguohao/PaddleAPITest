@@ -1210,7 +1210,6 @@ if data_format == "NDHWC":
 # d
 class DotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
         pre = """
 x_dtype = x.dtype
 if x.dtype in {torch.int32, torch.int64, torch.bool}:
