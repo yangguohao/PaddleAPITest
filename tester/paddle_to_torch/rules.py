@@ -3424,7 +3424,7 @@ result = {self.torch_api}(**_kwargs)
 """
         code = Code(
             preprocess=defaults_code + pre.splitlines()+ map_code,
-            core=[core]
+            core=core.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 
