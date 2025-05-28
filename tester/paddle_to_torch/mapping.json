@@ -106,7 +106,8 @@
         },
         "set_defaults": {
             "axis": "None",
-            "keepdim": false
+            "keepdim": false,
+            "dtype": "torch.int64" 
         }
     },
     "paddle.assign": {
@@ -354,6 +355,21 @@
     },
     "paddle.nn.functional.dropout3d": {
         "Rule": "Dropout3dRule"
+    },
+    "paddle.nn.functional.hardtanh": {
+        "Rule": "HardtanhRule",
+        "torch_api": "torch.nn.functional.hardtanh",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "min": "min_val",
+            "max": "max_val",
+            "inplace": "inplace"
+        },
+        "set_defaults": {
+            "min": "-1.0",
+            "max": "1.0"
+        },
+        "min_input_args": 1
     },
     "paddle.dsplit": {
         "Rule": "SsplitRule",
@@ -831,6 +847,24 @@
     },
     "paddle.linalg.matrix_transpose":{
         "Rule": "Matrix_transposeRule"
+    },
+    "paddle.linalg.matrix_rank": {
+        "Rule": "MatrixRankRule",
+        "torch_api": "torch.linalg.matrix_rank",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "tol": "tol",
+            "hermitian": "hermitian",
+            "atol": "atol",
+            "rtol": "rtol"
+        },
+        "set_defaults": {
+            "tol": "None",
+            "hermitian": "False",
+            "atol": "None",
+            "rtol": "None"
+        },
+        "min_input_args": 1
     },
     "paddle.linalg.qr":{
         "Rule": "QrRule"
@@ -5470,17 +5504,6 @@
         },
         "min_input_args": 2
     },
-    "paddle.linalg.matrix_rank": {
-        "torch_api": "torch.linalg.matrix_rank",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "tol": "tol",
-            "hermitian": "hermitian",
-            "atol": "atol",
-            "rtol": "rtol"
-        },
-        "min_input_args": 1
-    },
     "paddle.linalg.multi_dot": {
         "torch_api": "torch.linalg.multi_dot",
         "paddle_torch_args_map": {
@@ -6556,16 +6579,6 @@
         "torch_api": "torch.nn.functional.hardswish",
         "paddle_torch_args_map": {
             "x": "input",
-            "inplace": "inplace"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.hardtanh": {
-        "torch_api": "torch.nn.functional.hardtanh",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "min": "min_val",
-            "max": "max_val",
             "inplace": "inplace"
         },
         "min_input_args": 1
