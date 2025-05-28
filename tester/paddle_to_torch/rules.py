@@ -5131,6 +5131,19 @@ class StanhRule(BaseRule):
         )
         return ConvertResult.success(paddle_api, code)
 
+class StdRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if x.numel() == 1:
+    unbiased = False
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class StridedSliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

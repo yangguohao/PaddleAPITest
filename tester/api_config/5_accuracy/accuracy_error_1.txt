@@ -21676,3 +21676,5 @@ paddle.matmul(x=Tensor([96, 50, 1024],"float32"), y=Tensor([33712, 1024],"float3
 paddle.matmul(x=Tensor([96, 51, 1024],"float32"), y=Tensor([33712, 1024],"float32"), transpose_y=True, )
 paddle.matmul(x=Tensor([96, 52, 1024],"float32"), y=Tensor([33712, 1024],"float32"), transpose_y=True, )
 paddle.matmul(x=Tensor([96, 53, 1024],"float32"), y=Tensor([33712, 1024],"float32"), transpose_y=True, )
+paddle.std(Tensor([],"float32"), )
+paddle.std(Tensor([],"float32"), list[], )

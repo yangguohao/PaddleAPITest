@@ -10812,8 +10812,6 @@ paddle.scale(x=Tensor([3, 3, 3],"int32"), scale=1.0, bias=0.0, bias_after_scale=
 paddle.scale(x=Tensor([3, 3, 3],"int64"), scale=1.0, bias=0.0, bias_after_scale=True, act=None, )
 paddle.shape(Tensor([],"float32"), )
 paddle.shape(Tensor([],"int64"), )
-paddle.std(Tensor([],"float32"), )
-paddle.std(Tensor([],"float32"), list[], )
 paddle.unique(Tensor([120],"int64"), return_index=True, return_inverse=True, return_counts=True, dtype="int32", )
 paddle.unique(Tensor([3, 5, 5],"float32"), return_index=True, return_inverse=True, return_counts=True, axis=0, )
 paddle.unique(Tensor([],"float32"), return_index=True, return_inverse=True, return_counts=True, )

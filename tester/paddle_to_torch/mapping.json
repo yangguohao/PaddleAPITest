@@ -2359,6 +2359,21 @@
         }
 
     },
+    "paddle.std": {
+        "torch_api": "torch.std",
+        "Rule": "StdRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "unbiased": "correction",
+            "keepdim": "keepdim"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "unbiased": "True",
+            "keepdim": "False"          
+        }
+    },
     "paddle.strided_slice":{
         "Rule": "StridedSliceRule"
     },
@@ -7290,16 +7305,6 @@
         "paddle_torch_args_map": {
             "x": "tensors",
             "axis": "dim"
-        },
-        "min_input_args": 1
-    },
-    "paddle.std": {
-        "torch_api": "torch.std",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "unbiased": "correction",
-            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },
