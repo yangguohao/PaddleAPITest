@@ -1,0 +1,166 @@
+paddle.Tensor.mean(Tensor([17185, 1],"int64"), )
+paddle.Tensor.mean(Tensor([171888, 1],"int64"), )
+paddle.Tensor.mean(Tensor([171888],"int32"), )
+paddle.Tensor.mean(Tensor([17254, 1],"int64"), )
+paddle.Tensor.mean(Tensor([1788],"int32"), )
+paddle.Tensor.mean(Tensor([1788],"int64"), )
+paddle.Tensor.mean(Tensor([2, 1],"int64"), )
+paddle.Tensor.mean(Tensor([2, 28, 28],"int32"), )
+paddle.Tensor.mean(Tensor([2002],"int32"), )
+paddle.Tensor.mean(Tensor([2002],"int64"), )
+paddle.Tensor.mean(Tensor([2],"int32"), )
+
+2025-05-27 11:13:37.419016 GPU 4 135914 test begin: paddle.Tensor.mean(Tensor([17185, 1],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([17185, 1],"int64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected -587 but got 0.
+Absolute difference: 587 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([0])
+DESIRED: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([-587])
+
+2025-05-27 11:13:37.430761 GPU 7 135924 test begin: paddle.Tensor.mean(Tensor([171888, 1],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([171888, 1],"int64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected 73 but got 0.
+Absolute difference: 73 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([0])
+DESIRED: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([73])
+
+2025-05-27 11:13:37.547015 GPU 7 135917 test begin: paddle.Tensor.mean(Tensor([171888],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([171888],"int32"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected 100 but got 0.
+Absolute difference: 100 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([0], dtype=torch.int32)
+DESIRED: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([100], dtype=torch.int32)
+
+2025-05-27 11:13:37.659049 GPU 4 135927 test begin: paddle.Tensor.mean(Tensor([17254, 1],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([17254, 1],"int64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected -110 but got 0.
+Absolute difference: 110 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([0])
+DESIRED: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([-110])
+
+2025-05-27 11:13:37.921904 GPU 7 135924 test begin: paddle.Tensor.mean(Tensor([1788],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([1788],"int32"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected 1676 but got 0.
+Absolute difference: 1676 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([0], dtype=torch.int32)
+DESIRED: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([1676], dtype=torch.int32)
+
+2025-05-27 11:13:37.949528 GPU 7 135930 test begin: paddle.Tensor.mean(Tensor([1788],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([1788],"int64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected -489 but got 0.
+Absolute difference: 489 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([0])
+DESIRED: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([-489])
+
+2025-05-27 11:13:39.797820 GPU 3 135913 test begin: paddle.Tensor.mean(Tensor([2, 1],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([2, 1],"int64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected 14713 but got 0.
+Absolute difference: 14713 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([0])
+DESIRED: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([14713])
+
+2025-05-27 11:13:40.122129 GPU 6 135908 test begin: paddle.Tensor.mean(Tensor([2, 28, 28],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([2, 28, 28],"int32"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected 1421 but got 0.
+Absolute difference: 1421 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([0], dtype=torch.int32)
+DESIRED: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([1421], dtype=torch.int32)
+
+2025-05-27 11:13:45.480290 GPU 7 135912 test begin: paddle.Tensor.mean(Tensor([2002],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([2002],"int32"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected -428 but got 0.
+Absolute difference: 428 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([0], dtype=torch.int32)
+DESIRED: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([-428], dtype=torch.int32)
+
+2025-05-27 11:13:45.506004 GPU 6 135931 test begin: paddle.Tensor.mean(Tensor([2002],"int64"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([2002],"int64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected -612 but got 0.
+Absolute difference: 612 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([0])
+DESIRED: (shape=torch.Size([]), dtype=torch.int64)
+All elements: tensor([-612])
+
+2025-05-27 11:13:48.611832 GPU 4 135909 test begin: paddle.Tensor.mean(Tensor([2],"int32"), )
+element 0 of tensors does not require grad and does not have a grad_fn
+[accuracy error] paddle.Tensor.mean(Tensor([2],"int32"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Scalars are not close!
+
+Expected -12234 but got 0.
+Absolute difference: 12234 (up to 0.01 allowed)
+Relative difference: 1.0 (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([0], dtype=torch.int32)
+DESIRED: (shape=torch.Size([]), dtype=torch.int32)
+All elements: tensor([-12234], dtype=torch.int32)
+
