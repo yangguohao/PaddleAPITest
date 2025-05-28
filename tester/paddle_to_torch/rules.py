@@ -3784,7 +3784,7 @@ if p==0:
         result = (x!= 0).sum(dim=axis, keepdim=True).to(x.dtype)
     else:
         result = (x!= 0).sum(dim=axis).to(x.dtype)
-elif len(x.shape)>2 and axis is None:
+elif len(x.shape)>=2 and axis is None:
     if p==math.inf:
         if keepdim:
             result = x.abs().amax().reshape([1] * x.ndim)
@@ -3796,12 +3796,10 @@ elif len(x.shape)>2 and axis is None:
         else:
             result = x.abs().amin()
     else:
+        _kwargs["input"] = x.flatten()
         result = {self.torch_api}(**_kwargs)
-elif len(x.shape)==2 and axis is None:
-    _kwargs["input"] = x.flatten()
-    result = {self.torch_api}(**_kwargs)
-    if keepdim:
-        result = result.unsqueeze(0)
+        if keepdim:
+            result = result.reshape([1] * x.ndim)
 else:
     result = {self.torch_api}(**_kwargs)
 """
