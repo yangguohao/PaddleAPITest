@@ -3342,6 +3342,8 @@ if axis is None:
         median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
     else:
         median = torch.median(x_flat)
+    if keepdim:
+        median = median.reshape([1] * x.ndim)
 else:
     if mode == 'avg':
         length = x.shape[axis] if x.ndim > 0 else 1
@@ -3356,6 +3358,8 @@ else:
             median = torch.median(x, dim=axis, keepdim=keepdim).values
     else:
         median = torch.median(x, dim=axis, keepdim=keepdim)
+if mode == 'avg' and x.dtype != torch.float64:
+    median = median.to(torch.float32)
 result = median
 """
         code = Code(core=core.splitlines())
@@ -3558,16 +3562,18 @@ def single_axis_nanmedian(x, axis, keepdim, mode):
     return median
 
 if axis is None:
-    x = x.flatten()
-    valid_mask = ~torch.isnan(x)
-    valid_x = x[valid_mask]
+    x_flat = x.flatten()
+    valid_mask = ~torch.isnan(x_flat)
+    valid_x = x_flat[valid_mask]
     length = valid_x.numel()
     if length % 2 == 0 and mode == "avg":
         sorted_x = torch.sort(valid_x).values
         mid = length // 2
         median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
     else:
-        median = torch.nanmedian(x)
+        median = torch.nanmedian(x_flat)
+    if keepdim:
+        median = median.reshape([1] * x.ndim)
 elif isinstance(axis, int):
     median = single_axis_nanmedian(x, axis, keepdim, mode)
 else:
