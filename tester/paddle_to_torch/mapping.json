@@ -3991,7 +3991,6 @@
         },
         "min_input_args": 2
     },
-    
     "paddle.bitwise_xor": {
         "torch_api": "torch.bitwise_xor",
         "paddle_torch_args_map": {
