@@ -1,0 +1,14 @@
+paddle.trace(x=Tensor([2, 3, 2],"float64"), offset=-1, axis1=2, axis2=-2, )
+
+2025-05-27 15:26:38.241714 GPU 0 118447 test begin: paddle.trace(x=Tensor([2, 3, 2],"float64"), offset=-1, axis1=2, axis2=-2, )
+[accuracy error] paddle.trace(x=Tensor([2, 3, 2],"float64"), offset=-1, axis1=2, axis2=-2, ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Tensor-likes are not close!
+
+Mismatched elements: 2 / 2 (100.0%)
+Greatest absolute difference: 0.7791274980247761 at index (0,) (up to 0.01 allowed)
+Greatest relative difference: 82.72271398768316 at index (0,) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([2]), dtype=torch.float64)
+All elements: tensor([0.7697, 0.2453], dtype=torch.float64)
+DESIRED: (shape=torch.Size([2]), dtype=torch.float64)
+All elements: tensor([-0.0094,  0.1310], dtype=torch.float64)

@@ -1,0 +1,29 @@
+paddle.dot(Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), )
+paddle.dot(x=Tensor([2, 3],"float64"), y=Tensor([2, 3],"float64"), )
+
+2025-05-27 12:17:05.476328 GPU 1 5881 test begin: paddle.dot(Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), )
+[accuracy error] backward  paddle.dot(Tensor([2, 2],"float32"), Tensor([2, 2],"float32"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Tensor-likes are not close!
+
+Mismatched elements: 2 / 4 (50.0%)
+Greatest absolute difference: 0.013013079762458801 at index (0, 1) (up to 0.01 allowed)
+Greatest relative difference: 0.11897280812263489 at index (0, 1) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([2, 2]), dtype=torch.float32)
+All elements: tensor([-0.0372,  0.1224,  0.1057, -0.1646])
+DESIRED: (shape=torch.Size([2, 2]), dtype=torch.float32)
+All elements: tensor([-0.0372,  0.1094,  0.1182, -0.1646])
+
+2025-05-27 12:17:05.483411 GPU 1 5920 test begin: paddle.dot(x=Tensor([2, 3],"float64"), y=Tensor([2, 3],"float64"), )
+[accuracy error] backward  paddle.dot(x=Tensor([2, 3],"float64"), y=Tensor([2, 3],"float64"), ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Tensor-likes are not close!
+
+Mismatched elements: 2 / 6 (33.3%)
+Greatest absolute difference: 0.3034701728356991 at index (0, 1) (up to 0.01 allowed)
+Greatest relative difference: 2.21130343493647 at index (0, 1) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([2, 3]), dtype=torch.float64)
+All elements: tensor([ 0.0510, -0.1662,  0.0721,  0.1122, -0.1340,  0.0632],
+       dtype=torch.float64)
+DESIRED: (shape=torch.Size([2, 3]), dtype=torch.float64)
+All elements: tensor([0.0510, 0.1372, 0.0721, 0.1122, 0.1624, 0.0632], dtype=torch.float64)

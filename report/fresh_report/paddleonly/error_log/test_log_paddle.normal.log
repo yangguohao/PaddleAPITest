@@ -1,0 +1,4 @@
+paddle.normal(0.0, 1.0, list[Tensor([],"int32"),Tensor([],"int32"),Tensor([],"int32"),], )
+
+[paddle error] paddle.normal(0.0, 1.0, list[Tensor([],"int32"),Tensor([],"int32"),Tensor([],"int32"),], ) 
+ (Fatal) Null autograd_meta gotten from unsafe_autograd_meta() (at ../paddle/fluid/eager/utils.cc:95)
