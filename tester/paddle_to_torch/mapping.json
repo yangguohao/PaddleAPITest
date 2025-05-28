@@ -1450,6 +1450,18 @@
     "paddle.nn.functional.group_norm": {
         "Rule": "GroupNormRule"
     },
+    "paddle.nn.functional.hardsigmoid": {
+        "Rule": "HardsigmoidRule",
+        "torch_api": "torch.nn.functional.hardsigmoid",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "inplace": "inplace"
+        },
+        "set_defaults": {
+            "slope": "0.1666667",
+            "offset": "0.5"
+        }
+    },
     "paddle.nn.functional.hinge_embedding_loss":{
         "torch_api": "torch.nn.functional.hinge_embedding_loss",
         "paddle_torch_args_map": {
@@ -6564,14 +6576,6 @@
         "paddle_torch_args_map": {
             "x": "input",
             "threshold": "lambd"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.hardsigmoid": {
-        "torch_api": "torch.nn.functional.hardsigmoid",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "inplace": "inplace"
         },
         "min_input_args": 1
     },

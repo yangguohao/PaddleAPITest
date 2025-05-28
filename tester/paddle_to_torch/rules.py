@@ -2714,6 +2714,20 @@ elif data_format == "NDHWC":
 
 # h  
 
+class HardsigmoidRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+if slope is not None and offset is not None:
+    x = (x * slope + offset) * 6 - 3
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class HardtanhRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
