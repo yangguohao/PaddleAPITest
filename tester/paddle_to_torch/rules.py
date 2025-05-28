@@ -3797,6 +3797,11 @@ elif len(x.shape)>2 and axis is None:
             result = x.abs().amin()
     else:
         result = {self.torch_api}(**_kwargs)
+elif len(x.shape)==2 and axis is None:
+    _kwargs["input"] = x.flatten()
+    result = {self.torch_api}(**_kwargs)
+    if keepdim:
+        result = result.unsqueeze(0)
 else:
     result = {self.torch_api}(**_kwargs)
 """
