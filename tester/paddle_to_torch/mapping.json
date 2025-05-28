@@ -229,12 +229,15 @@
         "Rule": "CropRule"
     },
     "paddle.cummax": {
+        "torch_api": "torch.cummax",
         "Rule": "CumRule"
     },
     "paddle.cummin": {
+        "torch_api": "torch.cummin",
         "Rule": "CumRule"
     },
     "paddle.cumprod": {
+        "torch_api": "torch.cumprod",
         "Rule": "CumprodRule"
     },
     "paddle.cumsum": {
@@ -248,6 +251,30 @@
         "set_defaults": {
             "axis": "None",
             "dtype": "None"            
+        }
+    },
+    "paddle.Tensor.cumsum": {
+        "torch_api": "torch.Tensor.cumsum",
+        "Rule": "CumsumRule",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "dtype": "dtype"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "dtype": "None"            
+        }
+    },
+    "paddle.Tensor.cumsum_": {
+        "torch_api": "torch.Tensor.cumsum_",
+        "Rule": "CumsumRule",
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "dtype": "dtype"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "dtype": "None"
         }
     },
     "paddle.cumulative_trapezoid": {
@@ -335,6 +362,14 @@
             "x": "input"
         }
     },
+    "paddle.dot": {
+        "torch_api": "torch.dot",
+        "Rule": "DotRule"
+    },
+    "paddle.Tensor.dot": {
+        "torch_api": "torch.Tensor.dot",
+        "Rule": "DotRule"
+    },
     "e": "API started with 'e' should be placed here",
     "paddle.einsum": {
         "Rule": "EinsumRule",
@@ -401,6 +436,16 @@
         }
     },
     "f": "API started with 'f' should be placed here",
+    "paddle.flip": {
+        "torch_api": "torch.flip",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "torch_kwargs": {
+            "dims": "[axis] if isinstance(axis, int) else axis"
+        }, 
+        "description": "no need to use locals().get('axis') sice axis is a positional argument without default value (must input)"
+    },
     "paddle.floor_divide": {
         "torch_api": "torch.floor_divide",
         "paddle_torch_args_map": {
@@ -414,6 +459,10 @@
             "x": "input",
             "y": "other"
         }
+    },
+    "paddle.frac": {
+        "Rule": "FracRule",
+        "description": "result = torch.frac(input=x) if x.dtype not in [float16, float32, float64] else result = torch.frac(input=x.to(torch.float64)).to(src_x_dtype), since torch.frac only support float16, float32, float64"
     },
     "paddle.frexp": {
         "torch_api": "torch.frexp",
@@ -928,6 +977,16 @@
         }
     },
     "m": "API started with 'm' should be placed here",
+    "paddle.masked_fill": {
+        "torch_api": "torch.masked_fill",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "mask": "mask"
+        },
+        "torch_kwargs": {
+            "value": "value.squeeze() if torch.is_tensor(value) and value.ndim == 1 else value"
+        }
+    },
     "paddle.matmul": {
         "Rule": "MatmulRule",
         "torch_api": "torch.matmul",
@@ -1048,9 +1107,33 @@
             "keepdim": "False"
         }
     },
+    "paddle.Tensor.mean": {
+        "torch_api": "torch.Tensor.mean",
+        "Rule": "ReduceRule",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False"
+        }
+    },
     "n": "API started with 'n' should be placed here",
     "paddle.nanmedian": {
         "Rule": "NanmedianRule"
+    },
+    "paddle.nanquantile": {
+        "Rule": "QuantileRule",
+        "torch_api": "torch.nanquantile",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False",
+            "interpolation": "'linear'"      
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "q": "q",
+            "axis": "dim",
+            "keepdim": "keepdim",
+            "interpolation": "interpolation"
+        }
     },
     "paddle.negative": {
         "torch_api": "torch.negative",
@@ -1247,6 +1330,24 @@
     "paddle.nn.functional.dice_loss": {
         "Rule": "DiceLossRule"
     },
+    "paddle.nn.functional.fold": {
+        "torch_api": "torch.nn.functional.fold",
+        "set_defaults":{
+            "strides": 1,
+            "paddings": 0,
+            "dilations": 1
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "output_sizes": "output_size",
+            "kernel_sizes": "kernel_size",
+            "strides": "stride",
+            "dilations": "dilation"
+        },
+        "torch_kwargs": {
+            "padding": "(paddings[0], paddings[2]) if isinstance(paddings, list) and len(paddings) == 4 else paddings"
+        }
+    },
     "paddle.nn.functional.fractional_max_pool2d": {
         "Rule": "FractionalMaxPoolRule",
         "torch_api": "torch.nn.functional.fractional_max_pool2d",
@@ -1267,6 +1368,22 @@
             "output_size": "output_size",
             "return_mask": "return_indices",
             "_random_samples": "random_u"
+        }
+    },
+    "paddle.nn.functional.layer_norm": {
+        "Rule": "LayerNormRule",
+        "torch_api": "torch.nn.functional.layer_norm",
+        "set_defaults": {
+            "epsilon": 1e-05,
+            "weight": "None",
+            "bias": "None"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "normalized_shape": "normalized_shape",
+            "weight": "weight",
+            "bias": "bias",
+            "epsilon": "eps"
         }
     },
     "paddle.nn.functional.margin_ranking_loss": {
@@ -2053,6 +2170,21 @@
     "paddle.reverse":{
         "Rule":"ReverseRule"
     },
+    "paddle.fft.rfft2": {
+        "torch_api": "torch.fft.rfft2",
+        "set_defaults": {
+            "s": "None", 
+            "norm": "None"
+        }, 
+        "paddle_torch_args_map": {
+            "x": "input",
+            "s": "s",
+            "norm": "norm"
+        }, 
+        "torch_kwargs": {
+            "dim": "(-2, -1) if locals().get('axes') is None else axes"
+        }
+    },
     "paddle.vision.ops.roi_align":{
         "Rule": "Roi_aignRule"
     },
@@ -2256,6 +2388,45 @@
         }
     },
     "t": "API started with 't' should be placed here",
+    "paddle.trapezoid": {
+        "torch_api": "torch.trapezoid",
+        "Rule": "TrapezoidRule",
+        "paddle_torch_args_map": {
+            "y": "y",
+            "x": "x",
+            "dx": "dx",
+            "axis": "dim"
+        }
+    },
+    "paddle.trace": {
+        "Rule": "TraceRule",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "offset": "offset",
+            "axis1": "dim1",
+            "axis2": "dim2"
+        }
+    },
+    "paddle.transpose": {
+        "torch_api": "torch.permute",
+        "paddle_torch_args_map": {
+            "x": "input"
+        },
+        "torch_kwargs": {
+            "dims": "tuple(perm) + tuple(range(len(perm), x.ndim))"
+        }
+    },
+    "paddle.tensor_split": {
+        "torch_api": "torch.tensor_split",
+        "set_defaults": {
+            "axis": 0
+        },
+        "torch_args": [
+            "x",
+            "num_or_indices",
+            "axis"
+        ]
+    },
     "paddle.take_along_axis": {
         "torch_api": "torch.take_along_dim",
         "paddle_torch_args_map": {
@@ -2335,6 +2506,18 @@
             "perm": "dims"
         }
     },
+    "paddle.nn.functional.thresholded_relu": {
+        "torch_api": "torch.nn.functional.threshold",
+        "set_defaults": {
+            "threshold": 1.0,
+            "value": 0.0
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "threshold": "threshold",
+            "value": "value"
+        }
+    },
     "paddle.Tensor.trunc": {
         "torch_api": "torch.Tensor.trunc"
     },
@@ -2342,6 +2525,28 @@
         "torch_api":"torch.Tensor.tile",
         "paddle_torch_args_map": {
             "repeat_times": "dims"
+        }
+    },
+    "paddle.tril_indices": {
+        "torch_api": "torch.tril_indices",
+        "paddle_torch_args_map": {
+            "row": "row",
+            "offset": "offset",
+            "dtype": "dtype"
+        },
+        "torch_kwargs": {
+            "col": "row if col is None else col"
+        }
+    },
+    "paddle.triu_indices": {
+        "torch_api": "torch.triu_indices",
+        "paddle_torch_args_map": {
+            "row": "row",
+            "offset": "offset",
+            "dtype": "dtype"
+        },
+        "torch_kwargs": {
+            "col": "row if col is None else col"
         }
     },
     "u": "API started with 'u' should be placed here",
@@ -2359,6 +2564,20 @@
         "torch_api": "torch.unsqueeze",
         "paddle_torch_args_map": {
             "x": "input",
+            "axis": "dim"
+        }
+    },
+    "paddle.Tensor.unsqueeze": {
+        "Rule": "UnsqueezeRule",
+        "torch_api": "torch.Tensor.unsqueeze",
+        "paddle_torch_args_map": {
+            "axis": "dim"
+        }
+    },
+    "paddle.Tensor.unsqueeze_": {
+        "Rule": "UnsqueezeRule",
+        "torch_api": "torch.Tensor.unsqueeze_",
+        "paddle_torch_args_map": {
             "axis": "dim"
         }
     },
@@ -2898,22 +3117,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.Tensor.cumsum": {
-        "torch_api": "torch.Tensor.cumsum",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.cumsum_": {
-        "torch_api": "torch.Tensor.cumsum_",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 1
-    },
     "paddle.Tensor.diag": {
         "torch_api": "torch.Tensor.diag",
         "paddle_torch_args_map": {
@@ -2971,13 +3174,6 @@
         "paddle_torch_args_map": {
             "y": "other",
             "p": "p"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.dot": {
-        "torch_api": "torch.Tensor.dot",
-        "paddle_torch_args_map": {
-            "y": "tensor"
         },
         "min_input_args": 1
     },
@@ -3328,15 +3524,6 @@
             "y": "other"
         },
         "min_input_args": 1
-    },
-    "paddle.Tensor.mean": {
-        "torch_api": "torch.Tensor.mean",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "dtype": "dtype"
-        },
-        "min_input_args": 0
     },
     "paddle.Tensor.median": {
         "torch_api": "torch.Tensor.median",
@@ -3709,20 +3896,6 @@
             "axis": "dim"
         },
         "min_input_args": 0
-    },
-    "paddle.Tensor.unsqueeze": {
-        "torch_api": "torch.Tensor.unsqueeze",
-        "paddle_torch_args_map": {
-            "axis": "dim"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.unsqueeze_": {
-        "torch_api": "torch.Tensor.unsqueeze_",
-        "paddle_torch_args_map": {
-            "axis": "dim"
-        },
-        "min_input_args": 1
     },
     "paddle.Tensor.var": {
         "torch_api": "torch.Tensor.var",
@@ -4742,14 +4915,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.dot": {
-        "torch_api": "torch.dot",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "tensor"
-        },
-        "min_input_args": 2
-    },
     "paddle.dstack": {
         "torch_api": "torch.dstack",
         "paddle_torch_args_map": {
@@ -4960,16 +5125,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.fft.rfft2": {
-        "torch_api": "torch.fft.rfft2",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "s": "s",
-            "axes": "dim",
-            "norm": "norm"
-        },
-        "min_input_args": 1
-    },
     "paddle.fft.rfftfreq": {
         "torch_api": "torch.fft.rfftfreq",
         "paddle_torch_args_map": {
@@ -5001,14 +5156,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.flip": {
-        "torch_api": "torch.flip",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dims"
-        },
-        "min_input_args": 2
-    },
     "paddle.floor": {
         "torch_api": "torch.floor",
         "paddle_torch_args_map": {
@@ -5031,13 +5178,6 @@
             "y": "other"
         },
         "min_input_args": 2
-    },
-    "paddle.frac": {
-        "torch_api": "torch.frac",
-        "paddle_torch_args_map": {
-            "x": "input"
-        },
-        "min_input_args": 1
     },
     "paddle.gcd": {
         "torch_api": "torch.gcd",
@@ -5443,15 +5583,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.masked_fill": {
-        "torch_api": "torch.masked_fill",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "mask": "mask",
-            "value": "value"
-        },
-        "min_input_args": 3
-    },
     "paddle.masked_select": {
         "torch_api": "torch.masked_select",
         "paddle_torch_args_map": {
@@ -5520,17 +5651,6 @@
             "dtype": "dtype"
         },
         "min_input_args": 1
-    },
-    "paddle.nanquantile": {
-        "torch_api": "torch.nanquantile",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "q": "q",
-            "axis": "dim",
-            "keepdim": "keepdim",
-            "interpolation": "interpolation"
-        },
-        "min_input_args": 2
     },
     "paddle.nansum": {
         "torch_api": "torch.nansum",
@@ -6386,18 +6506,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.nn.functional.fold": {
-        "torch_api": "torch.nn.functional.fold",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "output_sizes": "output_size",
-            "kernel_sizes": "kernel_size",
-            "strides": "stride",
-            "paddings": "padding",
-            "dilations": "dilation"
-        },
-        "min_input_args": 3
-    },
     "paddle.nn.functional.gaussian_nll_loss": {
         "torch_api": "torch.nn.functional.gaussian_nll_loss",
         "paddle_torch_args_map": {
@@ -6470,17 +6578,6 @@
             "max": "max_val"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.layer_norm": {
-        "torch_api": "torch.nn.functional.layer_norm",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "normalized_shape": "normalized_shape",
-            "weight": "weight",
-            "bias": "bias",
-            "epsilon": "eps"
-        },
-        "min_input_args": 2
     },
     "paddle.nn.functional.leaky_relu": {
         "torch_api": "torch.nn.functional.leaky_relu",
@@ -6629,16 +6726,6 @@
             "x": "input"
         },
         "min_input_args": 1
-    },
-    "paddle.nn.functional.thresholded_relu": {
-        "torch_api": "torch.nn.functional.threshold",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "threshold": "threshold",
-            "value": "value",
-            "inplace": "inplace"
-        },
-        "min_input_args": 3
     },
     "paddle.nn.functional.thresholded_relu_": {
         "torch_api": "torch.nn.functional.threshold_",
@@ -6798,14 +6885,6 @@
             "niter": "niter"
         },
         "min_input_args": 1
-    },
-    "paddle.transpose": {
-        "torch_api": "torch.permute",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "perm": "dims"
-        },
-        "min_input_args": 2
     },
     "paddle.pow": {
         "torch_api": "torch.pow",
@@ -7245,32 +7324,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.tensor_split": {
-        "torch_api": "torch.tensor_split",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "num_or_indices": "indices",
-            "axis": "dim"
-        },
-        "min_input_args": 2
-    },
-    "paddle.trace": {
-        "torch_api": "torch.trace",
-        "paddle_torch_args_map": {
-            "x": "input"
-        },
-        "min_input_args": 1
-    },
-    "paddle.trapezoid": {
-        "torch_api": "torch.trapezoid",
-        "paddle_torch_args_map": {
-            "y": "y",
-            "x": "x",
-            "dx": "dx",
-            "axis": "dim"
-        },
-        "min_input_args": 0
-    },
     "paddle.tril": {
         "torch_api": "torch.tril",
         "paddle_torch_args_map": {
@@ -7279,18 +7332,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.tril_indices": {
-        "torch_api": "torch.tril_indices",
-        "paddle_torch_args_map": {
-            "row": "row",
-            "col": "col",
-            "offset": "offset",
-            "dtype": "dtype",
-            "device": "device",
-            "layout": "layout"
-        },
-        "min_input_args": 2
-    },
     "paddle.triu": {
         "torch_api": "torch.triu",
         "paddle_torch_args_map": {
@@ -7298,18 +7339,6 @@
             "diagonal": "diagonal"
         },
         "min_input_args": 1
-    },
-    "paddle.triu_indices": {
-        "torch_api": "torch.triu_indices",
-        "paddle_torch_args_map": {
-            "row": "row",
-            "col": "col",
-            "offset": "offset",
-            "dtype": "dtype",
-            "device": "device",
-            "layout": "layout"
-        },
-        "min_input_args": 2
     },
     "paddle.trunc": {
         "torch_api": "torch.trunc",
