@@ -17,7 +17,6 @@ paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor(
 paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 8, 112, 96],"float16"), Tensor([2, 8, 240, 96],"float16"), Tensor([2, 8, 240, 96],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.10206207261596575, )
 paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 8, 74, 96],"float16"), Tensor([2, 8, 74, 96],"float16"), Tensor([2, 8, 74, 96],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.10206207261596575, )
 paddle.incubate.nn.functional.variable_length_memory_efficient_attention(Tensor([2, 8, 91, 96],"float16"), Tensor([2, 8, 219, 96],"float16"), Tensor([2, 8, 219, 96],"float16"), Tensor([2, 1],"int32"), Tensor([2, 1],"int32"), mask=Tensor([2, 1, 4096, 4096],"float16"), scale=0.10206207261596575, )
-paddle.linalg.eigh(Tensor([4, 4, 4],"complex64"), "L", )
 paddle.nn.functional.conv2d(Tensor([10, 1, 37, 293],"float32"), Tensor([64, 1, 7, 7],"float32"), None, list[2,2,], 0, list[1,1,], 1, )
 paddle.nn.functional.conv2d(Tensor([3, 1, 69, 421],"float32"), Tensor([64, 1, 7, 7],"float32"), None, list[2,2,], 0, list[1,1,], 1, )
 paddle.nn.functional.conv2d(Tensor([5, 1, 69, 581],"float32"), Tensor([64, 1, 7, 7],"float32"), None, list[2,2,], 0, list[1,1,], 1, )
