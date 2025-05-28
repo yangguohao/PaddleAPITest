@@ -2619,7 +2619,25 @@ elif data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
-# h
+# h  
+
+class HardtanhRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+
+"""
+        core = f"""
+if _kwargs["max_val"] < _kwargs["min_val"] :
+    _kwargs["min_val"] = float('-inf')
+result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core]
+        )
+        return ConvertResult.success(paddle_api, code)
+
 class HessianRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -3280,10 +3298,10 @@ if atol is not None and rtol is not None:
 """
         core = f"""
 if  _kwargs["tol"] == None:
-    _kwargs.pop('tol', None) 
+    _kwargs.pop('tol') 
 else:
-    _kwargs.pop('atol', None) 
-    _kwargs.pop('rtol', None) 
+    _kwargs.pop('atol') 
+    _kwargs.pop('rtol') 
 
 result = {self.torch_api}(**_kwargs)
 """

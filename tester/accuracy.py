@@ -349,7 +349,9 @@ class APITestAccuracy(APITestBase):
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
                 paddle_out_grads = paddle_out_grads[0]
-
+            if self.api_config.api_name == "paddle.tensordot":
+                paddle_out_grads = paddle_out_grads[:2]
+                
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:
@@ -374,8 +376,6 @@ class APITestAccuracy(APITestBase):
                     return
                 if isinstance(torch_out_grads, tuple):
                     torch_out_grads = list(torch_out_grads)
-                if self.api_config.api_name == "paddle.tensordot":
-                    paddle_out_grads = paddle_out_grads[:2]
                 if len(paddle_out_grads) != len(torch_out_grads):
                     print("[accuracy error] backward ", self.api_config.config, "\n[output type diff error2], ", len(paddle_out_grads), len(torch_out_grads), flush=True)
                     write_to_log("accuracy_error", self.api_config.config)
