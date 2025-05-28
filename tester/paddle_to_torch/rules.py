@@ -5374,6 +5374,33 @@ _kwargs['target'] = _kwargs['target'].detach()
 
 
 # t
+class TrapezoidRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        _, map_code = self.apply_generic()
+        pre = """
+if 'x' in locals() and x is None:
+    del x
+if 'dx' in locals() and dx is None:
+    del dx
+if 'dx' in locals() and torch.is_tensor(dx):
+    dx = dx.item()
+"""
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(preprocess=pre.splitlines() + map_code, core=[core])
+        return ConvertResult.success(paddle_api, code)
+
+
+class TraceRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        _, map_code = self.apply_generic()
+        core = """
+diag = torch.diagonal(**_kwargs)
+result = diag.sum(dim=-1)
+"""
+        code = Code(preprocess=map_code, core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class TakeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
