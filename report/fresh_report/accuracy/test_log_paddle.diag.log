@@ -1,0 +1,52 @@
+2025-05-26 15:44:10.263595 Worker PID: 79780, Assigned GPU ID: 7
+2025-05-26 15:44:08.781068 Worker PID: 79770, Assigned GPU ID: 4
+2025-05-26 15:44:08.782736 GPU 4 79770 test begin: paddle.diag(x=Tensor([3],"float64"), offset=-1, )
+Warning: The core code of paddle.diag is too complex.
+W0526 15:44:13.396476 79770 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0526 15:44:13.397790 79770 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[accuracy error] backward  paddle.diag(x=Tensor([3],"float64"), offset=-1, ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Tensor-likes are not close!
+
+Mismatched elements: 2 / 3 (66.7%)
+Greatest absolute difference: 0.2054384135925591 at index (2,) (up to 0.01 allowed)
+Greatest relative difference: 1.0 at index (0,) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([3]), dtype=torch.float64)
+All elements: tensor([ 0.0000, -0.1601, -0.1652], dtype=torch.float64)
+DESIRED: (shape=torch.Size([3]), dtype=torch.float64)
+All elements: tensor([-0.1601, -0.1652, -0.3706], dtype=torch.float64)
+2025-05-26 15:44:10.685215 Worker PID: 79779, Assigned GPU ID: 6
+2025-05-26 15:44:10.592232 Worker PID: 79783, Assigned GPU ID: 5
+2025-05-26 15:44:10.284120 Worker PID: 79772, Assigned GPU ID: 7
+2025-05-26 15:44:08.537728 Worker PID: 79763, Assigned GPU ID: 5
+2025-05-26 15:44:08.539343 GPU 5 79763 test begin: paddle.diag(x=Tensor([1],"float64"), offset=-1, padding_value=-0.001, )
+Warning: The core code of paddle.diag is too complex.
+W0526 15:44:13.069512 79763 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0526 15:44:13.070622 79763 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[accuracy error] backward  paddle.diag(x=Tensor([1],"float64"), offset=-1, padding_value=-0.001, ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Tensor-likes are not close!
+
+Mismatched elements: 1 / 1 (100.0%)
+Greatest absolute difference: 0.27571024975234015 at index (0,) (up to 0.01 allowed)
+Greatest relative difference: 1.0 at index (0,) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([1]), dtype=torch.float64)
+All elements: tensor([0.], dtype=torch.float64)
+DESIRED: (shape=torch.Size([1]), dtype=torch.float64)
+All elements: tensor([0.2757], dtype=torch.float64)
+2025-05-26 15:44:09.631839 Worker PID: 79764, Assigned GPU ID: 6
+2025-05-26 15:44:09.633493 GPU 6 79764 test begin: paddle.diag(x=Tensor([3],"float64"), offset=-2, padding_value=0, )
+Warning: The core code of paddle.diag is too complex.
+W0526 15:44:14.024909 79764 gpu_resources.cc:119] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.0, Runtime API Version: 11.8
+W0526 15:44:14.026122 79764 gpu_resources.cc:164] device: 0, cuDNN Version: 8.6.
+[accuracy error] backward  paddle.diag(x=Tensor([3],"float64"), offset=-2, padding_value=0, ) 
+ Not equal to tolerance rtol=0.01, atol=0.01
+Tensor-likes are not close!
+
+Mismatched elements: 3 / 3 (100.0%)
+Greatest absolute difference: 0.41177662835221296 at index (2,) (up to 0.01 allowed)
+Greatest relative difference: 1.0637723749468024 at index (2,) (up to 0.01 allowed)
+ACTUAL: (shape=torch.Size([3]), dtype=torch.float64)
+All elements: tensor([ 0.0000,  0.0627, -0.0247], dtype=torch.float64)
+DESIRED: (shape=torch.Size([3]), dtype=torch.float64)
+All elements: tensor([-0.0247,  0.3992,  0.3871], dtype=torch.float64)
