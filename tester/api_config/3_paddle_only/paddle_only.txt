@@ -2565,3 +2565,4 @@ paddle.nn.functional.hsigmoid_loss(Tensor([4, 6],"float32"), Tensor([4, 1],"int6
 paddle.nn.functional.hsigmoid_loss(Tensor([4, 6],"float32"), Tensor([4, 1],"int64"), 8, Tensor([7, 6],"float32"), Tensor([7],"float32"), path_table=Tensor([4, 5],"int64"), path_code=Tensor([4, 5],"int64"), is_sparse=False, name=None, )
 paddle.nn.functional.hsigmoid_loss(Tensor([4, 8],"float64"), Tensor([4],"int64"), 6, Tensor([5, 8],"float64"), None, Tensor([4, 5],"int64"), Tensor([4, 5],"int64"), False, )
 paddle.nn.functional.hsigmoid_loss(Tensor([4, 8],"float64"), Tensor([4],"int64"), 6, Tensor([5, 8],"float64"), Tensor([5, 1],"float64"), Tensor([4, 5],"int64"), Tensor([4, 5],"int64"), False, )
+paddle.dot(Tensor([0, 0],"float32"), Tensor([0, 0],"float32"), )

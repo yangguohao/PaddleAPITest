@@ -804,9 +804,26 @@ if axis == None:
     x = x.flatten()
 if not isinstance(axis, int) and axis != None:
     axis = int(axis)
+x_dtype = x.dtype
 """
-        core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        post = ""
+        if paddle_api == "paddle.cumsum":
+            core = f"result = torch.cumsum(**_kwargs)"
+        elif paddle_api == "paddle.Tensor.cumsum":
+            core = f"result = x.cumsum(**_kwargs)"
+        elif paddle_api == "paddle.Tensor.cumsum_":
+            core = f"x.cumsum_(**_kwargs)"
+            post = "result = x"
+        else:
+            return ConvertResult.error(paddle_api, f"Unsupported api: {paddle_api}")
+        post += """
+result = result.to(x_dtype)
+"""
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1190,6 +1207,37 @@ if data_format == "NDHWC":
 
 
 # d
+class DotRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+x_dtype = x.dtype
+if x.dtype in {torch.int32, torch.int64, torch.bool}:
+    x = x.to(torch.float32)
+    y = y.to(torch.float32)
+"""
+        if paddle_api == "paddle.dot":
+            core = """
+if x.ndim == 2:
+    result = torch.stack([torch.dot(x[i], y[i]) for i in range(x.shape[0])])
+else:
+    result = torch.dot(x, y)
+"""
+        elif paddle_api == "paddle.Tensor.dot":
+            core = """
+if x.ndim == 2:
+    result = torch.stack([x[i].dot(y[i]) for i in range(x.shape[0])])
+else:
+    result = x.dot(y)
+"""
+        else:
+            return ConvertResult.error(paddle_api, f"Unsupported dot API: {paddle_api}")
+        post = "result = result.to(x_dtype)"
+        code = Code(
+            preprocess=pre.splitlines(), core=core.splitlines(), postprocess=[post]
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class DeformConv2dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -4463,6 +4511,24 @@ else:
 if axis is None and keepdim:
     result = result.view([1] * x.dim())
 """
+        elif paddle_api == "paddle.Tensor.mean":
+            pre += """
+x_dtype = x.dtype
+if x_dtype in {torch.int64, torch.int32, torch.bool}:
+    x = x.to(torch.float32)
+"""
+            core = """
+if axis is None:
+    result = x.mean()
+else:
+    result = x.mean(dim=axis, keepdim=keepdim)
+"""
+            post = """
+if axis is None and keepdim:
+    result = result.view([1] * x.dim())
+if x_dtype in {torch.int64, torch.int32, torch.bool}:
+    result = result.to(x_dtype)
+"""
         elif paddle_api == "paddle.prod":
             pre += """
 if dtype is None:
@@ -5626,24 +5692,45 @@ class UnsqueezeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if 'axis' in locals():
-    if isinstance(axis, torch.Tensor):
-        if axis.numel() == 1:
-            axis = axis.item()
-        else:
-            axis = axis.tolist()
-    if isinstance(axis, tuple):
-        axis = list(axis)
+if isinstance(axis, torch.Tensor):
+    if axis.numel() == 1:
+        axis = axis.item()
+    else:
+        axis = axis.tolist()
+if isinstance(axis, tuple):
+    axis = list(axis)
 """
-        core = f"""
+        if paddle_api == "paddle.unsqueeze":
+            core = """
 if isinstance(axis, list):
-    input_tensor = x
+    result = x
     for ax in axis:
-        input_tensor = torch.unsqueeze(input_tensor, ax)
-    result = input_tensor
+        result = torch.unsqueeze(result, ax)
 else:
-    result = {self.torch_api}(**_kwargs)
+    result = torch.unsqueeze(x, axis)
 """
+        elif paddle_api == "paddle.Tensor.unsqueeze":
+            core = """
+result = x
+if isinstance(axis, list):
+    for ax in axis:
+        result = result.unsqueeze(ax)
+else:
+    result = result.unsqueeze(axis)
+"""
+        elif paddle_api == "paddle.Tensor.unsqueeze_":
+            core = """
+result = x
+if isinstance(axis, list):
+    for ax in axis:
+        result.unsqueeze_(ax)
+else:
+    result.unsqueeze_(axis)
+"""
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported unsqueeze api: {paddle_api}"
+            )
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=core.splitlines(),
