@@ -1218,16 +1218,14 @@ if x.dtype in {torch.int32, torch.int64, torch.bool}:
 """
         if paddle_api == "paddle.dot":
             core = """
-if x.ndim == 2:
-    result_list = []
-    for i in range(x.shape[0]):
-        xi = x[i]
-        yi = y[i]
-        sum_ = 0.0
-        for j in range(xi.shape[0]):
-            sum_ += xi[j] * yi[j]
-        result_list.append(sum_)
-    result = torch.tensor(result_list)
+f x.ndim == 2:
+    result = []
+    for xi, yi in zip(x, y):
+        _sum = 0
+        for xi_j, yi_j in zip(xi, yi):
+            _sum += xi_j * yi_j
+        result.append(_sum)
+    result = torch.tensor(result)
 else:
     result = torch.dot(x, y)
 """
