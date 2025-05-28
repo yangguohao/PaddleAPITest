@@ -2598,13 +2598,7 @@
     },
     "paddle.unique_consecutive": {
         "Rule": "UniqueConsecutiveRule",
-        "torch_api": "torch.unique_consecutive",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "return_inverse": "return_inverse",
-            "return_counts": "return_counts",
-            "axis": "dim"
-        }
+        "torch_api": "torch.unique_consecutive"
     },
     "paddle.unsqueeze": {
         "Rule": "UnsqueezeRule",
