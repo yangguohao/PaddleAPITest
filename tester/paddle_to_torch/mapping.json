@@ -168,12 +168,6 @@
             "minlength": "{minlength}.item() if torch.is_tensor({minlength}) else {minlength}"
         }
     },
-    "paddle.broadcast_shape": {
-        "Rule": "BroadcastShapeRule"
-    },
-    "paddle.broadcast_tensors": {
-        "Rule": "BroadcastTensorsRule"
-    },
     "paddle.binomial": {
         "Rule": "BinomialRule", 
         "description": "result = torch.distributions.binomial.Binomial(total_count=tcnt, probs=tprob).sample()"
@@ -185,11 +179,26 @@
             "out": "out"
         }
     },
+    "paddle.bitwise_right_shift": {
+        "Rule": "__rshift__Rule"
+    },
+    "paddle.broadcast_shape": {
+        "Rule": "BroadcastShapeRule"
+    },
+    "paddle.broadcast_tensors": {
+        "Rule": "BroadcastTensorsRule"
+    },
     "paddle.Tensor.bernoulli_":{
         "torch_api": "torch.Tensor.bernoulli_",
         "paddle_torch_args_map": {
             "p": "p"
         }
+    },
+    "paddle.Tensor.bitwise_right_shift": {
+        "Rule": "__rshift__Rule"
+    },
+    "paddle.Tensor.bitwise_right_shift_": {
+        "Rule": "__rshift__Rule"
     },
     "c": "API started with 'c' should be placed here",
     "paddle.cartesian_prod":{
@@ -626,6 +635,7 @@
     },
     "h": "API started with 'h' should be placed here",
     "paddle.histogram":{
+        "Rule":"HistogramRule",
         "torch_api": "torch.histc",
         "paddle_torch_args_map": {
             "input": "input",
@@ -1845,6 +1855,7 @@
         }
     },
     "paddle.nn.functional.one_hot": {
+        "Rule": "OneHotRule",
         "torch_api": "torch.nn.functional.one_hot",
         "paddle_torch_args_map": {
             "x": "input",
@@ -1879,6 +1890,7 @@
         }
     },
     "paddle.nn.functional.smooth_l1_loss":{
+        "Rule": "SmoothL1LossRule",
         "torch_api": "torch.nn.functional.huber_loss",
         "paddle_torch_args_map": {
             "input": "input",
@@ -3045,20 +3057,7 @@
         },
         "min_input_args": 1
     },
-    "paddle.Tensor.bitwise_right_shift": {
-        "torch_api": "torch.Tensor.bitwise_right_shift",
-        "paddle_torch_args_map": {
-            "y": "other"
-        },
-        "min_input_args": 1
-    },
-    "paddle.Tensor.bitwise_right_shift_": {
-        "torch_api": "torch.Tensor.bitwise_right_shift_",
-        "paddle_torch_args_map": {
-            "y": "other"
-        },
-        "min_input_args": 1
-    },
+    
     "paddle.Tensor.bitwise_xor": {
         "torch_api": "torch.Tensor.bitwise_xor",
         "paddle_torch_args_map": {
@@ -3111,8 +3110,10 @@
         "min_input_args": 1
     },
     "paddle.Tensor.clip": {
-        "torch_api": "torch.Tensor.clamp",
+        "Rule": "ClipRule",
+        "torch_api": "torch.clamp",
         "paddle_torch_args_map": {
+            "x": "input",
             "min": "min",
             "max": "max"
         },
@@ -4226,14 +4227,6 @@
     },
     "paddle.bitwise_or": {
         "torch_api": "torch.bitwise_or",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "other"
-        },
-        "min_input_args": 2
-    },
-    "paddle.bitwise_right_shift": {
-        "torch_api": "torch.bitwise_right_shift",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
