@@ -1,3 +1,8 @@
+paddle.Tensor.cast(Tensor([24, 128, 128],"float32"), "float", )
+paddle.Tensor.cast(Tensor([24, 256, 256],"float32"), "float", )
+paddle.cast(Tensor([12, 10],"bool"), "float", )
+paddle.var(Tensor([],"float32"), )
+paddle.var(Tensor([],"float32"), list[], )
 paddle.clip(Tensor([10],"int64"), min=1, )
 paddle.clip(Tensor([11],"int64"), min=1, )
 paddle.clip(Tensor([12, 7],"int32"), max=83, )
