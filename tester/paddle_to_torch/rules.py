@@ -462,6 +462,22 @@ if data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
+class ArgmaxRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+dtype = locals().get('dtype', torch.int64)
+"""
+        if self.torch_api.startswith("torch.Tensor."):
+            # for paddle.Tensor method, first arg self correspond to x in paddle signature
+            core = f"result = {self.torch_api.replace('torch.Tensor.', 'x.')}(**_kwargs)"
+        else:
+            core = f"result = {self.torch_api}(**_kwargs)"
+        post = "result = result.to(dtype=torch.int32 if dtype == torch.int32 else torch.int64)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core], postprocess=[post])
+        return ConvertResult.success(paddle_api, code)
+
+
 class ArgminRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()

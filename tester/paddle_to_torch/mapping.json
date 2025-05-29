@@ -80,6 +80,7 @@
         "description": "result = torch.arange(start=start, end=end, step=step, dtype=dtype)"
     },
     "paddle.Tensor.argmax": {
+        "Rule": "ArgmaxRule",
         "torch_api": "torch.Tensor.argmax",
         "torch_kwargs": {
             "dim": "None if locals().get('axis') is None else axis.item() if isinstance(axis, torch.Tensor) else axis",
@@ -88,6 +89,7 @@
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.argmax(dim=axis, keepdim=keepdim)"
     },
     "paddle.argmax": {
+        "Rule": "ArgmaxRule",
         "torch_api": "torch.argmax",
         "paddle_torch_args_map": {
             "x": "input"
