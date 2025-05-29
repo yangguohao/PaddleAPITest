@@ -462,6 +462,22 @@ if data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
+class ArgmaxRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+dtype = locals().get('dtype', torch.int64)
+"""
+        if self.torch_api.startswith("torch.Tensor."):
+            # for paddle.Tensor method, first arg self correspond to x in paddle signature
+            core = f"result = {self.torch_api.replace('torch.Tensor.', 'x.')}(**_kwargs)"
+        else:
+            core = f"result = {self.torch_api}(**_kwargs)"
+        post = "result = result.to(dtype=torch.int32 if dtype == torch.int32 else torch.int64)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core], postprocess=[post])
+        return ConvertResult.success(paddle_api, code)
+
+
 class ArgminRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -525,15 +541,8 @@ def convert_list2tensor(tlist):
 # b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
-seq_lens_encoder = locals().get('seq_lens_encoder')
-seq_lens_decoder = locals().get('seq_lens_decoder')
-"""
-        core = "result = (torch.max(seq_lens_encoder), torch.max(seq_lens_decoder))"
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=[core],
-        )
+        core = "result = (torch.max(seq_lens_encoder).unsqueeze(0), torch.max(seq_lens_decoder).unsqueeze(0))"
+        code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -1626,7 +1635,11 @@ else:
 if src_dtype != result.dtype:
     result = result.to(src_dtype)
 """
-        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post_process.splitlines())
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=[core],
+            postprocess=post_process.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1716,7 +1729,6 @@ def fused_bias_act(
 ) -> torch.Tensor:
     import torch.nn.functional as F
 
-    x_dtype = x.dtype
     if compute_dtype != 'default':
         if compute_dtype == 'fp16':
             compute_dtype = 'float16'
@@ -1779,7 +1791,7 @@ def fused_bias_act(
             raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
         x = x * quant_scale
         x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
-    return x.to(x_dtype)
+    return x
 """
         core = "result = fused_bias_act(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])
@@ -3085,9 +3097,13 @@ else:
 
 class IncrementRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = "value = locals().get('value', 1)"
+        pre = """
+value = locals().get("value", 1)
+x_dtype = x.dtype
+"""
         core = "result = x + value"
-        code = Code(preprocess=[pre], core=[core])
+        post = "result = result.to(x_dtype)"
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=[post])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -3210,7 +3226,7 @@ if bias is not None:
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
-        
+
 class LcmRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         impl = """
@@ -3531,6 +3547,8 @@ if axis is None:
         median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
     else:
         median = torch.median(x_flat)
+    if keepdim:
+        median = median.reshape([1] * x.ndim)
 else:
     if mode == 'avg':
         length = x.shape[axis] if x.ndim > 0 else 1
@@ -3545,6 +3563,8 @@ else:
             median = torch.median(x, dim=axis, keepdim=keepdim).values
     else:
         median = torch.median(x, dim=axis, keepdim=keepdim)
+if mode == 'avg' and x.dtype != torch.float64:
+    median = median.to(torch.float32)
 result = median
 """
         code = Code(core=core.splitlines())
@@ -3747,16 +3767,18 @@ def single_axis_nanmedian(x, axis, keepdim, mode):
     return median
 
 if axis is None:
-    x = x.flatten()
-    valid_mask = ~torch.isnan(x)
-    valid_x = x[valid_mask]
+    x_flat = x.flatten()
+    valid_mask = ~torch.isnan(x_flat)
+    valid_x = x_flat[valid_mask]
     length = valid_x.numel()
     if length % 2 == 0 and mode == "avg":
         sorted_x = torch.sort(valid_x).values
         mid = length // 2
         median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
     else:
-        median = torch.nanmedian(x)
+        median = torch.nanmedian(x_flat)
+    if keepdim:
+        median = median.reshape([1] * x.ndim)
 elif isinstance(axis, int):
     median = single_axis_nanmedian(x, axis, keepdim, mode)
 else:
@@ -3870,7 +3892,7 @@ if p==0:
         result = (x!= 0).sum(dim=axis, keepdim=True).to(x.dtype)
     else:
         result = (x!= 0).sum(dim=axis).to(x.dtype)
-elif len(x.shape)>2 and axis is None:
+elif len(x.shape)>=2 and axis is None:
     if p==math.inf:
         if keepdim:
             result = x.abs().amax().reshape([1] * x.ndim)
@@ -3882,7 +3904,12 @@ elif len(x.shape)>2 and axis is None:
         else:
             result = x.abs().amin()
     else:
+        _kwargs["input"] = x.flatten()
+        if p == "fro":
+            _kwargs["ord"] = 2
         result = {self.torch_api}(**_kwargs)
+        if keepdim:
+            result = result.reshape([1] * x.ndim)
 else:
     result = {self.torch_api}(**_kwargs)
 """
@@ -4175,8 +4202,8 @@ else:
 
 class PoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        head_code, map_code = self.apply_generic()
-        func1 = """
+        defaults_code, map_code = self.apply_generic()
+        pre_1d = """
 kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
 stride = tuple(stride) if isinstance(stride, list) else stride
 
@@ -4207,7 +4234,7 @@ elif isinstance(padding, (list, tuple)):
         x = torch.nn.functional.pad(x, (pad_left, pad_right))
         padding = 0
 """
-        func2 = """
+        pre_2d = """
 kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
 stride = tuple(stride) if isinstance(stride, list) else stride
 if data_format == "NHWC":
@@ -4254,7 +4281,7 @@ elif isinstance(padding, (list, tuple)):
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
         padding = 0
 """
-        func3 = """
+        pre_3d = """
 kernel_size = tuple(kernel_size) if isinstance(kernel_size, list) else kernel_size
 stride = tuple(stride) if isinstance(stride, list) else stride
 if data_format == 'NDHWC':
@@ -4314,36 +4341,53 @@ elif isinstance(padding, (list, tuple)):
         padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        impl2 = """
+        post_1d = """
+if data_format == "NLC":
+    result = result.permute(0, 2, 1)
+"""
+        post_2d = """
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
-        impl3 = """
+        post_3d = """
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
         if paddle_api.endswith("_pool1d"):
-            code = head_code + func1.splitlines() + map_code + core.splitlines()
+            if paddle_api == "paddle.nn.functional.lp_pool1d":
+                pre_1d = """
+if data_format == "NLC":
+    x = x.permute(0, 2, 1)
+""" + pre_1d + """
+if isinstance(padding, int) and padding != 0:
+    x = torch.nn.functional.pad(x, (padding, padding))
+elif isinstance(padding, tuple):
+    x = torch.nn.functional.pad(x, (padding[0], padding[0]))
+"""
+            pre = pre_1d
+            post = post_1d
         elif paddle_api.endswith("_pool2d"):
-            code = (
-                head_code
-                + func2.splitlines()
-                + map_code
-                + core.splitlines()
-                + impl2.splitlines()
-            )
+            if paddle_api == "paddle.nn.functional.lp_pool2d":
+                pre_2d += """
+if isinstance(padding, int) and padding != 0:
+    x = torch.nn.functional.pad(x, (padding, padding, padding, padding))
+elif isinstance(padding, tuple):
+    x = torch.nn.functional.pad(x, (padding[1], padding[1], padding[0], padding[0]))
+"""
+            pre = pre_2d
+            post = post_2d
         elif paddle_api.endswith("_pool3d"):
-            code = (
-                head_code
-                + func3.splitlines()
-                + map_code
-                + core.splitlines()
-                + impl3.splitlines()
-            )
+            pre = pre_3d
+            post = post_3d
         else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported pooling api: {paddle_api}"
             )
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -5264,6 +5308,7 @@ if act is not None:
         result = torch.relu(result)
     elif act == 'softmax':
         result = torch.softmax(result, dim=-1)
+result = result.to(x.dtype)
 """
         code = Code(preprocess=defaults_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -5271,7 +5316,7 @@ if act is not None:
 
 class ShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        core = "result = torch.tensor(input.shape)"
+        core = "result = torch.tensor(input.shape, dtype=torch.int64)"
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
@@ -5685,6 +5730,7 @@ class TolistRule(BaseRule):
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code)
 
+
 # u
 class UnflattenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5700,6 +5746,32 @@ if isinstance(_kwargs['sizes'],torch.Tensor):
         code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+class UniqueConsecutiveRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+return_inverse = locals().get('return_inverse', False)
+return_counts = locals().get('return_counts', False)
+axis = locals().get('axis')
+"""
+        core = f"result = {self.torch_api}(x, return_inverse=return_inverse, return_counts=return_counts, dim=axis)"
+        post= """
+dtype = locals().get('dtype', torch.int64)
+if isinstance(result, tuple):
+    result = list(result)
+    if return_inverse:
+        if result[1].shape == torch.Size([]):
+            result[1] = result[1].unsqueeze(0)
+        else:
+            result[1] = result[1].reshape(-1)
+    if dtype is not torch.int64:
+        for i in range (1, len(result)):
+            result[i] = result[i].to(dtype)
+    result = tuple(result)
+"""
+        code = Code(preprocess=pre.splitlines(),
+                    core=core.splitlines(),
+                    postprocess=post.splitlines())
+        return ConvertResult.success(paddle_api, code)
 
 class UnpoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5901,19 +5973,17 @@ else:
 class VecdotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-x = locals().get('x')
-y = locals().get('y')
 axis = locals().get('axis', -1)
-if torch.is_complex(x) or torch.is_complex(y):
-    x = x.to(torch.complex128)
-    y = y.to(torch.complex128)
-elif x.dtype != y.dtype:
-    if x.dtype == torch.float64 or y.dtype == torch.float64:
-        target_dtype = torch.float64
-    elif x.dtype == torch.float32 or y.dtype == torch.float32:
-        target_dtype = torch.float32
+if x.dtype != y.dtype:
+    if torch.is_complex(x) or torch.is_complex(y):
+        target_dtype = torch.complex128
     else:
-        target_dtype = x.dtype
+        if x.dtype == torch.float64 or y.dtype == torch.float64:
+            target_dtype = torch.float64
+        elif x.dtype == torch.float32 or y.dtype == torch.float32:
+            target_dtype = torch.float32
+        else:
+            target_dtype = x.dtype
     x = x.to(target_dtype)
     y = y.to(target_dtype)
 """

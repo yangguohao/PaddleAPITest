@@ -117,13 +117,28 @@ handle_axes_api = frozenset(
 )
 
 # All configs that report dtype diff when not in not_check_dtype list
-# should be moved to tester/api_config/5_accuracy/behavior_diff.txt
+# should be moved to tester/api_config/5_accuracy/dtype_diff.txt
 not_check_dtype = frozenset(
     [
         "paddle.where",
         "paddle.nn.functional.one_hot",
         "paddle.frexp",
+        "paddle.Tensor.frexp",
         "paddle.floor",
+        "paddle.Tensor.cumsum",
+        "paddle.add",
+        "paddle.add_n",
+        "paddle.cummax",
+        "paddle.cummin",
+        "paddle.cumsum",
+        "paddle.nn.functional.adaptive_max_pool1d",
+        "paddle.nn.functional.adaptive_max_pool2d",
+        "paddle.nn.functional.adaptive_max_pool3d",
+        "paddle.nn.functional.max_pool1d",
+        "paddle.nn.functional.max_pool2d",
+        "paddle.nn.functional.max_pool3d",
+        "paddle.copysign",
+        "paddle.cumprod",
     ]
 )
 

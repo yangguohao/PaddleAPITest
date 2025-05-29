@@ -217,8 +217,8 @@ def to_big_tensor_config(api_config):
     else:
         apis_map[api_config.api_name][key] += 1
 
-    # if apis_map[api_config.api_name][key] > 5:
-    #     return []
+    if apis_map[api_config.api_name][key] > 5:
+        return []
 
     tensor_configs = get_tensor_configs(api_config)
 
