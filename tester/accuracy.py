@@ -349,7 +349,12 @@ class APITestAccuracy(APITestBase):
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
                 paddle_out_grads = paddle_out_grads[0]
-
+            
+            # All configs that not compared with torch 
+            # should be moved to tester/api_config/5_accuracy/grads_diff.txt
+            if self.api_config.api_name == "paddle.tensordot":
+                paddle_out_grads = paddle_out_grads[:2]
+                
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:

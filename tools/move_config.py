@@ -2,7 +2,8 @@ import os
 import argparse
 import sys
 
-path = '/PaddleAPITest/tester/api_config/'
+path = '/root/PaddleAPITest/tester/api_config/5_accuracy/'
+keyword = 'accuracy'
 
 def getnum(dst):
     s=set()
@@ -18,7 +19,7 @@ def isclean(config):
     list=os.listdir(path)
     merge_list=[]
     for i in list:
-        if i.find('merge')!=-1:
+        if i.find(keyword)!=-1:
             merge_list.append(i)
 
     cnt = 0
@@ -49,7 +50,7 @@ def add(config, dst):
     list=os.listdir(path)
     merge_list=[]
     for i in list:
-        if i.find('merge')!=-1:
+        if i.find(keyword)!=-1:
             merge_list.append(i)
 
     for i in merge_list:
@@ -68,7 +69,7 @@ def remove(config):
     list=os.listdir(path)
     merge_list=[]
     for i in list:
-        if i.find('merge')!=-1:
+        if i.find(keyword)!=-1:
             merge_list.append(i)
 
     for i in merge_list:

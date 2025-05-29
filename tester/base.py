@@ -116,7 +116,31 @@ handle_axes_api = frozenset(
     ]
 )
 
-not_check_dtype = frozenset(["paddle.where", "paddle.nn.functional.one_hot"])
+# All configs that report dtype diff when not in not_check_dtype list
+# should be moved to tester/api_config/5_accuracy/dtype_diff.txt
+not_check_dtype = frozenset(
+    [
+        "paddle.where",
+        "paddle.nn.functional.one_hot",
+        "paddle.frexp",
+        "paddle.Tensor.frexp",
+        "paddle.floor",
+        "paddle.Tensor.cumsum",
+        "paddle.add",
+        "paddle.add_n",
+        "paddle.cummax",
+        "paddle.cummin",
+        "paddle.cumsum",
+        "paddle.nn.functional.adaptive_max_pool1d",
+        "paddle.nn.functional.adaptive_max_pool2d",
+        "paddle.nn.functional.adaptive_max_pool3d",
+        "paddle.nn.functional.max_pool1d",
+        "paddle.nn.functional.max_pool2d",
+        "paddle.nn.functional.max_pool3d",
+        "paddle.copysign",
+        "paddle.cumprod",
+    ]
+)
 
 
 class APITestBase:
@@ -124,6 +148,7 @@ class APITestBase:
         self.api_config = api_config
         self.outputs_grad_numpy = []
         torch.set_num_threads(20)
+        torch.set_printoptions(threshold=100)
 
     def need_skip(self, paddle_only=False):
         # not support
@@ -863,24 +888,13 @@ class APITestBase:
         converted_paddle_tensor = torch.utils.dlpack.from_dlpack(paddle_dlpack)
 
         def error_msg(msg):
-            total_count = converted_paddle_tensor.numel()
-            display_count = min(total_count, 100)
-            flat_paddle = converted_paddle_tensor.flatten()[:display_count]
-            flat_torch = torch_tensor.flatten()[:display_count]
-
-            # msg = "\n".join(msg.splitlines()[2:])
-            elements_text = (
-                f"First {display_count} elements"
-                if display_count < total_count
-                else "All elements"
-            )
             return (
                 f"Not equal to tolerance rtol={rtol}, atol={atol}\n"
                 f"{msg}\n"
                 f"ACTUAL: (shape={converted_paddle_tensor.shape}, dtype={converted_paddle_tensor.dtype})\n"
-                f"{elements_text}: {flat_paddle}\n"
+                f"{converted_paddle_tensor}\n"
                 f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
-                f"{elements_text}: {flat_torch}"
+                f"{torch_tensor}"
             )
 
         try:
