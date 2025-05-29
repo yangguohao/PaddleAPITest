@@ -546,8 +546,10 @@ def convert_seq2tensor_wrap_scalar(tlist):
         return torch.tensor([tlist], dtype=dtype)
     else:
         return torch.tensor(tlist)
+        
+x = convert_seq2tensor_wrap_scalar(x)
 """
-        core = "result = torch.clone(convert_seq2tensor_wrap_scalar(x))"
+        core = "result = torch.clone(x)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
