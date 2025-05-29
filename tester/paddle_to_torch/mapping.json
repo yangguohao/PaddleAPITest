@@ -2609,6 +2609,10 @@
             "shape": "sizes"
         }
     },
+    "paddle.unique_consecutive": {
+        "Rule": "UniqueConsecutiveRule",
+        "torch_api": "torch.unique_consecutive"
+    },
     "paddle.unsqueeze": {
         "Rule": "UnsqueezeRule",
         "torch_api": "torch.unsqueeze",
@@ -7383,16 +7387,6 @@
             "axis": "dim"
         },
         "min_input_args": 1
-    },
-    "paddle.unique_consecutive": {
-        "torch_api": "torch.unique_consecutive",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "return_inverse": "return_inverse",
-            "return_counts": "return_counts",
-            "axis": "dim"
-        },
-        "min_input_args": 0
     },
     "paddle.utils.cpp_extension.BuildExtension": {
         "torch_api": "torch.utils.cpp_extension.BuildExtension",

@@ -5694,6 +5694,32 @@ if isinstance(_kwargs['sizes'],torch.Tensor):
         code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+class UniqueConsecutiveRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+return_inverse = locals().get('return_inverse', False)
+return_counts = locals().get('return_counts', False)
+axis = locals().get('axis')
+"""
+        core = f"result = {self.torch_api}(x, return_inverse=return_inverse, return_counts=return_counts, dim=axis)"
+        post= """
+dtype = locals().get('dtype', torch.int64)
+if isinstance(result, tuple):
+    result = list(result)
+    if return_inverse:
+        if result[1].shape == torch.Size([]):
+            result[1] = result[1].unsqueeze(0)
+        else:
+            result[1] = result[1].reshape(-1)
+    if dtype is not torch.int64:
+        for i in range (1, len(result)):
+            result[i] = result[i].to(dtype)
+    result = tuple(result)
+"""
+        code = Code(preprocess=pre.splitlines(),
+                    core=core.splitlines(),
+                    postprocess=post.splitlines())
+        return ConvertResult.success(paddle_api, code)
 
 class UnpoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
