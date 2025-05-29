@@ -541,15 +541,8 @@ def convert_list2tensor(tlist):
 # b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = """
-seq_lens_encoder = locals().get('seq_lens_encoder')
-seq_lens_decoder = locals().get('seq_lens_decoder')
-"""
-        core = "result = (torch.max(seq_lens_encoder), torch.max(seq_lens_decoder))"
-        code = Code(
-            preprocess=pre.splitlines(),
-            core=[core],
-        )
+        core = "result = (torch.max(seq_lens_encoder).unsqueeze(0), torch.max(seq_lens_decoder).unsqueeze(0))"
+        code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -5953,19 +5946,17 @@ else:
 class VecdotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
-x = locals().get('x')
-y = locals().get('y')
 axis = locals().get('axis', -1)
-if torch.is_complex(x) or torch.is_complex(y):
-    x = x.to(torch.complex128)
-    y = y.to(torch.complex128)
-elif x.dtype != y.dtype:
-    if x.dtype == torch.float64 or y.dtype == torch.float64:
-        target_dtype = torch.float64
-    elif x.dtype == torch.float32 or y.dtype == torch.float32:
-        target_dtype = torch.float32
+if x.dtype != y.dtype:
+    if torch.is_complex(x) or torch.is_complex(y):
+        target_dtype = torch.complex128
     else:
-        target_dtype = x.dtype
+        if x.dtype == torch.float64 or y.dtype == torch.float64:
+            target_dtype = torch.float64
+        elif x.dtype == torch.float32 or y.dtype == torch.float32:
+            target_dtype = torch.float32
+        else:
+            target_dtype = x.dtype
     x = x.to(target_dtype)
     y = y.to(target_dtype)
 """
