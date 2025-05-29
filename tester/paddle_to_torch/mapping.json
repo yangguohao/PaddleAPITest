@@ -4061,8 +4061,10 @@
         "torch_api": "torch.any",
         "paddle_torch_args_map": {
             "x": "input",
-            "axis": "dim",
             "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "None if locals().get('axis') is None or locals().get('axis') == [] or locals().get('axis') == () else axis"
         },
         "min_input_args": 1
     },
