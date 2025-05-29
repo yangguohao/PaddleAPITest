@@ -2016,10 +2016,16 @@ def convert_to_scalar(fill_value):
     else:
         return fill_value
 
-converted_shape = convert_to_list(shape)
-converted_fill_value = convert_to_scalar(fill_value)
+shape = convert_to_list(shape)
+fill_value = convert_to_scalar(fill_value)
+
+if dtype is None and not isinstance(fill_value, bool):
+    if isinstance(fill_value, complex):
+        dtype = torch.complex128
+    else:
+        dtype = torch.float32
 """
-        core = "result = torch.full(size=converted_shape, fill_value=converted_fill_value, dtype=dtype)"
+        core = "result = torch.full(size=shape, fill_value=fill_value, dtype=dtype)"
         code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 

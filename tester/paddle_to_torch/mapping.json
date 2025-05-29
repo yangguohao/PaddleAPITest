@@ -451,14 +451,7 @@
         "torch_api": "torch.Tensor.frexp"
     }, 
     "paddle.full": {
-        "Rule": "FullRule",
-        "torch_api": "torch.full",
-        "paddle_torch_args_map": {
-            "shape": "size",
-            "fill_value": "fill_value",
-            "dtype": "dtype"
-        },
-        "description": "result = torch.full(size=shape, fill_value=fill_value, dtype=dtype)"
+        "Rule": "FullRule"
     },
     "paddle.full_like": {
         "torch_api": "torch.full_like",
