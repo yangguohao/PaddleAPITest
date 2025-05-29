@@ -1436,7 +1436,19 @@
     "paddle.nn.functional.group_norm": {
         "Rule": "GroupNormRule"
     },
-    "paddle.nn.functional.hinge_embedding_loss": {
+    "paddle.nn.functional.hardsigmoid": {
+        "Rule": "HardsigmoidRule",
+        "torch_api": "torch.nn.functional.hardsigmoid",
+        "paddle_torch_args_map": { 
+            "x": "input",
+            "inplace": "inplace"
+        },
+        "set_defaults": {
+            "slope": "0.1666667",
+            "offset": "0.5"
+        }
+    },
+    "paddle.nn.functional.hinge_embedding_loss":{
         "torch_api": "torch.nn.functional.hinge_embedding_loss",
         "paddle_torch_args_map": {
             "input": "input",
@@ -2327,7 +2339,23 @@
             "scale_b": "1.7159"
         }
     },
-    "paddle.strided_slice": {
+    "paddle.std": {
+        "torch_api": "torch.std",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "keepdim": "keepdim"
+        },
+        "set_defaults": {
+            "axis": "None",
+            "unbiased": "True",
+            "keepdim": "False"          
+        },
+        "torch_kwargs": {
+            "correction": "False if x.numel() == 1 or locals().get('unbiased', True) is False else True"
+        }
+    },
+    "paddle.strided_slice":{
         "Rule": "StridedSliceRule"
     },
     "paddle.Tensor.slice_scatter": {
@@ -3305,8 +3333,10 @@
         "torch_api": "torch.any",
         "paddle_torch_args_map": {
             "x": "input",
-            "axis": "dim",
             "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "None if locals().get('axis') is None or locals().get('axis') == [] or locals().get('axis') == () else axis"
         },
         "min_input_args": 1
     },
@@ -4409,14 +4439,6 @@
         "paddle_torch_args_map": {
             "x": "input",
             "threshold": "lambd"
-        },
-        "min_input_args": 1
-    },
-    "paddle.nn.functional.hardsigmoid": {
-        "torch_api": "torch.nn.functional.hardsigmoid",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "inplace": "inplace"
         },
         "min_input_args": 1
     },
