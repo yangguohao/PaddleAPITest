@@ -116,6 +116,8 @@ handle_axes_api = frozenset(
     ]
 )
 
+# All configs that report dtype diff when not in not_check_dtype list
+# should be moved to tester/api_config/5_accuracy/behavior_diff.txt
 not_check_dtype = frozenset(
     [
         "paddle.where",
