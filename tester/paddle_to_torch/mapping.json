@@ -33,8 +33,10 @@
     "paddle.Tensor.any": {
         "torch_api": "torch.Tensor.any",
         "paddle_torch_args_map": {
-            "axis": "dim",
             "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "None if locals().get('axis') is None or locals().get('axis') == [] or locals().get('axis') == () else axis"
         },
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.any(dim=dim, keepdim=keepdim)"
     },
@@ -77,6 +79,7 @@
         "description": "result = torch.arange(start=start, end=end, step=step, dtype=dtype)"
     },
     "paddle.Tensor.argmax": {
+        "Rule": "ArgmaxRule",
         "torch_api": "torch.Tensor.argmax",
         "torch_kwargs": {
             "dim": "None if locals().get('axis') is None else axis.item() if isinstance(axis, torch.Tensor) else axis",
@@ -85,6 +88,7 @@
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.argmax(dim=axis, keepdim=keepdim)"
     },
     "paddle.argmax": {
+        "Rule": "ArgmaxRule",
         "torch_api": "torch.argmax",
         "paddle_torch_args_map": {
             "x": "input"
@@ -166,12 +170,6 @@
             "minlength": "{minlength}.item() if torch.is_tensor({minlength}) else {minlength}"
         }
     },
-    "paddle.broadcast_shape": {
-        "Rule": "BroadcastShapeRule"
-    },
-    "paddle.broadcast_tensors": {
-        "Rule": "BroadcastTensorsRule"
-    },
     "paddle.binomial": {
         "Rule": "BinomialRule",
         "description": "result = torch.distributions.binomial.Binomial(total_count=tcnt, probs=tprob).sample()"
@@ -182,6 +180,15 @@
             "x": "input",
             "out": "out"
         }
+    },
+    "paddle.bitwise_right_shift": {
+        "Rule": "__rshift__Rule"
+    },
+    "paddle.broadcast_shape": {
+        "Rule": "BroadcastShapeRule"
+    },
+    "paddle.broadcast_tensors": {
+        "Rule": "BroadcastTensorsRule"
     },
     "paddle.Tensor.bernoulli_": {
         "torch_api": "torch.Tensor.bernoulli_",
@@ -1818,6 +1825,7 @@
         }
     },
     "paddle.nn.functional.pad": {
+        "torch_api": "paddle.nn.functional.pad",
         "Rule": "PadRule"
     },
     "paddle.nn.functional.poisson_nll_loss": {
@@ -2563,6 +2571,10 @@
             "shape": "sizes"
         }
     },
+    "paddle.unique_consecutive": {
+        "Rule": "UniqueConsecutiveRule",
+        "torch_api": "torch.unique_consecutive"
+    },
     "paddle.unsqueeze": {
         "Rule": "UnsqueezeRule",
         "torch_api": "torch.unsqueeze",
@@ -2684,8 +2696,8 @@
     },
     "paddle.Tensor.__floordiv__": {
         "torch_api": "torch.Tensor.__floordiv__",
-        "paddle_torch_args_map": {
-            "y": "other"
+        "torch_kwargs": {
+            "other": "y if isinstance(y, torch.Tensor) else torch.tensor([y], dtype=_tmp_tensor.dtype if (isinstance(y, int) and 'int' in str(_tmp_tensor.dtype)) or (isinstance(y, float) and 'float' in str(_tmp_tensor.dtype)) else None)"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__floordiv__(other=y)"
     },
@@ -3392,14 +3404,6 @@
     },
     "paddle.bitwise_or": {
         "torch_api": "torch.bitwise_or",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "y": "other"
-        },
-        "min_input_args": 2
-    },
-    "paddle.bitwise_right_shift": {
-        "torch_api": "torch.bitwise_right_shift",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
@@ -4989,16 +4993,6 @@
             "axis": "dim"
         },
         "min_input_args": 1
-    },
-    "paddle.unique_consecutive": {
-        "torch_api": "torch.unique_consecutive",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "return_inverse": "return_inverse",
-            "return_counts": "return_counts",
-            "axis": "dim"
-        },
-        "min_input_args": 0
     },
     "paddle.var": {
         "torch_api": "torch.var",
