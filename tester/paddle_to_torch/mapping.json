@@ -34,8 +34,10 @@
     "paddle.Tensor.any": {
         "torch_api": "torch.Tensor.any",
         "paddle_torch_args_map": {
-            "axis": "dim",
             "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "None if locals().get('axis') is None or locals().get('axis') == [] or locals().get('axis') == () else axis"
         },
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.any(dim=dim, keepdim=keepdim)"
     },
@@ -78,6 +80,7 @@
         "description": "result = torch.arange(start=start, end=end, step=step, dtype=dtype)"
     },
     "paddle.Tensor.argmax": {
+        "Rule": "ArgmaxRule",
         "torch_api": "torch.Tensor.argmax",
         "torch_kwargs": {
             "dim": "None if locals().get('axis') is None else axis.item() if isinstance(axis, torch.Tensor) else axis",
@@ -86,6 +89,7 @@
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.argmax(dim=axis, keepdim=keepdim)"
     },
     "paddle.argmax": {
+        "Rule": "ArgmaxRule",
         "torch_api": "torch.argmax",
         "paddle_torch_args_map": {
             "x": "input"
@@ -2605,6 +2609,10 @@
             "shape": "sizes"
         }
     },
+    "paddle.unique_consecutive": {
+        "Rule": "UniqueConsecutiveRule",
+        "torch_api": "torch.unique_consecutive"
+    },
     "paddle.unsqueeze": {
         "Rule": "UnsqueezeRule",
         "torch_api": "torch.unsqueeze",
@@ -2739,8 +2747,8 @@
     },
     "paddle.Tensor.__floordiv__": {
         "torch_api": "torch.Tensor.__floordiv__",
-        "paddle_torch_args_map": {
-            "y": "other"
+        "torch_kwargs": {
+            "other": "y if isinstance(y, torch.Tensor) else torch.tensor([y], dtype=_tmp_tensor.dtype if (isinstance(y, int) and 'int' in str(_tmp_tensor.dtype)) or (isinstance(y, float) and 'float' in str(_tmp_tensor.dtype)) else None)"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__floordiv__(other=y)"
     },
@@ -7379,16 +7387,6 @@
             "axis": "dim"
         },
         "min_input_args": 1
-    },
-    "paddle.unique_consecutive": {
-        "torch_api": "torch.unique_consecutive",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "return_inverse": "return_inverse",
-            "return_counts": "return_counts",
-            "axis": "dim"
-        },
-        "min_input_args": 0
     },
     "paddle.utils.cpp_extension.BuildExtension": {
         "torch_api": "torch.utils.cpp_extension.BuildExtension",

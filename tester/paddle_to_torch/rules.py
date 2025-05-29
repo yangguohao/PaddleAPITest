@@ -462,6 +462,22 @@ if data_format == "NDHWC":
         return ConvertResult.success(paddle_api, code)
 
 
+class ArgmaxRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+dtype = locals().get('dtype', torch.int64)
+"""
+        if self.torch_api.startswith("torch.Tensor."):
+            # for paddle.Tensor method, first arg self correspond to x in paddle signature
+            core = f"result = {self.torch_api.replace('torch.Tensor.', 'x.')}(**_kwargs)"
+        else:
+            core = f"result = {self.torch_api}(**_kwargs)"
+        post = "result = result.to(dtype=torch.int32 if dtype == torch.int32 else torch.int64)"
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core], postprocess=[post])
+        return ConvertResult.success(paddle_api, code)
+
+
 class ArgminRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
@@ -3849,7 +3865,7 @@ if p==0:
         result = (x!= 0).sum(dim=axis, keepdim=True).to(x.dtype)
     else:
         result = (x!= 0).sum(dim=axis).to(x.dtype)
-elif len(x.shape)>2 and axis is None:
+elif len(x.shape)>=2 and axis is None:
     if p==math.inf:
         if keepdim:
             result = x.abs().amax().reshape([1] * x.ndim)
@@ -3861,7 +3877,12 @@ elif len(x.shape)>2 and axis is None:
         else:
             result = x.abs().amin()
     else:
+        _kwargs["input"] = x.flatten()
+        if p == "fro":
+            _kwargs["ord"] = 2
         result = {self.torch_api}(**_kwargs)
+        if keepdim:
+            result = result.reshape([1] * x.ndim)
 else:
     result = {self.torch_api}(**_kwargs)
 """
@@ -5666,6 +5687,32 @@ if isinstance(_kwargs['sizes'],torch.Tensor):
         code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
+class UniqueConsecutiveRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+return_inverse = locals().get('return_inverse', False)
+return_counts = locals().get('return_counts', False)
+axis = locals().get('axis')
+"""
+        core = f"result = {self.torch_api}(x, return_inverse=return_inverse, return_counts=return_counts, dim=axis)"
+        post= """
+dtype = locals().get('dtype', torch.int64)
+if isinstance(result, tuple):
+    result = list(result)
+    if return_inverse:
+        if result[1].shape == torch.Size([]):
+            result[1] = result[1].unsqueeze(0)
+        else:
+            result[1] = result[1].reshape(-1)
+    if dtype is not torch.int64:
+        for i in range (1, len(result)):
+            result[i] = result[i].to(dtype)
+    result = tuple(result)
+"""
+        code = Code(preprocess=pre.splitlines(),
+                    core=core.splitlines(),
+                    postprocess=post.splitlines())
+        return ConvertResult.success(paddle_api, code)
 
 class UnpoolRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
