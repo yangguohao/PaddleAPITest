@@ -86,8 +86,9 @@ for content in logs:
         pass_logs[key] = content
     else:
         error_logs[key] = content
-print(f"Read {len(notfound_logs)} NotFound log(s)", flush=True)
 
+if notfound_logs:
+    print(f"Read {len(notfound_logs)} notfound log(s)", flush=True)
 
 pass_log = OUTPUT_PATH / "pass_log.log"
 try:
@@ -179,3 +180,12 @@ except Exception as err:
     print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
 print(f"Write {len(error_configs)} error api config(s)", flush=True)
+
+if notfound_logs:
+    NOTFOUND_OUTPUT_PATH = OUTPUT_PATH / "notfound_config.txt"
+    try:
+        with open(NOTFOUND_OUTPUT_PATH, "w") as f:
+            f.writelines(f"{line}\n" for line in sorted(notfound_logs.keys()))
+    except Exception as err:
+        print(f"Error writing {NOTFOUND_OUTPUT_PATH}: {err}", flush=True)
+    print(f"Write {len(notfound_logs)} notfound api config(s)", flush=True)
