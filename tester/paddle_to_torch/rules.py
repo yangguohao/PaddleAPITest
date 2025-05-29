@@ -671,8 +671,6 @@ if len(_kwargs["input"].shape) > 2:
 soft_label = locals().get('soft_label',False)
 axis = locals().get('axis',-1)
 use_softmax = locals().get('use_softmax',True)
-if use_softmax:
-    _kwargs['input'] = torch.nn.functional.log_softmax(_kwargs['input'], dim=axis)
 _kwargs['target'] = _kwargs['target'].squeeze(-1)
 if "weight" in _kwargs:
     _kwargs['weight'].requires_grad = False

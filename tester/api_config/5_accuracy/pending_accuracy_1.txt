@@ -282,7 +282,6 @@ paddle.linalg.lstsq(Tensor([5, 5],"float64"), Tensor([5, 1],"float64"), rcond=No
 paddle.linalg.lstsq(Tensor([50, 600],"float64"), Tensor([50, 300],"float64"), rcond=1e-15, driver="gelss", )
 paddle.linalg.lstsq(Tensor([8, 2],"float32"), Tensor([8, 10],"float32"), rcond=1e-15, driver="gelsy", )
 paddle.linalg.lstsq(Tensor([9, 9],"float32"), Tensor([9, 5],"float32"), rcond=1e-15, driver="gels", )
-paddle.linalg.pinv(Tensor([3, 5, 5],"float32"), rcond=1e-15, hermitian=False, )
 paddle.nn.utils.parameters_to_vector(list[Tensor([10, 15],"float32"),Tensor([15],"float32"),], )
 paddle.nn.utils.parameters_to_vector(list[Tensor([10, 20],"float32"),Tensor([20],"float32"),], )
 paddle.nn.utils.parameters_to_vector(list[Tensor([10, 3],"float32"),], )
