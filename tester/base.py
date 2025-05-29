@@ -123,6 +123,7 @@ not_check_dtype = frozenset(
         "paddle.where",
         "paddle.nn.functional.one_hot",
         "paddle.frexp",
+        "paddle.Tensor.frexp",
         "paddle.floor",
     ]
 )
