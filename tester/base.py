@@ -125,6 +125,20 @@ not_check_dtype = frozenset(
         "paddle.frexp",
         "paddle.Tensor.frexp",
         "paddle.floor",
+        "paddle.Tensor.cumsum",
+        "paddle.add",
+        "paddle.add_n",
+        "paddle.cummax",
+        "paddle.cummin",
+        "paddle.cumsum",
+        "paddle.nn.functional.adaptive_max_pool1d",
+        "paddle.nn.functional.adaptive_max_pool2d",
+        "paddle.nn.functional.adaptive_max_pool3d",
+        "paddle.nn.functional.max_pool1d",
+        "paddle.nn.functional.max_pool2d",
+        "paddle.nn.functional.max_pool3d",
+        "paddle.copysign",
+        "paddle.cumprod",
     ]
 )
 
