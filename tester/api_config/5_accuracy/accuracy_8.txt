@@ -5009,3 +5009,7 @@ paddle.nn.functional.lp_pool1d(Tensor([2, 3, 32],"float32"), norm_type=4, kernel
 paddle.nn.functional.lp_pool1d(Tensor([2, 3, 32],"float32"), norm_type=7, kernel_size=2, stride=2, padding=list[1,], ceil_mode=True, )
 paddle.nn.functional.lp_pool1d(Tensor([2, 32, 3],"float32"), 7.0, 2, None, 1, False, "NLC", None, )
 paddle.nn.functional.lp_pool1d(Tensor([2, 32, 3],"float32"), norm_type=7, kernel_size=2, stride=2, padding=list[1,], ceil_mode=True, data_format="NLC", )
+paddle.unique(Tensor([3, 5, 5],"float32"), return_index=True, return_inverse=True, return_counts=True, axis=0, )
+paddle.unique_consecutive(Tensor([],"float32"), return_inverse=True, return_counts=True, )
+paddle.unique_consecutive(x=Tensor([4, 1],"float32"), return_inverse=True, )
+paddle.unique_consecutive(x=Tensor([6, 1],"float32"), return_inverse=True, return_counts=True, )
