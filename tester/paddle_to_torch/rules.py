@@ -498,43 +498,76 @@ class AssignRule(BaseRule):
         pre = """
 x = locals().get('x')
 output = locals().get('output')
-"""
-        convert_list_to_torch_tensor = """
-def convert_list2tensor(tlist):
+
+def convert_seq2tensor_wrap_scalar(tlist):       
     #  recursive implementation is not supported in current engine, use vanilla verison
     # # stack tensors and List[scalars] on dim 0 for nested list
     # if isinstance(tlist, list):
     #     return torch.stack([convert_list2tensor(t) for t in tlist])
     # else:
     #     return torch.tensor(tlist)
-    if isinstance(tlist, list):
+    
+    if isinstance(tlist, (list, tuple)):
         result = []
+        appear_float = False
+        appear_int = False
+        appear_bool = False
+        
         for x in tlist:
             mid_result = []
-            if isinstance(x, list):
+            if isinstance(x, (list, tuple)):
                 for y in x:
-                    if isinstance(y, list):
+                    if isinstance(y, (list, tuple)):
                         inner_result = []
                         for z in y:
-                            if isinstance(z, list):
+                            if isinstance(z, (list, tuple)):
                                 raise NotImplementedError("Nested list (depth > 3) is not supported")
                             else:
+                                if isinstance(z, bool):
+                                    appear_bool = True
+                                elif isinstance(z, int):
+                                    appear_int = True
+                                elif isinstance(z, float):
+                                    appear_float = True
                                 inner_result.append(torch.tensor(z))
                         mid_result.append(torch.stack(inner_result))
                     else:
+                        if isinstance(y, bool):
+                            appear_bool = True
+                        elif isinstance(y, int):
+                            appear_int = True
+                        elif isinstance(y, float):
+                            appear_float = True
                         mid_result.append(torch.tensor(y))
                 result.append(torch.stack(mid_result))
             else:
+                if isinstance(x, bool):
+                    appear_bool = True
+                elif isinstance(x, int):
+                    appear_int = True
+                elif isinstance(x, float):
+                    appear_float = True
                 result.append(torch.tensor(x))
-        return torch.stack(result)
+        result = torch.stack(result)
+        if appear_float:
+            result = result.to(torch.float64)
+        elif appear_int:
+            result = result.to(torch.int64)
+        elif appear_bool:
+            result = result.to(torch.bool)
+        return result
+    # handle scalar input: wrap by list
+    elif isinstance(tlist, (int, float, bool)):
+        py2torch_type_mapping = {float: torch.float64, int: torch.int64, bool: torch.bool}
+        dtype = py2torch_type_mapping[type(tlist)]
+        return torch.tensor([tlist], dtype=dtype)
     else:
         return torch.tensor(tlist)
+        
+x = convert_seq2tensor_wrap_scalar(x)
 """
-        core = "result = torch.clone(convert_list2tensor(x))"
-        code = Code(
-            preprocess=pre.splitlines() + convert_list_to_torch_tensor.splitlines(),
-            core=[core],
-        )
+        core = "result = torch.clone(x)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -671,8 +704,6 @@ if len(_kwargs["input"].shape) > 2:
 soft_label = locals().get('soft_label',False)
 axis = locals().get('axis',-1)
 use_softmax = locals().get('use_softmax',True)
-if use_softmax:
-    _kwargs['input'] = torch.nn.functional.log_softmax(_kwargs['input'], dim=axis)
 _kwargs['target'] = _kwargs['target'].squeeze(-1)
 if "weight" in _kwargs:
     _kwargs['weight'].requires_grad = False
@@ -2064,10 +2095,16 @@ def convert_to_scalar(fill_value):
     else:
         return fill_value
 
-converted_shape = convert_to_list(shape)
-converted_fill_value = convert_to_scalar(fill_value)
+shape = convert_to_list(shape)
+fill_value = convert_to_scalar(fill_value)
+
+if dtype is None and not isinstance(fill_value, bool):
+    if isinstance(fill_value, complex):
+        dtype = torch.complex128
+    else:
+        dtype = torch.float32
 """
-        core = "result = torch.full(size=converted_shape, fill_value=converted_fill_value, dtype=dtype)"
+        core = "result = torch.full(size=shape, fill_value=fill_value, dtype=dtype)"
         code = Code(preprocess=preprocess.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
