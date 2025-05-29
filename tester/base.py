@@ -139,6 +139,7 @@ not_check_dtype = frozenset(
         "paddle.nn.functional.max_pool3d",
         "paddle.copysign",
         "paddle.cumprod",
+        "paddle.incubate.nn.functional.fused_layer_norm",
     ]
 )
 
