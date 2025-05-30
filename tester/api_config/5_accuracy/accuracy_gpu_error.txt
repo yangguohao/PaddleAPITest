@@ -21955,3 +21955,6 @@ paddle.nn.functional.conv2d_transpose(Tensor([64, 8, 172, 79],"float32"), Tensor
 paddle.nn.functional.conv2d_transpose(Tensor([64, 8, 172, 79],"float32"), Tensor([8, 8, 5, 5],"float32"), bias=Tensor([8],"float32"), padding=2, output_padding=0, stride=list[1,1,], dilation=list[1,1,], groups=1, output_size=None, data_format="NCHW", )
 paddle.nn.functional.conv2d_transpose(Tensor([8, 2048, 16, 16],"float16"), Tensor([2048, 128, 4, 4],"float16"), bias=None, padding=1, output_padding=0, stride=list[2,2,], dilation=list[1,1,], groups=1, output_size=None, data_format="NCHW", )
 paddle.nn.functional.conv2d_transpose(Tensor([8, 64, 240, 240],"float32"), Tensor([64, 64, 2, 2],"float32"), bias=Tensor([64],"float32"), padding=0, output_padding=0, stride=list[2,2,], dilation=list[1,1,], groups=1, output_size=None, data_format="NCHW", )
+paddle.copysign(Tensor([10, 20],"int8"), Tensor([10, 20],"int8"), )
+paddle.copysign(Tensor([12, 20, 2],"int8"), Tensor([12, 20, 2],"int8"), )
+paddle.copysign(Tensor([2, 3, 4, 5],"int8"), Tensor([2, 3, 4, 5],"int8"), )
