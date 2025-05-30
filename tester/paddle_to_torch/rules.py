@@ -1651,6 +1651,46 @@ result = torch.diagonal_scatter(result, y, offset=offset, dim1=dim1, dim2=dim2)
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
+class FillDiagonal_Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+x = args[0] if args else next(iter(kwargs.values()))
+value = locals().get('value')
+offset = locals().get('offset', 0)
+wrap = locals().get('wrap', False)
+
+def fill_diagonal(x, value, offset=0, wrap=True):
+    if offset == 0:
+        x.fill_diagonal_(value, wrap)
+    else:
+        # roll along dim 1, but do not re-introduce the roll-out elements
+        # fidx is the flattened index of the value to be filled in the diagonal on row i
+        fidx = 0
+        for i in range(x.shape[0]):
+            if wrap:
+                if fidx < (i + 1) * x.shape[1]:
+                    vidx = fidx % x.shape[1]
+                    fidx += x.shape[1] + 1  
+                else:
+                    # this row has no elements to fill
+                    vidx = -1
+            else:
+                if i < x.shape[1]:
+                    vidx = i
+                else:
+                    vidx = -1
+            if vidx != -1 and vidx + offset >= 0 and vidx + offset < x.shape[1]:
+                x[i, vidx + offset] = value
+    return x
+"""
+        core = """
+result = fill_diagonal(x, value, offset, wrap)
+"""
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class FracRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """

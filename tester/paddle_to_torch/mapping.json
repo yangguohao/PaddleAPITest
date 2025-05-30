@@ -3010,12 +3010,16 @@
         "min_input_args": 1
     },
     "paddle.Tensor.fill_diagonal_": {
+        "Rule": "FillDiagonal_Rule",
         "torch_api": "torch.Tensor.fill_diagonal_",
+        "set_defaults": {
+            "offset": 0,
+            "wrap": "False"
+        },
         "paddle_torch_args_map": {
             "value": "fill_value",
             "wrap": "wrap"
-        },
-        "min_input_args": 1
+        }
     },
     "paddle.Tensor.flatten": {
         "torch_api": "torch.Tensor.flatten",
