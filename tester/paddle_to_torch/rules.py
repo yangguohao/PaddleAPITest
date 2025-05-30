@@ -824,12 +824,11 @@ dtype = locals().get('dtype', torch.int64)
 
 class CumprodRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        pre = f"""
+        pre = """
 dim = locals().get('dim')
-if dim is None:
-    x = x.flatten()
-    axis = 0
 dtype = locals().get('dtype')
+if dtype is None:
+    dtype = x.dtype
 """
         core = "result = torch.cumprod(input=x, dim=dim, dtype=dtype)"
         code = Code(preprocess=pre.splitlines(), core=[core])
