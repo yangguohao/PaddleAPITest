@@ -4392,8 +4392,7 @@
             "x2": "x2",
             "axis": "dim",
             "eps": "eps"
-        },
-        "min_input_args": 2
+        }
     },
     "paddle.nn.functional.elu": {
         "torch_api": "torch.nn.functional.elu",
