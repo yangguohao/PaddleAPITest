@@ -2618,6 +2618,16 @@
             "axis": "dim"
         }
     },
+    "paddle.var": {
+        "Rule": "VarRule",
+        "torch_api": "torch.var",
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "unbiased": "correction",
+            "keepdim": "keepdim"
+        }
+    },
     "paddle.vander": {
         "Rule": "VanderRule"
     },
@@ -5006,16 +5016,6 @@
             "return_inverse": "return_inverse",
             "return_counts": "return_counts",
             "axis": "dim"
-        },
-        "min_input_args": 1
-    },
-    "paddle.var": {
-        "torch_api": "torch.var",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "unbiased": "correction",
-            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },
