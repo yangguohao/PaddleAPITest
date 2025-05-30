@@ -6016,6 +6016,22 @@ else:
 
 
 # v
+class VarRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if x.dim() == 0:
+    result = torch.zeros([], dtype=x.dtype, device=x.device)
+else:
+    result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+        
 class VanderRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
