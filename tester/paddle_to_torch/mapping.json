@@ -608,7 +608,6 @@
         "Rule": "GetWindowRule"
     },
     "paddle.histogram": {
-        "Rule": "HistogramRule",
         "torch_api": "torch.histc",
         "paddle_torch_args_map": {
             "input": "input",
@@ -1822,7 +1821,6 @@
         }
     },
     "paddle.nn.functional.one_hot": {
-        "Rule": "OneHotRule",
         "torch_api": "torch.nn.functional.one_hot",
         "paddle_torch_args_map": {
             "x": "input",
@@ -1857,7 +1855,6 @@
         }
     },
     "paddle.nn.functional.smooth_l1_loss": {
-        "Rule": "SmoothL1LossRule",
         "torch_api": "torch.nn.functional.huber_loss",
         "paddle_torch_args_map": {
             "input": "input",
