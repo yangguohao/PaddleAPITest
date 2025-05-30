@@ -3289,6 +3289,7 @@
         "min_input_args": 3
     },
     "paddle.all": {
+        "Rule": "AllRule",
         "torch_api": "torch.all",
         "paddle_torch_args_map": {
             "x": "input",
@@ -3563,6 +3564,7 @@
         "min_input_args": 1
     },
     "paddle.count_nonzero": {
+        "Rule": "CountNonzeroRule",
         "torch_api": "torch.count_nonzero",
         "paddle_torch_args_map": {
             "x": "input",

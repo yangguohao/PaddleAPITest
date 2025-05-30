@@ -402,6 +402,20 @@ result = [output, loss]
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class AllRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = """
+if x.numel() == 0:
+    result = True
+else:
+    result = torch.all(x)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class AllcloseRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1253,7 +1267,29 @@ if data_format == "NDHWC":
         )
         return ConvertResult.success(paddle_api, code)
 
-
+class CountNonzeroRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+axis = locals().get('axis', None)
+shape = list(x.shape)
+if axis is None:
+    for i in range(len(shape)):
+        shape[i] = 1
+else:
+    if not isinstance(axis,(list,tuple)):
+        axis = [axis]
+    for i in range(len(axis)):
+        shape[axis[i]] = 1
+result = result.reshape(shape)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+            )
+        return ConvertResult.success(paddle_api, code)
 # d
 class DotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

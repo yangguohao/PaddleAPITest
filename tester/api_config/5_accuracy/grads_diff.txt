@@ -45,3 +45,7 @@ paddle.nn.utils.parameters_to_vector(list[Tensor([3, 2, 4, 4],"float32"),Tensor(
 paddle.nn.utils.parameters_to_vector(list[Tensor([3, 2, 4],"float32"),Tensor([3],"float32"),], )
 paddle.nn.utils.parameters_to_vector(list[Tensor([48, 8],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),Tensor([48, 16],"float32"),Tensor([48, 16],"float32"),Tensor([48],"float32"),Tensor([48],"float32"),], )
 paddle.nn.utils.parameters_to_vector(list[Tensor([64, 8],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),Tensor([64, 16],"float32"),Tensor([64, 16],"float32"),Tensor([64],"float32"),Tensor([64],"float32"),], )
+paddle.combinations(Tensor([0],"float32"), r=2, )
+paddle.combinations(Tensor([0],"float32"), r=2, with_replacement=True, )
+paddle.combinations(Tensor([1],"float32"), r=2, )
+paddle.combinations(Tensor([3],"float32"), r=4, )
