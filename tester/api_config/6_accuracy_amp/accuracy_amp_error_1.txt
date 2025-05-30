@@ -453,6 +453,8 @@ paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([512],"float3
 paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([64, 19],"float32"), label=Tensor([64, 19],"float32"), reduction="none", )
 paddle.nn.functional.binary_cross_entropy_with_logits(logit=Tensor([64, 26],"float32"), label=Tensor([64, 26],"float32"), reduction="none", )
 paddle.nn.functional.linear(x=Tensor([10, 499, 512],"float32"), weight=Tensor([512, 43],"float16"), bias=Tensor([43],"float16"), name=None, )
+paddle.nn.functional.linear(x=Tensor([1, 1024, 11008],"bfloat16"), weight=Tensor([11008, 768],"bfloat16"), bias=None, name=None, )
+paddle.nn.functional.linear(x=Tensor([2, 14, 768],"bfloat16"), weight=Tensor([768, 8],"float32"), bias=Tensor([8],"float32"), name=None, )
 paddle.nn.functional.linear(x=tuple(Tensor([1, 10],"float32"),), weight=Tensor([10, 10],"float16"), bias=None, name=None, )
 paddle.nn.functional.sigmoid_focal_loss(Tensor([15488, 80],"float16"), label=Tensor([15488, 80],"float32"), normalizer=Tensor([],"float32"), gamma=2.0, alpha=0.25, )
 paddle.nn.functional.sigmoid_focal_loss(Tensor([190960, 80],"float16"), Tensor([190960, 80],"float32"), )
@@ -482,3 +484,4 @@ paddle.incubate.nn.functional.fused_layer_norm(Tensor([78, 64],"float16"), Tenso
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([90, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([91, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([98, 64],"float16"), Tensor([64],"float32"), Tensor([64],"float32"), 1e-05, begin_norm_axis=1, )
+paddle.vision.ops.deform_conv2d(x=Tensor([20, 64, 152, 272],"float32"), offset=Tensor([20, 18, 152, 272],"float16"), weight=Tensor([64, 64, 3, 3],"float16"), bias=Tensor([64],"float16"), stride=list[1,1,], padding=list[1,1,], dilation=list[1,1,], deformable_groups=1, groups=1, mask=Tensor([20, 9, 152, 272],"float16"), )
