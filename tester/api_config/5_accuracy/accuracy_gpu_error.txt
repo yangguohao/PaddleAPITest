@@ -2397,8 +2397,6 @@ paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), ou
 paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), output_size=list[2,3,5,], )
 paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), output_size=list[3,3,3,], )
 paddle.nn.functional.adaptive_avg_pool3d(x=Tensor([2, 3, 5, 7, 7],"float32"), output_size=list[3,3,3,], data_format="NDHWC", )
-paddle.nn.functional.avg_pool3d(Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], ceil_mode=False, exclusive=True, divisor_override=None, data_format="NCDHW", name=None, )
-paddle.nn.functional.avg_pool3d(x=Tensor([2, 3, 8, 8, 8],"float64"), kernel_size=list[3,3,3,], stride=list[3,2,1,], padding=list[1,2,1,], exclusive=True, )
 paddle.nn.functional.batch_norm(Tensor([2, 1, 2, 3],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), Tensor([1],"float32"), training=True, momentum=0.9, epsilon=1e-05, data_format="NCHW", use_global_stats=True, )
 paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=False, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=False, )
 paddle.nn.functional.batch_norm(Tensor([2, 4, 3, 3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), Tensor([3],"float64"), training=True, momentum=0.9, epsilon=1e-05, data_format="NHWC", use_global_stats=True, )
