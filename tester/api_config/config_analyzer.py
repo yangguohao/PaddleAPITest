@@ -1760,6 +1760,16 @@ class TensorConfig:
                 else:
                     # self.check_arg(api_config, 1, "other"): 
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
+            elif api_config.api_name in {"paddle.Tensor.topk", "paddle.topk"}:
+                x_numel = self.numel()
+                if self.dtype in {"float32", "float64"}:
+                    unique_values = numpy.linspace(-1, 1, num=x_numel, dtype=self.dtype)
+                    permuted_values = numpy.random.permutation(unique_values)
+                    self.numpy_tensor = permuted_values.reshape(self.shape)
+                elif self.dtype in {"int32", "int64"}:
+                    self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
+                else:
+                    raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk")
                 
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY:
