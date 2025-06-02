@@ -4274,7 +4274,7 @@ if broadcast == True:
 """
         core = """
 if reduce == 'assign':
-    result = torch.scatter(input, dim, index, src)
+    result = torch.scatter(input.cpu(), dim, index.cpu(), src.cpu())
 else:
     result = torch.scatter_reduce(input, dim, index, src, reduce, include_self=include_self)
 """
