@@ -32,6 +32,39 @@ not_zero_apis = [
     "paddle.mod",
 ]
 
+def generate_unique_array(num_items, float_dtype):
+    def get_integer_dtype(float_dtype):
+        float_dtype = numpy.dtype(float_dtype)
+        if float_dtype == numpy.float16:
+            return numpy.uint16, 16
+        elif float_dtype == numpy.float32:
+            return numpy.uint32, 32
+        elif float_dtype == numpy.float64:
+            return numpy.uint64, 64
+        else:
+            raise ValueError(f"Unsupported float dtype: {float_dtype}")
+    integer_dtype, bits = get_integer_dtype(float_dtype)
+    max_int = (1 << bits) - 1
+    current_start_value = 1
+    return_list  = []
+    attemp_count = 0
+    while len(return_list) < num_items and attemp_count < 3:
+        nums_to_generate = int(num_items * 1.5)
+        if current_start_value >= max_int:
+            raise ValueError(f"Cannot generate {num_items} unique items of type {float_dtype} within the range.")
+        end_value = min(current_start_value + nums_to_generate, max_int)
+        random_arr = numpy.arange(current_start_value, end_value, dtype=integer_dtype)
+        float_arr = random_arr.view(float_dtype)
+        if return_list is None:
+            return_list = float_arr[numpy.isfinite(float_arr)]
+        else:
+            return_list = numpy.unique(numpy.concatenate([return_list, float_arr[numpy.isfinite(float_arr)]])) 
+        current_start_value = end_value
+        attemp_count += 1
+    if len(return_list) < num_items:
+        raise ValueError(f"Could not generate {num_items} unique items of type {float_dtype}")
+    return return_list[:num_items]
+
 class TensorConfig:
     def __init__(self, shape, dtype, place=None):
         self.shape = shape
@@ -1636,8 +1669,21 @@ class TensorConfig:
                 if self.check_arg(api_config, 1, "repeat_times"):
                     self.numpy_tensor = numpy.random.randint(1, 128, size=self.shape).astype(self.dtype)
 
-            elif api_config.api_name == "paddle.topk":
-                if self.check_arg(api_config, 1, "k"):
+            elif api_config.api_name in {"paddle.topk", "paddle.Tensor.topk"}:
+                if self.check_arg(api_config, 0, "x"):
+                    x_numel = self.numel()
+                    if self.dtype in {"bfloat16", "float32", "float64"}:
+                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+                        self.numpy_tensor = numpy.linspace(-x_numel, x_numel, x_numel, dtype=dtype).reshape(self.shape)
+                        if numpy.unique(self.numpy_tensor).size < x_numel:
+                            self.numpy_tensor = generate_unique_array(x_numel, dtype).reshape(self.shape)
+                    elif self.dtype == "float16":
+                        self.numpy_tensor = generate_unique_array(x_numel, self.dtype).reshape(self.shape)
+                    elif self.dtype in {"int32", "int64"}:
+                        self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
+                    else:
+                        raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk")
+                elif self.check_arg(api_config, 1, "k"):
                     x_config = self.get_arg(api_config, 0, "x")
                     max_k_value = 1
                     if isinstance(x_config, TensorConfig) and x_config.shape:
@@ -1760,17 +1806,7 @@ class TensorConfig:
                 else:
                     # self.check_arg(api_config, 1, "other"): 
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
-            elif api_config.api_name in {"paddle.Tensor.topk", "paddle.topk"}:
-                x_numel = self.numel()
-                if self.dtype in {"float32", "float64"}:
-                    unique_values = numpy.linspace(-1, 1, num=x_numel, dtype=self.dtype)
-                    permuted_values = numpy.random.permutation(unique_values)
-                    self.numpy_tensor = permuted_values.reshape(self.shape)
-                elif self.dtype in {"int32", "int64"}:
-                    self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
-                else:
-                    raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk")
-                
+
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
