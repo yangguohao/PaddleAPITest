@@ -402,6 +402,20 @@ result = [output, loss]
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
+class AllRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = """
+if x.numel() == 0:
+    result = True
+else:
+    result = torch.all(x)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
 
 class AllcloseRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -941,13 +955,9 @@ if isinstance(_kwargs['max'],torch.Tensor):
     _kwargs['max'] = _kwargs['max'].item()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result = result.to(_kwargs['input'].dtype)
-"""
         code = Code(
             preprocess=map_code + pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -1252,7 +1262,29 @@ if data_format == "NDHWC":
         )
         return ConvertResult.success(paddle_api, code)
 
-
+class CountNonzeroRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+axis = locals().get('axis', None)
+shape = list(x.shape)
+if axis is None:
+    for i in range(len(shape)):
+        shape[i] = 1
+else:
+    if not isinstance(axis,(list,tuple)):
+        axis = [axis]
+    for i in range(len(axis)):
+        shape[axis[i]] = 1
+result = result.reshape(shape)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines(),
+            postprocess=post.splitlines(),
+            )
+        return ConvertResult.success(paddle_api, code)
 # d
 class DotRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -1647,6 +1679,46 @@ result = x.clone()
 result = torch.diagonal_scatter(result, y, offset=offset, dim1=dim1, dim2=dim2)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
+class FillDiagonal_Rule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        pre = """
+x = args[0] if args else next(iter(kwargs.values()))
+value = locals().get('value')
+offset = locals().get('offset', 0)
+wrap = locals().get('wrap', False)
+
+def fill_diagonal(x, value, offset=0, wrap=True):
+    if offset == 0:
+        x.fill_diagonal_(value, wrap)
+    else:
+        # roll along dim 1, but do not re-introduce the roll-out elements
+        # fidx is the flattened index of the value to be filled in the diagonal on row i
+        fidx = 0
+        for i in range(x.shape[0]):
+            if wrap:
+                if fidx < (i + 1) * x.shape[1]:
+                    vidx = fidx % x.shape[1]
+                    fidx += x.shape[1] + 1  
+                else:
+                    # this row has no elements to fill
+                    vidx = -1
+            else:
+                if i < x.shape[1]:
+                    vidx = i
+                else:
+                    vidx = -1
+            if vidx != -1 and vidx + offset >= 0 and vidx + offset < x.shape[1]:
+                x[i, vidx + offset] = value
+    return x
+"""
+        core = """
+result = fill_diagonal(x, value, offset, wrap)
+"""
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -2408,7 +2480,7 @@ result = f.func(x,index)
 
 class Gather_treeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 parents = locals().get('parents')
 ids = locals().get('ids')
 result = torch.empty(ids.shape)
@@ -2424,8 +2496,8 @@ for batch in range(batch_size):
             pa = parents[step,batch,pa]
 result = result.to(dtype=ids.dtype)
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class GenerateProposalsRule(BaseRule):
@@ -2874,20 +2946,6 @@ class Hessian:
         core = "result = Hessian(ys=ys, xs=xs, batch_axis=batch_axis)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-
-class HistogramRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result =result.to(dtype=torch.int64)
-"""
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
 
 class HistogramddRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4017,19 +4075,6 @@ else:
 
 
 # o
-class OneHotRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result =result.to(dtype=torch.int64)
-"""
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
 
 class OnesRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5069,20 +5114,6 @@ result = input
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
-class SmoothL1LossRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result =result.to(dtype=label.dtype)
-"""
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
-
 class SplitRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -5979,6 +6010,22 @@ else:
 
 
 # v
+class VarRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"""
+if x.dim() == 0:
+    result = torch.zeros([], dtype=x.dtype, device=x.device)
+else:
+    result = {self.torch_api}(**_kwargs)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=core.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+        
 class VanderRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
