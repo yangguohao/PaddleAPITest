@@ -140,8 +140,16 @@ def aggregate_logs(end=False):
             for file_path in tmp_files:
                 try:
                     with file_path.open("rb") as in_f:
-                        out_f.write(in_f.read())
-                    file_path.open("wb").close()
+                        for line in in_f:
+                            if len(line) > 10000:
+                                print(f"Truncating long line ({len(line)} bytes) in {file_path.name}")
+                                out_f.write(line[:10000] + b"\n")
+                            else:
+                                out_f.write(line)
+                    if end:
+                        file_path.unlink()
+                    else:
+                        file_path.open("wb").close()
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
     except Exception as err:
