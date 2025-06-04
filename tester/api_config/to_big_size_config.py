@@ -819,11 +819,30 @@ def to_big_tensor_config(api_config):
                     if tmp_tensor_configs[k].dtype in ["float64"]:
                         tmp_tensor_configs[k].dtype = "float16"
             else:
-                base_size = 2281701378 
-            tmp_tensor_configs[i].shape[j] = int(base_size / (tensor_numel(tmp_tensor_configs[i])/tmp_tensor_configs[i].shape[j])) + 1
+                base_size = 2281701378
+            old_dim = tmp_tensor_configs[i].shape[j]
+            new_dim = int(base_size / (tensor_numel(tmp_tensor_configs[i])/tmp_tensor_configs[i].shape[j])) + 1
+            tmp_tensor_configs[i].shape[j] = new_dim
             config_str = str(tmp_api_config)
             if len(config_str) < 1000:
                 result.append(config_str)
+
+            valid = True
+            tmp_tensor_configs[i].shape[j] = old_dim
+            for m in range(len(tensor_configs)):
+                is_first = True
+                for n in range(len(tensor_configs[m].shape)):
+                    if tmp_tensor_configs[m].shape[n] == old_dim:
+                        tmp_tensor_configs[m].shape[n] = new_dim
+                        if is_first:
+                            is_first = False
+                        else:
+                            valid = False
+            if valid == False:
+                continue
+            config_str2 = str(tmp_api_config)
+            if len(config_str2) < 1000:
+                result.append(config_str2)
 
     if shape_equal:
         for j in range(shape_len):
@@ -845,8 +864,8 @@ def to_big_tensor_config(api_config):
 
 if __name__ == '__main__':
     config_big_tensor = set()
-    api_configs = analyse_configs("/host_home/wanghuan29/PaddleAPITest/tester/api_config/5_accuracy/17.txt")
-    with open("/host_home/wanghuan29/PaddleAPITest/tester/api_config/8_big_tensor/big_tensor_17.txt", "w") as f:
+    api_configs = analyse_configs("/host_home/wanghuan29/APItest/PaddleAPITest/tester/api_config/5_accuracy/17.txt")
+    with open("/host_home/wanghuan29/APItest/PaddleAPITest/tester/api_config/8_big_tensor/big_tensor_17.txt", "w") as f:
         for api_config in tqdm(api_configs):
             # print(api_config.config)
             # config_big_tensor = config_big_tensor.union(set(to_big_tensor_config(api_config)))

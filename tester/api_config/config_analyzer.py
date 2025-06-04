@@ -125,6 +125,8 @@ class TensorConfig:
         numel = 1
         for i in shape:
             numel = numel * i
+        if numel > 4300000000:
+            raise RuntimeError("Too large tensor to get cached numpy:", numel)
 
         if dtype in cached_numpy:
             tensor = cached_numpy[dtype][:numel].reshape(shape)
@@ -1808,7 +1810,7 @@ class TensorConfig:
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
 
             if self.numpy_tensor is None:
-                if USE_CACHED_NUMPY:
+                if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
                     dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                     self.numpy_tensor = self.get_cached_numpy(dtype, self.shape)
                 else:
