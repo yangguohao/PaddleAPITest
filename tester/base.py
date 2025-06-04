@@ -158,12 +158,12 @@ class APITestBase:
         # not support
         if "sparse" in self.api_config.api_name:
             return True
-        if self.api_config.api_name in not_support_api:
-            return True
-        if not paddle_only and self.api_config.api_name in rand_apis:
-            return True
-        if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
-            return True
+        # if self.api_config.api_name in not_support_api:
+        #     return True
+        # if not paddle_only and self.api_config.api_name in rand_apis:
+        #     return True
+        # if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
+        #     return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
