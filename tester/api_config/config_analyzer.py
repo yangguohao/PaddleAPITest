@@ -92,6 +92,8 @@ class TensorConfig:
         numel = 1
         for i in shape:
             numel = numel * i
+        if numel > 4300000000:
+            raise RuntimeError("Too large tensor to get cached numpy:", numel)
 
         if dtype in cached_numpy:
             tensor = cached_numpy[dtype][:numel].reshape(shape)
