@@ -1429,7 +1429,6 @@ paddle.nn.functional.interpolate(Tensor([512, 40, 4, 3],"float16"), size=None, s
 paddle.nn.functional.rnnt_loss(Tensor([3, 4, 3, 3],"float32"), Tensor([3, 2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), blank=0, fastemit_lambda=0.0, reduction="none", name=None, )
 paddle.nn.functional.rnnt_loss(Tensor([3, 4, 3, 3],"float32"), Tensor([3, 2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), blank=0, reduction="mean", fastemit_lambda=0.0, )
 paddle.nn.functional.rnnt_loss(Tensor([3, 4, 3, 3],"float32"), Tensor([3, 2],"int32"), Tensor([3],"int32"), Tensor([3],"int32"), blank=0, reduction="sum", fastemit_lambda=0.0, )
-paddle.nn.functional.rrelu(Tensor([],"float32"), )
 paddle.reshape(Tensor([0, 2],"float32"), list[-1,], )
 paddle.reshape(Tensor([1, 1, 1, 0, 4],"float32"), list[-1,4,], )
 paddle.reshape(Tensor([2, 1, 3, 0, 4],"complex128"), list[-1,4,], )
