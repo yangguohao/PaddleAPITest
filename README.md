@@ -45,16 +45,18 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
 └── run-example.sh
 ```
 
-目前项目结构主要分为 test_pipeline，report 和 tester 文件夹，test_pipeline 是在 engineV2.py 产生之前用于回归测试的相关工具，report 用于储存内核报错的 api 信息，tester 用于测试配置的正确性和存放配置测试结果。
+目前项目结构主要分为 report 和 tester 文件夹，report 用于储存内核报错的 api 信息，tester 用于测试配置的正确性和存放配置测试结果。
 
 engineV2.py 及配合的 run-example.sh 是目前运行本项目的主要工具，engineV3.py 目前由百度内部开发测试使用，engine.py 是最早的引擎，相较 engineV2.py 吞吐量低，在少量配置时可使用。
 
-1. report 简介
-
-   - 在引擎补齐这一任务中，出现的内核报错均放置于 report/fresh_report/paddle_only 中。
-
-
-   - 在精度转换这一任务中，出现的精度报错均放置于 report/fresh_report/accuracy 中。
+1. report 介绍
+   - 0size_tensor_cpu 存放进行在 cpu 上进行精度测试/引擎解析能力测试（accuracy / paddle_only）结果。
+   - 0size_tensor_gpu 存放进行在 gpu 上进行 accuracy / paddle_only 测试结果。
+   - big_tensor_gpu 存放大形状张量（big tensor）在 gpu/cpu 上进行 accuracy / paddle_only 测试结果。
+   - ci_ce_cpu 存放 CI/CE 流水线抓取的配置在 cpu 上进行 accuracy / paddle_only 测试结果。
+   - ci_ce_gpu 存放 CI/CE 流水线抓取的配置在 gpu 上进行 accuracy / paddle_only 测试结果。
+   - cinn 存放 paddle 静态编译器与动态图方式进行精度对比测试结果。
+   - fresh_report 存放引擎补齐（paddle_only）和精度转换（accuracy）两个任务中，出现的内核报错或者精度报错。
 
 
 2. tester 介绍
@@ -214,12 +216,3 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 现在转换工具已基本完成对PaddleAPI的转换。
 
 其说明文档详见 [paddle2torch.md](./tester/paddle_to_torch/paddle2torch.md)
-
-## 5. [Paddle CPU/GPU Kernel 精度问题推全](https://github.com/PaddlePaddle/Paddle/issues/72667)开源活动修复 accuracy error 的后处理
-
-请先阅读 [2.项目结构](#2-项目结构) 来理解 tester/api_config 目录下的各个目录作用，对于
-
-1. 通过合入 Paddle 库代码修复的 accuracy error，无需移动配置 (api config) 位置。
-2. 通过合入 PaddleAPITest 修复**paddle2torch转换能力**消除的 accuracy error，也无需移动配置位置。
-3. 如果某个配置或者 api 函数自身输出**随机数**，如 paddle.normal 根据正态分布生成随机数，需要移动配置到 tester/api_config/2_paddle_only_random/random_creation.txt；如果是参数设置使得函数计算具有**随机性结果**，如 paddle.nn.functional.dropout 在概率不为 0.0, 1.0 时会随机丢弃，需要移动随机性的配置到 tester/api_config/2_paddle_only_random/random_calculation.txt，上述例子中概率为 0.0, 1.0 的配置无需移动到 random_calculation.txt。
-
