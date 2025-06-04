@@ -140,7 +140,6 @@ not_check_dtype = frozenset(
         "paddle.copysign",
         "paddle.cumprod",
         "paddle.incubate.nn.functional.fused_layer_norm",
-        "paddle.cumprod",
     ]
 )
 
