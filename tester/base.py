@@ -65,7 +65,7 @@ stochastic_behavior_apis = frozenset(
         "paddle.nn.functional.dropout2d",
         "paddle.nn.functional.dropout3d",
         "paddle.nn.functional.feature_alpha_dropout",
-        "paddle.incubate.nn.functional.fused_multi_head_attention",
+        # "paddle.incubate.nn.functional.fused_multi_head_attention", # If parameter "dropout_rate=0.5, attn_dropout_rate=0.5 (default value)" is not equal to 0.0 or 1.0, the result involves random calculation.
         "paddle.nn.functional.scaled_dot_product_attention",
     ]
 )
@@ -140,6 +140,7 @@ not_check_dtype = frozenset(
         "paddle.copysign",
         "paddle.cumprod",
         "paddle.incubate.nn.functional.fused_layer_norm",
+        "paddle.cumprod",
     ]
 )
 
