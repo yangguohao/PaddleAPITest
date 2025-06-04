@@ -1682,7 +1682,7 @@ class TensorConfig:
                     elif self.dtype in {"int32", "int64"}:
                         self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
                     else:
-                        raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk")
+                        raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk / paddle.Tensor.topk")
                 elif self.check_arg(api_config, 1, "k"):
                     x_config = self.get_arg(api_config, 0, "x")
                     max_k_value = 1
