@@ -18,7 +18,7 @@ not_support_api = frozenset(
     ]
 )
 
-# TODO: check all rand calc/create api (i.e. rand_apis and stochastic_behavior_apis list) and move config to accuracy_error.txt or random_calculation.txt / random_creation.txt. Eliminate configs in fresh report. API level skipping check is breaking down to config level txt managing. @Cutelemon6 -- done @Cutelemon6
+# keep rand_apis and stochastic_behavior_apis lists for future reference when checking if new api configs have random behavior @Cutelemon6
 rand_apis = frozenset(
     [
         "",
