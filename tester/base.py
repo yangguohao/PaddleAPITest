@@ -148,7 +148,7 @@ class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
         self.outputs_grad_numpy = []
-        torch.set_num_threads(20)
+        torch.set_num_threads(8)
         torch.set_printoptions(threshold=100)
 
     def need_skip(self, paddle_only=False):
@@ -910,6 +910,7 @@ class APITestBase:
             )
         except Exception as e:
             if "Comparing" in str(e):
+                print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(
                     paddle_tensor.numpy(),
                     torch_tensor.numpy(),
