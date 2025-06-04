@@ -1833,12 +1833,14 @@ if isinstance(output_size, (list, tuple)):
 class FusedBiasActRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+from typing import Optional
+
 def fused_bias_act(
     x: torch.Tensor,
-    bias: torch.Tensor | None = None,
-    dequant_scales: torch.Tensor | None = None,
-    shift: torch.Tensor | None = None,
-    smooth: torch.Tensor | None = None,
+    bias: Optional[torch.Tensor] = None,
+    dequant_scales: Optional[torch.Tensor] = None,
+    shift: Optional[torch.Tensor] = None,
+    smooth: Optional[torch.Tensor] = None,
     act_method: str = 'gelu',
     compute_dtype: str = 'default',
     quant_scale: float = -1,
@@ -1920,13 +1922,15 @@ def fused_bias_act(
 class FusedMatmulBiasRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+from typing import Optional
+
 def fused_matmul_bias(
     x: torch.Tensor,
     y: torch.Tensor,
-    bias: torch.Tensor | None = None,
+    bias: Optional[torch.Tensor] = None,
     transpose_x: bool = False,
     transpose_y: bool = False,
-    name: str | None = None
+    name: Optional[str] = None
 ) -> torch.Tensor:
     if transpose_x:
         x = x.swapaxes(-1, -2)
@@ -1945,20 +1949,22 @@ def fused_matmul_bias(
 class FusedMultiHeadAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+from typing import Optional
+
 def fused_multi_head_attention(
     x: torch.Tensor,
     qkv_weight: torch.Tensor,
     linear_weight: torch.Tensor,
     pre_layer_norm: bool = False,
-    pre_ln_scale: torch.Tensor | None = None,
-    pre_ln_bias: torch.Tensor | None = None,
-    ln_scale: torch.Tensor | None = None,
-    ln_bias: torch.Tensor | None = None,
+    pre_ln_scale: Optional[torch.Tensor] = None,
+    pre_ln_bias: Optional[torch.Tensor] = None,
+    ln_scale: Optional[torch.Tensor] = None,
+    ln_bias: Optional[torch.Tensor] = None,
     pre_ln_epsilon: float = 1e-05,
-    qkv_bias: torch.Tensor | None = None,
-    linear_bias: torch.Tensor | None = None,
-    cache_kv: torch.Tensor | None = None,
-    attn_mask: torch.Tensor | None = None,
+    qkv_bias: Optional[torch.Tensor] = None,
+    linear_bias: Optional[torch.Tensor] = None,
+    cache_kv: Optional[torch.Tensor] = None,
+    attn_mask: Optional[torch.Tensor] = None,
     dropout_rate: float = 0.5,
     attn_dropout_rate: float = 0.5,
     ln_epsilon: float = 1e-05,
@@ -1968,7 +1974,7 @@ def fused_multi_head_attention(
     add_residual: bool = True,
     num_heads: int = -1,
     transpose_qkv_wb: bool = False,
-    name: str | None = None
+    name: Optional[str] = None
 ) -> torch.Tensor:
     import torch.nn.functional as F
 
@@ -2033,14 +2039,16 @@ def fused_multi_head_attention(
 class FusedRMSNormRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+from typing import Optional
+
 def fused_rms_norm(
     x: torch.Tensor,
     norm_weight: torch.Tensor,
     norm_bias: torch.Tensor,
     epsilon: float,
     begin_norm_axis: int,
-    bias: torch.Tensor | None = None,
-    residual: torch.Tensor | None = None,
+    bias: Optional[torch.Tensor] = None,
+    residual: Optional[torch.Tensor] = None,
     quant_scale: float = -1,
     quant_round_type: int = 0,
     quant_max_bound: float = 0,
@@ -2077,17 +2085,19 @@ def fused_rms_norm(
 class FusedRotaryPositionEmbeddingRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+from typing import Optional
+
 def fused_rotary_position_embedding(
     q: torch.Tensor,
-    k: torch.Tensor | None = None,
-    v: torch.Tensor | None = None,
-    sin: torch.Tensor | None = None,
-    cos: torch.Tensor | None = None,
-    position_ids: torch.Tensor | None = None,
+    k: Optional[torch.Tensor] = None,
+    v: Optional[torch.Tensor] = None,
+    sin: Optional[torch.Tensor] = None,
+    cos: Optional[torch.Tensor] = None,
+    position_ids: Optional[torch.Tensor] = None,
     use_neox_rotary_style: bool = True,
     time_major: bool = False,
     rotary_emb_base: float = 10000.0
-) -> tuple[torch.Tensor, torch.Tensor | None, torch.Tensor | None]:
+) -> tuple[torch.Tensor, Optional[torch.Tensor], Optional[torch.Tensor]]:
     if time_major:
         batch_size, seq_len = q.size(1), q.size(0)
     else:
@@ -3698,18 +3708,20 @@ result = torch.stack(temp)
 class MaskedMultiheadAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
+from typing import Optional
+
 def masked_multihead_attention(
     x: torch.Tensor,
-    cache_kv: torch.Tensor | None = None,
-    bias: torch.Tensor | None = None,
-    src_mask: torch.Tensor | None = None,
-    cum_offsets: torch.Tensor | None = None,
-    sequence_lengths: torch.Tensor | None = None,
-    rotary_tensor: torch.Tensor | None = None,
-    beam_cache_offset: torch.Tensor | None = None,
-    qkv_out_scale: torch.Tensor | None = None,
-    out_shift: torch.Tensor | None = None,
-    out_smooth: torch.Tensor | None = None,
+    cache_kv: Optional[torch.Tensor] = None,
+    bias: Optional[torch.Tensor] = None,
+    src_mask: Optional[torch.Tensor] = None,
+    cum_offsets: Optional[torch.Tensor] = None,
+    sequence_lengths: Optional[torch.Tensor] = None,
+    rotary_tensor: Optional[torch.Tensor] = None,
+    beam_cache_offset: Optional[torch.Tensor] = None,
+    qkv_out_scale: Optional[torch.Tensor] = None,
+    out_shift: Optional[torch.Tensor] = None,
+    out_smooth: Optional[torch.Tensor] = None,
     seq_len: int = 1,
     rotary_emb_dims: int = 0,
     use_neox_rotary_style: bool = False,
@@ -6111,6 +6123,7 @@ class VariableLengthMemoryEfficientAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 import math
+from typing import Optional
 
 def variable_length_memory_efficient_attention(
     query: torch.Tensor,
@@ -6118,8 +6131,8 @@ def variable_length_memory_efficient_attention(
     value: torch.Tensor,
     seq_lens: torch.Tensor,
     kv_seq_lens: torch.Tensor,
-    mask: torch.Tensor | None = None,
-    scale: float | None = None,
+    mask: Optional[torch.Tensor] = None,
+    scale: Optional[float] = None,
     causal: bool = False,
     pre_cache_length: int = 0
 ) -> torch.Tensor:
