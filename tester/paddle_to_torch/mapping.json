@@ -608,7 +608,6 @@
         "Rule": "GetWindowRule"
     },
     "paddle.histogram": {
-        "Rule": "HistogramRule",
         "torch_api": "torch.histc",
         "paddle_torch_args_map": {
             "input": "input",
@@ -1432,7 +1431,7 @@
     "paddle.nn.functional.hardsigmoid": {
         "Rule": "HardsigmoidRule",
         "torch_api": "torch.nn.functional.hardsigmoid",
-        "paddle_torch_args_map": { 
+        "paddle_torch_args_map": {
             "x": "input",
             "inplace": "inplace"
         },
@@ -1441,7 +1440,7 @@
             "offset": "0.5"
         }
     },
-    "paddle.nn.functional.hinge_embedding_loss":{
+    "paddle.nn.functional.hinge_embedding_loss": {
         "torch_api": "torch.nn.functional.hinge_embedding_loss",
         "paddle_torch_args_map": {
             "input": "input",
@@ -1822,7 +1821,6 @@
         }
     },
     "paddle.nn.functional.one_hot": {
-        "Rule": "OneHotRule",
         "torch_api": "torch.nn.functional.one_hot",
         "paddle_torch_args_map": {
             "x": "input",
@@ -1857,7 +1855,6 @@
         }
     },
     "paddle.nn.functional.smooth_l1_loss": {
-        "Rule": "SmoothL1LossRule",
         "torch_api": "torch.nn.functional.huber_loss",
         "paddle_torch_args_map": {
             "input": "input",
@@ -2342,13 +2339,13 @@
         "set_defaults": {
             "axis": "None",
             "unbiased": "True",
-            "keepdim": "False"          
+            "keepdim": "False"
         },
         "torch_kwargs": {
             "correction": "False if x.numel() == 1 or locals().get('unbiased', True) is False else True"
         }
     },
-    "paddle.strided_slice":{
+    "paddle.strided_slice": {
         "Rule": "StridedSliceRule"
     },
     "paddle.Tensor.slice_scatter": {
@@ -4923,16 +4920,6 @@
         "paddle_torch_args_map": {
             "x": "tensors",
             "axis": "dim"
-        },
-        "min_input_args": 1
-    },
-    "paddle.std": {
-        "torch_api": "torch.std",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "unbiased": "correction",
-            "keepdim": "keepdim"
         },
         "min_input_args": 1
     },

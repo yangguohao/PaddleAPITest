@@ -956,13 +956,9 @@ if isinstance(_kwargs['max'],torch.Tensor):
     _kwargs['max'] = _kwargs['max'].item()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result = result.to(_kwargs['input'].dtype)
-"""
         code = Code(
             preprocess=map_code + pre.splitlines(),
             core=core.splitlines(),
-            postprocess=post.splitlines()
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -2485,7 +2481,7 @@ result = f.func(x,index)
 
 class Gather_treeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        core = """
 parents = locals().get('parents')
 ids = locals().get('ids')
 result = torch.empty(ids.shape)
@@ -2501,8 +2497,8 @@ for batch in range(batch_size):
             pa = parents[step,batch,pa]
 result = result.to(dtype=ids.dtype)
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class GenerateProposalsRule(BaseRule):
@@ -2951,20 +2947,6 @@ class Hessian:
         core = "result = Hessian(ys=ys, xs=xs, batch_axis=batch_axis)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
-
-class HistogramRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result =result.to(dtype=torch.int64)
-"""
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
 
 class HistogramddRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -4094,19 +4076,6 @@ else:
 
 
 # o
-class OneHotRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result =result.to(dtype=torch.int64)
-"""
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
-        )
-        return ConvertResult.success(paddle_api, code)
 
 class OnesRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
@@ -5144,20 +5113,6 @@ for i,dim in enumerate(axes):
 result = input
 """
         code = Code(core=core.splitlines())
-        return ConvertResult.success(paddle_api, code)
-
-class SmoothL1LossRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result =result.to(dtype=label.dtype)
-"""
-        code = Code(
-            preprocess=defaults_code + map_code,
-            core=[core],
-            postprocess=post.splitlines(),
-        )
         return ConvertResult.success(paddle_api, code)
 
 class SplitRule(BaseRule):
