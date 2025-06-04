@@ -21,7 +21,6 @@ not_support_api = frozenset(
 # keep rand_apis and stochastic_behavior_apis lists for future reference when checking if new api configs have random behavior @Cutelemon6
 rand_apis = frozenset(
     [
-        "",
         # "paddle.bernoulli_",
         # "paddle.binomial",
         # "paddle.cauchy_",
@@ -56,7 +55,6 @@ rand_apis = frozenset(
 
 stochastic_behavior_apis = frozenset(
     [
-        "",
         # "paddle.Tensor.top_p_sampling",
         # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
         # "paddle.incubate.nn.functional.fused_dropout_add",
