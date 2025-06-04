@@ -18,55 +18,55 @@ not_support_api = frozenset(
     ]
 )
 
-# TODO: check all rand calc/create api (i.e. rand_apis and stochastic_behavior_apis list) and move config to accuracy_error.txt or random_calculation.txt / random_creation.txt. Eliminate configs in fresh report. API level skipping check is breaking down to config level txt managing. @Cutelemon6
+# keep rand_apis and stochastic_behavior_apis lists for future reference when checking if new api configs have random behavior @Cutelemon6
 rand_apis = frozenset(
     [
-        "paddle.bernoulli_",
-        "paddle.binomial",
-        "paddle.cauchy_",
-        "paddle.geometric_",
-        "paddle.log_normal",
-        "paddle.log_normal_",
-        "paddle.multinomial",
-        "paddle.normal",
-        "paddle.normal_",
-        "paddle.poisson",
-        "paddle.rand",
-        "paddle.randn",
-        "paddle.randint",
-        "paddle.randint_like",
-        "paddle.randperm",
-        "paddle.uniform",
-        "paddle.standard_gamma",
-        "paddle.standard_normal",
-        "paddle.Tensor.bernoulli_",
-        "paddle.Tensor.cauchy_",
-        "paddle.Tensor.exponential_",
-        "paddle.Tensor.geometric_",
-        "paddle.Tensor.log_normal_",
-        "paddle.Tensor.multinomial",
-        "paddle.Tensor.normal_",
-        "paddle.Tensor.uniform_",
-        "paddle.empty",
-        "paddle.empty_like",
-        "paddle.Tensor.__dir__",
+        # "paddle.bernoulli_",
+        # "paddle.binomial",
+        # "paddle.cauchy_",
+        # "paddle.geometric_",
+        # "paddle.log_normal",
+        # "paddle.log_normal_",
+        # "paddle.multinomial",
+        # "paddle.normal",
+        # "paddle.normal_",
+        # "paddle.poisson",
+        # "paddle.rand",
+        # "paddle.randn",
+        # "paddle.randint",
+        # "paddle.randint_like",
+        # "paddle.randperm",
+        # "paddle.uniform",
+        # "paddle.standard_gamma",
+        # "paddle.standard_normal",
+        # "paddle.Tensor.bernoulli_",
+        # "paddle.Tensor.cauchy_",
+        # "paddle.Tensor.exponential_",
+        # "paddle.Tensor.geometric_",
+        # "paddle.Tensor.log_normal_",
+        # "paddle.Tensor.multinomial",
+        # "paddle.Tensor.normal_",
+        # "paddle.Tensor.uniform_",
+        # "paddle.empty",
+        # "paddle.empty_like",
+        # "paddle.Tensor.__dir__",
     ]
 )
 
 stochastic_behavior_apis = frozenset(
     [
-        "paddle.Tensor.top_p_sampling",
+        # "paddle.Tensor.top_p_sampling",
         # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
-        "paddle.incubate.nn.functional.fused_dropout_add",
-        "paddle.incubate.nn.functional.moe_dispatch",
-        "paddle.nn.functional.alpha_dropout",
+        # "paddle.incubate.nn.functional.fused_dropout_add",
+        # "paddle.incubate.nn.functional.moe_dispatch",
+        # "paddle.nn.functional.alpha_dropout",
         # "paddle.nn.functional.fused_feedforward",
-        "paddle.nn.functional.dropout",
-        "paddle.nn.functional.dropout2d",
-        "paddle.nn.functional.dropout3d",
-        "paddle.nn.functional.feature_alpha_dropout",
-        "paddle.incubate.nn.functional.fused_multi_head_attention",
-        "paddle.nn.functional.scaled_dot_product_attention",
+        # "paddle.nn.functional.dropout",
+        # "paddle.nn.functional.dropout2d",
+        # "paddle.nn.functional.dropout3d",
+        # "paddle.nn.functional.feature_alpha_dropout",
+        # "paddle.incubate.nn.functional.fused_multi_head_attention", # If parameter "dropout_rate=0.5, attn_dropout_rate=0.5 (default value)" is not equal to 0.0 or 1.0, the result involves random calculation.
+        # "paddle.nn.functional.scaled_dot_product_attention", # If parameter "dropout_p=0.0" is not equal to 0.0 or 1.0, the result involves random calculation.
     ]
 )
 
@@ -155,12 +155,12 @@ class APITestBase:
         # not support
         if "sparse" in self.api_config.api_name:
             return True
-        if self.api_config.api_name in not_support_api:
-            return True
-        if not paddle_only and self.api_config.api_name in rand_apis:
-            return True
-        if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
-            return True
+        # if self.api_config.api_name in not_support_api:
+        #     return True
+        # if not paddle_only and self.api_config.api_name in rand_apis:
+        #     return True
+        # if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
+        #     return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
