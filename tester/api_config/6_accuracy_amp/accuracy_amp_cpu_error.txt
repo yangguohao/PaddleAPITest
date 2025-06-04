@@ -1,6 +1,7 @@
 paddle.Tensor.__matmul__(Tensor([1, 20, 2, 16],"float32"), Tensor([16, 16],"float16"), )
 paddle.Tensor.__matmul__(Tensor([1, 20, 32],"float32"), Tensor([32, 4],"float16"), )
 paddle.Tensor.__matmul__(Tensor([1, 20, 4],"float32"), Tensor([4, 32],"float16"), )
+paddle.add_n(list[Tensor([16, 256],"float32"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),Tensor([16, 256],"float16"),], )
 paddle.add_n(list[Tensor([],"float32"),Tensor([],"float32"),Tensor([],"float16"),Tensor([],"float32"),], )
 paddle.add_n(list[Tensor([],"float32"),Tensor([],"float32"),Tensor([],"float32"),Tensor([],"float16"),Tensor([],"float32"),], )
 paddle.concat(list[Tensor([1, 256, 128, 128],"float32"),Tensor([1, 48, 128, 128],"float16"),], axis=1, )
