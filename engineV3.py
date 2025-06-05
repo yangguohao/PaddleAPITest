@@ -12,6 +12,9 @@ import shutil
 import zipfile
 from datetime import datetime
 
+os.environ["FLAGS_use_system_allocator"] = "1"
+os.environ["NVIDIA_TF32_OVERRIDE"] = "0"
+
 
 ##### v5 #####
 # 增加缓冲队列 ，增加结束后打包功能
