@@ -2616,7 +2616,6 @@
         }
     },
     "paddle.var": {
-        "Rule": "VarRule",
         "torch_api": "torch.var",
         "paddle_torch_args_map": {
             "x": "input",
