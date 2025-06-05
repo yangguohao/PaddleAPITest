@@ -26,6 +26,9 @@ if TYPE_CHECKING:
 
 from tester.api_config.log_writer import *
 
+os.environ["FLAGS_use_system_allocator"] = "1"
+os.environ["NVIDIA_TF32_OVERRIDE"] = "0"
+
 
 def cleanup(pool):
     print(f"{datetime.now()} Cleanup started", flush=True)
@@ -285,7 +288,7 @@ def run_test_case(api_config_str, options):
         print(f"[test error] {api_config_str}: {err}", flush=True)
         raise
     finally:
-        del test_class, api_config, case 
+        del test_class, api_config, case
         gc.collect()
         torch.cuda.empty_cache()
         paddle.device.cuda.empty_cache()
