@@ -211,8 +211,24 @@
     "paddle.clip": {
         "Rule": "ClipRule",
         "torch_api": "torch.clamp",
+        "set_defaults": {
+            "min": "None",
+            "max": "None"
+        },
         "paddle_torch_args_map": {
             "x": "input",
+            "min": "min",
+            "max": "max"
+        }
+    },
+    "paddle.Tensor.clip": {
+        "Rule": "ClipRule",
+        "torch_api": "torch.clamp",
+        "set_defaults": {
+            "min": "None",
+            "max": "None"
+        },
+        "paddle_torch_args_map": {
             "min": "min",
             "max": "max"
         }
@@ -2950,16 +2966,6 @@
         },
         "min_input_args": 1
     },
-    "paddle.Tensor.clip": {
-        "Rule": "ClipRule",
-        "torch_api": "torch.clamp",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "min": "min",
-            "max": "max"
-        },
-        "min_input_args": 1
-    },
     "paddle.Tensor.clone": {
         "torch_api": "torch.Tensor.clone",
         "paddle_torch_args_map": {
@@ -5002,14 +5008,21 @@
         }
     },
     "paddle.unique": {
+        "Rule": "UniqueRule",
         "torch_api": "torch.unique",
+        "set_defaults": {
+            "return_index": false,
+            "return_inverse": false,
+            "return_counts": false,
+            "axis": "None",
+            "dtype": "torch.int64"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "return_inverse": "return_inverse",
             "return_counts": "return_counts",
             "axis": "dim"
-        },
-        "min_input_args": 1
+        }
     },
     "paddle.as_complex": {
         "torch_api": "torch.view_as_complex",

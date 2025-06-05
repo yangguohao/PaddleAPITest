@@ -957,19 +957,26 @@ class ClipRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if 'min' not in _kwargs:
-    _kwargs['min'] = torch.tensor([float('-inf')]).to(dtype=_kwargs['input'].dtype)
-if 'max' not in _kwargs:
-    _kwargs['max'] = torch.tensor([float('inf')]).to(dtype=_kwargs['input'].dtype)
-if isinstance(_kwargs['min'],torch.Tensor):
-    _kwargs['min'] = _kwargs['min'].item()
-if isinstance(_kwargs['max'],torch.Tensor):
-    _kwargs['max'] = _kwargs['max'].item()
+if min is None:
+    min = -torch.inf
+elif isinstance(min, torch.Tensor):
+    min = min.item()
+if max is None:
+    max = torch.inf
+elif isinstance(max, torch.Tensor):
+    max = max.item()
 """
-        core = f"result = {self.torch_api}(**_kwargs)"
+        if paddle_api == "paddle.clip":
+            core = f"result = torch.clamp(**_kwargs)"
+        elif paddle_api == "paddle.Tensor.clip":
+            core = f"result = x.clamp(**_kwargs)"
+        else:
+            return ConvertResult.error(
+                paddle_api, f"Unsupported clip api: {paddle_api}"
+            )
         code = Code(
-            preprocess=map_code + pre.splitlines(),
-            core=core.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -5831,6 +5838,31 @@ class TolistRule(BaseRule):
 
 
 # u
+class UniqueRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
+        core = f"result = {self.torch_api}(**_kwargs)"
+        post = """
+result = list(result)
+if dtype is not None:
+    if return_inverse:
+        result[1] = result[1].to(dtype=dtype)
+        if result[1].ndim == 0:
+            result[1] = result[1].unsqueeze(0)
+    if return_counts:
+        if return_inverse:
+            result[2] = result[2].to(dtype=dtype)
+        else:
+            result[1] = result[1].to(dtype=dtype)
+"""
+        code = Code(
+            preprocess=defaults_code + map_code,
+            core=[core],
+            postprocess=post.splitlines(),
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class UnflattenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
