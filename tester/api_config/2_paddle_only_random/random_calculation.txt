@@ -25604,3 +25604,4 @@ paddle.put_along_axis(Tensor([6, 8000],"float32"), Tensor([6, 799],"int64"), Ten
 paddle.put_along_axis(Tensor([7, 8000],"float32"), Tensor([7, 799],"int64"), Tensor([7, 799],"float32"), 1, )
 paddle.put_along_axis(Tensor([8, 8000],"float32"), Tensor([8, 799],"int64"), Tensor([8, 799],"float32"), 1, )
 paddle.put_along_axis(Tensor([9, 8000],"float32"), Tensor([9, 799],"int64"), Tensor([9, 799],"float32"), 1, )
+paddle.topk(Tensor([128, 1000],"float16"), k=5, )
