@@ -4,14 +4,13 @@
 import os
 from pathlib import Path
 
-TEST_LOG_PATH = Path("tester/api_config/test_log_gpu_dtype_diff")
+TEST_LOG_PATH = Path("tester/api_config/test_log")
 
 LOG_FILES = [
-    # "api_config_timeout",
-    # "api_config_crash",
-    # "api_config_oom",
+    "api_config_timeout",
+    "api_config_crash",
+    "api_config_oom",
     "api_config_skip",
-    # "api_config_accuracy_error",
 ]
 
 api_configs = set()
