@@ -21,7 +21,7 @@ TEST_MODE_ARGS=(
 IN_OUT_ARGS=(
     --api_config_file="$FILE_INPUT"
     --log_dir="$LOG_DIR"
-#     --api_config_file_pattern="$FILE_PATTERN"
+    # --api_config_file_pattern="$FILE_PATTERN"
 )
 
 PARALLEL_ARGS=(
