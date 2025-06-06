@@ -5,7 +5,7 @@
 from pathlib import Path
 import re
 
-TEST_LOG_PATH = Path("tester/api_config/test_log_big_tensor")
+TEST_LOG_PATH = Path("tester/api_config/est_log_0_size")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -57,7 +57,7 @@ def get_sort_key(content):
 
 # get all pass api and config
 pass_file = TEST_LOG_PATH / "api_config_pass.txt"
-pass_apis = set()
+pass_names = set()
 pass_configs = set()
 if pass_file.exists():
     try:
@@ -65,19 +65,20 @@ if pass_file.exists():
             for line in f:
                 line = line.strip()
                 if line:
-                    pass_api = line.split("(", 1)[0]
-                    pass_apis.add(pass_api)
+                    pass_name = line.split("(", 1)[0]
+                    pass_names.add(pass_name)
                     pass_configs.add(line)
     except Exception as err:
         print(f"Error reading {pass_file}: {err}", flush=True)
         exit(0)
-print(f"Read {len(pass_apis)} pass api(s)", flush=True)
+print(f"Read {len(pass_names)} pass api(s)", flush=True)
 print(f"Read {len(pass_configs)} pass api config(s)", flush=True)
 
 # classify logs
+invalid_logs = {}
 pass_logs = {}
 error_logs = {}
-invalid_logs = {}
+torch_error_logs = {}
 for content in logs:
     key = get_sort_key(content)
     if not key:
@@ -86,25 +87,13 @@ for content in logs:
         "CUDA out of memory" in content
         or "Out of memory error" in content
         or "[torch error]" in content
-        or "Invalid TensorConfig" in content
-        or "cannot reshape" in content
-        or "Unable to allocate" in content
-        or "(ResourceExhausted)" in content
         or "(NotFound)" in content
-        or "Cannot take a larger sample" in content
-        or "(Cannot allocate memory)" in content
-        or "Too large tensor to get cached numpy" in content
     ):
         invalid_logs[key] = content
+    elif key in pass_configs:
+        pass_logs[key] = content
     else:
-        lines = content.split("\n")
-        if len(lines) == 1 or len(lines) == 2 and not lines[1].startswith("["):
-            invalid_logs[key] = content
-        else:
-            if key in pass_apis:
-                pass_logs[key] = content
-            else:
-                error_logs[key] = content
+        error_logs[key] = content
 
 # write pass_log.log
 pass_log = OUTPUT_PATH / "pass_log.log"
@@ -122,11 +111,11 @@ print(f"Read and write {len(pass_logs)} pass log(s)", flush=True)
 API_OUTPUT_PATH = OUTPUT_PATH / "pass_api.txt"
 try:
     with open(API_OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(pass_apis))
+        f.writelines(f"{line}\n" for line in sorted(pass_names))
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_apis)} pass api(s)", flush=True)
+print(f"Write {len(pass_names)} pass api(s)", flush=True)
 
 # write pass_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "pass_config.txt"
@@ -209,7 +198,6 @@ except Exception as err:
     print(f"Error writing {error_log}: {err}", flush=True)
     exit(0)
 print(f"Read and write {count} error log(s)", flush=True)
-
 
 # write invalid_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "invalid_config.txt"
