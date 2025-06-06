@@ -4463,7 +4463,7 @@ if data_format == "NDHWC":
 """
         if paddle_api.endswith("_pool1d"):
             if paddle_api == "paddle.nn.functional.lp_pool1d":
-                pre_1d = (
+                pre = (
                     """
 if data_format == "NLC":
     x = x.permute(0, 2, 1)
@@ -4476,17 +4476,23 @@ elif isinstance(padding, tuple):
     x = torch.nn.functional.pad(x, (padding[0], padding[0]))
 """
                 )
-            pre = pre_1d
-            post = post_1d
+                post = post_1d
+            else:
+                pre = pre_1d
+                post = ""
         elif paddle_api.endswith("_pool2d"):
             if paddle_api == "paddle.nn.functional.lp_pool2d":
-                pre_2d += """
+                pre = (
+                    pre_2d
+                    + """
 if isinstance(padding, int) and padding != 0:
     x = torch.nn.functional.pad(x, (padding, padding, padding, padding))
 elif isinstance(padding, tuple):
     x = torch.nn.functional.pad(x, (padding[1], padding[1], padding[0], padding[0]))
 """
-            pre = pre_2d
+                )
+            else:
+                pre = pre_2d
             post = post_2d
         elif paddle_api.endswith("_pool3d"):
             pre = pre_3d
@@ -4616,22 +4622,22 @@ if isinstance(shape, torch.Tensor):
     shape = shape.tolist()
 elif isinstance(shape, tuple):
     shape = list(shape)
-sum = x.numel()
+elements = x.numel()
 for i, s in enumerate(shape):
-    if s != -1:
-        sum = sum // s
-    elif s == 0:
+    if s == 0:
         shape[i] = x.shape[i]
-        sum = sum // x.shape[i]
+        elements = elements // x.shape[i]
+    elif s != -1:
+        elements = elements // s
 for i, s in enumerate(shape):
     if s == -1:
-        shape[i] = sum
+        shape[i] = elements
 """
         core = """
 if x.numel() == 0:
     result = torch.zeros(shape, dtype=x.dtype)
 else:
-    result = torch.reshape(x, sh)
+    result = torch.reshape(x, shape)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
@@ -6040,19 +6046,6 @@ else:
 
 
 # v
-class VarRule(BaseRule):
-    def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
-        core = f"""
-if x.dim() == 0:
-    result = torch.zeros([], dtype=x.dtype, device=x.device)
-else:
-    result = {self.torch_api}(**_kwargs)
-"""
-        code = Code(preprocess=defaults_code + map_code, core=core.splitlines())
-        return ConvertResult.success(paddle_api, code)
-
-
 class VanderRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
