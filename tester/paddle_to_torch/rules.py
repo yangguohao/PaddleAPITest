@@ -406,15 +406,29 @@ result = [output, loss]
 class AllRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
+        pre = """
+axis = locals().get('axis', None)
+"""
         core = """
-if x.numel() == 0:
-    result = True
+
+if (isinstance(axis, (list, tuple)) and len(axis) == 0):
+    result = torch.tensor([True])
 else:
-    result = torch.all(x)
+    result = torch.all(**_kwargs)
+"""
+        post = """
+if (isinstance(axis, (list, tuple)) and len(axis) == 0) and keepdim:
+    shape = []
+    for i in range(x.dim()):
+        shape.append(1)
+    result = result.reshape(shape)
+elif (isinstance(axis, (list, tuple)) and len(axis) == 0) and not keepdim:
+    result = True
 """
         code = Code(
-            preprocess=defaults_code + map_code,
+            preprocess=defaults_code + map_code + pre.splitlines(),
             core=core.splitlines(),
+            postprocess = post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -1287,17 +1301,19 @@ class CountNonzeroRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         core = f"result = {self.torch_api}(**_kwargs)"
         post = """
-axis = locals().get('axis', None)
-shape = list(x.shape)
-if axis is None:
-    for i in range(len(shape)):
-        shape[i] = 1
-else:
-    if not isinstance(axis,(list,tuple)):
-        axis = [axis]
-    for i in range(len(axis)):
-        shape[axis[i]] = 1
-result = result.reshape(shape)
+keepdim = locals().get('keepdim', False)
+if keepdim:
+    axis = locals().get('axis', None)
+    shape = list(x.shape)
+    if axis is None:
+        for i in range(len(shape)):
+            shape[i] = 1
+    else:
+        if not isinstance(axis,(list,tuple)):
+            axis = [axis]
+        for i in range(len(axis)):
+            shape[axis[i]] = 1
+    result = result.reshape(shape)
 """
         code = Code(
             preprocess=defaults_code + map_code,
@@ -5229,7 +5245,7 @@ class SquenceMaskRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
 maxlen = locals().get('maxlen', None)
-dtype = locals().get('dtype', x.dtype)
+dtype = locals().get('dtype', torch.int64)
 if maxlen is None:
     maxlen = int(x.max().item())
 elif isinstance(maxlen, torch.Tensor):
@@ -5239,7 +5255,6 @@ if maxlen <= 0:
 range_row = torch.arange(maxlen, device=x.device)
 mask = range_row < x.unsqueeze(-1)
 result = mask.to(dtype)
-result = result.to(dtype=torch.int64)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
