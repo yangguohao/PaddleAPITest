@@ -3,30 +3,31 @@
 
 from pathlib import Path
 
-FILE_PATH = Path("tester/api_config/api_config_tmp.txt")
-OUTPUT_PATH = Path("tester/api_config/api_set_tmp.txt")
+INPUT_PATH = Path("tester/api_config/api_config_tmp.txt")
+OUTPUT_PATH = INPUT_PATH
 
-api_names = set()
+api_apis = set()
+count = 0
 try:
-    with open(FILE_PATH, "r") as f:
+    with open(INPUT_PATH, "r") as f:
         for line in f:
             line = line.strip()
             if line:
-                api_name = line.split('(', 1)[0]
-                api_names.add(api_name)
+                api_api = line.split('(', 1)[0]
+                api_apis.add(api_api)
+                count += 1
 except Exception as err:
-    print(f"Error reading {FILE_PATH}: {err}", flush=True)
+    print(f"Error reading {INPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"{len(api_names)} api(s) read from {FILE_PATH}", flush=True)
+print(f"{count} api(s) read from {INPUT_PATH}", flush=True)
 
 try:
-    if OUTPUT_PATH.exists():
+    if OUTPUT_PATH != INPUT_PATH and OUTPUT_PATH.exists():
         with open(OUTPUT_PATH, "r") as f:
-            api_names.update(line.strip() for line in f if line.strip())
+            api_apis.update(line.strip() for line in f if line.strip())
     with open(OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(api_names))
+        f.writelines(f"{line}\n" for line in sorted(api_apis))
 except Exception as err:
     print(f"Error writing {OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-
-print(f"{len(api_names)} api(s) written to {OUTPUT_PATH}", flush=True)
+print(f"{len(api_apis)} api(s) written to {OUTPUT_PATH}", flush=True)
