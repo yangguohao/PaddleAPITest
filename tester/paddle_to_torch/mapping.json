@@ -3312,6 +3312,9 @@
             "axis": "dim",
             "keepdim": "keepdim"
         },
+        "set_defaults": {
+            "keepdim": false
+        },
         "min_input_args": 1
     },
     "paddle.amax": {
