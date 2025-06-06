@@ -21663,3 +21663,8 @@ paddle.incubate.nn.functional.fused_linear(Tensor([8192, 49, 128],"float16"), Te
 paddle.Tensor.clip(Tensor([10, 20],"float64"), max=0, )
 paddle.Tensor.clip(Tensor([10, 20],"float64"), min=0, )
 paddle.Tensor.clip(Tensor([3],"float64"), min=0, )
+paddle.diagflat(Tensor([10, 10],"float64"), offset=-1, )
+paddle.diagflat(Tensor([20],"float64"), offset=-1, )
+paddle.diagflat(Tensor([],"float32"), -1, )
+paddle.diagflat(x=Tensor([3, 2, 2, 1, 2, 4],"float64"), offset=-1, )
+paddle.diagflat(x=Tensor([4],"float64"), offset=-1, )
