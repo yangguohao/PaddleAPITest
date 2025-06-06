@@ -25605,3 +25605,8 @@ paddle.put_along_axis(Tensor([7, 8000],"float32"), Tensor([7, 799],"int64"), Ten
 paddle.put_along_axis(Tensor([8, 8000],"float32"), Tensor([8, 799],"int64"), Tensor([8, 799],"float32"), 1, )
 paddle.put_along_axis(Tensor([9, 8000],"float32"), Tensor([9, 799],"int64"), Tensor([9, 799],"float32"), 1, )
 paddle.topk(Tensor([128, 1000],"float16"), k=5, )
+paddle.nn.functional.rrelu(Tensor([1, 2, 3, 4],"float64"), lower=0.05, upper=0.25, training=True, )
+paddle.nn.functional.rrelu(Tensor([],"float32"), )
+paddle.nn.functional.rrelu(Tensor([2, 3, 4, 5],"float32"), 0.3, 0.300000009, training=True, )
+paddle.nn.functional.rrelu(Tensor([2, 3, 4, 5],"float64"), 0.3, 0.300000009, training=True, )
+paddle.nn.functional.rrelu(Tensor([2, 3, 4, 5],"float16"), 0.3, 0.300000009, training=True, )
