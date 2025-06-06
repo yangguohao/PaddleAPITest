@@ -1,4 +1,3 @@
-paddle.Tensor.__add__
 paddle.Tensor.__gt__
 paddle.Tensor.__lt__
 paddle.Tensor.__matmul__
@@ -146,7 +145,6 @@ paddle.nn.functional.temporal_shift
 paddle.nn.functional.triplet_margin_with_distance_loss
 paddle.nn.functional.zeropad2d
 paddle.nn.utils.vector_to_parameters
-paddle.nonzero
 paddle.polygamma
 paddle.prod
 paddle.put_along_axis
