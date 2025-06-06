@@ -5245,7 +5245,7 @@ class SquenceMaskRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
 maxlen = locals().get('maxlen', None)
-dtype = locals().get('dtype', x.dtype)
+dtype = locals().get('dtype', torch.int64)
 if maxlen is None:
     maxlen = int(x.max().item())
 elif isinstance(maxlen, torch.Tensor):
@@ -5255,7 +5255,6 @@ if maxlen <= 0:
 range_row = torch.arange(maxlen, device=x.device)
 mask = range_row < x.unsqueeze(-1)
 result = mask.to(dtype)
-result = result.to(dtype=torch.int64)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
