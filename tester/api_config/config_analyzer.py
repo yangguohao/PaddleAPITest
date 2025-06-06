@@ -477,6 +477,11 @@ class TensorConfig:
                         num = num - self.numpy_tensor[i]
                         re -= 1
                     self.numpy_tensor[self.shape[0]-1] = num
+
+            elif api_config.api_name == "paddle.dot":
+                if "int" in self.dtype:
+                        self.numpy_tensor = (numpy.random.randint(-127, 127, size=self.shape)).astype(self.dtype)
+
             elif api_config.api_name in ["paddle.nn.functional.dropout", "paddle.nn.functional.dropout2d", "paddle.nn.functional.dropout3d"]:
                 if self.check_arg(api_config, 1, "p"):
                     eps = 0.1
