@@ -54,6 +54,7 @@ def get_sort_key(content):
         return match.group(1).strip()
     return ""
 
+
 # get all pass api and config
 pass_file = TEST_LOG_PATH / "api_config_pass.txt"
 pass_apis = set()
@@ -81,10 +82,19 @@ for content in logs:
     key = get_sort_key(content)
     if not key:
         continue
-    if "CUDA out of memory" in content or "Out of memory error" in content or "[torch error]" in content \
-        or "Invalid TensorConfig" in content or "cannot reshape" in content or "Unable to allocate" in content \
-        or "(ResourceExhausted)" in content or "(NotFound)" in content or "Cannot take a larger sample" in content \
-        or "(Cannot allocate memory)" in content or "Too large tensor to get cached numpy" in content:
+    if (
+        "CUDA out of memory" in content
+        or "Out of memory error" in content
+        or "[torch error]" in content
+        or "Invalid TensorConfig" in content
+        or "cannot reshape" in content
+        or "Unable to allocate" in content
+        or "(ResourceExhausted)" in content
+        or "(NotFound)" in content
+        or "Cannot take a larger sample" in content
+        or "(Cannot allocate memory)" in content
+        or "Too large tensor to get cached numpy" in content
+    ):
         invalid_logs[key] = content
     else:
         lines = content.split("\n")
