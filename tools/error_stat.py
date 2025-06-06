@@ -5,7 +5,7 @@
 from pathlib import Path
 import re
 
-TEST_LOG_PATH = Path("tester/api_config/test_log")
+TEST_LOG_PATH = Path("tester/api_config/test_log_accuracy")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
