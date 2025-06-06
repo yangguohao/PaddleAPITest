@@ -1301,17 +1301,19 @@ class CountNonzeroRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         core = f"result = {self.torch_api}(**_kwargs)"
         post = """
-axis = locals().get('axis', None)
-shape = list(x.shape)
-if axis is None:
-    for i in range(len(shape)):
-        shape[i] = 1
-else:
-    if not isinstance(axis,(list,tuple)):
-        axis = [axis]
-    for i in range(len(axis)):
-        shape[axis[i]] = 1
-result = result.reshape(shape)
+keepdim = locals().get('keepdim', False)
+if keepdim:
+    axis = locals().get('axis', None)
+    shape = list(x.shape)
+    if axis is None:
+        for i in range(len(shape)):
+            shape[i] = 1
+    else:
+        if not isinstance(axis,(list,tuple)):
+            axis = [axis]
+        for i in range(len(axis)):
+            shape[axis[i]] = 1
+    result = result.reshape(shape)
 """
         code = Code(
             preprocess=defaults_code + map_code,
