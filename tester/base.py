@@ -145,6 +145,10 @@ not_check_dtype = frozenset(
         "paddle.histogram",
         "paddle.linalg.lstsq",
         "paddle.nn.functional.smooth_l1_loss",
+        "paddle.atan2",
+        "paddle.nn.functional.conv2d_transpose",
+        "paddle.nn.functional.linear",
+        "paddle.vision.ops.roi_align",
     ]
 )
 
