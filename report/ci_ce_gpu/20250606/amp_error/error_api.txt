@@ -1,0 +1,3 @@
+paddle.incubate.nn.functional.fused_layer_norm
+paddle.nn.functional.linear
+paddle.nn.functional.sigmoid_focal_loss
