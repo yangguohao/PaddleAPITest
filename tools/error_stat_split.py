@@ -1,6 +1,8 @@
-# test_log 一键整理小工具（engineV2有序版）：分类版 log_digester_lite + get_api_set + get_api_config_set
+# test_log 一键整理小工具：engineV2 通用分类版
 # @author: cangtianhuang
-# 整理效果：{log_prefix}_api.txt + {log_prefix}_config.txt + {log_prefix}_log.log ({log_prefix} in LOG_PREFIXES)
+# @date: 2025-06-08
+# 整理效果：{log_prefix}_api.txt + {log_prefix}_config.txt + {log_prefix}_log.log 
+# ({log_prefix} in LOG_PREFIXES.keys(), default 'unknown')
 
 from collections import defaultdict
 from pathlib import Path
@@ -22,7 +24,7 @@ LOG_PREFIXES = {
     "skip": "api_config_skip",
 }
 
-# log_digester_lite
+# get all test blocks
 logs = []
 in_test_block = False
 current_content = []
@@ -33,7 +35,7 @@ try:
         input_text = f.read()
 except Exception as err:
     print(f"Error reading {LOG_PATH}: {err}", flush=True)
-    exit(1)
+    exit(0)
 
 for line in input_text.split("\n"):
     if "gpu_resources.cc" in line or "Waiting for available memory" in line:
@@ -59,6 +61,7 @@ for line in input_text.split("\n"):
 if current_content:
     logs.append("\n".join(current_content))
 
+# get all api configs
 log_counts = defaultdict(set)
 for prefix, file_name in LOG_PREFIXES.items():
     file_path = TEST_LOG_PATH / f"{file_name}.txt"
@@ -68,9 +71,11 @@ for prefix, file_name in LOG_PREFIXES.items():
         with open(file_path, "r") as f:
             lines = set(line.strip() for line in f if line.strip())
             log_counts[prefix] = lines
-            print(f"Read {len(lines)} log(s) from {file_path}", flush=True)
+            print(f"Read {len(lines)} api config(s) from {file_path}", flush=True)
     except Exception as err:
         print(f"Error reading {file_path}: {err}", flush=True)
+        exit(0)
+
 
 def get_sort_key(content):
     lines = content.split("\n")
@@ -78,6 +83,7 @@ def get_sort_key(content):
     if match:
         return match.group(1).strip()
     return ""
+
 
 key_logs = defaultdict(dict)
 for content in logs:
@@ -96,6 +102,7 @@ if not key_logs:
     exit(0)
 
 for prefix, contents in key_logs.items():
+    # write logs
     output_log = OUTPUT_PATH / f"{prefix}_log.log"
     try:
         with open(output_log, "w") as f:
@@ -104,35 +111,37 @@ for prefix, contents in key_logs.items():
                 f.write(content + "\n\n")
     except Exception as err:
         print(f"Error writing {output_log}: {err}", flush=True)
-    print(f"Read and write {len(contents)} log(s) for {prefix}", flush=True)
+        exit(0)
+    print(f"Write {len(contents)} log(s) for {prefix}", flush=True)
 
-    # get_api_set + get_api_config_set
-
-    api_names = set()
+    # get apis
+    api_apis = set()
     api_configs = set()
     for line in log_counts[prefix]:
         line = line.strip()
         if line:
-            api_name = line.split("(", 1)[0]
-            api_names.add(api_name)
+            api_api = line.split("(", 1)[0]
+            api_apis.add(api_api)
             api_configs.add(line)
-    print(f"Read {len(api_names)} api(s) for {prefix}", flush=True)
+    print(f"Read {len(api_apis)} api(s) for {prefix}", flush=True)
     print(f"Read {len(api_configs)} api config(s) for {prefix}", flush=True)
 
-    # get_api_set
+    # write apis
     API_OUTPUT_PATH = OUTPUT_PATH / f"{prefix}_api.txt"
     try:
         with open(API_OUTPUT_PATH, "w") as f:
-            f.writelines(f"{line}\n" for line in sorted(api_names))
+            f.writelines(f"{line}\n" for line in sorted(api_apis))
     except Exception as err:
         print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
-    print(f"Write {len(api_names)} api(s) for {prefix}", flush=True)
+        exit(0)
+    print(f"Write {len(api_apis)} api(s) for {prefix}", flush=True)
 
-    # get_api_config_set
+    # write api configs
     CONFIG_OUTPUT_PATH = OUTPUT_PATH / f"{prefix}_config.txt"
     try:
         with open(CONFIG_OUTPUT_PATH, "w") as f:
             f.writelines(f"{line}\n" for line in sorted(api_configs))
     except Exception as err:
         print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
+        exit(0)
     print(f"Write {len(api_configs)} api config(s) for {prefix}", flush=True)

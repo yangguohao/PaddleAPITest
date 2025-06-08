@@ -1,11 +1,12 @@
-# test_log 一键整理小工具（engineV2有序版）：log_digester_lite + get_api_set + get_api_config_set
+# test_log 一键整理小工具：engineV2 0size tensor 修改版
 # @author: cangtianhuang
+# @date: 2025-06-08
 # 整理效果：pass + error + invalid
 
 from pathlib import Path
 import re
 
-TEST_LOG_PATH = Path("tester/api_config/est_log_0_size")
+TEST_LOG_PATH = Path("tester/api_config/test_log_0_size")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -20,7 +21,7 @@ try:
         input_text = f.read()
 except Exception as err:
     print(f"Error reading {LOG_PATH}: {err}", flush=True)
-    exit(1)
+    exit(0)
 
 for line in input_text.split("\n"):
     if "gpu_resources.cc" in line or "Waiting for available memory" in line:
@@ -57,7 +58,7 @@ def get_sort_key(content):
 
 # get all pass api and config
 pass_file = TEST_LOG_PATH / "api_config_pass.txt"
-pass_names = set()
+pass_apis = set()
 pass_configs = set()
 if pass_file.exists():
     try:
@@ -66,19 +67,18 @@ if pass_file.exists():
                 line = line.strip()
                 if line:
                     pass_name = line.split("(", 1)[0]
-                    pass_names.add(pass_name)
+                    pass_apis.add(pass_name)
                     pass_configs.add(line)
     except Exception as err:
         print(f"Error reading {pass_file}: {err}", flush=True)
         exit(0)
-print(f"Read {len(pass_names)} pass api(s)", flush=True)
+print(f"Read {len(pass_apis)} pass api(s)", flush=True)
 print(f"Read {len(pass_configs)} pass api config(s)", flush=True)
 
 # classify logs
-invalid_logs = {}
 pass_logs = {}
 error_logs = {}
-torch_error_logs = {}
+invalid_logs = {}
 for content in logs:
     key = get_sort_key(content)
     if not key:
@@ -94,6 +94,10 @@ for content in logs:
         pass_logs[key] = content
     else:
         error_logs[key] = content
+print(f"Read {len(pass_logs)} pass log(s)", flush=True)
+print(f"Read {len(error_logs)} error log(s)", flush=True)
+if invalid_logs:
+    print(f"Read {len(invalid_logs)} invalid log(s)", flush=True)
 
 # write pass_log.log
 pass_log = OUTPUT_PATH / "pass_log.log"
@@ -105,17 +109,17 @@ try:
 except Exception as err:
     print(f"Error writing {pass_log}: {err}", flush=True)
     exit(0)
-print(f"Read and write {len(pass_logs)} pass log(s)", flush=True)
+print(f"Write {len(pass_logs)} pass log(s)", flush=True)
 
 # write pass_api.txt
 API_OUTPUT_PATH = OUTPUT_PATH / "pass_api.txt"
 try:
     with open(API_OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(pass_names))
+        f.writelines(f"{line}\n" for line in sorted(pass_apis))
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_names)} pass api(s)", flush=True)
+print(f"Write {len(pass_apis)} pass api(s)", flush=True)
 
 # write pass_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "pass_config.txt"
@@ -139,7 +143,7 @@ ERROR_FILES = [
 ]
 
 # get all error api and config
-error_names = set()
+error_apis = set()
 error_configs = set()
 for file_name in ERROR_FILES:
     FILE_PATH = TEST_LOG_PATH / file_name
@@ -155,23 +159,23 @@ for file_name in ERROR_FILES:
                             invalid_logs[line] = ""
                         continue
                     error_name = line.split("(", 1)[0]
-                    error_names.add(error_name)
+                    error_apis.add(error_name)
                     error_configs.add(line)
     except Exception as err:
         print(f"Error reading {file_name}: {err}", flush=True)
         exit(0)
-print(f"Read {len(error_names)} error api(s)", flush=True)
+print(f"Read {len(error_apis)} error api(s)", flush=True)
 print(f"Read {len(error_configs)} error api config(s)", flush=True)
 
 # write error_api.txt
 API_OUTPUT_PATH = OUTPUT_PATH / "error_api.txt"
 try:
     with open(API_OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(error_names))
+        f.writelines(f"{line}\n" for line in sorted(error_apis))
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(error_names)} error api(s)", flush=True)
+print(f"Write {len(error_apis)} error api(s)", flush=True)
 
 # write error_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "error_config.txt"
@@ -197,14 +201,15 @@ try:
 except Exception as err:
     print(f"Error writing {error_log}: {err}", flush=True)
     exit(0)
-print(f"Read and write {count} error log(s)", flush=True)
+print(f"Write {count} error log(s)", flush=True)
 
 # write invalid_config.txt
-CONFIG_OUTPUT_PATH = OUTPUT_PATH / "invalid_config.txt"
-try:
-    with open(CONFIG_OUTPUT_PATH, "w") as f:
-        f.writelines(f"{line}\n" for line in sorted(invalid_logs.keys()))
-except Exception as err:
-    print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
-    exit(0)
-print(f"Write {len(invalid_logs)} invalid api config(s)", flush=True)
+if invalid_logs:
+    CONFIG_OUTPUT_PATH = OUTPUT_PATH / "invalid_config.txt"
+    try:
+        with open(CONFIG_OUTPUT_PATH, "w") as f:
+            f.writelines(f"{line}\n" for line in sorted(invalid_logs.keys()))
+    except Exception as err:
+        print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
+        exit(0)
+    print(f"Write {len(invalid_logs)} invalid api config(s)", flush=True)
