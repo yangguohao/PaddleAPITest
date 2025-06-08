@@ -46,6 +46,7 @@ for line in input_text.split("\n"):
 
 if current_content:
     logs.append("\n".join(current_content))
+print(f"Found {len(logs)} logs", flush=True)
 
 
 def get_sort_key(content):
@@ -72,8 +73,8 @@ if pass_file.exists():
     except Exception as err:
         print(f"Error reading {pass_file}: {err}", flush=True)
         exit(0)
-print(f"Read {len(pass_apis)} pass api(s)", flush=True)
-print(f"Read {len(pass_configs)} pass api config(s)", flush=True)
+print(f"Read {len(pass_apis)} pass apis", flush=True)
+print(f"Read {len(pass_configs)} pass api configs", flush=True)
 
 # classify logs
 pass_logs = {}
@@ -95,6 +96,7 @@ for content in logs:
         or "Cannot take a larger sample" in content
         or "(Cannot allocate memory)" in content
         or "Too large tensor to get cached numpy" in content
+        or "config_analyzer.py" in content
     ):
         invalid_logs[key] = content
     else:
@@ -102,14 +104,14 @@ for content in logs:
         if len(lines) == 1 or len(lines) == 2 and not lines[1].startswith("["):
             invalid_logs[key] = content
         else:
-            if key in pass_apis:
+            if key in pass_configs:
                 pass_logs[key] = content
             else:
                 error_logs[key] = content
-print(f"Read {len(pass_logs)} pass log(s)", flush=True)
-print(f"Read {len(error_logs)} error log(s)", flush=True)
+print(f"Read {len(pass_logs)} pass logs", flush=True)
+print(f"Read {len(error_logs)} error logs", flush=True)
 if invalid_logs:
-    print(f"Read {len(invalid_logs)} invalid log(s)", flush=True)
+    print(f"Read {len(invalid_logs)} invalid logs", flush=True)
 
 # write pass_log.log
 pass_log = OUTPUT_PATH / "pass_log.log"
@@ -121,7 +123,7 @@ try:
 except Exception as err:
     print(f"Error writing {pass_log}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_logs)} pass log(s)", flush=True)
+print(f"Write {len(pass_logs)} pass logs", flush=True)
 
 # write pass_api.txt
 API_OUTPUT_PATH = OUTPUT_PATH / "pass_api.txt"
@@ -131,7 +133,7 @@ try:
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_apis)} pass api(s)", flush=True)
+print(f"Write {len(pass_apis)} pass apis", flush=True)
 
 # write pass_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "pass_config.txt"
@@ -141,7 +143,7 @@ try:
 except Exception as err:
     print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_configs)} pass api config(s)", flush=True)
+print(f"Write {len(pass_configs)} pass api configs", flush=True)
 
 # error logs
 ERROR_FILES = [
@@ -151,7 +153,7 @@ ERROR_FILES = [
     "api_config_torch_error.txt",
     "api_config_paddle_to_torch_failed.txt",
     "api_config_timeout.txt",
-    "api_config_skip.txt",
+    # "api_config_skip.txt",
 ]
 
 # get all error api and config
@@ -176,8 +178,8 @@ for file_name in ERROR_FILES:
     except Exception as err:
         print(f"Error reading {file_name}: {err}", flush=True)
         exit(0)
-print(f"Read {len(error_apis)} error api(s)", flush=True)
-print(f"Read {len(error_configs)} error api config(s)", flush=True)
+print(f"Read {len(error_apis)} error apis", flush=True)
+print(f"Read {len(error_configs)} error api configs", flush=True)
 
 # write error_api.txt
 API_OUTPUT_PATH = OUTPUT_PATH / "error_api.txt"
@@ -187,7 +189,7 @@ try:
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(error_apis)} error api(s)", flush=True)
+print(f"Write {len(error_apis)} error apis", flush=True)
 
 # write error_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "error_config.txt"
@@ -197,7 +199,7 @@ try:
 except Exception as err:
     print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(error_configs)} error api config(s)", flush=True)
+print(f"Write {len(error_configs)} error api configs", flush=True)
 
 # write error_log.log
 error_log = OUTPUT_PATH / "error_log.log"
@@ -213,7 +215,7 @@ try:
 except Exception as err:
     print(f"Error writing {error_log}: {err}", flush=True)
     exit(0)
-print(f"Write {count} error log(s)", flush=True)
+print(f"Write {count} error logs", flush=True)
 
 # write invalid_config.txt
 if invalid_logs:
@@ -224,4 +226,4 @@ if invalid_logs:
     except Exception as err:
         print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
         exit(0)
-    print(f"Write {len(invalid_logs)} invalid api config(s)", flush=True)
+    print(f"Write {len(invalid_logs)} invalid api configs", flush=True)

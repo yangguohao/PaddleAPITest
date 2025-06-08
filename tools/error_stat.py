@@ -46,6 +46,7 @@ for line in input_text.split("\n"):
 
 if current_content:
     logs.append("\n".join(current_content))
+print(f"Found {len(logs)} logs", flush=True)
 
 
 def get_sort_key(content):
@@ -72,8 +73,8 @@ if pass_file.exists():
     except Exception as err:
         print(f"Error reading {pass_file}: {err}", flush=True)
         exit(0)
-print(f"Read {len(pass_apis)} pass api(s)", flush=True)
-print(f"Read {len(pass_configs)} pass api config(s)", flush=True)
+print(f"Read {len(pass_apis)} pass apis", flush=True)
+print(f"Read {len(pass_configs)} pass api configs", flush=True)
 
 # classify logs
 pass_logs = {}
@@ -89,10 +90,10 @@ for content in logs:
         pass_logs[key] = content
     else:
         error_logs[key] = content
-print(f"Read {len(pass_logs)} pass log(s)", flush=True)
-print(f"Read {len(error_logs)} error log(s)", flush=True)
+print(f"Read {len(pass_logs)} pass logs", flush=True)
+print(f"Read {len(error_logs)} error logs", flush=True)
 if notfound_logs:
-    print(f"Read {len(notfound_logs)} notfound log(s)", flush=True)
+    print(f"Read {len(notfound_logs)} notfound logs", flush=True)
 
 # write pass_log.log
 pass_log = OUTPUT_PATH / "pass_log.log"
@@ -104,7 +105,7 @@ try:
 except Exception as err:
     print(f"Error writing {pass_log}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_logs)} pass log(s)", flush=True)
+print(f"Write {len(pass_logs)} pass logs", flush=True)
 
 # write pass_api.txt
 API_OUTPUT_PATH = OUTPUT_PATH / "pass_api.txt"
@@ -114,7 +115,7 @@ try:
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_apis)} pass api(s)", flush=True)
+print(f"Write {len(pass_apis)} pass apis", flush=True)
 
 # write pass_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "pass_config.txt"
@@ -124,7 +125,7 @@ try:
 except Exception as err:
     print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(pass_configs)} pass api config(s)", flush=True)
+print(f"Write {len(pass_configs)} pass api configs", flush=True)
 
 # error logs
 ERROR_FILES = [
@@ -155,8 +156,8 @@ for file_name in ERROR_FILES:
     except Exception as err:
         print(f"Error reading {file_name}: {err}", flush=True)
         exit(0)
-print(f"Read {len(error_apis)} error api(s)", flush=True)
-print(f"Read {len(error_configs)} error api config(s)", flush=True)
+print(f"Read {len(error_apis)} error apis", flush=True)
+print(f"Read {len(error_configs)} error api configs", flush=True)
 
 # write error_api.txt
 API_OUTPUT_PATH = OUTPUT_PATH / "error_api.txt"
@@ -166,7 +167,7 @@ try:
 except Exception as err:
     print(f"Error writing {API_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(error_apis)} error api(s)", flush=True)
+print(f"Write {len(error_apis)} error apis", flush=True)
 
 # write error_config.txt
 CONFIG_OUTPUT_PATH = OUTPUT_PATH / "error_config.txt"
@@ -176,7 +177,7 @@ try:
 except Exception as err:
     print(f"Error writing {CONFIG_OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(error_configs)} error api config(s)", flush=True)
+print(f"Write {len(error_configs)} error api configs", flush=True)
 
 # write error_log.log
 error_log = OUTPUT_PATH / "error_log.log"
@@ -188,7 +189,7 @@ try:
 except Exception as err:
     print(f"Error writing {error_log}: {err}", flush=True)
     exit(0)
-print(f"Write {len(error_logs)} error log(s)", flush=True)
+print(f"Write {len(error_logs)} error logs", flush=True)
 
 # write notfound_config.txt
 if notfound_logs:
@@ -199,4 +200,4 @@ if notfound_logs:
     except Exception as err:
         print(f"Error writing {NOTFOUND_OUTPUT_PATH}: {err}", flush=True)
         exit(0)
-    print(f"Write {len(notfound_logs)} notfound api config(s)", flush=True)
+    print(f"Write {len(notfound_logs)} notfound api configs", flush=True)

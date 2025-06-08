@@ -26,7 +26,7 @@ try:
 except Exception as err:
     print(f"Error reading {checkpoint_file}: {err}", flush=True)
     exit(0)
-print(f"Read {len(checkpoint_configs)} api config(s) from checkpoint", flush=True)
+print(f"Read {len(checkpoint_configs)} api configs from checkpoint", flush=True)
 
 retest_configs = set()
 for log_type, prefix in LOG_PREFIXES.items():
@@ -37,7 +37,7 @@ for log_type, prefix in LOG_PREFIXES.items():
         with log_file.open("r") as f:
             lines = set(line.strip() for line in f if line.strip())
             retest_configs.update(lines)
-            print(f"Read {len(lines)} api config(s) from {log_file}", flush=True)
+            print(f"Read {len(lines)} api configs from {log_file}", flush=True)
     except Exception as err:
         print(f"Error reading {log_file}: {err}", flush=True)
         exit(0)
@@ -56,7 +56,7 @@ if retest_configs:
         print(f"Error writing {checkpoint_file}: {err}", flush=True)
         exit(0)
 else:
-    print("No retest config(s) found", flush=True)
+    print("No retest configs found", flush=True)
 
 for prefix in LOG_PREFIXES.values():
     log_file = TEST_LOG_PATH / f"{prefix}.txt"

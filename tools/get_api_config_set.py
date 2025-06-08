@@ -11,7 +11,7 @@ api_configs = set()
 try:
     with open(INPUT_PATH, "r") as f:
         lines = [line.strip() for line in f if line.strip()]
-        print(f"Read {len(lines)} api config(s) from {INPUT_PATH}", flush=True)
+        print(f"Read {len(lines)} api configs from {INPUT_PATH}", flush=True)
         api_configs = set(lines)
 except Exception as err:
     print(f"Error reading {INPUT_PATH}: {err}", flush=True)
@@ -26,4 +26,4 @@ try:
 except Exception as err:
     print(f"Error writing {OUTPUT_PATH}: {err}", flush=True)
     exit(0)
-print(f"Write {len(api_configs)} api config(s) to {OUTPUT_PATH}", flush=True)
+print(f"Write {len(api_configs)} api configs to {OUTPUT_PATH}", flush=True)

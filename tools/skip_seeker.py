@@ -33,7 +33,7 @@ try:
 except Exception as err:
     print(f"Error reading {checkpoint_file}: {err}", flush=True)
     exit(0)
-print(f"Read {len(checkpoint_configs)} api config(s) from checkpoint", flush=True)
+print(f"Read {len(checkpoint_configs)} api configs from checkpoint", flush=True)
 
 api_configs = checkpoint_configs.copy()
 for log_type, prefix in LOG_PREFIXES.items():
@@ -67,7 +67,7 @@ if api_configs:
     except Exception as err:
         print(f"Error writing to {skip_file}: {err}", flush=True)
         exit(0)
-    print(f"Write {len(api_configs)} skip api config(s) to {skip_file}", flush=True)
+    print(f"Write {len(api_configs)} skip api configs to {skip_file}", flush=True)
 
     checkpoint_count = len(checkpoint_configs)
     checkpoint_configs -= api_configs
@@ -82,6 +82,6 @@ if api_configs:
         print(f"Error writing {checkpoint_file}: {err}", flush=True)
         exit(0)
     print(
-        f"Write {len(checkpoint_configs)} checkpoint api config(s) to {checkpoint_file}",
+        f"Write {len(checkpoint_configs)} checkpoint api configs to {checkpoint_file}",
         flush=True,
     )
