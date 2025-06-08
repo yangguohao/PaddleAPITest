@@ -94,6 +94,9 @@ for content in logs:
         or "Cannot take a larger sample" in content
         or "(Cannot allocate memory)" in content
         or "Too large tensor to get cached numpy" in content
+        or "config_analyzer.py" in content
+        or "The data type of input must be one of" in content
+        or "list index out of range" in content
     ):
         invalid_logs[key] = content
     else:
