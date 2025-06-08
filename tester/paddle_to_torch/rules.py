@@ -884,7 +884,6 @@ if axis == None:
     x = x.flatten()
 if not isinstance(axis, int) and axis != None:
     axis = int(axis)
-x_dtype = x.dtype
 """
         post = ""
         if paddle_api == "paddle.cumsum":
@@ -896,9 +895,6 @@ x_dtype = x.dtype
             post = "result = x"
         else:
             return ConvertResult.error(paddle_api, f"Unsupported api: {paddle_api}")
-        post += """
-result = result.to(x_dtype)
-"""
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=[core],
