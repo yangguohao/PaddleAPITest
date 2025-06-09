@@ -1,0 +1,5 @@
+paddle.combinations
+paddle.diagonal_scatter
+paddle.lerp
+paddle.nn.utils.parameters_to_vector
+paddle.tensordot
