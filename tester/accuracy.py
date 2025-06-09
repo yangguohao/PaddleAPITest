@@ -226,6 +226,9 @@ class APITestAccuracy(APITestBase):
                 paddle_output = list(paddle_output)
                 paddle_output.pop(1)
             paddle_output = tuple(paddle_output)
+        if self.api_config.api_name in {"paddle.mode", "paddle.Tensor.mode"}: 
+            paddle_output = paddle_output[0]
+            torch_output = torch_output[0]
 
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
