@@ -5854,8 +5854,8 @@ class UniqueRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         core = f"result = {self.torch_api}(**_kwargs)"
         post = """
-result = list(result)
 if dtype is not None:
+    result = list(result)
     if return_inverse:
         result[1] = result[1].to(dtype=dtype)
         if result[1].ndim == 0:
@@ -5865,7 +5865,7 @@ if dtype is not None:
             result[2] = result[2].to(dtype=dtype)
         else:
             result[1] = result[1].to(dtype=dtype)
-    result = tuple(result)
+result = tuple(result)
 """
         code = Code(
             preprocess=defaults_code + map_code,
