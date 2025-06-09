@@ -46,7 +46,6 @@ paddle.Tensor.repeat_interleave
 paddle.Tensor.reshape
 paddle.Tensor.rot90
 paddle.Tensor.set_
-paddle.Tensor.split
 paddle.Tensor.std
 paddle.Tensor.sum
 paddle.Tensor.take_along_axis
