@@ -31,6 +31,19 @@
    ```
 3. 确保 `engineV2.py` 、 `log_writer.py` 和 `run.sh` 路径正确
 
+> [!NOTE]
+> 目前 engineV2 仅支持 python>=3.10，如报错 *`NameError: name 'torch' is not defined`*，请在 run_test_case() 函数首行手动添加导入语句：
+> ```python
+> import torch
+> import paddle
+> from tester import (
+>     APIConfig,
+>     APITestAccuracy,
+>     APITestCINNVSDygraph,
+>     APITestPaddleOnly,
+> )
+> ```
+
 ## 使用指南
 
 ### 命令行参数
