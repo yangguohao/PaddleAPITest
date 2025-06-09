@@ -26,16 +26,16 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
 ## 2. 项目结构
 
 ```bash
-├── tester
-│   ├── api_config
-│   ├── paddle_to_torch
-│   ├── base.py
-│   ├── paddle_only.py
+├── report/
+├── test_pipline/
+├── tester/
+│   ├── api_config/
+│   ├── paddle_to_torch/
 │   ├── accuracy.py
-│   └── paddle_cinn_vs_dygraph.py
-├── report
-├── test_pipline
-├── tools
+│   ├── base.py
+│   ├── paddle_cinn_vs_dygraph.py
+│   └── paddle_only.py
+├── tools/
 ├── engine.py
 ├── engineV2.py
 ├── engineV3.py
@@ -44,7 +44,7 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
 
 项目结构主要分为 `report` 和 `tester` 文件夹，`report` 用于存储内核报错的 api 信息，`tester` 用于测试配置的正确性和存放配置测试结果。
 
-**engineV2.py** 及配套的 `run-example.sh` 是目前运行本项目的主要工具；**engineV3.py** 目前由百度内部开发测试使用；**engine.py** 是最早的引擎，相较 `engineV2.py` 吞吐量低，在少量配置时可使用。
+**`engineV2.py`** 及配套的 `run-example.sh` 是目前运行本项目的主要工具；**`engineV3.py`** 目前由百度内部开发测试使用；**`engine.py`** 是最早的引擎，相较 `engineV2.py` 吞吐量低，在少量配置时可使用。
 
 1. report 介绍
    - 0size_tensor_cpu 存放进行在 cpu 上进行精度测试/引擎解析能力测试（accuracy / paddle_only）结果。
@@ -82,34 +82,36 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
        * to_0_size*.py 是篡改为 0-size 配置的工具
        * to_big_size\*.py 是篡改为大形状张量的配置的工具。 
 
-   * tester/paddle2torch/ 是转换能力的核心代码。介绍详见 [4.paddle2torch转换](#4-paddle2torch转换)
+   * tester/paddle2torch/ 是转换能力的核心代码。介绍详见 [4. paddle2torch转换](#4-paddle2torch转换)
 
 3. tools 文件夹中存放了一些实用的工具，例如 move_config.py 可以用来批量的移动配置，error_stat.py 可以一键解析错误日志等。
 
 ## 3. 使用介绍
 
-### 环境配置
+### 3.1 环境配置
 
-建议在虚拟环境或 docker 中进行开发，并正确安装 python 与 nvidia 驱动。
+1. 建议在虚拟环境或 docker 中进行开发，并正确安装 python 与 nvidia 驱动。
 
-PaddlePaddle 框架运行环境分为 **CPU** 环境与 **GPU** 环境，CPU 和 GPU 上运行的结果 **可能存在差异**，即存在 GPU 上能够正确运行，但 CPU 上报错的情况。请正确安装 *paddlepaddle-gpu* 环境，选择 develop 版本：
-- [使用 pip 快速安装 paddle](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/linux-pip.html)
-- 或者运行命令（cuda>=11.8）：
-```bash
-pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
-```
-- 若需要本地编译 Paddle，可参考链接：[Linux 下使用 ninja 从源码编译](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/install/compile/linux-compile-by-ninja.html)
+2. PaddlePaddle 框架运行环境分为 **CPU** 环境与 **GPU** 环境，CPU 和 GPU 上运行的结果 **可能存在差异**，即存在 GPU 上能够正确运行，但 CPU 上报错的情况。请正确安装 *paddlepaddle-gpu* 环境，选择 develop 版本：
+   - [使用 pip 快速安装 paddle](https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/develop/install/pip/linux-pip.html)，或者运行命令 (cuda>=11.8):
+   ```bash
+   pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
+   ```
+   - 若需要本地编译 Paddle，可参考链接：[Linux 下使用 ninja 从源码编译](https://www.paddlepaddle.org.cn/documentation/docs/zh/develop/install/compile/linux-compile-by-ninja.html)
 
-安装 PaddleAPITest 项目其他依赖项：
-- [使用 pip 快速安装 torch](https://pytorch.org/get-started/locally/)
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install func_timeout pebble pynvml
-```
+3. 安装 PaddleAPITest 项目其他依赖项：
+   - [使用 pip 快速安装 torch](https://pytorch.org/get-started/locally/)，或者运行命令 (cuda>=11.8):
+   ```bash
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+   ```
+   - 安装第三方库：
+   ```bash
+   pip install func_timeout pebble pynvml
+   ```
 
-paddle 与 torch 的部分依赖项可能发生冲突，请先安装 paddlepaddle-gpu 再安装 torch。重新安装请添加 `--force-reinstall` 参数。
+4. PaddlePaddle 与 PyTorch 的部分依赖项可能发生冲突，请先安装 *paddlepaddle-gpu* 再安装 *torch*，重新安装请添加 `--force-reinstall` 参数；engineV2 建议使用 python>=3.10
 
-### 使用说明
+### 3.2 使用说明
 
 #### A. engineV1
 
@@ -139,7 +141,7 @@ python engine.py --paddle_cinn=True --api_config='paddle.abs(Tensor([1, 100],"fl
 ```
 
 > [!NOTE]
->**注意**: 配置 txt 中统一使用双引号 `"`，因此建议 `--api_config=''` 使用单引号，或在配置中手动添加转义斜杠 `\`。
+> **注意**: 配置 txt 中统一使用双引号 `"`，因此建议 `--api_config=''` 使用单引号，或在配置中手动添加转义斜杠 `\`
 
 当需要测试的配置数目较多时，手动单次输入将**非常低效**，这种情况下可以使用如下所示的**批量测试**指令，将配置保存在一个 txt 中，并将指令中的路径设置为 txt 的路径即可：
 ```bash
@@ -205,4 +207,4 @@ Paddle2Torch 是一个专注于将 PaddlePaddle API 转换为 PyTorch 对应实�
 本模块的典型应用场景包括：模型迁移、跨框架验证、混合编程等，可为深度学习开发者提供跨框架的互操作性解决方案。现在转换工具已基本完成对PaddleAPI的转换。说明文档详见：[paddle_to_torch/README.md](tester/paddle_to_torch/README.md)
 
 > [!TIP]
->本 README 已经过 ***文心一言 4.5 Turbo*** 润色
+> 本 README 已经过 ***文心一言 4.5 Turbo*** 润色
