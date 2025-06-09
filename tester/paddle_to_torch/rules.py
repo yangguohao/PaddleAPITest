@@ -4643,10 +4643,10 @@ elif isinstance(shape, tuple):
     shape = list(shape)
 elements = x.numel()
 for i, s in enumerate(shape):
-    if s == 0:
+    if s == 0 and elements != 0:
         shape[i] = x.shape[i]
         elements = elements // x.shape[i]
-    elif s != -1:
+    elif s != -1 and s != 0:
         elements = elements // s
 for i, s in enumerate(shape):
     if s == -1:
