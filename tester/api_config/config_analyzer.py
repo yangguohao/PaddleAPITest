@@ -1702,51 +1702,48 @@ class TensorConfig:
                         self.numpy_tensor = numpy.array(numpy.random.randint(1, max_k_value + 1), dtype=self.dtype)
                     else:
                         self.numpy_tensor = numpy.random.randint(1, max_k_value + 1, size=self.shape).astype(self.dtype)
-            elif api_config.api_name in {"paddle.Tensor.unflatten","paddle.unflatten"}:
-                if key == "x" or index == 0:
-                    if not hasattr(api_config,"first_shape"):
-                        api_config.first_shape = self.shape
-                elif key == "axis" or index == 1:
-                    self.numpy_tensor = numpy.random.randint(0, len(api_config.first_shape), size=self.shape).astype(self.dtype)
-                    if not hasattr(api_config, "axis"):
-                        api_config.axis = self.numpy_tensor
-                elif key == "shape" or index >= 2:
-                    if not hasattr(api_config, "axis"):
-                        if len(api_config.args) > 1:
-                            api_config.axis = api_config.args[1]
-                        else:
-                            api_config.axis = api_config.kwargs["axis"]
-                    if not hasattr(api_config, "maxvalue"):
-                        maxvalue = api_config.first_shape[api_config.axis]
-                        api_config.maxvalue = maxvalue
-                    if len(api_config.args) > 2:
-                        arg = api_config.args[2]
-                    else:
-                        arg = api_config.kwargs["shape"]
-                    if isinstance(arg,TensorConfig):
-                        self.numpy_tensor = numpy.zeros(self.shape).astype(self.dtype)
-                        for i in range(self.numel()-1):
-                            self.numpy_tensor[i] = numpy.random.randint(1, maxvalue+1)
-                            while maxvalue % self.numpy_tensor.any():
-                                self.numpy_tensor[i] = numpy.random.randint(1, maxvalue+1)
-                            maxvalue = maxvalue // self.numpy_tensor[i]
-                        self.numpy_tensor[self.numel()-1] = maxvalue
-                    elif isinstance(arg, list) or isinstance(arg, tuple):
-                        if not hasattr(api_config,"tensornum"):    
-                            api_config.tensornum = 0
-                            for item in arg:
-                                if "int" in str(type(item)) and not item == -1:
-                                    api_config.maxvalue = api_config.maxvalue // item
-                                if "Tensor" in str(type(item)):
-                                    api_config.tensornum += 1
-                        if api_config.tensornum > 1:
-                            self.numpy_tensor = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
-                            while maxvalue % self.numpy_tensor:
-                                self.numpy_tensor[i] = numpy.random.randint(1, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
-                            maxvalue = maxvalue // self.numpy_tensor[i]  
-                            api_config.tensor_num -= 1
-                        else:
-                            self.numpy_tensor = numpy.random.randint(api_config.maxvalue, api_config.maxvalue+1, size=self.shape).astype(self.dtype)
+            elif api_config.api_name in {"paddle.Tensor.unflatten", "paddle.unflatten"}:
+                if self.check_arg(api_config, 1, "axis"):
+                    x_shape = self.get_arg(api_config, 0, "x").shape
+                    self.numpy_tensor = numpy.random.randint(0, len(x_shape), size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 2, "shape"):
+                    axis = self.get_arg(api_config, 1, "axis")
+                    x_dim = self.get_arg(api_config, 0, "x").shape[axis]
+                    shape = self.get_arg(api_config, 2, "shape")
+                    if isinstance(shape, TensorConfig):
+                        self.numpy_tensor = numpy.ones(self.shape).astype(self.dtype)
+                        remaining = x_dim
+                        for i in range(shape.numel() - 1):
+                            if remaining <= 1:
+                                break
+                            divisors = [d for d in range(2, remaining + 1) if remaining % d == 0]
+                            if divisors:
+                                divisor = numpy.random.choice(divisors)
+                                self.numpy_tensor[i] = divisor
+                                remaining = remaining // divisor
+                        self.numpy_tensor[-1] = remaining
+                    elif isinstance(shape, (list, tuple)):
+                        tensor_configs = [item for item in shape if isinstance(item, TensorConfig)]
+                        tensornum = len(tensor_configs)
+                        if tensornum > 0:
+                            remaining = x_dim
+                            fixed_product = 1
+                            for dim in shape:
+                                if isinstance(dim, int) and dim != -1:
+                                    fixed_product *= dim
+                            if fixed_product > 0 and x_dim % fixed_product == 0:
+                                remaining = x_dim // fixed_product
+                            for i in range(tensornum - 1):
+                                if remaining <= 1:
+                                    break
+                                divisors = [d for d in range(2, remaining + 1) if remaining % d == 0]
+                                if divisors:
+                                    divisor = numpy.random.choice(divisors)
+                                    tensor_config = tensor_configs[i]
+                                    tensor_config.numpy_tensor = numpy.full(tensor_config.shape, divisor, dtype=tensor_config.dtype)
+                                    remaining = remaining // divisor
+                            tensor_config = tensor_configs[-1]
+                            tensor_configs.numpy_tensor = numpy.full(tensor_config.shape, remaining, dtype=tensor_config.dtype)
             
             elif api_config.api_name == "paddle.unsqueeze":
                 if self.check_arg(api_config, 1, "axis"):
