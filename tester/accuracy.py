@@ -222,9 +222,9 @@ class APITestAccuracy(APITestBase):
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm": 
             paddle_output = paddle_output[0]
         if self.api_config.api_name == "paddle.unique": 
-            paddle_output = list(paddle_output)
             if "return_index=True" in self.api_config.config:
-                del paddle_output[1]
+                paddle_output = list(paddle_output)
+                paddle_output.pop(1)
             paddle_output = tuple(paddle_output)
 
         if isinstance(paddle_output, paddle.Tensor):
