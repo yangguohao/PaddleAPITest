@@ -89,6 +89,7 @@ for content in logs:
         or "Out of memory error" in content
         or "[torch error]" in content
         or "(NotFound)" in content
+        or "output type diff error" in content
     ):
         invalid_logs[key] = content
     elif key in pass_configs:

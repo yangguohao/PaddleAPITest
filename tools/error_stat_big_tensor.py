@@ -97,6 +97,7 @@ for content in logs:
         or "(Cannot allocate memory)" in content
         or "Too large tensor to get cached numpy" in content
         or "config_analyzer.py" in content
+        or "output type diff error" in content
     ):
         invalid_logs[key] = content
     else:
