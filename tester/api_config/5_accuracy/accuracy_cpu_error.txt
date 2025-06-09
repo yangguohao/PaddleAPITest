@@ -846,6 +846,7 @@ paddle.geometric.send_uv(Tensor([10, 10, 1],"float64"), Tensor([10, 10, 10],"flo
 paddle.heaviside(Tensor([1],"float32"), Tensor([300, 2048],"float32"), )
 paddle.heaviside(Tensor([2048],"float32"), Tensor([300, 2048],"float32"), )
 paddle.heaviside(Tensor([],"float32"), Tensor([2, 3, 4],"float32"), )
+paddle.histogramdd(Tensor([4, 2, 2],"float64"), bins=tuple(Tensor([5],"float64"),Tensor([3],"float64"),), weights=Tensor([4, 2],"float64"), ranges=None, density=True, )
 paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, )
 paddle.incubate.nn.functional.fused_multi_head_attention(Tensor([8, 128, 1024],"float16"), Tensor([3, 16, 64, 1024],"float16"), Tensor([1024, 1024],"float16"), False, Tensor([1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), 1e-05, Tensor([3, 16, 64],"float16"), Tensor([1024],"float16"), None, Tensor([8, 16, 128, 128],"float16"), 0.0, 0.0, 1e-05, num_heads=16, transpose_qkv_wb=False, )
 paddle.incubate.nn.functional.fused_multi_head_attention(Tensor([8, 128, 1024],"float32"), Tensor([1024, 3072],"float32"), Tensor([1024, 1024],"float32"), False, Tensor([1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), Tensor([1024],"float32"), 1e-05, None, None, None, Tensor([8, 16, 128, 128],"float32"), 0.0, 0.0, 1e-05, num_heads=16, transpose_qkv_wb=True, )
