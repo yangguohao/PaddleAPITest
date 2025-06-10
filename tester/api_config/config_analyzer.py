@@ -233,11 +233,11 @@ class TensorConfig:
                 if self.check_arg(api_config,0,'x'):
                     s1=self.get_arg(api_config,0,'x')
                     s1=s1.shape
-                    self.numpy_tensor=numpy.random.random(s1).astype(self.dtype)
+                    self.numpy_tensor=(numpy.random.random(s1) + 1).astype(self.dtype)
                 elif self.check_arg(api_config,1,'y'):
                     s2=self.get_arg(api_config,1,'y')
                     s2=s2.shape
-                    self.numpy_tensor=numpy.random.random(s2).astype(self.dtype)
+                    self.numpy_tensor=(numpy.random.random(s2) + 1).astype(self.dtype)
                 
 
             elif api_config.api_name == "paddle.bernoulli":
