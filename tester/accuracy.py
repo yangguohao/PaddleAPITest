@@ -218,7 +218,8 @@ class APITestAccuracy(APITestBase):
             print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             return
-        
+        print(paddle_output)
+        print(torch_output)
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm": 
             paddle_output = paddle_output[0]
         if self.api_config.api_name == "paddle.unique": 
@@ -229,6 +230,9 @@ class APITestAccuracy(APITestBase):
         if self.api_config.api_name in {"paddle.mode", "paddle.Tensor.mode"}: 
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
+        if self.api_config.api_name in ["paddle.strided_slice", "paddle.vander"] and any(s < 0 for s in paddle_output.strides):
+            # torch's from_dlpack now don't support negative strides
+            paddle_output = paddle_output.contiguous()
 
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
