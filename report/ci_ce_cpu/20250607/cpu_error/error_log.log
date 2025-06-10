@@ -2637,51 +2637,32 @@ tensor([[  6.0352,  -1.3779],
         [ -6.6953,  -8.4844],
         [-15.6875,   8.5234]], dtype=torch.float16)
 
-2025-06-10 00:11:11.548035 GPU 7 156004 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "add", "max", None, None, )
+2025-06-10 11:50:10.313768 GPU 3 67422 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "add", "max", None, None, )
 One of the differentiated Tensors does not require grad
 
+2025-06-10 11:50:12.035305 GPU 3 67428 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "add", "min", None, None, )
+One of the differentiated Tensors does not require grad
+malloc(): smallbin double linked list corrupted
 
---------------------------------------
-C++ Traceback (most recent call last):
---------------------------------------
-0   paddle::pybind::eager_api_send_ue_recv(_object*, _object*, _object*)
-1   send_ue_recv_ad_func(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, std::string, std::string, paddle::experimental::IntArrayBase<paddle::Tensor>)
-2   paddle::experimental::send_ue_recv_intermediate(paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, paddle::Tensor const&, std::string const&, std::string const&, paddle::experimental::IntArrayBase<paddle::Tensor> const&)
-3   void phi::GraphSendUERecvOpKernelLaunchHelper<phi::CPUContext, double, long>(phi::CPUContext const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, phi::DenseTensor const&, std::string const&, std::string const&, long, phi::DenseTensor*, phi::DenseTensor*)
-4   GOMP_parallel
-
-----------------------
-Error Message Summary:
-----------------------
-FatalError: `Segmentation fault` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485487 (unix time) try "date -d @1749485487" if you are using GNU date ***]
-  [SignalInfo: *** SIGSEGV (@0x0) received by PID 156004 (TID 0x7f5be48e4740) from PID 0 ***]
-
+2025-06-10 11:50:24.720028 GPU 3 67425 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "add", "sum", None, None, )
+One of the differentiated Tensors does not require grad
 corrupted size vs. prev_size
 
-2025-06-10 00:11:11.680357 GPU 4 156005 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "add", "min", None, None, )
+2025-06-10 11:50:25.826041 GPU 3 67427 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "mul", "mean", None, None, )
 One of the differentiated Tensors does not require grad
 
-2025-06-10 00:26:31.449945 GPU 3 1347 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "add", "sum", None, None, )
+2025-06-10 11:50:26.332787 GPU 3 67426 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "mul", "min", None, None, )
 One of the differentiated Tensors does not require grad
-free(): invalid size
-
-2025-06-10 00:26:33.955171 GPU 1 1368 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "mul", "mean", None, None, )
-One of the differentiated Tensors does not require grad
-corrupted double-linked list
-
-2025-06-09 23:16:42.199662 GPU 5 128201 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "mul", "min", None, None, )
-One of the differentiated Tensors does not require grad
+corrupted size vs. prev_size
 
 2025-06-10 00:11:12.234237 GPU 6 156006 test begin: paddle.geometric.send_ue_recv(Tensor([10, 20],"float64"), Tensor([150, 1],"float64"), Tensor([150],"int64"), Tensor([150],"int64"), "mul", "sum", None, None, )
 One of the differentiated Tensors does not require grad
 
-2025-06-10 00:35:52.442951 GPU 7 7449 test begin: paddle.geometric.send_ue_recv(Tensor([10, 8, 5],"float64"), Tensor([15, 8, 1],"float64"), Tensor([15],"int64"), Tensor([15],"int64"), "add", "mean", None, None, )
+2025-06-10 11:50:26.338039 GPU 3 67423 test begin: paddle.geometric.send_ue_recv(Tensor([10, 8, 5],"float64"), Tensor([15, 8, 1],"float64"), Tensor([15],"int64"), Tensor([15],"int64"), "add", "mean", None, None, )
 One of the differentiated Tensors does not require grad
 free(): invalid next size (normal)
 
-
-2025-06-10 00:26:35.319889 GPU 6 1370 test begin: paddle.geometric.send_ue_recv(Tensor([10, 8, 5],"float64"), Tensor([15, 8, 1],"float64"), Tensor([15],"int64"), Tensor([15],"int64"), "mul", "min", None, None, )
+2025-06-10 11:50:31.834015 GPU 3 67885 test begin: paddle.geometric.send_ue_recv(Tensor([10, 8, 5],"float64"), Tensor([15, 8, 1],"float64"), Tensor([15],"int64"), Tensor([15],"int64"), "mul", "min", None, None, )
 One of the differentiated Tensors does not require grad
 
 
@@ -2698,24 +2679,24 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Segmentation fault` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749486408 (unix time) try "date -d @1749486408" if you are using GNU date ***]
-  [SignalInfo: *** SIGSEGV (@0x0) received by PID 1370 (TID 0x7fbd58dcf740) from PID 0 ***]
+  [TimeInfo: *** Aborted at 1749527446 (unix time) try "date -d @1749527446" if you are using GNU date ***]
+  [SignalInfo: *** SIGSEGV (@0x0) received by PID 67885 (TID 0x7f360f436740) from PID 0 ***]
 
 
-2025-06-09 23:16:42.404056 GPU 6 128202 test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, )
+2025-06-10 12:00:39.058224 GPU 3 78430 test begin: paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, )
 [accuracy error] paddle.incubate.nn.functional.fused_layer_norm(Tensor([16, 256],"float32"), Tensor([256],"float32"), Tensor([256],"float32"), 1e-05, begin_norm_axis=1, bias=Tensor([256],"float32"), residual=Tensor([16, 256],"float32"), residual_alpha=0.69204696, ) 
  Not equal to tolerance rtol=0.01, atol=0.01
 Tensor-likes are not close!
 
 Mismatched elements: 16 / 16 (100.0%)
-Greatest absolute difference: 2.1908535957336426 at index (0,) (up to 0.01 allowed)
-Greatest relative difference: 12.296367645263672 at index (0,) (up to 0.01 allowed)
+Greatest absolute difference: 2.189056396484375 at index (10,) (up to 0.01 allowed)
+Greatest relative difference: 12.27008056640625 at index (10,) (up to 0.01 allowed)
 ACTUAL: (shape=torch.Size([16]), dtype=torch.float32)
-tensor([2.3690, 2.2464, 2.0574, 2.0803, 2.2061, 2.2414, 2.3395, 2.2333, 2.2465, 2.1974, 2.1778, 2.1266, 2.1945, 2.1572,
-        2.1655, 2.1264])
+tensor([2.1316, 2.1618, 2.0742, 2.1571, 2.0900, 2.1160, 2.1988, 2.1812, 2.1951, 2.2344, 2.3675, 2.2542, 2.1532, 2.1980,
+        2.2312, 2.0873])
 DESIRED: (shape=torch.Size([16]), dtype=torch.float32)
-tensor([0.1782, 0.1982, 0.2362, 0.2311, 0.2055, 0.1990, 0.1827, 0.2005, 0.1981, 0.2071, 0.2108, 0.2211, 0.2076, 0.2149,
-        0.2132, 0.2211])
+tensor([0.2201, 0.2140, 0.2324, 0.2149, 0.2289, 0.2233, 0.2068, 0.2102, 0.2075, 0.2003, 0.1784, 0.1968, 0.2157, 0.2070,
+        0.2009, 0.2295])
 
 2025-06-10 00:11:12.920402 GPU 7 156015 test begin: paddle.kron(Tensor([12, 8],"float16"), Tensor([16, 8],"float16"), )
 [accuracy error] backward  paddle.kron(Tensor([12, 8],"float16"), Tensor([16, 8],"float16"), ) 
@@ -9175,20 +9156,20 @@ tensor([[-0.0420, -0.3431,  0.1135,  ...,  0.4451,  0.2183, -0.4690],
         [ 0.0972, -0.3745, -0.0853,  ...,  0.4568, -0.1259, -0.4342],
         [-0.3307,  0.1056,  0.1296,  ..., -0.4155, -0.1947, -0.2927]])
 
-2025-06-10 00:13:34.904137 GPU 4 156016 test begin: paddle.strided_slice(Tensor([6, 6],"int64"), axes=list[0,1,], starts=list[8,-1,], ends=list[1,-5,], strides=list[-2,-3,], )
+2025-06-10 12:00:53.176016 GPU 3 78431 test begin: paddle.strided_slice(Tensor([6, 6],"int64"), axes=list[0,1,], starts=list[8,-1,], ends=list[1,-5,], strides=list[-2,-3,], )
 element 0 of tensors does not require grad and does not have a grad_fn
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[2, 2] and strides=[-12, -3]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f10927c61b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f109276fa76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f106c7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f106d441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f106d442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f106c77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f106c77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f109360e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f109307d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f4a659101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f4a658b9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f4a3c7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f4a3d441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f4a3d442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f4a3c77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f4a3c77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f4a6680e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f4a6627d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
 frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
 frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
 frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
@@ -9197,7 +9178,7 @@ frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bi
 frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
 frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
 frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f11e66c9c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #17: __libc_start_main + 0xe7 (0x7f4bb976cc87 in /lib/x86_64-linux-gnu/libc.so.6)
 frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
@@ -9215,24 +9196,24 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485615 (unix time) try "date -d @1749485615" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26170) received by PID 156016 (TID 0x7f11e7672740) from PID 156016 ***]
+  [TimeInfo: *** Aborted at 1749528053 (unix time) try "date -d @1749528053" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1325f) received by PID 78431 (TID 0x7f4bba715740) from PID 78431 ***]
 
 
-2025-06-10 00:13:34.915259 GPU 7 155998 test begin: paddle.strided_slice(Tensor([6, 7, 8],"int64"), axes=list[0,2,], starts=list[7,-1,], ends=list[2,-5,], strides=list[-2,-3,], )
+2025-06-10 12:00:53.238553 GPU 3 78426 test begin: paddle.strided_slice(Tensor([6, 7, 8],"int64"), axes=list[0,2,], starts=list[7,-1,], ends=list[2,-5,], strides=list[-2,-3,], )
 element 0 of tensors does not require grad and does not have a grad_fn
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[2, 7, 2] and strides=[-112, 8, -3]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f4bfdd101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f4bfdcb9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f4be47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f4be5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f4be5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f4be477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f4be477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f4bfec0e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f4bfe67d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f3a265101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f3a264b9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f39fc7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f39fd441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f39fd442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f39fc77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f39fc77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f3a2740e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f3a26e7d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
 frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
 frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
 frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
@@ -9241,7 +9222,7 @@ frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bi
 frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
 frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
 frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f4d5db6ec87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #17: __libc_start_main + 0xe7 (0x7f3b7a41ec87 in /lib/x86_64-linux-gnu/libc.so.6)
 frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
@@ -9259,23 +9240,23 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485615 (unix time) try "date -d @1749485615" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2615e) received by PID 155998 (TID 0x7f4d5eb17740) from PID 155998 ***]
+  [TimeInfo: *** Aborted at 1749528053 (unix time) try "date -d @1749528053" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1325a) received by PID 78426 (TID 0x7f3b7b3c7740) from PID 78426 ***]
 
 
-2025-06-10 00:13:35.092157 GPU 5 155999 test begin: paddle.strided_slice(x=Tensor([5, 8, 6, 4, 2, 6],"float64"), axes=list[1,2,5,], starts=list[-3,3,4,], ends=list[3,0,1,], strides=list[-1,-1,-2,], )
+2025-06-10 12:00:53.382646 GPU 3 78429 test begin: paddle.strided_slice(x=Tensor([5, 8, 6, 4, 2, 6],"float64"), axes=list[1,2,5,], starts=list[-3,3,4,], ends=list[3,0,1,], strides=list[-1,-1,-2,], )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 2, 3, 4, 2, 2] and strides=[2304, -288, -48, 12, 6, -2]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fabc40a41b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7fabc404da76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7fab947816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7fab95441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7fab95442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7fab9477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7fab9477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7fabc4fd48e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7fabc4a435f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f9bed6101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f9bed5b9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f9bd47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f9bd5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f9bd5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f9bd477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f9bd477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f9bee50e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f9bedf7d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
 frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
 frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
 frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
@@ -9284,7 +9265,7 @@ frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bi
 frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
 frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
 frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7fad13ea7c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #17: __libc_start_main + 0xe7 (0x7f9d4d493c87 in /lib/x86_64-linux-gnu/libc.so.6)
 frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
@@ -9302,23 +9283,23 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485615 (unix time) try "date -d @1749485615" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2615f) received by PID 155999 (TID 0x7fad14e50740) from PID 155999 ***]
+  [TimeInfo: *** Aborted at 1749528053 (unix time) try "date -d @1749528053" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1325d) received by PID 78429 (TID 0x7f9d4e43c740) from PID 78429 ***]
 
 
-2025-06-10 00:13:35.099141 GPU 7 156019 test begin: paddle.strided_slice(x=Tensor([5, 8, 6, 4, 2, 6],"float64"), axes=list[1,2,5,], starts=list[6,5,4,], ends=list[2,0,1,], strides=list[-1,-2,-3,], )
+2025-06-10 12:00:53.469009 GPU 3 78425 test begin: paddle.strided_slice(x=Tensor([5, 8, 6, 4, 2, 6],"float64"), axes=list[1,2,5,], starts=list[6,5,4,], ends=list[2,0,1,], strides=list[-1,-2,-3,], )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 4, 3, 4, 2, 1] and strides=[2304, -288, -96, 12, 6, 1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f2ef92a31b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f2ef924ca76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f2ecc7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f2ecd441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f2ecd442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f2ecc77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f2ecc77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f2efa1d38e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f2ef9c425f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f9d28e281b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f9d28dd1a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f9cfc7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f9cfd441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f9cfd442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f9cfc77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f9cfc77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f9d238388e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f9d232a75f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
 frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
 frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
 frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
@@ -9327,7 +9308,7 @@ frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bi
 frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
 frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
 frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f30491a9c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #17: __libc_start_main + 0xe7 (0x7f9e776b3c87 in /lib/x86_64-linux-gnu/libc.so.6)
 frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
@@ -9345,8 +9326,8 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485615 (unix time) try "date -d @1749485615" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26173) received by PID 156019 (TID 0x7f304a152740) from PID 156019 ***]
+  [TimeInfo: *** Aborted at 1749528053 (unix time) try "date -d @1749528053" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x13259) received by PID 78425 (TID 0x7f9e7865c740) from PID 78425 ***]
 
 
 2025-06-10 00:14:25.971962 GPU 5 156012 test begin: paddle.trapezoid(y=Tensor([2, 3],"float32"), x=None, dx=None, axis=-1, )
@@ -9443,19 +9424,19 @@ tensor([[[ 0.0045, -0.0031, -0.0009,  0.0002],
          [-0.0414,  0.0657, -0.0546,  0.0376],
          [-0.0467,  0.0740, -0.0616,  0.0424]]])
 
-2025-06-10 00:14:26.022979 GPU 4 156022 test begin: paddle.vander(Tensor([5],"complex128"), 2, False, )
+2025-06-10 12:00:54.381727 GPU 3 78430 test begin: paddle.vander(Tensor([5],"complex128"), 2, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 2] and strides=[2, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f232d7101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f232d6b9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f23147816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f2315441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f2315442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f231477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f231477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f232e60e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f232e07d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fb5e54101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7fb5e53b9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7fb5bc7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7fb5bd441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7fb5bd442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7fb5bc77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7fb5bc77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7fb5e630e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7fb5e5d7d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
 frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
 frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
 frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
@@ -9464,7 +9445,7 @@ frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bi
 frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
 frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
 frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f248d592c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #17: __libc_start_main + 0xe7 (0x7fb739247c87 in /lib/x86_64-linux-gnu/libc.so.6)
 frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
@@ -9482,33 +9463,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26176) received by PID 156022 (TID 0x7f248e53b740) from PID 156022 ***]
+  [TimeInfo: *** Aborted at 1749528054 (unix time) try "date -d @1749528054" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1325e) received by PID 78430 (TID 0x7fb73a1f0740) from PID 78430 ***]
 
 
-2025-06-10 00:14:26.028909 GPU 7 156015 test begin: paddle.vander(Tensor([5],"complex128"), 3, False, )
+2025-06-10 12:00:57.112906 GPU 3 78427 test begin: paddle.vander(Tensor([5],"complex128"), 3, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 3] and strides=[3, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f66e33211b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f66e32caa76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f66b47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f66b5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f66b5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f66b477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f66b477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f66e42518e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f66e3cc05f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f6833125c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f247222e1b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f24721d7a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f24447816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f2445441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f2445442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f244477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f244477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f247315e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f2472bcd5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f25c2135c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9525,33 +9508,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2616f) received by PID 156015 (TID 0x7f68340ce740) from PID 156015 ***]
+  [TimeInfo: *** Aborted at 1749528057 (unix time) try "date -d @1749528057" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1325b) received by PID 78427 (TID 0x7f25c30de740) from PID 78427 ***]
 
 
-2025-06-10 00:14:26.062580 GPU 6 156013 test begin: paddle.vander(Tensor([5],"complex128"), 4, False, )
+2025-06-10 12:00:58.225637 GPU 3 79152 test begin: paddle.vander(Tensor([5],"complex128"), 4, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 4] and strides=[4, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f4a249d01b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f4a24979a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f49f47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f49f5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f49f5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f49f477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f49f477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f4a259008e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f4a2536f5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f4b747d4c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f25048081b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f25047b1a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f24d47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f24d5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f24d5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f24d477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f24d477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f25057388e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f25051a75f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f265460dc87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9568,33 +9553,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2616d) received by PID 156013 (TID 0x7f4b7577d740) from PID 156013 ***]
+  [TimeInfo: *** Aborted at 1749528075 (unix time) try "date -d @1749528075" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x13530) received by PID 79152 (TID 0x7f26555b6740) from PID 79152 ***]
 
 
-2025-06-10 00:14:26.074043 GPU 7 156023 test begin: paddle.vander(Tensor([5],"float32"), 2, False, )
+2025-06-10 12:00:58.656299 GPU 3 79181 test begin: paddle.vander(Tensor([5],"float32"), 2, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 2] and strides=[2, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f6c802371b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f6c801e0a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f6c547816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f6c55441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f6c55442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f6c5477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f6c5477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f6c811678e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f6c80bd65f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f6dd0043c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7ffa029761b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7ffa0291fa76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7ff9d47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7ff9d5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7ff9d5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7ff9d477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7ff9d477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7ffa038a68e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7ffa033155f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7ffb5287bc87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9611,33 +9598,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26177) received by PID 156023 (TID 0x7f6dd0fec740) from PID 156023 ***]
+  [TimeInfo: *** Aborted at 1749528075 (unix time) try "date -d @1749528075" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1354d) received by PID 79181 (TID 0x7ffb53824740) from PID 79181 ***]
 
 
-2025-06-10 00:14:26.100130 GPU 5 156001 test begin: paddle.vander(Tensor([5],"float32"), 3, False, )
+2025-06-10 12:00:58.775979 GPU 3 79209 test begin: paddle.vander(Tensor([5],"float32"), 3, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 3] and strides=[3, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f61542e91b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f6154292a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f61247816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f6125441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f6125442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f612477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f612477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f61552198e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f6154c885f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f62a41f1c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f88d44be1b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f88d4467a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f88a47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f88a5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f88a5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f88a477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f88a477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f88d53ee8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f88d4e5d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f8a242c3c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9654,33 +9643,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26161) received by PID 156001 (TID 0x7f62a519a740) from PID 156001 ***]
+  [TimeInfo: *** Aborted at 1749528076 (unix time) try "date -d @1749528076" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x13569) received by PID 79209 (TID 0x7f8a2526c740) from PID 79209 ***]
 
 
-2025-06-10 00:14:26.139483 GPU 7 156955 test begin: paddle.vander(Tensor([5],"float32"), 4, False, )
+2025-06-10 12:01:00.715268 GPU 3 79238 test begin: paddle.vander(Tensor([5],"float32"), 4, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 4] and strides=[4, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f66101391b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f66100e2a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f65e47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f65e5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f65e5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f65e477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f65e477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f65ff8388e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f65ff2a75f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f675eac4c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f8f301f61b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f8f3019fa76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f8f047816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f8f05441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f8f05442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f8f0477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f8f0477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f8f311268e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f8f30b955f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f907fffbc87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9697,33 +9688,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2651b) received by PID 156955 (TID 0x7f675fa6d740) from PID 156955 ***]
+  [TimeInfo: *** Aborted at 1749528076 (unix time) try "date -d @1749528076" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x13586) received by PID 79238 (TID 0x7f9080fa4740) from PID 79238 ***]
 
 
-2025-06-10 00:14:26.142593 GPU 7 156014 test begin: paddle.vander(Tensor([5],"float32"), 5, False, )
+2025-06-10 12:01:01.026434 GPU 3 78428 test begin: paddle.vander(Tensor([5],"float32"), 5, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 5] and strides=[5, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f14323101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f14322b9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f140c7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f140d441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f140d442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f140c77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f140c77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f143320e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f1432c7d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f158621ec87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fd74c7fa1b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7fd74c7a3a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7fd71c7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7fd71d441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7fd71d442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7fd71c77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7fd71c77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7fd7478388e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7fd7472a75f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7fd89b088c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9740,33 +9733,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2616e) received by PID 156014 (TID 0x7f15871c7740) from PID 156014 ***]
+  [TimeInfo: *** Aborted at 1749528061 (unix time) try "date -d @1749528061" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1325c) received by PID 78428 (TID 0x7fd89c031740) from PID 78428 ***]
 
 
-2025-06-10 00:14:26.143622 GPU 5 158240 test begin: paddle.vander(Tensor([5],"float32"), 6, False, )
+2025-06-10 12:01:02.733680 GPU 3 79331 test begin: paddle.vander(Tensor([5],"float32"), 6, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 6] and strides=[6, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f855402c1b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f8553fd5a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f85247816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f8525441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f8525442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f852477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f852477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f8554f5c8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f85549cb5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f86a3f35c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f6118aa31b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f6118a4ca76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f60ec7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f60ed441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f60ed442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f60ec77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f60ec77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f61138388e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f61132a75f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f626742dc87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9783,33 +9778,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26a20) received by PID 158240 (TID 0x7f86a4ede740) from PID 158240 ***]
+  [TimeInfo: *** Aborted at 1749528077 (unix time) try "date -d @1749528077" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x135e3) received by PID 79331 (TID 0x7f62683d6740) from PID 79331 ***]
 
 
-2025-06-10 00:14:26.145313 GPU 4 158239 test begin: paddle.vander(Tensor([5],"float32"), 7, False, )
+2025-06-10 12:01:08.296750 GPU 3 79457 test begin: paddle.vander(Tensor([5],"float32"), 7, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 7] and strides=[7, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fe61c8ae1b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7fe61c857a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7fe6047816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7fe605441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7fe605442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7fe60477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7fe60477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7fe61d7ac8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7fe61d21b5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7fe77c767c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f6e0073a1b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f6e006e3a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f6dd47816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f6dd5441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f6dd5442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f6dd477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f6dd477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f6e0165e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f6e010cd5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f6f50547c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9826,33 +9823,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26a1f) received by PID 158239 (TID 0x7fe77d710740) from PID 158239 ***]
+  [TimeInfo: *** Aborted at 1749528081 (unix time) try "date -d @1749528081" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x13661) received by PID 79457 (TID 0x7f6f514f0740) from PID 79457 ***]
 
 
-2025-06-10 00:14:26.155010 GPU 5 156012 test begin: paddle.vander(Tensor([5],"float32"), 8, False, )
+2025-06-10 12:01:11.023861 GPU 3 79528 test begin: paddle.vander(Tensor([5],"float32"), 8, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 8] and strides=[8, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f4208ea11b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f4208e4aa76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f41dc7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f41dd441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f41dd442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f41dc77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f41dc77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f4209dd18e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f42098405f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f4358da4c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f2590f971b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f2590f40a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f25647816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f2565441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f2565442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f256477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f256477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f2591ec78e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f25919365f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f26e0eabc87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9869,33 +9868,35 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x2616c) received by PID 156012 (TID 0x7f4359d4d740) from PID 156012 ***]
+  [TimeInfo: *** Aborted at 1749528084 (unix time) try "date -d @1749528084" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x136a8) received by PID 79528 (TID 0x7f26e1e4f740) from PID 79528 ***]
 
 
-2025-06-10 00:14:26.161845 GPU 7 158254 test begin: paddle.vander(Tensor([5],"float32"), None, False, )
+2025-06-10 12:01:20.229147 GPU 3 79691 test begin: paddle.vander(Tensor([5],"float32"), None, False, )
 terminate called after throwing an instance of 'c10::Error'
   what():  Storage size calculation overflowed with sizes=[5, 5] and strides=[5, -1]
 Exception raised from computeStorageNbytes at /pytorch/aten/src/ATen/EmptyTensor.cpp:109 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f683df101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f683deb9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
-frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f68247816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f6825441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f6825442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f682477cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f682477cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
-frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f683ee0e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #8: <unknown function> + 0x8235f9 (0x7f683e87d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
-frame #9: _PyEval_EvalFrameDefault + 0xd02 (0x529512 in /root/miniconda3/envs/paddle/bin/python)
-frame #10: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
-frame #11: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
-frame #12: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
-frame #13: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
-frame #14: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
-frame #15: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
-frame #16: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
-frame #17: __libc_start_main + 0xe7 (0x7f699de36c87 in /lib/x86_64-linux-gnu/libc.so.6)
-frame #18: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f8595f101b6 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f8595eb9a76 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: at::detail::computeStorageNbytes(c10::ArrayRef<long>, c10::ArrayRef<long>, unsigned long, unsigned long) + 0x35e (0x7f856c7816ee in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: at::TensorMaker::computeStorageSize() const + 0xb3 (0x7f856d441f03 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: at::TensorMaker::make_tensor() + 0x440 (0x7f856d442390 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: at::fromDLPack(DLManagedTensor*, std::function<void (void*)>) + 0x354 (0x7f856c77cab4 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: at::fromDLPack(DLManagedTensor*) + 0x31 (0x7f856c77cf41 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: torch::utils::tensor_fromDLPack(_object*) + 0x40 (0x7f8596e0e8e0 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x8235f9 (0x7f859687d5f9 in /root/miniconda3/envs/paddle/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #9: /root/miniconda3/envs/paddle/bin/python() [0x54be6b]
+frame #10: PyObject_Vectorcall + 0x51 (0x5416a1 in /root/miniconda3/envs/paddle/bin/python)
+frame #11: _PyEval_EvalFrameDefault + 0x6ce (0x528ede in /root/miniconda3/envs/paddle/bin/python)
+frame #12: PyEval_EvalCode + 0xae (0x5e581e in /root/miniconda3/envs/paddle/bin/python)
+frame #13: /root/miniconda3/envs/paddle/bin/python() [0x60bfd7]
+frame #14: /root/miniconda3/envs/paddle/bin/python() [0x6071c7]
+frame #15: PyRun_StringFlags + 0x5f (0x5f694f in /root/miniconda3/envs/paddle/bin/python)
+frame #16: PyRun_SimpleStringFlags + 0x3a (0x5f687a in /root/miniconda3/envs/paddle/bin/python)
+frame #17: Py_RunMain + 0x45f (0x617def in /root/miniconda3/envs/paddle/bin/python)
+frame #18: Py_BytesMain + 0x39 (0x5d03c9 in /root/miniconda3/envs/paddle/bin/python)
+frame #19: __libc_start_main + 0xe7 (0x7f86e9dbbc87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #20: /root/miniconda3/envs/paddle/bin/python() [0x5d01f9]
 
 
 
@@ -9912,7 +9913,7 @@ C++ Traceback (most recent call last):
 Error Message Summary:
 ----------------------
 FatalError: `Process abort signal` is detected by the operating system.
-  [TimeInfo: *** Aborted at 1749485666 (unix time) try "date -d @1749485666" if you are using GNU date ***]
-  [SignalInfo: *** SIGABRT (@0x26a2e) received by PID 158254 (TID 0x7f699eddf740) from PID 158254 ***]
+  [TimeInfo: *** Aborted at 1749528092 (unix time) try "date -d @1749528092" if you are using GNU date ***]
+  [SignalInfo: *** SIGABRT (@0x1374b) received by PID 79691 (TID 0x7f86ead64740) from PID 79691 ***]
 
 

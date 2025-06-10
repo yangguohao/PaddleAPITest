@@ -2,15 +2,12 @@ paddle.Tensor.__mul__
 paddle.Tensor.astype
 paddle.Tensor.cast
 paddle.Tensor.expand
-paddle.Tensor.topk
 paddle.add_n
 paddle.broadcast_to
 paddle.cast
 paddle.cumulative_trapezoid
 paddle.expand
 paddle.geometric.send_ue_recv
-paddle.geometric.send_uv
-paddle.heaviside
 paddle.incubate.nn.functional.fused_layer_norm
 paddle.kron
 paddle.linalg.cond
