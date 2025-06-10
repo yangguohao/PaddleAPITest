@@ -9,6 +9,10 @@ from pathlib import Path
 import re
 
 TEST_LOG_PATH = Path("tester/api_config/test_log_cpu")
+if not TEST_LOG_PATH.exists():
+    print(f"{TEST_LOG_PATH} not exists", flush=True)
+    exit(0)
+
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 

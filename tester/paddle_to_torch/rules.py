@@ -428,7 +428,7 @@ elif (isinstance(axis, (list, tuple)) and len(axis) == 0) and not keepdim:
         code = Code(
             preprocess=defaults_code + map_code + pre.splitlines(),
             core=core.splitlines(),
-            postprocess = post.splitlines(),
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
@@ -4643,10 +4643,10 @@ elif isinstance(shape, tuple):
     shape = list(shape)
 elements = x.numel()
 for i, s in enumerate(shape):
-    if s == 0:
+    if s == 0 and elements != 0:
         shape[i] = x.shape[i]
         elements = elements // x.shape[i]
-    elif s != -1:
+    elif s != -1 and s != 0:
         elements = elements // s
 for i, s in enumerate(shape):
     if s == -1:
@@ -5877,16 +5877,13 @@ result = tuple(result)
 
 class UnflattenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
+        _, map_code = self.apply_generic()
         pre = """
-sh = []
-if isinstance(_kwargs['sizes'],torch.Tensor):
-    for i in _kwargs['sizes']:
-        sh.append(i.item())
-    _kwargs['sizes'] = sh
+shape = list(shape.tolist() if isinstance(shape, torch.Tensor) else shape)
+shape = tuple(x.item() if isinstance(x, torch.Tensor) else x for x in shape)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
+        code = Code(preprocess=pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 

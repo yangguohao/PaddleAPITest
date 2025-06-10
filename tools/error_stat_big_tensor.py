@@ -7,6 +7,10 @@ from pathlib import Path
 import re
 
 TEST_LOG_PATH = Path("tester/api_config/test_log_big_tensor")
+if not TEST_LOG_PATH.exists():
+    print(f"{TEST_LOG_PATH} not exists", flush=True)
+    exit(0)
+
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -97,6 +101,7 @@ for content in logs:
         or "(Cannot allocate memory)" in content
         or "Too large tensor to get cached numpy" in content
         or "config_analyzer.py" in content
+        or "output type diff error" in content
     ):
         invalid_logs[key] = content
     else:
