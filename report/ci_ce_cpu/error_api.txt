@@ -31,7 +31,6 @@ paddle.diag
 paddle.einsum
 paddle.expand
 paddle.geometric.send_ue_recv
-paddle.geometric.send_uv
 paddle.heaviside
 paddle.incubate.nn.functional.fused_layer_norm
 paddle.kron
