@@ -1432,7 +1432,7 @@ restore_ind = torch.empty(fpn_rois.shape[0], 1)
 rois_num_per_level = []
 for i in range(num_level):
     rois_num_per_level.append(
-        torch.zeros([rois_num.numel()])
+        torch.zeros([rois_num.numel()]).to(torch.int32)
     )
 # 计算结果
 index = 0
@@ -1458,7 +1458,7 @@ for i in range(num_level):
             restore_ind[j] = index
             index += 1
 
-result = (multi_rois, restore_ind, rois_num_per_level)
+result = (multi_rois, restore_ind.to(torch.int32), rois_num_per_level)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
