@@ -134,31 +134,6 @@ class BaseRule(ABC):
         """
         pass
 
-    @classmethod
-    def _format_arg(cls, arg) -> str:
-        """
-        将参数格式化为调用字符串的辅助方法
-
-        Args:
-            arg: 待格式化的参数
-
-        Returns:
-            str: 格式化后的参数
-        """
-        PLACEHOLDER_PATTERN: re.Pattern = re.compile(r"\{([^{}]+)\}")
-
-        def replacer(match):
-            placeholder = match.group(1)
-            if placeholder.isdigit():
-                return f"_tmp_{placeholder}"
-            elif placeholder.replace("_", "").isalnum():
-                return placeholder
-            return match.group(0)
-
-        if isinstance(arg, str):
-            arg = PLACEHOLDER_PATTERN.sub(replacer, arg)
-        return str(arg)
-
     def read_mapping(self, mapping: Dict):
         """
         预处理，根据传入的 json 配置初始化成员变量
@@ -198,13 +173,13 @@ class BaseRule(ABC):
             args = self.mapping.get("torch_args", [])
             map_code.append("_args = []")
             for arg in args:
-                map_code.append(f"_args.extend([{self._format_arg(arg)}])")
+                map_code.append(f"_args.extend([{str(arg)}])")
         if "torch_kwargs" in self.mapping or "paddle_torch_args_map" in self.mapping:
             map_code.append("_kwargs = {}")
         if "torch_kwargs" in self.mapping:
             kwargs = self.mapping.get("torch_kwargs", {})
             for key, value in kwargs.items():
-                map_code.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+                map_code.append(f"_kwargs['{key}'] = {str(value)}")
         if "paddle_torch_args_map" in self.mapping:
             args_map = self.mapping.get("paddle_torch_args_map", {})
             map_code.append("for paddle_param, torch_param in {")
@@ -244,11 +219,11 @@ class GenericRule(BaseRule):
             pre.append("_args = []")
         if self.torch_args:
             for arg in self.torch_args:
-                pre.append(f"_args.extend([{self._format_arg(arg)}])")
+                pre.append(f"_args.extend([{str(arg)}])")
         pre.append("_kwargs = {}")
         if self.torch_kwargs:
             for key, value in self.torch_kwargs.items():
-                pre.append(f"_kwargs['{key}'] = {self._format_arg(value)}")
+                pre.append(f"_kwargs['{key}'] = {str(value)}")
         if self.args_map:
             pre.append("for paddle_param, torch_param in {")
             for paddle_param, torch_param in self.args_map.items():
@@ -428,7 +403,7 @@ elif (isinstance(axis, (list, tuple)) and len(axis) == 0) and not keepdim:
         code = Code(
             preprocess=defaults_code + map_code + pre.splitlines(),
             core=core.splitlines(),
-            postprocess = post.splitlines(),
+            postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
 
