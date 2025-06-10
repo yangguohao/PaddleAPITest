@@ -218,8 +218,7 @@ class APITestAccuracy(APITestBase):
             print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             return
-        print(paddle_output)
-        print(torch_output)
+
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm": 
             paddle_output = paddle_output[0]
         if self.api_config.api_name == "paddle.unique": 
