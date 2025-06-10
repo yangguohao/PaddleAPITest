@@ -14,7 +14,7 @@ TEST_MODE_ARGS=(
 	--accuracy=True
 	# --paddle_only=True
 	# --test_amp=True
-	# --test_cpu=False
+	# --test_cpu=True
 	# --use_cached_numpy=True
 )
 

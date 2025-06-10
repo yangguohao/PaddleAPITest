@@ -72,52 +72,45 @@ def estimate_timeout(api_config) -> float:
 
 def validate_gpu_options(options) -> tuple:
     """Validate and normalize GPU-related options."""
-    if options.num_gpus == 0 and not options.gpu_ids.strip():
-        return tuple()
-
-    if options.num_gpus < -1:
-        print(f"Invalid num_gpus: {options.num_gpus}, using all available.", flush=True)
-        options.num_gpus = -1
-
+    pynvml.nvmlInit()
+    device_count = pynvml.nvmlDeviceGetCount()
+    pynvml.nvmlShutdown()
+    if device_count == 0:
+        raise ValueError("No GPUs found")
     if options.gpu_ids:
         try:
             gpu_ids = [int(id) for id in options.gpu_ids.split(",") if id.strip()]
-            gpu_ids = sorted(list(set(gpu_ids)))
-            if not all(id >= 0 for id in gpu_ids) or -1 in gpu_ids:
-                gpu_ids = [-1]
         except ValueError:
-            print(
-                f"Invalid gpu_ids: {options.gpu_ids}, using all available.", flush=True
+            raise ValueError(f"Invalid gpu_ids: {options.gpu_ids} (int expected)")
+        if len(gpu_ids) != len(set(gpu_ids)):
+            raise ValueError(f"Invalid gpu_ids: {options.gpu_ids} (duplicates)")
+        gpu_ids = sorted(list(set(gpu_ids)))
+        if len(gpu_ids) > 1 and -1 in gpu_ids:
+            raise ValueError(f"Invalid gpu_ids: {options.gpu_ids} (-1 allowed only)")
+        if gpu_ids != [-1] and not all(0 <= id < device_count for id in gpu_ids):
+            raise ValueError(
+                f"Invalid gpu_ids: {options.gpu_ids} (valid range [0, {device_count}))"
             )
-            gpu_ids = [-1]
     else:
         gpu_ids = [-1]
-
-    if options.num_gpus > 0:
-        if gpu_ids == [-1]:
-            gpu_ids = list(range(options.num_gpus))
-        elif len(gpu_ids) != options.num_gpus:
-            print(
-                f"num_gpus {options.num_gpus} mismatches gpu_ids length, using {len(gpu_ids)}.",
-                flush=True,
-            )
-            options.num_gpus = len(gpu_ids)
-
-    if options.num_workers_per_gpu <= 0 and options.num_workers_per_gpu != -1:
-        print(
-            f"Invalid num_workers_per_gpu: {options.num_workers_per_gpu}, using all available.",
-            flush=True,
-        )
-        options.num_workers_per_gpu = -1
-
+    if (
+        options.num_gpus < -1
+        or options.num_gpus == 0
+        or options.num_gpus > device_count
+    ):
+        raise ValueError(f"Invalid num_gpus: {options.num_gpus}")
+    if options.num_gpus == -1:
+        options.num_gpus = device_count if gpu_ids == [-1] else len(gpu_ids)
+    if gpu_ids == [-1]:
+        gpu_ids = list(range(options.num_gpus))
+    elif len(gpu_ids) != options.num_gpus:
+        raise ValueError(f"num_gpus {options.num_gpus} mismatches gpu_ids {gpu_ids}")
+    if options.num_workers_per_gpu < -1 or options.num_workers_per_gpu == 0:
+        raise ValueError(f"Invalid num_workers_per_gpu: {options.num_workers_per_gpu}")
     if options.required_memory <= 0:
-        print(
-            f"Invalid required_memory: {options.required_memory}, setting to 10.0.",
-            flush=True,
-        )
-        options.required_memory = 10.0
-
+        raise ValueError(f"Invalid required_memory: {options.required_memory}")
     return tuple(gpu_ids)
+
 
 def parse_bool(value):
     if isinstance(value, str):
@@ -129,6 +122,7 @@ def parse_bool(value):
     else:
         raise ValueError(f"Invalid boolean value: {value} parsed from command line")
 
+
 def check_gpu_memory(
     gpu_ids, num_workers_per_gpu, required_memory
 ):  # required_memory in GB
@@ -138,9 +132,6 @@ def check_gpu_memory(
 
     pynvml.nvmlInit()
     try:
-        device_count = pynvml.nvmlDeviceGetCount()
-        gpu_ids = tuple(range(device_count)) if gpu_ids[0] == -1 else gpu_ids
-
         for gpu_id in gpu_ids:
             try:
                 handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_id)
