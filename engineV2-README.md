@@ -58,7 +58,7 @@
 | `--paddle_only`             | bool  | 运行 Paddle 测试（默认 False）                                       |
 | `--accuracy`                | bool  | 运行 Paddle vs Torch 精度测试（默认 False）                          |
 | `--paddle_cinn`             | bool  | 运行 CINN vs Dygraph 对比测试（默认 False）                          |
-| `--num_gpus`                | int   | 使用的 GPU 数量（默认 1，-1 动态最大）                               |
+| `--num_gpus`                | int   | 使用的 GPU 数量（默认 -1，-1 动态最大）                              |
 | `--num_workers_per_gpu`     | int   | 每 GPU 的 worker 进程数（默认 1，-1 动态最大）                       |
 | `--gpu_ids`                 | str   | 使用的 GPU 序号，以逗号分隔（默认 ""，"-1" 动态最大）                |
 | `--required_memory`         | float | 每 worker 进程预估使用显存 GB（默认 10.0）                           |
@@ -73,18 +73,25 @@
 
 **多 GPU 多进程模式**：
 ```bash
-python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=8 --num_workers_per_gpu=-1 >> "tester/api_config/test_log/log.log" 2>&1
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" >> "tester/api_config/test_log/log.log" 2>&1
+```
+
+```bash
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=4 --num_workers_per_gpu=2 --gpu_ids="4,5,6,7" >> "tester/api_config/test_log/log.log" 2>&1
 ```
 
 **多 GPU 单进程模式**：
 ```bash
-python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=8 >> "tester/api_config/test_log/log.log" 2>&1
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=2 >> "tester/api_config/test_log/log.log" 2>&1
+```
+
+```bash
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --gpu_ids="0,1" >> "tester/api_config/test_log/log.log" 2>&1
 ```
 
 **单 GPU 单进程模式**：
 ```bash
-export CUDA_VISIBLE_DEVICES="0"
-python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=0 >> "tester/api_config/test_log/log.log" 2>&1
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=1 --gpu_ids="7" >> "tester/api_config/test_log/log.log" 2>&1
 ```
 
 **使用 run.sh 脚本**：
@@ -92,14 +99,15 @@ python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_conf
 # chmod +x run.sh
 ./run.sh
 ```
-该脚本使用参数：NUM_GPUS=-1, NUM_WORKERS_PER_GPU=-1，在后台运行程序，可在修改 `run.sh` 参数后使用
+该脚本使用参数：`NUM_GPUS=-1, NUM_WORKERS_PER_GPU=-1, GPU_IDS="4,5,6,7"`，在后台运行程序，可在修改 `run.sh` 参数后使用
 
 ## 监控方法
 
 执行 `run.sh` 后可通过以下方式监控：
 
 - **GPU使用情况**：`watch -n 1 nvidia-smi`
-- **日志文件**：`ls -lh tester/api_config/test_log`
+- **日志目录**：`ls -lh tester/api_config/test_log`
+- **详细日志**：`tail -f tester/api_config/test_log/log.log`
 - **终止进程**：`kill <PYTHON_PID>`（PID 由 run.sh 显示）
 - **进程情况**：`watch -n 1 nvidia-smi --query-compute-apps=pid,process_name,used_memory,gpu_uuid --format=csv`
 

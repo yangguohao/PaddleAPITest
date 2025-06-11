@@ -336,7 +336,7 @@ def main():
     parser.add_argument(
         "--num_gpus",
         type=int,
-        default=1,
+        default=-1,
         help="Number of GPUs to use, -1 to use all available",
     )
     parser.add_argument(

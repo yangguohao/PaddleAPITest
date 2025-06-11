@@ -168,18 +168,17 @@ python engine.py --api_config_file=/host_home/wanghuan29/PaddleAPITest/tester/ap
 
 **多 GPU 多进程模式**：
 ```bash
-python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=8 --num_workers_per_gpu=-1 >> "tester/api_config/test_log/log.log" 2>&1
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" >> "tester/api_config/test_log/log.log" 2>&1
 ```
 
 **多 GPU 单进程模式**：
 ```bash
-python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=8 >> "tester/api_config/test_log/log.log" 2>&1
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --gpu_ids="0,1" >> "tester/api_config/test_log/log.log" 2>&1
 ```
 
 **单 GPU 单进程模式**：
 ```bash
-export CUDA_VISIBLE_DEVICES="0"
-python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=0 >> "tester/api_config/test_log/log.log" 2>&1
+python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_config_tmp.txt" --num_gpus=1 >> "tester/api_config/test_log/log.log" 2>&1
 ```
 
 **使用 run.sh 脚本**：
@@ -187,7 +186,7 @@ python engineV2.py --accuracy=True --api_config_file="tester/api_config/api_conf
 # chmod +x run.sh
 ./run.sh
 ```
-该脚本使用参数：`NUM_GPUS=-1, NUM_WORKERS_PER_GPU=-1`，在后台运行程序，可在修改 `run.sh` 参数后使用。说明文档详见：[engineV2-README.md](engineV2-README.md)
+该脚本使用参数：`NUM_GPUS=-1, NUM_WORKERS_PER_GPU=-1, GPU_IDS="4,5,6,7"`，在后台运行程序，可在修改 `run.sh` 参数后使用。说明文档详见：[engineV2-README.md](engineV2-README.md)
 
 #### C. engineV3
 
