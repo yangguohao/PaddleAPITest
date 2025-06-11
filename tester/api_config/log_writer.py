@@ -20,6 +20,7 @@ LOG_PREFIXES = {
     "timeout": "api_config_timeout",
     "crash": "api_config_crash",
     "oom": "api_config_oom",
+    "numpy_error": "api_config_numpy_error",
 }
 
 is_engineV2 = False
