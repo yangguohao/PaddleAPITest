@@ -56,7 +56,7 @@
 | `--paddle_only`             | bool  | 运行 Paddle 测试（默认 False）                                       |
 | `--accuracy`                | bool  | 运行 Paddle vs Torch 精度测试（默认 False）                          |
 | `--paddle_cinn`             | bool  | 运行 CINN vs Dygraph 对比测试（默认 False）                          |
-| `--num_gpus`                | int   | 使用的 GPU 数量（默认 0，-1 动态最大）                               |
+| `--num_gpus`                | int   | 使用的 GPU 数量（默认 1，-1 动态最大）                               |
 | `--num_workers_per_gpu`     | int   | 每 GPU 的 worker 进程数（默认 1，-1 动态最大）                       |
 | `--gpu_ids`                 | str   | 使用的 GPU 序号，以逗号分隔（默认 ""，"-1" 动态最大）                |
 | `--required_memory`         | float | 每 worker 进程预估使用显存 GB（默认 10.0）                           |
