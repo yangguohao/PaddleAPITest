@@ -892,10 +892,15 @@ class APITestBase:
         is_check_dtype = self.api_config.api_name not in not_check_dtype
 
         paddle_tensor = paddle_tensor.cpu().detach()
-        torch_tensor = torch_tensor.cpu().detach()
+        if not paddle_tensor.is_contiguous():
+            paddle_tensor = paddle_tensor.contiguous()
 
-        paddle_dlpack = paddle.utils.dlpack.to_dlpack(paddle_tensor)
-        converted_paddle_tensor = torch.utils.dlpack.from_dlpack(paddle_dlpack)
+        torch_tensor = torch_tensor.cpu().detach()
+        if not torch_tensor.is_contiguous():
+            torch_tensor = torch_tensor.contiguous()
+
+        paddle_dlpack = paddle.utils.dlpack.to_dlpack(paddle_tensor)  # type: ignore
+        converted_paddle_tensor = torch.utils.dlpack.from_dlpack(paddle_dlpack)  # type: ignore
 
         def error_msg(msg):
             return (
