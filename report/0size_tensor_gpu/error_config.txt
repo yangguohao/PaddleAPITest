@@ -11433,8 +11433,6 @@ paddle.nn.functional.max_unpool2d(Tensor([2, 4, 20, 0],"float64"), Tensor([2, 4,
 paddle.nn.functional.max_unpool2d(Tensor([2, 4, 20, 0],"float64"), Tensor([2, 4, 20, 20],"int32"), kernel_size=2, stride=None, padding=0, data_format="NCHW", output_size=None, name=None, )
 paddle.nn.functional.max_unpool2d(Tensor([2, 4, 21, 0],"float32"), Tensor([2, 4, 21, 0],"int32"), kernel_size=4, stride=2, padding=2, data_format="NCHW", output_size=None, name=None, )
 paddle.nn.functional.max_unpool2d(Tensor([2, 4, 21, 0],"float32"), Tensor([2, 4, 21, 21],"int32"), kernel_size=4, stride=2, padding=2, data_format="NCHW", output_size=None, name=None, )
-paddle.nn.functional.max_unpool2d(Tensor([2, 4, 21, 0],"float64"), Tensor([2, 4, 21, 0],"int32"), kernel_size=4, stride=2, padding=2, data_format="NCHW", output_size=None, name=None, )
-paddle.nn.functional.max_unpool2d(Tensor([2, 4, 21, 0],"float64"), Tensor([2, 4, 21, 21],"int32"), kernel_size=4, stride=2, padding=2, data_format="NCHW", output_size=None, name=None, )
 paddle.nn.functional.max_unpool2d(Tensor([3, 0, 5, 5],"float64"), Tensor([3, 0, 5, 5],"int32"), list[4,4,], stride=list[2,2,], padding=list[0,0,], data_format="NCHW", output_size=list[12,12,], name=None, )
 paddle.nn.functional.max_unpool2d(Tensor([3, 0, 5, 5],"float64"), Tensor([3, 0, 5, 5],"int64"), list[4,4,], stride=list[2,2,], padding=list[0,0,], data_format="NCHW", output_size=list[12,12,], name=None, )
 paddle.nn.functional.max_unpool2d(Tensor([3, 0, 5, 5],"float64"), Tensor([3, 2, 5, 5],"int32"), list[4,4,], stride=list[2,2,], padding=list[0,0,], data_format="NCHW", output_size=list[12,12,], name=None, )
