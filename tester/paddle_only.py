@@ -27,8 +27,8 @@ class APITestPaddleOnly(APITestBase):
                 print("gen_numpy_input failed")
                 return
         except Exception as err:
-            print("[paddle error]", self.api_config.config, "\n", str(err))
-            write_to_log("paddle_error", self.api_config.config)
+            print("[numpy error]", self.api_config.config, "\n", str(err))
+            write_to_log("numpy_error", self.api_config.config)
             return
 
         try:
