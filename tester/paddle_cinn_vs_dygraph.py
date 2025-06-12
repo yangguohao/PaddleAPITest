@@ -21,6 +21,15 @@ class APITestCINNVSDygraph(APITestBase):
         if not self.ana_paddle_api_info():
             print("ana_paddle_api_info failed", flush=True)
             return
+        
+        try:
+            if not self.gen_numpy_input():
+                print("gen_numpy_input failed")
+                return
+        except Exception as err:
+            print("[numpy error]", self.api_config.config, "\n", str(err))
+            write_to_log("numpy_error", self.api_config.config)
+            return
 
         try:
             def func_backward(result_outputs, inputs_list, result_outputs_grads):
