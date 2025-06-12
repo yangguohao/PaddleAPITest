@@ -4560,8 +4560,6 @@ paddle.nn.functional.adaptive_max_pool3d(x=Tensor([3104356, 3, 5, 7, 7],"float32
 paddle.nn.functional.adaptive_max_pool3d(x=Tensor([3104356, 3, 5, 7, 7],"float32"), output_size=list[3,3,3,], )
 paddle.nn.functional.adaptive_max_pool3d(x=Tensor([3104356, 3, 5, 7, 7],"float32"), output_size=list[None,3,None,], )
 paddle.nn.functional.adaptive_max_pool3d(x=Tensor([4194305, 2, 8, 8, 8],"float16"), output_size=4, )
-paddle.nn.functional.affine_grid(Tensor([2281701379, 2, 3],"float64"), Tensor([2281701379],"int32"), align_corners=False, )
-paddle.nn.functional.affine_grid(Tensor([2281701379, 2, 3],"float64"), Tensor([2281701379],"int32"), align_corners=True, )
 paddle.nn.functional.avg_pool1d(Tensor([13, 1, 330382100],"float32"), 25, 1, 0, True, False, None, )
 paddle.nn.functional.avg_pool1d(Tensor([13, 2753185, 120],"float32"), 25, 1, 0, True, False, None, )
 paddle.nn.functional.avg_pool1d(Tensor([16, 1, 268435456],"float32"), 25, 1, 0, True, False, None, )
