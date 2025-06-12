@@ -412,28 +412,26 @@ def main():
         # get config files
         if options.api_config_file_pattern:
             import glob
-            import re
 
-            if "*" in options.api_config_file_pattern:
-                all_files = glob.glob(options.api_config_file_pattern)
-                regex_pattern = re.sub(
-                    r"\*([^*]*)$", r"\\d+\1", options.api_config_file_pattern
+            config_files = []
+            patterns = options.api_config_file_pattern.split(",")
+            for pattern in patterns:
+                pattern = pattern.strip()
+                config_files.extend(glob.glob(pattern))
+            if not config_files:
+                print(
+                    f"No config files found: {options.api_config_file_pattern}",
+                    flush=True,
                 )
-                config_files = [
-                    file for file in all_files if re.fullmatch(regex_pattern, file)
-                ]
-                if not config_files:
-                    print(
-                        f"No config files found: {options.api_config_file_pattern}",
-                        flush=True,
-                    )
-                    return
-            else:
-                config_files = [options.api_config_file_pattern]
+                return
+            config_files.sort()
             print("Config files to be tested:", flush=True)
-            for i, config_file in enumerate(sorted(config_files), 1):
+            for i, config_file in enumerate(config_files, 1):
                 print(f"{i}. {config_file}", flush=True)
         else:
+            if not os.path.exists(options.api_config_file):
+                print(f"No config file found: {options.api_config_file}", flush=True)
+                return
             config_files = [options.api_config_file]
 
         # read checkpoint
@@ -448,11 +446,9 @@ def main():
                     lines = [line.strip() for line in f if line.strip()]
                     api_config_count += len(lines)
                     api_configs.update(lines)
-            except FileNotFoundError:
-                print(
-                    f"Error: config file {config_file} not found",
-                    flush=True,
-                )
+            except Exception as e:
+                print(f"Failed to read config file {config_file}: {e}", flush=True)
+                return
         print(api_config_count, "cases in total.", flush=True)
         dup_case = api_config_count - len(api_configs)
         if dup_case > 0:

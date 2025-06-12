@@ -1,4 +1,4 @@
-# gpu_0size 测试流程
+# gpu_accuracy 测试流程
 
 ### 1. 准备测试环境
 
@@ -28,31 +28,44 @@
 
 ### 2. 准备测试集
 
-0 size 的配置集位于目录：`tester/api_config/7_0_size`
-
+accuracy 的配置集位于目录：`tester/api_config/5_accuracy`
 ```bash
-tester/api_config/7_0_size
-├── 0_size_tensor_1_8_1.txt
-├── 0_size_tensor_1_8_2.txt
-├── 0_size_tensor_1_8_invalid_1.txt
-├── 0_size_tensor_1_8_invalid_2.txt
-├── 0_size_tensor_1_8_invalid_3.txt
-├── 0_size_tensor_error_0319_cpu_accuracy.txt
-├── 0_size_tensor_error_0319_cpu_paddleonly.txt
-├── 0_size_tensor_error_0319_gpu_accuracy.txt
-└── 0_size_tensor_error_0319_gpu_paddleonly.txt
+tester/api_config/5_accuracy
+├── accuracy_1.txt
+├── accuracy_2.txt
+├── accuracy_3.txt
+├── accuracy_4.txt
+├── accuracy_5.txt
+├── accuracy_6.txt
+├── accuracy_7.txt
+├── accuracy_8.txt
+├── accuracy_cpu_error.txt
+├── accuracy_cpu_kernel.txt
+├── accuracy_gpu_error_dtype_diff.txt
+├── accuracy_gpu_error_grads_diff.txt
+├── accuracy_gpu_error.txt
+└── accuracy_gpu_error_uncertain.txt
+```
+
+以及 accuracy amp 的配置集：`tester/api_config/5_accuracy`
+```bash
+tester/api_config/6_accuracy_amp
+├── accuracy_amp_cpu_error.txt
+├── accuracy_amp_cpu_kernel.txt
+├── accuracy_amp_gpu_error_dtype_diff.txt
+└── accuracy_amp_gpu_error.txt
 ```
 
 ### 3. 准备测试脚本
 
 `run-example.sh` 是与 engineV2 配套的执行脚本，可以非常方便地修改测试参数并执行测试
 
-复制 `run-example.sh`，重命名为 `run_0_gpu.sh`
+复制 `run-example.sh`，重命名为 `run_gpu.sh`
 ```bash
-cp run-example.sh run_0_gpu.sh
+cp run-example.sh run_gpu.sh
 ```
 
-以测试 0 size gpu accuracy 为例，文件内容可修改为：
+以测试 gpu accuracy 为例，文件内容可修改为：
 ```bash
 #!/bin/bash
 
@@ -61,19 +74,19 @@ cp run-example.sh run_0_gpu.sh
 
 # 配置参数
 # NUM_GPUS!=0 时，engineV2 不受外部 "CUDA_VISIBLE_DEVICES" 影响
-# FILE_INPUT="tester/api_config/7_0_size/0_size_tensor_1_8_1.txt"
-FILE_PATTERN="tester/api_config/7_0_size/0_size_tensor_1_8_*.txt" # 测试集 glob 路径
-LOG_DIR="tester/api_config/test_log_0_size_gpu_accuracy" # 测试日志目录
+# FILE_INPUT="tester/api_config/5_accuracy/accuracy_1.txt"
+FILE_PATTERN="tester/api_config/5_accuracy/accuracy_[1-8].txt" # 测试集 glob 路径
+LOG_DIR="tester/api_config/test_log_gpu_accuracy" # 测试日志目录
 NUM_GPUS=-1 # 指定 GPU 数量，-1 表示使用所有 GPU
-NUM_WORKERS_PER_GPU=15 # 每个 GPU 使用 15 个 worker（建议不超过 15 个，否则内存会爆）
+NUM_WORKERS_PER_GPU=-1 # 指定每个 GPU 的工作进程数，-1 表示使用最大进程数
 GPU_IDS="-1" # 指定 GPU 列表，-1 表示使用所有 GPU
-REQUIRED_MEMORY=5 # 每个 worker 预估所需显存 GB
+# REQUIRED_MEMORY=10 # 可通过调整单个工作进程预估显存 GB，修改最大进程数
 
 TEST_MODE_ARGS=(
 	--accuracy=True
 	# --paddle_only=True
     # --paddle_cinn=True
-	# --test_amp=True
+	# --test_amp=True # 启用 AMP 测试模式
 	# --test_cpu=True
 	# --use_cached_numpy=True
 )
@@ -88,7 +101,7 @@ PARALLEL_ARGS=(
     --num_gpus="$NUM_GPUS"
     --num_workers_per_gpu="$NUM_WORKERS_PER_GPU"
     --gpu_ids="$GPU_IDS"
-    --required_memory="$REQUIRED_MEMORY"
+    # --required_memory="$REQUIRED_MEMORY"
 )
 
 mkdir -p "$LOG_DIR" || {
@@ -124,27 +137,45 @@ exit 0
 # watch -n 1 nvidia-smi --query-compute-apps=pid,process_name,used_memory,gpu_uuid --format=csv
 ```
 
-若需要测试 0 size gpu paddleonly，可修改 `TEST_MODE_ARGS` 为：
+若需要测试 gpu paddleonly，可修改 `TEST_MODE_ARGS` 为：
 ```bash
 TEST_MODE_ARGS=(
     --paddle_only=True
 )
 ```
 
+若需要测试 amp gpu accuracy，可修改 `TEST_MODE_ARGS` 为：
+```bash
+TEST_MODE_ARGS=(
+    --accuracy=True
+    --test_amp=True
+)
+```
+
+若需要测试 amp gpu paddleonly，可修改 `TEST_MODE_ARGS` 为：
+```bash
+TEST_MODE_ARGS=(
+    --paddle_only=True
+    --test_amp=True
+)
+```
+
+同时注意修改 输入路径 `FILE_INPUT` / `FILE_PATTERN`、输出路径 `LOG_DIR`
+
 ### 4. 执行测试
 
-若不使用 `run_0_gpu.sh`，以测试 0 size gpu accuracy 为例，可直接执行以下命令：（建议使用 nohup 避免终端终止时停止主进程）
+若不使用 `run_gpu.sh`，以测试 gpu accuracy 为例，可直接执行以下命令：（建议使用 nohup 避免终端终止时停止主进程）
 ```bash
-python engineV2.py --api_config_file_pattern="tester/api_config/7_0_size/0_size_tensor_1_8_*.txt" --accuracy=True --num_gpus=-1 --num_workers_per_gpu=15 --required_memory=5 --log_dir="tester/api_config/test_log_0_size_gpu_accuracy" >> "tester/api_config/test_log_0_size_gpu_accuracy/log.log" 2>&1
+python engineV2.py --api_config_file_pattern="tester/api_config/5_accuracy/accuracy_[1-8].txt" --accuracy=True --num_gpus=-1 --num_workers_per_gpu=-1 --log_dir="tester/api_config/test_log_gpu_accuracy" >> "tester/api_config/test_log_gpu_accuracy/log.log" 2>&1
 ```
 
-或者直接运行 run_0_gpu.sh：
+或者直接运行 run_gpu.sh：
 ```bash
-# chmod +x run_0_gpu.sh
-./run_0_gpu.sh
+# chmod +x run_gpu.sh
+./run_gpu.sh
 ```
 
-最终的所有测试结果会保存在 `tester/api_config/test_log_0_size_gpu_accuracy` 目录下，包括：
+最终的所有测试结果会保存在 `tester/api_config/test_log_gpu_accuracy` 目录下，包括：
 - 检查点文件 checkpoint.txt
 - 以 api_config_ 开头的配置集文件
 - 测试日志文件 log.log
@@ -155,7 +186,7 @@ python engineV2.py --api_config_file_pattern="tester/api_config/7_0_size/0_size_
 apitest 拥有检查点 checkpoint 机制，保存了所有已经测试过的配置。若希望继续测试，可直接运行脚本，无需重新测试已经测过的配置，**切勿删除测试结果目录**
 
 若存在 skip、oom、crash、timeout 等异常配置，且希望重新测试它们，可使用 `tools/retest_remover.py` 小工具：
-- 修改 `TEST_LOG_PATH` 为 `tester/api_config/test_log_0_size_gpu_accuracy`
+- 修改 `TEST_LOG_PATH` 为 `tester/api_config/test_log_gpu_accuracy`
 - （可选）决定 `LOG_PREFIXES` 中需要重测的配置集
 - 直接运行
 
@@ -163,8 +194,8 @@ apitest 拥有检查点 checkpoint 机制，保存了所有已经测试过的配
 
 ### 5. 整理测试结果
 
-若需要整理出具 error 报告，可使用 `tools/error_stat_0_size.py` 小工具：
-- 修改 `TEST_LOG_PATH` 为 `tester/api_config/test_log_0_size_gpu_accuracy`
+若需要整理出具 error 报告，可使用 `tools/error_stat.py` 小工具：
+- 修改 `TEST_LOG_PATH` 为 `tester/api_config/test_log_gpu_accuracy`
 - （可选）修改 `# classify logs` 处的日志分类规则，可进行无效日志筛选
 - （可选）修改 `# error logs` 处的错误日志列表，可进行错误日志筛选
 - 直接运行
@@ -177,3 +208,12 @@ apitest 拥有检查点 checkpoint 机制，保存了所有已经测试过的配
 - `pass_config.txt`
 - `pass_log.log`
 - `invalid_config.txt`
+
+也可使用 `tools/error_stat_split.py` 生成更详细的分类错误报告，用法一致，可在原测试结果目录中生成以下文件：
+- `paddle_error_api.txt`
+- `paddle_error_config.txt`
+- `paddle_error_log.log`
+- `torch_error_api.txt`
+- `torch_error_config.txt`
+- `torch_error_log.log`
+- ...
