@@ -11,6 +11,7 @@ from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
 from tester.api_config.log_writer import read_log, write_to_log
 import torch
 import paddle
+from engineV2 import parse_bool
 
 def main():
     parser = argparse.ArgumentParser(
@@ -45,9 +46,19 @@ def main():
         default="",
         type=str,
     )
+    parser.add_argument(
+        "--test_cpu",
+        type=parse_bool,
+        default=False,
+        help="Whether to test CPU mode",
+    )
+
     options = parser.parse_args()
     set_cfg(options)  # Set the command line arguments in the config module
-    
+
+    if options.test_cpu:
+       paddle.device.set_device("cpu")
+   
     test_class = APITestAccuracy
     if options.paddle_only:
         test_class = APITestPaddleOnly
