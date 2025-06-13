@@ -382,6 +382,7 @@ def main():
         from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                             APITestPaddleOnly)
 
+        options.api_config = options.api_config.strip()
         print(f"{datetime.now()} test begin: {options.api_config}", flush=True)
         try:
             api_config = APIConfig(options.api_config)
