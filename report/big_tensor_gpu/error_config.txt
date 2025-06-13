@@ -2214,7 +2214,6 @@ paddle.histogramdd(Tensor([536870913, 2, 2],"float64"), bins=list[3,4,], weights
 paddle.histogramdd(Tensor([536870913, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=None, density=True, )
 paddle.histogramdd(Tensor([536870913, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=False, )
 paddle.histogramdd(Tensor([536870913, 2, 2],"float64"), bins=list[3,4,], weights=None, ranges=list[1.0,10.0,1.0,100.0,], density=True, )
-paddle.increment(x=Tensor([2281701379],"int64"), value=1.0, )
 paddle.incubate.nn.functional.blha_get_max_len(Tensor([10],"int32"), Tensor([10],"int32"), Tensor([2281701379],"float32"), )
 paddle.incubate.nn.functional.blha_get_max_len(Tensor([10],"int32"), Tensor([2281701379],"int32"), Tensor([10],"float32"), )
 paddle.incubate.nn.functional.blha_get_max_len(Tensor([2281701379],"int32"), Tensor([10],"int32"), Tensor([10],"float32"), )
