@@ -102,17 +102,28 @@ for content in logs:
         or "Too large tensor to get cached numpy" in content
         or "config_analyzer.py" in content
         or "output type diff error" in content
+        or "(InvalidArgument)" in content
+        or "(Unimplemented)" in content
+        or "should be" in content
+        or "must equal" in content
+        or "received:" in content
+        or "incorrect shape" in content
+        or "variance is of incorrect shape" in content
+        or "'numpy.int64' object is not iterable" in content
+        or "low >= high" in content
+        or "The data type of input Variable" in content
+        or "should satisfy" in content
+        or "[numpy error]" in content
     ):
         invalid_logs[key] = content
     else:
         lines = content.split("\n")
         if len(lines) == 1 or len(lines) == 2 and not lines[1].startswith("["):
             invalid_logs[key] = content
+        elif key in pass_configs:
+            pass_logs[key] = content
         else:
-            if key in pass_configs:
-                pass_logs[key] = content
-            else:
-                error_logs[key] = content
+            error_logs[key] = content
 print(f"Read {len(pass_logs)} pass logs", flush=True)
 print(f"Read {len(error_logs)} error logs", flush=True)
 if invalid_logs:
@@ -158,7 +169,7 @@ ERROR_FILES = [
     "api_config_torch_error.txt",
     "api_config_paddle_to_torch_failed.txt",
     "api_config_timeout.txt",
-    # "api_config_skip.txt",
+    "api_config_skip.txt",
 ]
 
 # get all error api and config
