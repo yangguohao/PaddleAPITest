@@ -4828,7 +4828,8 @@ result = torchaudio.functional.rnnt_loss(
         logit_lengths=input_lengths,
         target_lengths=label_lengths,
         blank=blank,
-        reduction=reduction
+        reduction=reduction,
+        fused_log_softmax=False,
     )
 """
         code = Code(core=core.splitlines())
