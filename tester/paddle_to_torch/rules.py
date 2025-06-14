@@ -4821,6 +4821,7 @@ import torchaudio
 blank = locals().get('blank', 0)
 fastemit_lambda = locals().get('fastemit_lambda', 0.001)
 reduction = locals().get('reduction', 'mean')
+fused_log_softmax = locals().get('fused_log_softmax', True)
 
 result = torchaudio.functional.rnnt_loss(
         logits=input,
@@ -4829,7 +4830,7 @@ result = torchaudio.functional.rnnt_loss(
         target_lengths=label_lengths,
         blank=blank,
         reduction=reduction,
-        fused_log_softmax=False,
+        fused_log_softmax=fused_log_softmax,
     )
 """
         code = Code(core=core.splitlines())
