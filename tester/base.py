@@ -482,8 +482,6 @@ class APITestBase:
                 self.paddle_args[3] = "gels"
             elif "driver" in self.paddle_kwargs:
                 self.paddle_kwargs["driver"] = "gels"
-        if self.api_config.api_name == "paddle.Tensor.median":
-            self.paddle_kwargs["mode"] = "min"
 
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
