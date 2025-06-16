@@ -12,6 +12,16 @@ from tester.api_config.log_writer import read_log, write_to_log
 import torch
 import paddle
 
+def parse_bool(value):
+    if isinstance(value, str):
+        value = value.lower()
+        if value in ["true", "1", "yes", "y"]:
+            return True
+        elif value in ["false", "0", "no", "n"]:
+            return False
+    else:
+        raise ValueError(f"Invalid boolean value: {value} parsed from command line")
+
 def main():
     parser = argparse.ArgumentParser(
         description='API Test'
@@ -45,9 +55,19 @@ def main():
         default="",
         type=str,
     )
+    parser.add_argument(
+        "--test_cpu",
+        type=parse_bool,
+        default=False,
+        help="Whether to test CPU mode",
+    )
+
     options = parser.parse_args()
     set_cfg(options)  # Set the command line arguments in the config module
-    
+
+    if options.test_cpu:
+       paddle.device.set_device("cpu")
+   
     test_class = APITestAccuracy
     if options.paddle_only:
         test_class = APITestPaddleOnly
