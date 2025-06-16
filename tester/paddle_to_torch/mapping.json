@@ -1787,7 +1787,7 @@
         "torch_api": "torch.nn.functional.log_softmax",
         "paddle_torch_args_map": {
             "x": "input",
-            "dim": "dim",
+            "axis": "dim",
             "dtype": "dtype"
         }
     },
