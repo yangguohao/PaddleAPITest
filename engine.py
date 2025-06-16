@@ -11,7 +11,16 @@ from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
 from tester.api_config.log_writer import read_log, write_to_log
 import torch
 import paddle
-from engineV2 import parse_bool
+
+def parse_bool(value):
+    if isinstance(value, str):
+        value = value.lower()
+        if value in ["true", "1", "yes", "y"]:
+            return True
+        elif value in ["false", "0", "no", "n"]:
+            return False
+    else:
+        raise ValueError(f"Invalid boolean value: {value} parsed from command line")
 
 def main():
     parser = argparse.ArgumentParser(
