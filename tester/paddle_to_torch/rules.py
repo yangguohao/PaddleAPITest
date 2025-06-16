@@ -52,10 +52,7 @@ class Code:
         """代码编译方法"""
         if not code_lines:
             return None
-        try:
-            return compile("\n".join(code_lines), "<string>", "exec")
-        except SyntaxError as e:
-            raise SyntaxError(f"Syntax error in code: {e.msg}") from e
+        return compile("\n".join(code_lines), "<string>", "exec")
 
     def is_valid(self) -> bool:
         """检查代码是否编译成功"""
@@ -1468,19 +1465,13 @@ class DiagRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, _ = self.apply_generic()
         core = """
-if x.ndim == 1:
-    out = torch.diag(x, diagonal=offset)
-    if padding_value != 0:
-        diag_mask = torch.diag(torch.ones_like(x), diagonal=offset)
-        full_shape = out.shape
-        diag_mask = torch.diag(torch.ones(x.shape[0], dtype=torch.bool), diagonal=offset)
-        diag_mask = diag_mask[:full_shape[0], :full_shape[1]]
-        out = torch.where(diag_mask.bool(), out, torch.tensor(padding_value, dtype=out.dtype, device=out.device))
-    result = out
-elif x.ndim == 2:
-    result = torch.diagonal(x, offset=offset)
+result = torch.diag(x, diagonal=offset)
+if x.ndim == 1 and padding_value != 0:
+    padding_value = torch.tensor(padding_value, dtype=x.dtype)
+    diag_mask = torch.diag(torch.ones_like(x), diagonal=offset)
+    result = torch.where(diag_mask.bool(), result, padding_value)
 """
-        code = Code(core=defaults_code + core.splitlines())
+        code = Code(preprocess=defaults_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
