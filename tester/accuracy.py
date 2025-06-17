@@ -234,6 +234,8 @@ class APITestAccuracy(APITestBase):
         if self.api_config.api_name in {"paddle.strided_slice", "paddle.vander"} and any(s < 0 for s in paddle_output.strides):
             # torch's from_dlpack now don't support negative strides
             paddle_output = paddle_output.contiguous()
+
+        paddle_output_cache = []
         if self.api_config.api_name == "paddle.linalg.eigh":
             # The output of eigen vectors are not unique, because multiplying an eigen vector by -1 in the real case 
             # or by e^(i*\theta) in the complex case produces another set of valid eigen vectors of the matrix.
@@ -241,20 +243,22 @@ class APITestAccuracy(APITestBase):
             # are all the same and whether the |coef| == 1 for simplicity.
             paddle_output, torch_output = list(paddle_output), list(torch_output)
             paddle_output_cache = [i.clone() for i in paddle_output]
-            torch_output_cache = [i.clone() for i in torch_output]
             eigvector_len = paddle_output[1].shape[-2]
             paddle_eigvectors = paddle_output.pop(1).matrix_transpose().reshape([-1, eigvector_len])
             torch_eigvectors = torch_output.pop(1).transpose(-1, -2).reshape((-1, eigvector_len))
             for i in range(paddle_eigvectors.shape[0]):
                 coef_vector = paddle.to_tensor(paddle_eigvectors[i].numpy()/torch_eigvectors[i].numpy(), dtype=paddle_eigvectors[i].dtype)
-                abs_coef_vector = coef_vector.abs().astype("float64")
                 coef_0 = paddle_eigvectors[i].numpy()[0]/torch_eigvectors[i].numpy()[0]
                 coef_vector_approx = torch.tensor([coef_0] * eigvector_len)
-                unitary_vector = torch.tensor([1.0] * eigvector_len, dtype=torch.float64)
-                paddle_output.append(coef_vector)
-                paddle_output.append(abs_coef_vector)
-                torch_output.append(coef_vector_approx)
-                torch_output.append(unitary_vector)
+                abs_coef = coef_vector.abs().astype("float64")[0]
+                one = torch.tensor(1.0, dtype=torch.float64)
+                try:
+                    self.torch_assert_accuracy(coef_vector, coef_vector_approx, 0.1, 0.1)
+                    self.torch_assert_accuracy(abs_coef, one, 1e-2, 1e-2)
+                except Exception as err:
+                    print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
+                    write_to_log("accuracy_error", self.api_config.config)
+                    return
 
 
         if isinstance(paddle_output, paddle.Tensor):
@@ -358,7 +362,6 @@ class APITestAccuracy(APITestBase):
 
         if self.api_config.api_name == "paddle.linalg.eigh":
             paddle_output = paddle_output_cache
-            torch_output = torch_output_cache
 
         if self.need_check_grad() and torch_grad_success:
             try:
