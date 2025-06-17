@@ -4797,6 +4797,8 @@ else:
     result = x
 """
             post = """
+if axis is None and keepdim:
+    result = result.view([1] * x.dim())
 if isinstance(axis, tuple) and not keepdim:
     result = torch.squeeze(result, dim=axis)
 """
