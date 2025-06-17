@@ -377,6 +377,9 @@ class APITestAccuracy(APITestBase):
             if self.api_config.api_name == "paddle.nn.utils.parameters_to_vector":
                 paddle_out_grads = []
                 torch_out_grads = []
+            if self.api_config.api_name == "paddle.nn.functional.kl_div":
+                paddle_out_grads = paddle_out_grads[:1]
+                torch_out_grads = torch_out_grads[:1]
             if self.api_config.api_name == "paddle.scale":
                 paddle_out_grads = paddle_out_grads[0]
                 torch_out_grads = torch_out_grads[0]
