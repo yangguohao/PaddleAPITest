@@ -219,8 +219,6 @@ class APITestAccuracy(APITestBase):
             write_to_log("paddle_error", self.api_config.config)
             return
 
-        paddle_output_cache = []
-        torch_output_cache = []
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm": 
             paddle_output = paddle_output[0]
         if self.api_config.api_name == "paddle.unique": 
