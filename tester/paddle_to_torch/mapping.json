@@ -3100,9 +3100,7 @@
     },
     "paddle.Tensor.median": {
         "torch_api": "torch.Tensor.median",
-        "paddle_torch_args_map": {
-            "keepdim": "keepdim"
-        }
+        "Rule": "MedianRule"
     },
     "paddle.Tensor.mm": {
         "torch_api": "torch.Tensor.mm",
