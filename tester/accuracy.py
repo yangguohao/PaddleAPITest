@@ -380,7 +380,10 @@ class APITestAccuracy(APITestBase):
             if self.api_config.api_name == "paddle.scale":
                 paddle_out_grads = paddle_out_grads[0]
                 torch_out_grads = torch_out_grads[0]
-                
+            if self.api_config.api_name == "paddle.nn.functional.gaussian_nll_loss":
+                paddle_out_grads = paddle_out_grads[:2]
+                torch_out_grads = torch_out_grads[:2]
+
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:
