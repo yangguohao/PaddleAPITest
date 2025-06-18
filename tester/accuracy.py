@@ -243,6 +243,26 @@ class APITestAccuracy(APITestBase):
             # torch's from_dlpack now don't support negative strides
             paddle_output = paddle_output.contiguous()
 
+        if self.api_config.api_name == "paddle.linalg.eigh":
+            # The output of eigen vectors are not unique, because multiplying an eigen vector by -1 in the real case 
+            # or by e^(i*\theta) in the complex case produces another set of valid eigen vectors of the matrix.
+            # So we test whether the elements of each coef_vector (i.e. paddle_output / torch_output for each eigen vector) 
+            # are all the same and whether the |coef| == 1 for simplicity.
+            paddle_output, torch_output = list(paddle_output), list(torch_output)
+            eigvector_len = paddle_output[1].shape[-2]
+            paddle_eigvectors = paddle_output.pop(1).matrix_transpose().reshape([-1, eigvector_len])
+            torch_eigvectors = torch_output.pop(1).transpose(-1, -2).reshape((-1, eigvector_len))
+            for i in range(paddle_eigvectors.shape[0]):
+                coef_vector = paddle.to_tensor(paddle_eigvectors[i].numpy()/torch_eigvectors[i].numpy(), dtype=paddle_eigvectors[i].dtype)
+                coef_vector = coef_vector.round(2)
+                coef_0 = paddle_eigvectors[i].numpy()[0]/torch_eigvectors[i].numpy()[0]
+                coef_vector_approx = torch.tensor([coef_0] * eigvector_len)
+                abs_coef = coef_vector.abs().astype("float64")[0]
+                one = torch.tensor(1.0, dtype=torch.float64)
+                paddle_output.append([coef_vector, abs_coef])
+                torch_output.append([coef_vector_approx, one])
+
+
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
                 try:

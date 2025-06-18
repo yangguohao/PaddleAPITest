@@ -1106,6 +1106,7 @@ class APITestBase:
             "distributed_push_sparse",
             "dpsgd",
             "edit_distance",
+            "eigh",
             "eigvals",
             "embedding_grad_dense",
             "embedding_with_eltwise_add_xpu",
