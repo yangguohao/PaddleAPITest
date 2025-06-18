@@ -635,7 +635,7 @@ class TensorConfig:
                             k_shape[-2] = 2 
                     else:
                         k_shape = [2, 8, 2, 8] 
-                    new_k = TensorConfig(k_shape, "float32")
+                    new_k = TensorConfig(k_shape, original_dtype)
                     if len(api_config.args) > 1:
                         api_config.args[1] = new_k
                     elif "k" in api_config.kwargs:
@@ -652,7 +652,7 @@ class TensorConfig:
                             v_shape[-2] = 2 
                     else:
                         v_shape = [2, 8, 2, 8]  
-                    new_v = TensorConfig(v_shape, "float32")
+                    new_v = TensorConfig(v_shape, original_dtype)
                     if len(api_config.args) > 2:
                         api_config.args[2] = new_v
                     elif "v" in api_config.kwargs:
