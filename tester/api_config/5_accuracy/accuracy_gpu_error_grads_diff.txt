@@ -15959,3 +15959,7 @@ paddle.nn.functional.kl_div(Tensor([5, 2],"float32"), label=Tensor([5, 2],"float
 paddle.nn.functional.kl_div(Tensor([5, 2],"float64"), Tensor([5, 2],"float64"), "mean", False, )
 paddle.nn.functional.kl_div(Tensor([],"float64"), Tensor([],"float64"), "batchmean", False, )
 paddle.nn.functional.kl_div(input=Tensor([32, 128, 128],"float32"), label=Tensor([32, 128, 128],"float32"), reduction="batchmean", )
+paddle.cdist(Tensor([8550, 0],"float32"), Tensor([1, 0],"float32"), p=1, )
+paddle.cdist(Tensor([8550, 4],"float32"), Tensor([0, 4],"float32"), p=1, )
+paddle.cdist(Tensor([900, 0],"float32"), Tensor([1, 0],"float32"), p=1, )
+paddle.cdist(Tensor([900, 4],"float32"), Tensor([0, 4],"float32"), p=1, )
