@@ -12840,6 +12840,7 @@ ACTUAL: array([[-0.237473,  0.376778,  1.      ],
 DESIRED: array([[ 1.      ,  0.376778, -0.302522],
 [ 0.247586,  1.      , -0.091576],
 [-0.26609 ,  0.128507,  1.      ]], dtype=float32)
+
 2025-04-27 03:43:19.583358 test begin: paddle.Tensor.fill_diagonal_(Tensor([3, 3],"float32"), 4, 1, False, )
 [accuracy error] paddle.Tensor.fill_diagonal_(Tensor([3, 3],"float32"), 4, 1, False, )
 Not equal to tolerance rtol=0.01, atol=0.01
