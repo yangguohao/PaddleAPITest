@@ -612,9 +612,7 @@ class BroadcastShapeRule(BaseRule):
 x_shape = locals().get('x_shape')
 y_shape = locals().get('y_shape')
 """
-        core = """
-result = torch.broadcast_shapes(x_shape, y_shape)
-"""
+        core = "result = torch.broadcast_shapes(x_shape, y_shape)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, "result")
 
@@ -1504,9 +1502,7 @@ axis = locals().get('axis')
 training = locals().get('training')
 mode = locals().get('mode')
 """
-        core = """
-result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)
-"""
+        core = "result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
 
@@ -1522,9 +1518,7 @@ data_format = locals().get('data_format')
 if data_format == "NHWC":
     x = x.permute(0, 3, 1, 2)
 """
-        core = """
-result = torch.nn.functional.dropout2d(input=x, p=float(p), training=training)
-"""
+        core = "result = torch.nn.functional.dropout2d(input=x, p=float(p), training=training)"
         post = """
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
@@ -1544,9 +1538,7 @@ data_format = locals().get('data_format')
 if data_format == "NDHWC":
     x = x.permute(0, 4, 1, 2, 3)
 """
-        core = """
-result = torch.nn.functional.dropout3d(input=x, p=float(p), training=training)
-"""
+        core = "result = torch.nn.functional.dropout3d(input=x, p=float(p), training=training)"
         post = """
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
@@ -6331,9 +6323,7 @@ class __Pow__Rule(BaseRule):
 tensor = locals().get('self')
 other = locals().get('y')
 """
-        core = """
-result = tensor.__pow__(other)
-"""
+        core = "result = tensor.__pow__(other)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
@@ -6362,7 +6352,7 @@ else:
     # logical right shift 
     result = logical_right_shift(tensor, other)
 """
-        code = Code(preprocess=pre.splitlines(), core=[core])
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
