@@ -806,7 +806,7 @@ for paddle_param, torch_param in {
 }.items():
     if paddle_param in locals() and not locals()[paddle_param] is None:
         _kwargs[torch_param] = locals()[paddle_param]
-_kwargs['log_probs'] = torch.nn.functional.log_softmax(_kwargs['log_probs'])
+_kwargs['log_probs'] = torch.nn.functional.log_softmax(_kwargs['log_probs'], dim=-1)
 _kwargs['zero_infinity'] = True
 """
         core = """
