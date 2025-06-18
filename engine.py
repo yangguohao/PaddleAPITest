@@ -61,13 +61,24 @@ def main():
         default=False,
         help="Whether to test CPU mode",
     )
-
+    parser.add_argument(
+        "--atol",
+        type=float,
+        default=1e-2,
+        help="Absolute tolerance for accuracy tests",
+    )
+    parser.add_argument(
+        "--rtol",
+        type=float,
+        default=1e-2,
+        help="Relative tolerance for accuracy tests",
+    )
     options = parser.parse_args()
     set_cfg(options)  # Set the command line arguments in the config module
 
     if options.test_cpu:
-       paddle.device.set_device("cpu")
-   
+        paddle.device.set_device("cpu")
+
     test_class = APITestAccuracy
     if options.paddle_only:
         test_class = APITestPaddleOnly
@@ -85,7 +96,15 @@ def main():
             print("[config parse error]", options.api_config, str(err))
             return
 
-        case = test_class(api_config, options.test_amp)
+        if options.accuracy:
+            case = test_class(
+                api_config,
+                test_amp=options.test_amp,
+                atol=options.atol,
+                rtol=options.rtol,
+            )
+        else:
+            case = test_class(api_config, test_amp=options.test_amp)
         case.test()
         case.clear_tensor()
         del case
@@ -108,7 +127,15 @@ def main():
                 print("[config parse error]", api_config_str, str(err))
                 continue
 
-            case = test_class(api_config, options.test_amp)
+            if options.accuracy:
+                case = test_class(
+                    api_config,
+                    test_amp=options.test_amp,
+                    atol=options.atol,
+                    rtol=options.rtol,
+                )
+            else:
+                case = test_class(api_config, test_amp=options.test_amp)
             try:
                 case.test()
             except Exception as err:

@@ -889,7 +889,7 @@ class APITestBase:
             # ),
         )
 
-    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol):
+    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol=1e-2, rtol=1e-2):
         is_check_dtype = self.api_config.api_name not in not_check_dtype
 
         if not paddle_tensor.is_contiguous():
