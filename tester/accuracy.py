@@ -246,17 +246,13 @@ class APITestAccuracy(APITestBase):
             torch_eigvectors = torch_output.pop(1).transpose(-1, -2).reshape((-1, eigvector_len))
             for i in range(paddle_eigvectors.shape[0]):
                 coef_vector = paddle.to_tensor(paddle_eigvectors[i].numpy()/torch_eigvectors[i].numpy(), dtype=paddle_eigvectors[i].dtype)
+                coef_vector = coef_vector.round(2)
                 coef_0 = paddle_eigvectors[i].numpy()[0]/torch_eigvectors[i].numpy()[0]
                 coef_vector_approx = torch.tensor([coef_0] * eigvector_len)
                 abs_coef = coef_vector.abs().astype("float64")[0]
                 one = torch.tensor(1.0, dtype=torch.float64)
-                try:
-                    self.torch_assert_accuracy(coef_vector, coef_vector_approx, 0.1, 0.1)
-                    self.torch_assert_accuracy(abs_coef, one, 1e-2, 1e-2)
-                except Exception as err:
-                    print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
-                    write_to_log("accuracy_error", self.api_config.config)
-                    return
+                paddle_output.append([coef_vector, abs_coef])
+                torch_output.append([coef_vector_approx, one])
 
 
         if isinstance(paddle_output, paddle.Tensor):
