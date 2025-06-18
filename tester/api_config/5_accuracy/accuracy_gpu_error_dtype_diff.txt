@@ -10107,3 +10107,7 @@ paddle.linalg.lstsq(Tensor([5, 5],"float64"), Tensor([5, 1],"float64"), rcond=No
 paddle.linalg.lstsq(Tensor([50, 600],"float64"), Tensor([50, 300],"float64"), rcond=1e-15, driver="gelss", )
 paddle.linalg.lstsq(Tensor([8, 2],"float32"), Tensor([8, 10],"float32"), rcond=1e-15, driver="gelsy", )
 paddle.linalg.lstsq(Tensor([9, 9],"float32"), Tensor([9, 5],"float32"), rcond=1e-15, driver="gels", )
+paddle.ldexp(Tensor([10, 20, 1],"float16"), Tensor([1],"int32"), )
+paddle.ldexp(Tensor([207],"float16"), Tensor([207],"int32"), )
+paddle.ldexp(Tensor([247],"float16"), Tensor([247],"int32"), )
+paddle.ldexp(Tensor([5, 6, 6],"float16"), Tensor([6],"int32"), )

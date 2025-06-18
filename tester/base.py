@@ -149,6 +149,7 @@ not_check_dtype = frozenset(
         "paddle.nn.functional.conv2d_transpose",
         "paddle.nn.functional.linear",
         "paddle.vision.ops.roi_align",
+        "paddle.ldexp",
     ]
 )
 
