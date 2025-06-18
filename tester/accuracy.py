@@ -69,6 +69,10 @@ class APITestAccuracy(APITestBase):
                 "result": None,
                 **self.torch_kwargs,
             }
+            if self.api_config.api_name == "paddle.nn.functional.rnnt_loss":
+                if paddle.device.get_device() == "cpu":
+                    exec_locals["fused_log_softmax"] = False
+
 
             # convert_result.is_torch_corresponding 为 True 时代表有对应的 Torch API
             # 执行 *_compiled 编译好的代码速度更快

@@ -194,13 +194,16 @@ class TensorConfig:
         if self.dtype in ["float8_e5m2", "float8_e4m3fn"]:
             print("Warning ", self.dtype, "not supported")
             return
+        
+        original_dtype = self.dtype
+        self.dtype = "float32" if self.dtype == "bfloat16" else self.dtype
+
         if self.numpy_tensor is None:
             if api_config.api_name in not_zero_apis:
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                 else:
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
             elif api_config.api_name == "paddle.arange":
                 tensor_num = 0
                 for arg in api_config.args:
@@ -215,12 +218,11 @@ class TensorConfig:
                             else:
                                 self.numpy_tensor = (numpy.random.randint(-65536, -1, size=self.shape)).astype(self.dtype)
                         else:
-                            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
                             x = numpy.random.random()
                             if x > 0.5:
-                                self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(dtype)
+                                self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(self.dtype)
                             else:
-                                self.numpy_tensor = (numpy.random.random(self.shape) - 2.0).astype(dtype) 
+                                self.numpy_tensor = (numpy.random.random(self.shape) - 2.0).astype(self.dtype) 
 
             elif api_config.api_name in {"paddle.argmax", "paddle.argmin", "paddle.Tensor.argmax", "paddle.Tensor.argmin"}:
                 if self.check_arg(api_config, 1, "axis"):
@@ -242,8 +244,7 @@ class TensorConfig:
 
             elif api_config.api_name == "paddle.bernoulli":
                 if self.check_arg(api_config, 0, "x"):
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
             elif api_config.api_name == "paddle.bincount":
                 if self.check_arg(api_config, 0, "x"):
                     if "int" in self.dtype:
@@ -350,24 +351,21 @@ class TensorConfig:
                         if "int" in self.dtype:
                             self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                         else:
-                            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(self.dtype)
                         api_config.x = self.numpy_tensor
                 elif index is not None and index == 1 or key =="weight":
                     if not hasattr(api_config, "weight"):
                         if "int" in self.dtype:
                             self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                         else:
-                            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(self.dtype)
                         api_config.weight = self.numpy_tensor     
                 elif index is not None and index == 2 or key =="bias":
                     if not hasattr(api_config, "bias"):
                         if "int" in self.dtype:
                             self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                         else:
-                            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(self.dtype)
                         api_config.bias = self.numpy_tensor
                 elif key == "output_size":
                     if not hasattr(api_config,"bias"):
@@ -425,9 +423,6 @@ class TensorConfig:
                 self.numpy_tensor = numpy.random.randint(-len_shape, len_shape, size=self.shape)
                 return self.numpy_tensor
             elif api_config.api_name in ["paddle.clip", "paddle.Tensor.clip"] and self.check_arg(api_config, 0, "x"):
-                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
-                self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
-                
                 # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
                 min_config = self.get_arg(api_config, 1, "min")
                 max_config = self.get_arg(api_config, 2, "max")
@@ -442,6 +437,8 @@ class TensorConfig:
                     
                     self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
                     self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
+                    min_config = min_numpy_tensor
+                    max_config = max_numpy_tensor
                 elif min_config is not None and max_config is not None:
                     # min and max args are specified but at least one of them is scalar (not a TensorConfig)
                     # according to API DOC, min and max is float|int|Tensor
@@ -450,13 +447,16 @@ class TensorConfig:
                         min_dtype = min_config.dtype
                         min_numpy_tensor = self.get_random_numpy_tensor(shape=min_shape, data_type=min_dtype, max=max_config)
                         self.set_tensor_arg_value(api_config, 1, "min", min_numpy_tensor)
+                        min_config = min_numpy_tensor
                     elif (isinstance(max_config, TensorConfig) and (isinstance(min_config, int) or isinstance(min_config, float))):
                         max_shape = max_config.shape
                         max_dtype = max_config.dtype
                         max_numpy_tensor = self.get_random_numpy_tensor(shape=max_shape, data_type=max_dtype, min=min_config)
                         self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
+                        max_config = max_numpy_tensor
                     # for both min and max are scalar, there is no need to init numpy tensor
-
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
+                self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, min=min_config-1000, max=max_config+1000)
                 return self.numpy_tensor
             elif api_config.api_name == "paddle.vision.ops.distribute_fpn_proposals":
                 if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
@@ -545,16 +545,14 @@ class TensorConfig:
                     if "int" in self.dtype:
                         self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(dtype)
+                        self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 64, size=self.shape)).astype(self.dtype)
             elif api_config.api_name in {"paddle.gammainc", "paddle.gammaincc"}:
                 if "int" in self.dtype:
                     self.numpy_tensor = numpy.random.randint(0, 65535, size=self.shape).astype(self.dtype)
                 else:
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(dtype)
+                    self.numpy_tensor = numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
             elif api_config.api_name == "paddle.vision.ops.generate_proposals":
                 if (index is not None and index == 0) or key == "scores":
                     self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
@@ -639,7 +637,7 @@ class TensorConfig:
                             k_shape[-2] = 2 
                     else:
                         k_shape = [2, 8, 2, 8] 
-                    new_k = TensorConfig(k_shape, "float32")
+                    new_k = TensorConfig(k_shape, original_dtype)
                     if len(api_config.args) > 1:
                         api_config.args[1] = new_k
                     elif "k" in api_config.kwargs:
@@ -656,7 +654,7 @@ class TensorConfig:
                             v_shape[-2] = 2 
                     else:
                         v_shape = [2, 8, 2, 8]  
-                    new_v = TensorConfig(v_shape, "float32")
+                    new_v = TensorConfig(v_shape, original_dtype)
                     if len(api_config.args) > 2:
                         api_config.args[2] = new_v
                     elif "v" in api_config.kwargs:
@@ -791,8 +789,7 @@ class TensorConfig:
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
                 else:
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = (numpy.random.random(self.shape)).astype(dtype)
+                    self.numpy_tensor = (numpy.random.random(self.shape)).astype(self.dtype)
             # m
             elif api_config.api_name == "paddle.incubate.nn.functional.masked_multihead_attention":
                 if self.check_arg(api_config, 4, "sequence_lengths"):
@@ -807,14 +804,12 @@ class TensorConfig:
                         if "int" in self.dtype:
                             self.numpy_tensor = numpy.random.randint(-65535, 65535, size=matrix_shape).astype(self.dtype)
                         else:
-                            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                            self.numpy_tensor = (numpy.random.random(matrix_shape) - 0.5).astype(dtype)
+                            self.numpy_tensor = (numpy.random.random(matrix_shape) - 0.5).astype(self.dtype)
                     else:
                         if "int" in self.dtype:
                             self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                         else:
-                            dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+                            self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(self.dtype)
             elif api_config.api_name in {"paddle.mean", "paddle.max", "paddle.min"}:
                 if self.check_arg(api_config, 1, "axis"):
                     self.numpy_tensor = self.generate_random_axes(api_config)
@@ -959,8 +954,7 @@ class TensorConfig:
             
             elif api_config.api_name == "paddle.nn.functional.gaussian_nll_loss":
                 if self.check_arg(api_config, 2, "var"):
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(dtype)
+                    self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(self.dtype)
 
             elif api_config.api_name == "paddle.nn.functional.hinge_embedding_loss":
                 if self.check_arg(api_config, 1, "label"):
@@ -996,8 +990,7 @@ class TensorConfig:
                         vocab_size = weight_config.shape[0]
                     self.numpy_tensor = numpy.random.randint(0, vocab_size, size=self.shape).astype(self.dtype)
                 elif self.check_arg(api_config, 1, "weight"):
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = numpy.random.random(self.shape).astype(dtype)
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
             elif api_config.api_name == 'paddle.nn.functional.margin_cross_entropy':
                 if index==1 or key=='label':
@@ -1130,14 +1123,12 @@ class TensorConfig:
                     if "int" in self.dtype:
                         self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)                     
+                        self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(self.dtype)                     
                 elif self.check_arg(api_config, 1, "std"):
                     if "int" in self.dtype:
                         self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = (numpy.random.random(self.shape)).astype(dtype)      
+                        self.numpy_tensor = (numpy.random.random(self.shape)).astype(self.dtype)      
                 else:
                     self.numpy_tensor = (numpy.random.randint(0, 1024, size=self.shape)).astype(self.dtype)                    
                 
@@ -1680,10 +1671,9 @@ class TensorConfig:
                 if self.check_arg(api_config, 0, "x"):
                     x_numel = self.numel()
                     if self.dtype in {"bfloat16", "float32", "float64"}:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = numpy.linspace(-x_numel, x_numel, x_numel, dtype=dtype).reshape(self.shape)
+                        self.numpy_tensor = numpy.linspace(-x_numel, x_numel, x_numel, dtype=self.dtype).reshape(self.shape)
                         if numpy.unique(self.numpy_tensor).size < x_numel:
-                            self.numpy_tensor = generate_unique_array(x_numel, dtype).reshape(self.shape)
+                            self.numpy_tensor = generate_unique_array(x_numel, self.dtype).reshape(self.shape)
                     elif self.dtype == "float16":
                         self.numpy_tensor = generate_unique_array(x_numel, self.dtype).reshape(self.shape)
                     elif self.dtype in {"int32", "int64"}:
@@ -1813,14 +1803,14 @@ class TensorConfig:
 
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
-                    dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                    self.numpy_tensor = self.get_cached_numpy(dtype, self.shape)
+                    self.numpy_tensor = self.get_cached_numpy(self.dtype, self.shape)
                 else:
                     if "int" in self.dtype:
                         self.numpy_tensor = (numpy.random.randint(-65535, 65535, size=self.shape)).astype(self.dtype)
                     else:
-                        dtype = "float32" if self.dtype == "bfloat16" else self.dtype
-                        self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(dtype)
+                        self.numpy_tensor = (numpy.random.random(self.shape) - 0.5).astype(self.dtype)
+        
+        self.dtype = original_dtype
         return self.numpy_tensor
 
     def get_paddle_tensor(self, api_config):
@@ -1831,13 +1821,12 @@ class TensorConfig:
         if self.paddle_tensor is None:
             self.paddle_tensor = paddle.to_tensor(
                 self.get_numpy_tensor(api_config),
-                dtype=self.dtype if self.dtype != 'bfloat16' else "float32",
+                dtype="float32" if self.dtype == 'bfloat16' else self.dtype,
                 place=self.place
             )
             self.paddle_tensor.stop_gradient = False
-            if self.dtype in ['float32', 'float64', 'float16', 'complex64', 'complex128', 'bfloat16']:
-                if self.dtype == "bfloat16":
-                    self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
+            if self.dtype == "bfloat16":
+                self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
         return self.paddle_tensor
 
     def get_torch_tensor(self, api_config):
@@ -1967,20 +1956,16 @@ class TensorConfig:
         generate a random numpy tensor with data in [min, max) given shape and data_type
         """
         # extract default init logic 
-        if USE_CACHED_NUMPY:
-            dtype = "float32" if data_type == "bfloat16" else data_type
-            numpy_tensor = self.get_cached_numpy(dtype, shape)
+        if "int" in data_type:
+            min = min if min is not None else -65535
+            max = max if max is not None else 65535
+            numpy_tensor = (numpy.random.randint(min, max, size=shape)).astype(data_type)
         else:
-            if "int" in data_type:
-                min = min if min is not None else -65535
-                max = max if max is not None else 65535
-                numpy_tensor = (numpy.random.randint(min, max, size=shape)).astype(data_type)
-            else:
-                # TO DO: check boundary and cached numpy
-                dtype = "float32" if data_type == "bfloat16" else data_type
-                min = min if min is not None else numpy.finfo(dtype).min / 2
-                max = max if max is not None else numpy.finfo(dtype).max / 2
-                numpy_tensor = (numpy.random.uniform(min, max, size=shape)).astype(dtype)
+            # TO DO: check boundary and cached numpy
+            dtype = "float32" if data_type == "bfloat16" else data_type
+            min = min if min is not None else numpy.finfo(dtype).min / 2
+            max = max if max is not None else numpy.finfo(dtype).max / 2
+            numpy_tensor = (numpy.random.uniform(min, max, size=shape)).astype(dtype)
         return numpy_tensor
 
 class APIConfig:
