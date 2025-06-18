@@ -17,7 +17,7 @@ class APITestAccuracy(APITestBase):
         self.test_amp = test_amp
         self.converter = get_converter()
 
-    #@func_set_timeout(600)
+    # @func_set_timeout(600)
     def test(self):
         if self.need_skip():
             print("[Skip]", flush=True)
@@ -219,17 +219,23 @@ class APITestAccuracy(APITestBase):
             write_to_log("paddle_error", self.api_config.config)
             return
 
-        if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm": 
+        if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm":
             paddle_output = paddle_output[0]
-        if self.api_config.api_name == "paddle.unique": 
+        elif self.api_config.api_name == "paddle.unique":
             if "return_index=True" in self.api_config.config:
                 paddle_output = list(paddle_output)
                 paddle_output.pop(1)
             paddle_output = tuple(paddle_output)
-        if self.api_config.api_name in {"paddle.mode", "paddle.Tensor.mode"}: 
+        elif self.api_config.api_name in {
+            "paddle.mode",
+            "paddle.Tensor.mode",
+        }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
-        if self.api_config.api_name in {"paddle.strided_slice", "paddle.vander"} and any(s < 0 for s in paddle_output.strides):
+        elif self.api_config.api_name in {
+            "paddle.strided_slice",
+            "paddle.vander",
+        } and any(s < 0 for s in paddle_output.strides):
             # torch's from_dlpack now don't support negative strides
             paddle_output = paddle_output.contiguous()
 
@@ -360,27 +366,33 @@ class APITestAccuracy(APITestBase):
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
                 paddle_out_grads = paddle_out_grads[0]
-            
-            # All configs that not compared with torch 
-            # should be moved to tester/api_config/5_accuracy/grads_diff.txt
-            if self.api_config.api_name == "paddle.tensordot":
-                paddle_out_grads = paddle_out_grads[:2]
-            if self.api_config.api_name == "paddle.combinations":
-                paddle_out_grads = []
-                torch_out_grads = []
-            if self.api_config.api_name == "paddle.diagonal_scatter":
-                paddle_out_grads = paddle_out_grads[:1]
-                torch_out_grads = torch_out_grads[:1]
-            if self.api_config.api_name == "paddle.lerp":
+
+            # All configs that not compared with torch should be copied
+            # to tester/api_config/5_accuracy/accuracy_gpu_error_grads_diff.txt
+            if self.api_config.api_name in {
+                "paddle.lerp",
+                "paddle.tensordot",
+            }:
                 paddle_out_grads = paddle_out_grads[:2]
                 torch_out_grads = torch_out_grads[:2]
-            if self.api_config.api_name == "paddle.nn.utils.parameters_to_vector":
-                paddle_out_grads = []
-                torch_out_grads = []
-            if self.api_config.api_name == "paddle.scale":
+            elif self.api_config.api_name in {
+                "paddle.Tensor.fill_diagonal_tensor",
+                "paddle.diagonal_scatter",
+                "paddle.nn.functional.binary_cross_entropy",
+                "paddle.nn.functional.binary_cross_entropy_with_logits",
+                "paddle.nn.functional.gaussian_nll_loss",
+                "paddle.nn.functional.kl_div",
+                "paddle.scale",
+            }:
                 paddle_out_grads = paddle_out_grads[0]
                 torch_out_grads = torch_out_grads[0]
-                
+            elif self.api_config.api_name in {
+                "paddle.combinations",
+                "paddle.nn.utils.parameters_to_vector",
+            }:
+                paddle_out_grads = []
+                torch_out_grads = []
+
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
                     try:
