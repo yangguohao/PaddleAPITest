@@ -1,9 +1,8 @@
-import re
 import types
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 
 @dataclass
@@ -26,9 +25,9 @@ class Code:
     valid: bool = True
     error_message: Optional[str] = field(default=None, init=False)
 
-    preprocess: List[str] = field(default_factory=list)
-    core: List[str] = field(default_factory=list)
-    postprocess: List[str] = field(default_factory=list)
+    preprocess: Sequence[str] = field(default_factory=list)
+    core: Sequence[str] = field(default_factory=list)
+    postprocess: Sequence[str] = field(default_factory=list)
 
     preprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
     core_compiled: Optional[types.CodeType] = field(init=False, default=None)
@@ -48,7 +47,7 @@ class Code:
             self.error_message = str(e)
 
     @classmethod
-    def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
+    def _compile(cls, code_lines: Sequence[str]) -> Optional[types.CodeType]:
         """代码编译方法"""
         if not code_lines:
             return None
@@ -813,7 +812,6 @@ shape = new_shape
 slices = []
 for i in range(ndim):
     slices.append(slice(offsets[i], offsets[i] + shape[i]))
-result = x[slices]
 result = x[slices]
 """
         code = Code(core=core.splitlines())
@@ -5959,14 +5957,16 @@ class UnflattenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         _, map_code = self.apply_generic()
         pre = """
-shape = list(shape.tolist() if isinstance(shape, torch.Tensor) else shape)
-temp = []
-for x in shape:
-    if isinstance(x, torch.Tensor):
-        temp.append(x.item())
-    else:
-        temp.append(x)
-shape = tuple(temp)
+if isinstance(shape, torch.Tensor):
+    shape = tuple(shape.tolist())
+else:
+    new_shape = []
+    for s in shape:
+        if isinstance(s, torch.Tensor):
+            new_shape.append(s.item())
+        else:
+            new_shape.append(s)
+    shape = tuple(new_shape)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=pre.splitlines() + map_code, core=[core])
@@ -6470,8 +6470,8 @@ else:
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
-__all__ = [  # type: ignore
+__all__ = [
     cls.__name__
     for cls in globals().values()
     if isinstance(cls, type) and issubclass(cls, BaseRule) and cls != BaseRule
-]
+] # type: ignore
