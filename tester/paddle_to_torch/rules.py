@@ -608,12 +608,12 @@ distribution = torch.distributions.binomial.Binomial(total_count=total_count, pr
 
 class BroadcastShapeRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 x_shape = locals().get('x_shape')
 y_shape = locals().get('y_shape')
-result = torch.broadcast_shapes(x_shape, y_shape)
 """
-        code = impl.splitlines()
+        core = "result = torch.broadcast_shapes(x_shape, y_shape)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code, "result")
 
 
@@ -834,7 +834,7 @@ for paddle_param, torch_param in {
 }.items():
     if paddle_param in locals() and not locals()[paddle_param] is None:
         _kwargs[torch_param] = locals()[paddle_param]
-_kwargs['log_probs'] = torch.nn.functional.log_softmax(_kwargs['log_probs'])
+_kwargs['log_probs'] = torch.nn.functional.log_softmax(_kwargs['log_probs'], dim=-1)
 _kwargs['zero_infinity'] = True
 """
         core = """
@@ -1508,7 +1508,7 @@ if x.ndim == 1 and padding_value != 0:
 
 class DropoutRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 def axis_dropout(x, p, axis, training=True, mode='upscale_in_train'):
     if isinstance(axis, int):
         axis = [axis]
@@ -1537,15 +1537,15 @@ p = locals().get('p')
 axis = locals().get('axis')
 training = locals().get('training')
 mode = locals().get('mode')
-result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code, "result")
+        core = "result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
+        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
 
 
 class Dropout2dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 x = locals().get('x')
 p = locals().get('p')
 training = locals().get('training')
@@ -1553,17 +1553,19 @@ data_format = locals().get('data_format')
 
 if data_format == "NHWC":
     x = x.permute(0, 3, 1, 2)
-result = torch.nn.functional.dropout(input=x, p=float(p), training=training)
+"""
+        core = "result = torch.nn.functional.dropout2d(input=x, p=float(p), training=training)"
+        post = """
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
-        code = impl.splitlines()
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
 
 class Dropout3dRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 x = locals().get('x')
 p = locals().get('p')
 training = locals().get('training')
@@ -1571,11 +1573,13 @@ data_format = locals().get('data_format')
 
 if data_format == "NDHWC":
     x = x.permute(0, 4, 1, 2, 3)
-result = torch.nn.functional.dropout3d(input=x, p=float(p), training=training)
+"""
+        core = "result = torch.nn.functional.dropout3d(input=x, p=float(p), training=training)"
+        post = """
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
-        code = impl.splitlines()
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines())
         return ConvertResult.success(paddle_api, code, "result")
 
 
@@ -1669,7 +1673,7 @@ if (isinstance(shape, list) or isinstance(shape, tuple)) and len(shape) == 0:
 else:
     result = x.expand(*shape)  
 """
-        code = impl.splitlines()
+        code = Code(core=impl.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1678,7 +1682,7 @@ class ExpandasRule(BaseRule):
         impl = """
 result = x.expand_as(y)  
 """
-        code = impl.splitlines()
+        code = Code(core=impl.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -3397,8 +3401,8 @@ nonzero_mask = gcd != 0
 lcm[nonzero_mask] = (x_abs[nonzero_mask] * y_abs[nonzero_mask]) // gcd[nonzero_mask]
 result = torch.abs(lcm)
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=impl.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class LinearRule(BaseRule):
@@ -4105,7 +4109,7 @@ class NumelRule(BaseRule):
 num_elements = x.numel()
 result = torch.tensor(num_elements, dtype=torch.int64)
 """
-        code = impl.splitlines()
+        code = Code(core=impl.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -4901,6 +4905,7 @@ import torchaudio
 blank = locals().get('blank', 0)
 fastemit_lambda = locals().get('fastemit_lambda', 0.001)
 reduction = locals().get('reduction', 'mean')
+fused_log_softmax = locals().get('fused_log_softmax', True)
 
 result = torchaudio.functional.rnnt_loss(
         logits=input,
@@ -4908,7 +4913,8 @@ result = torchaudio.functional.rnnt_loss(
         logit_lengths=input_lengths,
         target_lengths=label_lengths,
         blank=blank,
-        reduction=reduction
+        reduction=reduction,
+        fused_log_softmax=fused_log_softmax,
     )
 """
         code = Code(core=core.splitlines())
@@ -5109,8 +5115,8 @@ else:
         x[index[i]] = updates[i]
 result = x    
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=impl.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class ScatterndRule(BaseRule):
@@ -5127,8 +5133,8 @@ else:
         output[idx_tuple] += flat_updates[i]
     result = output    
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=impl.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class ScatterndaddRule(BaseRule):
@@ -5145,8 +5151,8 @@ else:
         x[idx_tuple] += flat_updates[i]
     result = x    
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(core=impl.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class SeluRule(BaseRule):
@@ -6427,18 +6433,18 @@ elif data_format == "NCHW":
 # __
 class __Pow__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 tensor = locals().get('self')
 other = locals().get('y')
-result = tensor.__pow__(other)
 """
-        code = impl.splitlines()
+        core = "result = tensor.__pow__(other)"
+        code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
 class __rshift__Rule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        impl = """
+        pre = """
 tensor = locals().get('x')
 other = locals().get('y')
 is_arithmetic = locals().get('is_arithmetic')
@@ -6452,15 +6458,16 @@ def logical_right_shift(x: torch.Tensor, y: torch.Tensor):
     shifted = torch.where(y >= 1, x_arithmetic & mask, x)
     shifted = torch.where(y < 0, torch.zeros_like(x), shifted)
     return shifted
-    
+"""
+        core = """
 if is_arithmetic:
     result = tensor.__rshift__(other)
 else:
     # logical right shift 
     result = logical_right_shift(tensor, other)
 """
-        code = impl.splitlines()
-        return ConvertResult.success(paddle_api, code)
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 __all__ = [  # type: ignore
