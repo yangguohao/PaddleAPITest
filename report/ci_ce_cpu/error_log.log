@@ -19767,7 +19767,7 @@ Max relative difference among violations: 5433.6461126
 ACTUAL: array([ 109069,  997575,   17390, ..., 2750067,   48943,  965662])
 DESIRED: array([ 109069,  997575,   17390, ..., 2750067,   48943,  965662])
 2025-04-27 04:01:35.373264 test begin: paddle.all(Tensor([1, 0, 2],"bool"), axis=tuple(), keepdim=True, )
-[accuracy error] paddle.all(Tensor([1, 0, 2],"bool"), axis=tuple(), keepdim=True, )
+[accuracy error] paddle.all(Tensor([1, 0, 2],"bool"), axis=tuple(), keepdim=True, ) 
 Arrays are not equal
 (shapes (1, 1, 1), (1, 0, 2) mismatch)
 ACTUAL: array([[[ True]]])
