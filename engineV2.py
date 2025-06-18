@@ -535,8 +535,6 @@ def main():
             ],
         )
 
-        from tester import APIConfig
-
         def cleanup_handler(*args):
             cleanup(pool)
             sys.exit(1)

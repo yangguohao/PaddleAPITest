@@ -20,8 +20,8 @@ TEST_MODE_ARGS=(
 	# --test_amp=True
 	# --test_cpu=True
 	# --use_cached_numpy=True
-    --atol=1e-2
-    --rtol=1e-2
+    # --atol=1e-2
+    # --rtol=1e-2
 )
 
 IN_OUT_ARGS=(
