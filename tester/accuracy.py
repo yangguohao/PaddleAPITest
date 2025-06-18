@@ -233,14 +233,12 @@ class APITestAccuracy(APITestBase):
             # torch's from_dlpack now don't support negative strides
             paddle_output = paddle_output.contiguous()
 
-        paddle_output_cache = []
         if self.api_config.api_name == "paddle.linalg.eigh":
             # The output of eigen vectors are not unique, because multiplying an eigen vector by -1 in the real case 
             # or by e^(i*\theta) in the complex case produces another set of valid eigen vectors of the matrix.
             # So we test whether the elements of each coef_vector (i.e. paddle_output / torch_output for each eigen vector) 
             # are all the same and whether the |coef| == 1 for simplicity.
             paddle_output, torch_output = list(paddle_output), list(torch_output)
-            paddle_output_cache = [i.clone() for i in paddle_output]
             eigvector_len = paddle_output[1].shape[-2]
             paddle_eigvectors = paddle_output.pop(1).matrix_transpose().reshape([-1, eigvector_len])
             torch_eigvectors = torch_output.pop(1).transpose(-1, -2).reshape((-1, eigvector_len))
@@ -353,9 +351,6 @@ class APITestAccuracy(APITestBase):
                             print("[accuracy error]", self.api_config.config, "\n", str(err), flush=True)
                             write_to_log("accuracy_error", self.api_config.config)
                             return
-
-        if self.api_config.api_name == "paddle.linalg.eigh":
-            paddle_output = paddle_output_cache
 
         if self.need_check_grad() and torch_grad_success:
             try:
