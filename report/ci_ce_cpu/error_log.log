@@ -47539,6 +47539,7 @@ W0426 23:48:20.443878 15022 backward.cc:437] While running Node (DivideGradNode)
 [paddle error] paddle.signal.istft(Tensor([257, 471],"complex128"), 512, None, None, Tensor([512],"float64"), True, False, True, None, False, )
 (PermissionDenied) Tensor '' used in gradient computation has been modified by an inplace operation. Its version is 1 but the expected version is 0. Please fix your code to void calling an inplace operator after using the Tensor which will used in gradient computation.
 [Hint: Expected tensor_version == wrapper_version_snapshot, but received tensor_version:1 != wrapper_version_snapshot:0.] (at /paddle/paddle/fluid/eager/tensor_wrapper.h:246)
+
 2025-04-27 05:00:23.837588 test begin: paddle.sum(Tensor([8, 128, 64, 64],"float16"), name=None, )
 [accuracy error] paddle.sum(Tensor([8, 128, 64, 64],"float16"), name=None, )
 Not equal to tolerance rtol=0.01, atol=0.01
