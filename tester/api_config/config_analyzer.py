@@ -2122,9 +2122,9 @@ class APIConfig:
     def __str__(self):
         result = self.api_name + "("
         for arg in self.args:
-            result += self.dump_item_str(arg) + ","
+            result += self.dump_item_str(arg) + ", "
         for key, value in self.kwargs.items():
-            result += key + "=" + self.dump_item_str(value) + ","
+            result += key + "=" + self.dump_item_str(value) + ", "
         result += ")"
         return result
     

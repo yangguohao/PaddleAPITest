@@ -902,8 +902,8 @@ class APITestBase:
             if test_tol:
                 parse_accuracy_tolerance(
                     str(e),
-                    str(self.api_config.api_name),
-                    str(self.api_config),
+                    self.api_config.api_name,
+                    self.api_config.config,
                     str(paddle_tensor.dtype),
                 )
             if "Comparing" in str(e):

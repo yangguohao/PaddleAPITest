@@ -125,7 +125,7 @@ def aggregate_logs(end=False):
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
-                os.remove(str(file_path))
+                file_path.unlink()
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
 
