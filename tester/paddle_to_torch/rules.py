@@ -1066,7 +1066,13 @@ elif isinstance(padding, (list, tuple)):
     if len(padding) == 2:
         padding = tuple(padding)
     elif len(padding) == 4:
-        if isinstance(padding[0], int):
+        is_all_int = False
+        for p in padding:
+            if not isinstance(p, int):
+                break
+        else:
+            is_all_int = True
+        if is_all_int:
             crop = padding
         else:
             crop = []
@@ -1220,7 +1226,13 @@ elif isinstance(padding, list):
     if len(padding) == 2:  # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
-        if isinstance(padding[0], int): # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+        is_all_int = False
+        for p in padding:
+            if not isinstance(p, int):
+                break
+        else:
+            is_all_int = True
+        if is_all_int: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
             pad_top, pad_bottom, pad_left, pad_right = padding
         else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
             if data_format == "NCHW":
@@ -4441,7 +4453,13 @@ elif isinstance(padding, (list, tuple)):
     if len(padding) == 2: # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
-        if isinstance(padding[0], int): # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+        is_all_int = False
+        for p in padding:
+            if not isinstance(p, int):
+                break
+        else:
+            is_all_int = True
+        if is_all_int: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
             pad_top, pad_bottom, pad_left, pad_right = padding
         else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
             if data_format == "NCHW":
