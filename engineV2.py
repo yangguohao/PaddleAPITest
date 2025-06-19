@@ -400,7 +400,12 @@ def main():
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
+    mode = [options.accuracy, options.paddle_only, options.paddle_cinn]
+    if len([m for m in mode if m is True]) != 1:
+        print(f"Exactly one of --accuracy, --paddle_only, or --paddle_cinn must be True.", flush=True)
+        return
     os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
+
     if options.log_dir:
         set_test_log_path(options.log_dir)
 
