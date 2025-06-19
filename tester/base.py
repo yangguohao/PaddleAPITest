@@ -68,6 +68,7 @@ stochastic_behavior_apis = frozenset(
         # "paddle.incubate.nn.functional.fused_multi_head_attention", # If parameter "dropout_rate=0.5, attn_dropout_rate=0.5 (default value)" is not equal to 0.0 or 1.0, the result involves random calculation.
         # "paddle.nn.functional.scaled_dot_product_attention", # If parameter "dropout_p=0.0" is not equal to 0.0 or 1.0, the result involves random calculation.
         # "paddle.nn.functional.rrelu", # If parameter "training=True" is set, the result involves random calculation.
+        # "paddle.nn.functional.gumbel_softmax",
     ]
 )
 
