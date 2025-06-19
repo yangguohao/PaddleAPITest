@@ -1066,12 +1066,11 @@ elif isinstance(padding, (list, tuple)):
     if len(padding) == 2:
         padding = tuple(padding)
     elif len(padding) == 4:
-        is_all_int = False
+        is_all_int = True
         for p in padding:
             if not isinstance(p, int):
+                is_all_int = False
                 break
-        else:
-            is_all_int = True
         if is_all_int:
             crop = padding
         else:
@@ -1226,12 +1225,11 @@ elif isinstance(padding, list):
     if len(padding) == 2:  # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
-        is_all_int = False
+        is_all_int = True
         for p in padding:
             if not isinstance(p, int):
+                is_all_int = False
                 break
-        else:
-            is_all_int = True
         if is_all_int: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
             pad_top, pad_bottom, pad_left, pad_right = padding
         else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
@@ -2806,6 +2804,15 @@ def tukey(M, alpha=0.5, sym=True, dtype=torch.float64):
         w = w[:-1]
     return w
 
+def fm(m, sigma2, nbar=4, dtype=torch.float64):
+    terms = []
+    for n in range(1, nbar):
+        numerator = (m / torch.sqrt(sigma2))**2
+        denominator = n**2 + (n - 0.5)**2
+        term = (1 - numerator / denominator)
+        terms.append(term)
+    return torch.prod(torch.tensor(terms, dtype=dtype))
+
 def taylor(M, nbar=4, sll=30, norm=True, sym=True, dtype=torch.float64):
     if M < 1:
         return torch.tensor([], dtype=dtype)
@@ -2818,18 +2825,9 @@ def taylor(M, nbar=4, sll=30, norm=True, sym=True, dtype=torch.float64):
     A = torch.log(B + torch.sqrt(B**2 - 1)) / torch.pi
     sigma2 = nbar**2 / (A**2 + (nbar - 0.5)**2)
 
-    def fm(m):
-        terms = []
-        for n in range(1, nbar):
-            numerator = (m / torch.sqrt(sigma2))**2
-            denominator = n**2 + (n - 0.5)**2
-            term = (1 - numerator / denominator)
-            terms.append(term)
-        return torch.prod(torch.tensor(terms, dtype=dtype))
-
     coefficients = []
     for i in range(nbar):
-        coefficients.append(fm(i))
+        coefficients.append(fm(i, sigma2, nbar, dtype=dtype))
     coefficients = torch.tensor(coefficients, dtype=dtype)
     n = torch.arange(-(M-1)/2, (M+1)/2, dtype=dtype) * 2/M
     w = coefficients[0]
@@ -4453,12 +4451,11 @@ elif isinstance(padding, (list, tuple)):
     if len(padding) == 2: # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
-        is_all_int = False
+        is_all_int = True
         for p in padding:
             if not isinstance(p, int):
+                is_all_int = False
                 break
-        else:
-            is_all_int = True
         if is_all_int: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
             pad_top, pad_bottom, pad_left, pad_right = padding
         else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
