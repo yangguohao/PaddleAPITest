@@ -66,6 +66,8 @@
 | `--test_cpu`                | bool  | 启用 Paddle CPU 模式测试（默认 False）                                                 |
 | `--use_cached_numpy`        | bool  | 启用 Numpy 缓存（默认 False）                                                          |
 | `--log_dir`                 | str   | 日志输出路径（默认 "tester/api_config/test_log"）                                      |
+| `--atol`                    | float | 精度测试的绝对误差容忍度（默认 1e-2）                                                  |
+| `--rtol`                    | float | 精度测试的相对误差容忍度（默认 1e-2）                                                  |
 
 ### 示例命令
 

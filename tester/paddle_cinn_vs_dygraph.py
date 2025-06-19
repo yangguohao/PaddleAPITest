@@ -8,9 +8,10 @@ from .base import APITestBase
 
 
 class APITestCINNVSDygraph(APITestBase):
-    def __init__(self, api_config, test_amp):
+    def __init__(self, api_config, **kwargs):
         super().__init__(api_config)
-        self.test_amp = test_amp
+        self.test_amp = kwargs.get("test_amp", False)
+
     #@func_set_timeout(600)
     def test(self):
         
