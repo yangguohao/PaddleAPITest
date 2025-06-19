@@ -405,6 +405,7 @@ class APITestAccuracy(APITestBase):
                 "paddle.diagonal_scatter",
                 "paddle.nn.functional.binary_cross_entropy",
                 "paddle.nn.functional.binary_cross_entropy_with_logits",
+                "paddle.nn.functional.sigmoid_focal_loss",
                 "paddle.nn.functional.gaussian_nll_loss",
                 "paddle.nn.functional.kl_div",
                 "paddle.scale",

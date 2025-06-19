@@ -1803,6 +1803,10 @@ class TensorConfig:
                     # self.check_arg(api_config, 1, "other"): 
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
 
+            elif api_config.api_name == "paddle.nn.functional.sigmoid_focal_loss":
+                if self.check_arg(api_config, 1, "label"):
+                    self.numpy_tensor = numpy.random.randint(low=0, high=2, size=self.shape).astype(self.dtype)
+
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
                     self.numpy_tensor = self.get_cached_numpy(self.dtype, self.shape)

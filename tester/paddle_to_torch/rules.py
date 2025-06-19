@@ -5190,7 +5190,7 @@ class SigmoidFocalLossRule(BaseRule):
 normalizer = locals().get('normalizer', None)
 alpha = locals().get('alpha', 0.25)
 gamma = locals().get('gamma', 2.0)
-reduction = locals().get('reduction', 'mean')
+reduction = locals().get('reduction', 'sum')
 prob = torch.sigmoid(logit)
 
 pos_loss = -label * alpha * ((1 - prob) ** gamma) * torch.log(prob)
