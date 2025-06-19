@@ -17,6 +17,7 @@ class APITestAccuracy(APITestBase):
         self.test_amp = kwargs.get("test_amp", False)
         self.atol = kwargs.get("atol", 1e-2)
         self.rtol = kwargs.get("rtol", 1e-2)
+        self.test_tol = kwargs.get("test_tol", False)
         self.converter = get_converter()
 
     # @func_set_timeout(600)

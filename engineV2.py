@@ -285,6 +285,7 @@ def run_test_case(api_config_str, options):
             test_amp=options.test_amp,
             atol=options.atol,
             rtol=options.rtol,
+            test_tol=options.test_tol,
         )
     else:
         case = test_class(api_config, test_amp=options.test_amp)
@@ -390,6 +391,12 @@ def main():
         default=1e-2,
         help="Relative tolerance for accuracy tests",
     )
+    parser.add_argument(
+        "--test_tol",
+        type=parse_bool,
+        default=False,
+        help="Whether to test tolerance range in accuracy",
+    )
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
@@ -424,6 +431,7 @@ def main():
                 test_amp=options.test_amp,
                 atol=options.atol,
                 rtol=options.rtol,
+                test_tol=options.test_tol,
             )
         else:
             case = test_class(api_config, test_amp=options.test_amp)
