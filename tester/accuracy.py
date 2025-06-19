@@ -233,6 +233,7 @@ class APITestAccuracy(APITestBase):
         elif self.api_config.api_name in {
             "paddle.mode",
             "paddle.Tensor.mode",
+            "paddle.incubate.nn.functional.fused_layer_norm"
         }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
