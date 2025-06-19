@@ -846,47 +846,17 @@ class APITestBase:
         torch.cuda.empty_cache()
         return True
 
-    def np_assert_accuracy(
-        self,
-        np_paddle,
-        np_torch,
-        atol,
-        rtol,
-        api,
-    ):
+    def np_assert_accuracy(self, np_paddle, np_torch, atol=1e-2, rtol=1e-2):
         if np_paddle.dtype == numpy.bool_:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
-        # max_atol_idx = numpy.argmax(numpy.abs(np_paddle - np_torch))
-        # np_paddle_flatten = np_paddle.flatten()
-        # np_torch_flatten = np_torch.flatten()
-        # sub_res = np_paddle_flatten - np_torch_flatten
-        # nonzero_idx = numpy.nonzero(np_torch_flatten)
-        # sub_res = sub_res.take(nonzero_idx)
-        # np_torch_flatten_nonzero = np_torch_flatten.take(nonzero_idx).flatten()
-        # np_paddle_flatten_nonzero = np_paddle_flatten.take(nonzero_idx).flatten()
-        # if sub_res.size ==0:
-        #     max_rtol_idx = 0
-        # else:
-        #     max_rtol_idx = numpy.argmax(numpy.abs(sub_res / np_torch_flatten_nonzero))
+
         numpy.testing.assert_allclose(
             np_paddle,
             np_torch,
-            atol,
-            rtol,
-            # err_msg=(
-            #     '{api}: compare failed,\n'.format(
-            #         api=api,
-            #     )
-            #     + 'max_atol value, paddle_value: {value_paddle}, torch_value: {value_torch},\n'.format(
-            #         value_paddle=str(np_paddle_flatten[max_atol_idx].item()),
-            #         value_torch=str(np_torch_flatten[max_atol_idx].item()),
-            #     )
-            #     + 'max_rtol value , torch_value: {value_paddle}, paddle_value: {value_torch},\n'.format(
-            #         value_paddle=str(np_paddle_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_paddle_flatten_nonzero) else '',
-            #         value_torch=str(np_torch_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_torch_flatten_nonzero) else '',
-            #     )
-            # ),
+            rtol=rtol,
+            atol=atol,
+            equal_nan=True,
         )
 
     def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol=1e-2, rtol=1e-2):
@@ -931,7 +901,6 @@ class APITestBase:
                     torch_tensor.numpy(),
                     atol,
                     rtol,
-                    self.api_config,
                 )
             else:
                 raise
