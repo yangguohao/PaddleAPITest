@@ -1,9 +1,8 @@
-import re
 import types
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 
 @dataclass
@@ -26,9 +25,9 @@ class Code:
     valid: bool = True
     error_message: Optional[str] = field(default=None, init=False)
 
-    preprocess: List[str] = field(default_factory=list)
-    core: List[str] = field(default_factory=list)
-    postprocess: List[str] = field(default_factory=list)
+    preprocess: Sequence[str] = field(default_factory=list)
+    core: Sequence[str] = field(default_factory=list)
+    postprocess: Sequence[str] = field(default_factory=list)
 
     preprocess_compiled: Optional[types.CodeType] = field(init=False, default=None)
     core_compiled: Optional[types.CodeType] = field(init=False, default=None)
@@ -48,7 +47,7 @@ class Code:
             self.error_message = str(e)
 
     @classmethod
-    def _compile(cls, code_lines: List[str]) -> Optional[types.CodeType]:
+    def _compile(cls, code_lines: Sequence[str]) -> Optional[types.CodeType]:
         """代码编译方法"""
         if not code_lines:
             return None
@@ -772,20 +771,47 @@ class CropRule(BaseRule):
 ndim = x.dim()
 offsets = locals().get('offsets')
 shape = locals().get('shape')
+
 if offsets is None:
     offsets = [0] * ndim
 elif isinstance(offsets, (list, tuple)):
-    offsets = [o.item() if isinstance(o, torch.Tensor) else int(o) for o in offsets]
+    new_offsets = []
+    for o in offsets:
+        if isinstance(o, torch.Tensor):
+            new_offsets.append(o.item())
+        else:
+            new_offsets.append(int(o))
+    offsets = new_offsets
 elif isinstance(offsets, torch.Tensor):
     offsets = offsets.tolist()
+
 if shape is None:
-    shape = [x.size(i) - offsets[i] for i in range(ndim)]
+    new_shape = []
+    for i in range(ndim):
+        new_shape.append(x.size(i) - offsets[i])
+    shape = new_shape
 elif isinstance(shape, (list, tuple)):
-    shape = [s.item() if isinstance(s, torch.Tensor) else int(s) for s in shape]
+    new_shape = []
+    for s in shape:
+        if isinstance(s, torch.Tensor):
+            new_shape.append(s.item())
+        else:
+            new_shape.append(int(s))
+    shape = new_shape
 elif isinstance(shape, torch.Tensor):
     shape = shape.tolist()
-shape = [x.size(i) - offsets[i] if s == -1 else s for i, s in enumerate(shape)]
-slices = [slice(offsets[i], offsets[i] + shape[i]) for i in range(ndim)]
+
+new_shape = []
+for i, s in enumerate(shape):
+    if s == -1:
+        new_shape.append(x.size(i) - offsets[i])
+    else:
+        new_shape.append(s)
+shape = new_shape
+
+slices = []
+for i in range(ndim):
+    slices.append(slice(offsets[i], offsets[i] + shape[i]))
 result = x[slices]
 """
         code = Code(core=core.splitlines())
@@ -1039,17 +1065,22 @@ if isinstance(padding, str):
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 2:
         padding = tuple(padding)
-    elif len(padding) == 4 and all(isinstance(pad, int) for pad in padding):
-        crop = padding
-        padding = 0
     elif len(padding) == 4:
-        crop = []
-        if data_format == "NHWC":
-            for i in range(1, 3):
-                crop.extend(padding[i])
+        is_all_int = True
+        for p in padding:
+            if not isinstance(p, int):
+                is_all_int = False
+                break
+        if is_all_int:
+            crop = padding
         else:
-            for i in range(2, 4):
-                crop.extend(padding[i])
+            crop = []
+            if data_format == "NHWC":
+                for i in range(1, 3):
+                    crop.extend(padding[i])
+            else:
+                for i in range(2, 4):
+                    crop.extend(padding[i])
         padding = 0
 if output_size is not None:
     output_padding = []
@@ -1194,7 +1225,12 @@ elif isinstance(padding, list):
     if len(padding) == 2:  # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
-        if all(isinstance(pad, int) for pad in padding): # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+        is_all_int = True
+        for p in padding:
+            if not isinstance(p, int):
+                is_all_int = False
+                break
+        if is_all_int: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
             pad_top, pad_bottom, pad_left, pad_right = padding
         else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
             if data_format == "NCHW":
@@ -1316,7 +1352,10 @@ else:
         elif paddle_api == "paddle.Tensor.dot":
             core = """
 if x.ndim == 2:
-    result = torch.stack([x[i].dot(y[i]) for i in range(x.shape[0])])
+    dot_results = []
+    for i in range(x.shape[0]):
+        dot_results.append(x[i].dot(y[i]))
+    result = torch.stack(dot_results)
 else:
     result = x.dot(y)
 """
@@ -1481,7 +1520,12 @@ class DropoutRule(BaseRule):
 def axis_dropout(x, p, axis, training=True, mode='upscale_in_train'):
     if isinstance(axis, int):
         axis = [axis]
-    mask_shape = [x.shape[i] if i in axis else 1 for i in range(x.dim())]
+    mask_shape = []
+    for i in range(x.dim()):
+        if i in axis:
+            mask_shape.append(x.shape[i])
+        else:
+            mask_shape.append(1)
     mask = torch.bernoulli(torch.full(mask_shape, 1-p)).to(x.device)
     if mode == 'upscale_in_train':
         if training:
@@ -1804,8 +1848,13 @@ if kernel_size is None:
 elif isinstance(kernel_size, list):
     kernel_size = tuple(kernel_size)
 if isinstance(output_size, (list, tuple)):
-    output_size = tuple([x.shape[i + 2] if size is None else size 
-                       for i, size in enumerate(output_size)])
+    new_output_size = []
+    for i, size in enumerate(output_size):
+        if size is None:
+            new_output_size.append(x.shape[i + 2])
+        else:
+            new_output_size.append(size)
+    output_size = tuple(new_output_size)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         pre = defaults_code
@@ -2755,6 +2804,15 @@ def tukey(M, alpha=0.5, sym=True, dtype=torch.float64):
         w = w[:-1]
     return w
 
+def fm(m, sigma2, nbar=4, dtype=torch.float64):
+    terms = []
+    for n in range(1, nbar):
+        numerator = (m / torch.sqrt(sigma2))**2
+        denominator = n**2 + (n - 0.5)**2
+        term = (1 - numerator / denominator)
+        terms.append(term)
+    return torch.prod(torch.tensor(terms, dtype=dtype))
+
 def taylor(M, nbar=4, sll=30, norm=True, sym=True, dtype=torch.float64):
     if M < 1:
         return torch.tensor([], dtype=dtype)
@@ -2766,9 +2824,11 @@ def taylor(M, nbar=4, sll=30, norm=True, sym=True, dtype=torch.float64):
     B = 10**(sll / 20)
     A = torch.log(B + torch.sqrt(B**2 - 1)) / torch.pi
     sigma2 = nbar**2 / (A**2 + (nbar - 0.5)**2)
-    fm = lambda m: torch.prod(torch.tensor([(1 - (m/torch.sqrt(sigma2))**2/(n**2 + (n-0.5)**2)) 
-                                          for n in range(1, nbar)], dtype=dtype))
-    coefficients = torch.tensor([fm(i) for i in range(nbar)], dtype=dtype)
+
+    coefficients = []
+    for i in range(nbar):
+        coefficients.append(fm(i, sigma2, nbar, dtype=dtype))
+    coefficients = torch.tensor(coefficients, dtype=dtype)
     n = torch.arange(-(M-1)/2, (M+1)/2, dtype=dtype) * 2/M
     w = coefficients[0]
     for i in range(1, nbar):
@@ -3194,7 +3254,10 @@ args = locals().get('args')
 if args:
     if len(args) == 1:
         x = x.flatten()
-    result = x[*args].item()
+    temp = x
+    for idx in args:
+        temp = temp[idx]
+    result = temp.item()
 else:
     result = x.item()
 """
@@ -3845,6 +3908,7 @@ axis = locals().get("axis")
 keepdim = locals().get("keepdim", False)
 mode = locals().get("mode", "avg")
 
+
 def single_axis_nanmedian(x, axis, keepdim, mode):
     if mode == "avg":
         valid_mask = ~torch.isnan(x)
@@ -3852,16 +3916,24 @@ def single_axis_nanmedian(x, axis, keepdim, mode):
             valid_x = x.masked_select(valid_mask).reshape(1)
             length = valid_x.numel()
         else:
-            valid_x = x.masked_select(valid_mask).reshape(
-                *[s if i != axis else -1 for i, s in enumerate(x.shape)]
-            )
+            new_shape = []
+            for i, s in enumerate(x.shape):
+                if i != axis:
+                    new_shape.append(s)
+                else:
+                    new_shape.append(-1)
+            valid_x = x.masked_select(valid_mask).reshape(*new_shape)
             length = valid_x.shape[axis]
         if length % 2 == 0:
             sorted_x = torch.sort(valid_x, dim=axis).values
             non_nan_mask = ~torch.isnan(sorted_x)
-            sorted_x = sorted_x.masked_select(non_nan_mask).reshape(
-                *[s if i != axis else -1 for i, s in enumerate(sorted_x.shape)]
-            )
+            new_shape_sorted = []
+            for i, s in enumerate(sorted_x.shape):
+                if i != axis:
+                    new_shape_sorted.append(s)
+                else:
+                    new_shape_sorted.append(-1)
+            sorted_x = sorted_x.masked_select(non_nan_mask).reshape(*new_shape_sorted)
             mid = length // 2
             median = (
                 sorted_x.index_select(axis, torch.tensor([mid - 1]))
@@ -3874,6 +3946,7 @@ def single_axis_nanmedian(x, axis, keepdim, mode):
     else:
         median = torch.nanmedian(x, dim=axis, keepdim=keepdim)
     return median
+
 
 if axis is None:
     x_flat = x.flatten()
@@ -3891,11 +3964,18 @@ if axis is None:
 elif isinstance(axis, int):
     median = single_axis_nanmedian(x, axis, keepdim, mode)
 else:
-    axes = [ax % x.ndim for ax in axis]
-    non_axes = [i for i in range(x.ndim) if i not in axes]
+    axes = []
+    for ax in axis:
+        axes.append(ax % x.ndim)
+    non_axes = []
+    for i in range(x.ndim):
+        if i not in axes:
+            non_axes.append(i)
     perm = non_axes + list(axes)
     x_permuted = x.permute(perm)
-    non_axes_shape = [x.shape[i] for i in non_axes]
+    non_axes_shape = []
+    for i in non_axes:
+        non_axes_shape.append(x.shape[i])
     flattened_size = 1
     for ax in axes:
         flattened_size *= x.shape[ax]
@@ -3905,7 +3985,12 @@ else:
     if mode == "min":
         median = median.values
     if keepdim:
-        output_shape = [1 if i in axes else x.shape[i] for i in range(x.ndim)]
+        output_shape = []
+        for i in range(x.ndim):
+            if i in axes:
+                output_shape.append(1)
+            else:
+                output_shape.append(x.shape[i])
         median = median.reshape(output_shape)
 result = median
 """
@@ -4366,15 +4451,20 @@ elif isinstance(padding, (list, tuple)):
     if len(padding) == 2: # [pad_height, pad_width]
         padding = tuple(padding)
     elif len(padding) == 4:
-        if all(isinstance(p, (list, tuple)) for p in padding): # Paddle 的 4D 填充格式(NCHW 或 NHWC)
+        is_all_int = True
+        for p in padding:
+            if not isinstance(p, int):
+                is_all_int = False
+                break
+        if is_all_int: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
+            pad_top, pad_bottom, pad_left, pad_right = padding
+        else: # Paddle 的 4D 填充格式(NCHW 或 NHWC)
             if data_format == "NCHW":
                 pad_top, pad_bottom = padding[2]
                 pad_left, pad_right = padding[3]
             else:  # NHWC
                 pad_top, pad_bottom = padding[1]
                 pad_left, pad_right = padding[2]
-        else: # [pad_height_top, pad_height_bottom, pad_width_left, pad_width_right]
-            pad_top, pad_bottom, pad_left, pad_right = padding
         x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom))
         padding = 0
 """
@@ -4414,8 +4504,15 @@ if isinstance(padding, str):
             padding = 0
 elif isinstance(padding, (list, tuple)):
     if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-        max_pad = [kernel_size[i] // 2 for i in range(3)]
-        if any(p > m for p, m in zip(padding, max_pad)):
+        max_pad = []
+        for i in range(3):
+            max_pad.append(kernel_size[i] // 2)
+        exceeds_max = False
+        for p, m in zip(padding, max_pad):
+            if p > m:
+                exceeds_max = True
+                break
+        if exceeds_max:
             pad_d, pad_h, pad_w = padding
             x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
             padding = 0
@@ -4596,7 +4693,10 @@ class Reduce_asRule(BaseRule):
         core = """
 x_shape = list(x.shape)
 t_shape = [1] * (x.dim() - target.dim()) + list(target.shape)
-reduce_dims = [i for i, (xs, ts) in enumerate(zip(x_shape, t_shape)) if ts == 1 and xs != 1]
+reduce_dims = []
+for i, (xs, ts) in enumerate(zip(x_shape, t_shape)):
+    if ts == 1 and xs != 1:
+        reduce_dims.append(i)
 out = x.sum(dim=reduce_dims, keepdim=True)
 result = out.view(target.shape)
 """
@@ -5119,11 +5219,23 @@ class SliceRule(BaseRule):
 if isinstance(starts, torch.Tensor):
     starts = starts.tolist()
 elif isinstance(starts, (list, tuple)):
-    starts = [s.item() if isinstance(s, torch.Tensor) else s for s in starts]
+    new_starts = []
+    for s in starts:
+        if isinstance(s, torch.Tensor):
+            new_starts.append(s.item())
+        else:
+            new_starts.append(s)
+    starts = new_starts
 if isinstance(ends, torch.Tensor):
     ends = ends.tolist()
 elif isinstance(ends, (list, tuple)):
-    ends = [e.item() if isinstance(e, torch.Tensor) else e for e in ends]
+    new_ends = []
+    for e in ends:
+        if isinstance(e, torch.Tensor):
+            new_ends.append(e.item())
+        else:
+            new_ends.append(e)
+    ends = new_ends
 for i, dim in enumerate(axes):
     if starts[i] < 0:
         starts[i] = starts[i] + input.shape[dim]
@@ -5342,7 +5454,9 @@ class StridedSliceRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
 shape = x.shape
-index_list = [torch.arange(s) for s in shape]
+index_list = []
+for s in shape:
+    index_list.append(torch.arange(s))
 for axis, start, end, stride in zip(axes, starts, ends, strides):
     dim_len = shape[axis]
     if start < 0:
@@ -5356,8 +5470,13 @@ for axis, start, end, stride in zip(axes, starts, ends, strides):
         start = min(max(start, -1), dim_len - 1)
         end = min(max(end, -1), dim_len - 1)
     index_list[axis] = torch.arange(start, end, step=stride)
-grids = torch.meshgrid(*[ind if isinstance(ind, torch.Tensor) else torch.arange(shape[i]) 
-                            for i, ind in enumerate(index_list)], indexing='ij')
+meshgrid_inputs = []
+for i, ind in enumerate(index_list):
+    if isinstance(ind, torch.Tensor):
+        meshgrid_inputs.append(ind)
+    else:
+        meshgrid_inputs.append(torch.arange(shape[i]))
+grids = torch.meshgrid(*meshgrid_inputs, indexing='ij')
 result = x[grids]
 """
         code = Code(core=[core])
@@ -5853,8 +5972,16 @@ class UnflattenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         _, map_code = self.apply_generic()
         pre = """
-shape = list(shape.tolist() if isinstance(shape, torch.Tensor) else shape)
-shape = tuple(x.item() if isinstance(x, torch.Tensor) else x for x in shape)
+if isinstance(shape, torch.Tensor):
+    shape = tuple(shape.tolist())
+else:
+    new_shape = []
+    for s in shape:
+        if isinstance(s, torch.Tensor):
+            new_shape.append(s.item())
+        else:
+            new_shape.append(s)
+    shape = tuple(new_shape)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=pre.splitlines() + map_code, core=[core])
@@ -6358,8 +6485,8 @@ else:
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
-__all__ = [  # type: ignore
+__all__ = [
     cls.__name__
     for cls in globals().values()
     if isinstance(cls, type) and issubclass(cls, BaseRule) and cls != BaseRule
-]
+] # type: ignore
