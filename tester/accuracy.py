@@ -413,6 +413,7 @@ class APITestAccuracy(APITestBase):
             elif self.api_config.api_name in {
                 "paddle.combinations",
                 "paddle.nn.utils.parameters_to_vector",
+                "paddle.cdist",
             }:
                 paddle_out_grads = []
                 torch_out_grads = []
