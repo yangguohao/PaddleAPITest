@@ -114,20 +114,26 @@ def aggregate_logs(end=False):
     if not TMP_LOG_PATH.exists() and not end:
         TMP_LOG_PATH.mkdir(exist_ok=True)
         return
-
+    
+    all_success = True
     for prefix in LOG_PREFIXES.values():
         log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
         if not log_files:
             continue
 
+        prefix_success = True
         all_lines = set()
         for file_path in log_files:
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
-                file_path.unlink()
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
+                prefix_success = False
+                break
+        if not prefix_success:
+            all_success = False
+            continue
 
         aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
         try:
@@ -135,7 +141,16 @@ def aggregate_logs(end=False):
                 f.writelines(f"{line}\n" for line in sorted(all_lines))
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
+            prefix_success = False
+        
+        if not prefix_success:
+            aggregated_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in log_files:
+                file_path.unlink()
 
+    log_success = True
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     tmp_log_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
     try:
@@ -151,15 +166,25 @@ def aggregate_logs(end=False):
                                 out_f.write(line[:10000] + b"\n")
                             else:
                                 out_f.write(line)
-                    if end:
-                        file_path.unlink()
-                    else:
-                        file_path.open("wb").close()
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
+                    log_success = False
+                    break
     except Exception as err:
         print(f"Error writing to {log_file}: {err}", flush=True)
+        log_success = False
 
+    if not log_success:
+        log_file.unlink(missing_ok=True)
+        all_success = False
+    else:
+        for file_path in tmp_log_files:
+            if end:
+                file_path.unlink()
+            else:
+                file_path.write_bytes(b"")
+
+    tol_success = True
     tol_file = TEST_LOG_PATH / f"tol.csv"
     tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
     if tmp_tol_files:
@@ -184,17 +209,24 @@ def aggregate_logs(end=False):
                             for row in reader:
                                 if row:  # 确保行不为空
                                     writer.writerow(row)
-                        file_path.unlink()
                     except Exception as err:
                         print(f"Error reading {file_path}: {err}", flush=True)
+                        tol_success = False
+                        break
         except Exception as err:
             print(f"Error writing to {tol_file}: {err}", flush=True)
+            tol_success = False
+    
+    if not tol_success:
+        tol_file.unlink(missing_ok=True)
+        all_success = False
+    else:
+        for file_path in tmp_tol_files:
+            file_path.unlink()
 
     if end:
-        try:
-            shutil.rmtree(TMP_LOG_PATH)
-        except OSError:
-            pass
+        if all_success:
+            shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
