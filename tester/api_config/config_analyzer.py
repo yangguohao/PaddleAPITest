@@ -1730,7 +1730,7 @@ class TensorConfig:
                                     tensor_config.numpy_tensor = numpy.full(tensor_config.shape, divisor, dtype=tensor_config.dtype)
                                     remaining = remaining // divisor
                             tensor_config = tensor_configs[-1]
-                            tensor_configs.numpy_tensor = numpy.full(tensor_config.shape, remaining, dtype=tensor_config.dtype)
+                            tensor_config.numpy_tensor = numpy.full(tensor_config.shape, remaining, dtype=tensor_config.dtype)
             
             elif api_config.api_name == "paddle.unsqueeze":
                 if self.check_arg(api_config, 1, "axis"):
