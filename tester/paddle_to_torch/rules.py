@@ -1413,8 +1413,10 @@ elif data_format == "NDHWC":
 class DiceLossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
+label = label.squeeze(-1)
+label = torch.nn.functional.one_hot(label, input.size()[-1])
 intersection = (input * label).sum(dim=1)
-union = input.square().sum(dim=1) + label.square().sum(dim=1)
+union = input.sum(dim=1) + label.sum(dim=1)
 
 dice = (2 * intersection + epsilon) / (union + epsilon)
 
