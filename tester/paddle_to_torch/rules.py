@@ -965,13 +965,9 @@ class ClipRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if min is None:
-    min = -torch.inf
-elif isinstance(min, torch.Tensor):
+if isinstance(min, torch.Tensor):
     min = min.item()
-if max is None:
-    max = torch.inf
-elif isinstance(max, torch.Tensor):
+if isinstance(max, torch.Tensor):
     max = max.item()
 """
         if paddle_api == "paddle.clip":
@@ -984,7 +980,7 @@ elif isinstance(max, torch.Tensor):
             )
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core],
+            core=[core]
         )
         return ConvertResult.success(paddle_api, code)
 
