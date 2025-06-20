@@ -132,6 +132,7 @@ def aggregate_logs(end=False):
                 prefix_success = False
                 break
         if not prefix_success:
+            all_success = False
             continue
 
         aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
@@ -144,10 +145,10 @@ def aggregate_logs(end=False):
         
         if not prefix_success:
             aggregated_file.unlink(missing_ok=True)
+            all_success = False
         else:
             for file_path in log_files:
                 file_path.unlink()
-        all_success = all_success and prefix_success
 
     log_success = True
     log_file = TEST_LOG_PATH / f"log_inorder.log"
@@ -175,14 +176,15 @@ def aggregate_logs(end=False):
 
     if not log_success:
         log_file.unlink(missing_ok=True)
+        all_success = False
     else:
         for file_path in tmp_log_files:
             if end:
                 file_path.unlink()
             else:
                 file_path.write_bytes(b"")
-    all_success = all_success and log_success
 
+    tol_success = True
     tol_file = TEST_LOG_PATH / f"tol.csv"
     tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
     if tmp_tol_files:
@@ -207,11 +209,20 @@ def aggregate_logs(end=False):
                             for row in reader:
                                 if row:  # 确保行不为空
                                     writer.writerow(row)
-                        file_path.unlink()
                     except Exception as err:
                         print(f"Error reading {file_path}: {err}", flush=True)
+                        tol_success = False
+                        break
         except Exception as err:
             print(f"Error writing to {tol_file}: {err}", flush=True)
+            tol_success = False
+    
+    if not tol_success:
+        tol_file.unlink(missing_ok=True)
+        all_success = False
+    else:
+        for file_path in tmp_tol_files:
+            file_path.unlink()
 
     if end:
         if all_success:
