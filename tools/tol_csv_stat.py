@@ -20,17 +20,22 @@ if not file_list:
     exit(0)
 
 # 读取并处理每个文件
+dfs = []
 stats = defaultdict(lambda: defaultdict(list))
 api_dtype_counts = defaultdict(lambda: defaultdict(int))
+config_count = 0
 for file_path in file_list:
     if (
         file_path.split("/")[-1] == "tol_stat.csv"
         or file_path.split("/")[-1] == "tol_stat_api.csv"
+        or file_path.split("/")[-1] == "tol_full.csv"
     ):
         continue
     try:
         df = pd.read_csv(file_path)
+        dfs.append(df)
         print(f"Read {len(df)} configs in {file_path}")
+        config_count += len(df)
         for _, row in df.iterrows():
             api = row["API"]
             dtype = row["dtype"]
@@ -42,7 +47,18 @@ for file_path in file_list:
             api_dtype_counts[api][dtype] += 1
     except Exception as e:
         print(f"Error processing file {file_path}: {e}")
-print(f"\nTotal read {len(stats)} configs across all files.")
+print(f"\nTotal read {len(stats)} (api, dtype)s, {config_count} configs.")
+if not stats:
+    exit(0)
+
+# 合并所有DataFrame并保存
+merged_df = pd.concat(dfs, ignore_index=True)
+merged_df = merged_df.sort_values(by=["API", "dtype", "config"]).reset_index(drop=True)
+numeric_cols = ["max_abs_diff", "max_rel_diff"]
+for col in numeric_cols:
+    merged_df[col] = merged_df[col].apply(lambda x: f"{float(x):.6e}")
+output_file = OUTPUT_PATH / "tol_full.csv"
+merged_df.to_csv(output_file, index=False)
 
 # 准备结果数据
 result_data = []
@@ -51,17 +67,25 @@ for api, dtype in sorted(stats.keys()):
     abs_diffs = values["abs_diffs"]
     rel_diffs = values["rel_diffs"]
 
+    abs_min = min(abs_diffs)
+    abs_max = max(abs_diffs)
+    abs_mean = sum(abs_diffs) / len(abs_diffs)
+    rel_min = min(rel_diffs)
+    rel_max = max(rel_diffs)
+    rel_mean = sum(rel_diffs) / len(rel_diffs)
+    count = len(abs_diffs)
+
     result_data.append(
         {
             "API": api,
             "dtype": dtype,
-            "abs_min": min(abs_diffs),
-            "abs_max": max(abs_diffs),
-            "abs_mean": sum(abs_diffs) / len(abs_diffs),
-            "rel_min": min(rel_diffs),
-            "rel_max": max(rel_diffs),
-            "rel_mean": sum(rel_diffs) / len(rel_diffs),
-            "count": len(abs_diffs),
+            "abs_min": "{:.6e}".format(abs_min),
+            "abs_max": "{:.6e}".format(abs_max),
+            "abs_mean": "{:.6e}".format(abs_mean),
+            "rel_min": "{:.6e}".format(rel_min),
+            "rel_max": "{:.6e}".format(rel_max),
+            "rel_mean": "{:.6e}".format(rel_mean),
+            "count": count,
         }
     )
 
@@ -78,6 +102,7 @@ if result_data:
 else:
     print("No data to process.")
 
+# 准备统计数据
 api_stats = []
 for api in sorted(api_dtype_counts.keys()):
     dtype_counts = api_dtype_counts[api]
@@ -102,6 +127,7 @@ for api in sorted(api_dtype_counts.keys()):
             }
         )
 
+# 转换为DataFrame并保存
 if api_stats:
     api_df = pd.DataFrame(api_stats)
     api_df = api_df.sort_values(by=["API", "dtype"])
