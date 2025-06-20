@@ -7,12 +7,12 @@ import pandas as pd
 import glob
 from collections import defaultdict
 
-INPUT_PATH = Path("tester/api_config/test_log")
-OUTPUT_PATH = INPUT_PATH
+TEST_LOG_PATH = Path("tester/api_config/test_log")
+OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 # 查找所有tol_*.csv文件
-file_pattern = INPUT_PATH / "tol*.csv"
+file_pattern = TEST_LOG_PATH / "tol*.csv"
 file_list = glob.glob(str(file_pattern))
 file_list.sort()
 if not file_list:
