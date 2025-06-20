@@ -1678,10 +1678,11 @@ class TensorConfig:
                         raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk / paddle.Tensor.topk")
                 elif self.check_arg(api_config, 1, "k"):
                     x_config = self.get_arg(api_config, 0, "x")
+                    axis = self.get_arg(api_config, 2, "axis", -1)
                     max_k_value = 1
                     if isinstance(x_config, TensorConfig) and x_config.shape:
                         if len(x_config.shape) > 0:
-                            max_k_value = x_config.shape[-1]
+                            max_k_value = x_config.shape[axis]
                         else:
                             max_k_value = 1
                     if not self.shape:
