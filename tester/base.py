@@ -903,12 +903,18 @@ class APITestBase:
             )
             if test_tol:
                 parse_accuracy_tolerance(
-                    "same",
+                    "Identical",
                     self.api_config.api_name,
                     self.api_config.config,
                     str(paddle_tensor.dtype),
                     is_backward,
                 )
+                if is_backward:
+                    print("[backward]", self.api_config.config, "\n", "Identical", flush=True)
+                    write_to_log("backward", self.api_config.config)
+                else:
+                    print("[forward]", self.api_config.config, "\n", "Identical", flush=True)
+                    write_to_log("forward", self.api_config.config)
         except Exception as e:
             if test_tol:
                 parse_accuracy_tolerance(
@@ -918,8 +924,12 @@ class APITestBase:
                     str(paddle_tensor.dtype),
                     is_backward,
                 )
-                print("[accuracy error]", self.api_config.config, "\n", str(e), flush=True)
-                write_to_log("accuracy_error", self.api_config.config)
+                if is_backward:
+                    print("[backward]", self.api_config.config, "\n", str(e), flush=True)
+                    write_to_log("backward", self.api_config.config)
+                else:
+                    print("[forward]", self.api_config.config, "\n", str(e), flush=True)
+                    write_to_log("forward", self.api_config.config)
             elif "Comparing" in str(e):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(

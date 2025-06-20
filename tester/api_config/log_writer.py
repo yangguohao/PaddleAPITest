@@ -4,6 +4,8 @@ import re
 import shutil
 from pathlib import Path
 
+import pandas as pd
+
 # 日志文件路径
 DIR_PATH = Path(__file__).resolve()
 DIR_PATH = DIR_PATH.parent.parent.parent
@@ -23,8 +25,8 @@ LOG_PREFIXES = {
     "crash": "api_config_crash",
     "oom": "api_config_oom",
     "numpy_error": "api_config_numpy_error",
-    "forward": "api_config_accuracy_tolerance_forward",
-    "backward": "api_config_accuracy_tolerance_backward",
+    "forward": "api_config_tol_forward",
+    "backward": "api_config_tol_backward",
 }
 
 is_engineV2 = False
@@ -187,46 +189,38 @@ def aggregate_logs(end=False):
                 file_path.write_bytes(b"")
 
     tol_success = True
-    for mode in {"forward", "backward"}:
-        tol_file = TEST_LOG_PATH / f"tol_{mode}.csv"
-        tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_{mode}_*.csv"))
-        if tmp_tol_files:
-            try:
-                with tol_file.open("a", newline="") as out_f:
-                    writer = csv.writer(out_f)
-                    if not tol_file.exists() or tol_file.stat().st_size == 0:
-                        writer.writerow(
-                            [
-                                "API",
-                                "config",
-                                "dtype",
-                                "mode",
-                                "max_abs_diff",
-                                "max_rel_diff",
-                            ]
-                        )
-                    for file_path in tmp_tol_files:
-                        try:
-                            with file_path.open("r") as in_f:
-                                reader = csv.reader(in_f)
-                                next(reader, None)
-                                for row in reader:
-                                    if row:  # 确保行不为空
-                                        writer.writerow(row)
-                        except Exception as err:
-                            print(f"Error reading {file_path}: {err}", flush=True)
-                            tol_success = False
-                            break
-            except Exception as err:
-                print(f"Error writing to {tol_file}: {err}", flush=True)
-                tol_success = False
-
-        if not tol_success:
-            tol_file.unlink(missing_ok=True)
-            all_success = False
-        else:
+    tol_file = TEST_LOG_PATH / f"tol.csv"
+    tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
+    if tmp_tol_files:
+        try:
+            dfs = []
             for file_path in tmp_tol_files:
-                file_path.unlink()
+                try:
+                    df = pd.read_csv(file_path)
+                    dfs.append(df)
+                except Exception as err:
+                    print(f"Error reading {file_path}: {err}", flush=True)
+                    tol_success = False
+                    break
+
+            if tol_success and dfs:
+                df = pd.concat(dfs, ignore_index=True)
+                df = df.drop_duplicates(subset=["config", "mode"], keep="last")
+                df = df.sort_values(
+                    by=["API", "dtype", "config", "mode"], ignore_index=True
+                )
+                df.to_csv(tol_file, index=False)
+
+        except Exception as err:
+            print(f"Error writing to {tol_file}: {err}", flush=True)
+            tol_success = False
+
+    if not tol_success:
+        tol_file.unlink(missing_ok=True)
+        all_success = False
+    else:
+        for file_path in tmp_tol_files:
+            file_path.unlink()
 
     if end:
         if all_success:
@@ -345,9 +339,9 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
     将误差数据记录到 CSV 文件
     """
     mode = "backward" if is_backward else "forward"
-    output_file = TMP_LOG_PATH / f"tol_{mode}_{os.getpid()}.csv"
+    output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
 
-    if error_msg == "same":
+    if error_msg == "Identical":
         max_abs_diff = 0.0
         max_rel_diff = 0.0
     else:
