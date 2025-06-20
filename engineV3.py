@@ -104,7 +104,7 @@ def worker_process(gpu_id, task_queue, result_queue, idx, args_mode):
                     import torch
 
                     api_config = APIConfig(api_config_str.strip())
-                    case = test_class(api_config, False)
+                    case = test_class(api_config)
                     case.test()
                     case.clear_tensor()
 

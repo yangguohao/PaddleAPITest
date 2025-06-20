@@ -11,9 +11,9 @@ from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
 not_support_api = frozenset(
     [
         "paddle.Tensor.coalesce",
-        "paddle.Tensor.is_coalesced",
         "paddle.Tensor.index_put",
         "paddle.Tensor.index_sample",
+        "paddle.Tensor.is_coalesced",
         "paddle.linalg.pca_lowrank",
     ]
 )
@@ -21,24 +21,7 @@ not_support_api = frozenset(
 # keep rand_apis and stochastic_behavior_apis lists for future reference when checking if new api configs have random behavior @Cutelemon6
 rand_apis = frozenset(
     [
-        # "paddle.bernoulli_",
-        # "paddle.binomial",
-        # "paddle.cauchy_",
-        # "paddle.geometric_",
-        # "paddle.log_normal",
-        # "paddle.log_normal_",
-        # "paddle.multinomial",
-        # "paddle.normal",
-        # "paddle.normal_",
-        # "paddle.poisson",
-        # "paddle.rand",
-        # "paddle.randn",
-        # "paddle.randint",
-        # "paddle.randint_like",
-        # "paddle.randperm",
-        # "paddle.uniform",
-        # "paddle.standard_gamma",
-        # "paddle.standard_normal",
+        # "paddle.Tensor.__dir__",
         # "paddle.Tensor.bernoulli_",
         # "paddle.Tensor.cauchy_",
         # "paddle.Tensor.exponential_",
@@ -47,9 +30,26 @@ rand_apis = frozenset(
         # "paddle.Tensor.multinomial",
         # "paddle.Tensor.normal_",
         # "paddle.Tensor.uniform_",
+        # "paddle.bernoulli_",
+        # "paddle.binomial",
+        # "paddle.cauchy_",
         # "paddle.empty",
         # "paddle.empty_like",
-        # "paddle.Tensor.__dir__",
+        # "paddle.geometric_",
+        # "paddle.log_normal",
+        # "paddle.log_normal_",
+        # "paddle.multinomial",
+        # "paddle.normal",
+        # "paddle.normal_",
+        # "paddle.poisson",
+        # "paddle.rand",
+        # "paddle.randint",
+        # "paddle.randint_like",
+        # "paddle.randn",
+        # "paddle.randperm",
+        # "paddle.standard_gamma",
+        # "paddle.standard_normal",
+        # "paddle.uniform",
     ]
 )
 
@@ -58,31 +58,33 @@ stochastic_behavior_apis = frozenset(
         # "paddle.Tensor.top_p_sampling",
         # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
         # "paddle.incubate.nn.functional.fused_dropout_add",
+        # "paddle.incubate.nn.functional.fused_multi_head_attention", # If parameter "dropout_rate=0.5, attn_dropout_rate=0.5 (default value)" is not equal to 0.0 or 1.0, the result involves random calculation.
         # "paddle.incubate.nn.functional.moe_dispatch",
         # "paddle.nn.functional.alpha_dropout",
-        # "paddle.nn.functional.fused_feedforward",
         # "paddle.nn.functional.dropout",
         # "paddle.nn.functional.dropout2d",
         # "paddle.nn.functional.dropout3d",
         # "paddle.nn.functional.feature_alpha_dropout",
-        # "paddle.incubate.nn.functional.fused_multi_head_attention", # If parameter "dropout_rate=0.5, attn_dropout_rate=0.5 (default value)" is not equal to 0.0 or 1.0, the result involves random calculation.
-        # "paddle.nn.functional.scaled_dot_product_attention", # If parameter "dropout_p=0.0" is not equal to 0.0 or 1.0, the result involves random calculation.
+        # "paddle.nn.functional.fused_feedforward",
         # "paddle.nn.functional.rrelu", # If parameter "training=True" is set, the result involves random calculation.
+        # "paddle.nn.functional.scaled_dot_product_attention", # If parameter "dropout_p=0.0" is not equal to 0.0 or 1.0, the result involves random calculation.
+        # "paddle.scatter", # If overwrite is set to True and index contain duplicate values, the result involves random calculation.
     ]
 )
 
 single_op_no_signature_apis = frozenset(
     [
+        "__add__",
+        "__div__",
         "__eq__",
+        "__floordiv__",
         "__ge__",
         "__gt__",
         "__le__",
         "__lt__",
-        "__add__",
-        "__div__",
-        "__floordiv__",
         "__matmul__",
         "__mod__",
+        "__mul__",
         "__ne__",
         "__pow__",
         "__radd__",
@@ -92,9 +94,8 @@ single_op_no_signature_apis = frozenset(
         "__rpow__",
         "__rsub__",
         "__rtruediv__",
-        "__truediv__",
-        "__mul__",
         "__sub__",
+        "__truediv__",
     ]
 )
 
@@ -109,11 +110,11 @@ no_signature_api_mappings = {
 
 handle_axes_api = frozenset(
     [
-        "paddle.mean",
         "paddle.max",
+        "paddle.mean",
         "paddle.min",
-        "paddle.sum",
         "paddle.prod",
+        "paddle.sum",
     ]
 )
 
@@ -121,34 +122,35 @@ handle_axes_api = frozenset(
 # copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
 not_check_dtype = frozenset(
     [
-        "paddle.where",
-        "paddle.nn.functional.one_hot",
-        "paddle.frexp",
-        "paddle.Tensor.frexp",
-        "paddle.floor",
         "paddle.Tensor.cumsum",
+        "paddle.Tensor.frexp",
         "paddle.add",
         "paddle.add_n",
+        "paddle.atan2",
+        "paddle.clip",
+        "paddle.copysign",
         "paddle.cummax",
         "paddle.cummin",
+        "paddle.cumprod",
         "paddle.cumsum",
+        "paddle.floor",
+        "paddle.frexp",
+        "paddle.histogram",
+        "paddle.incubate.nn.functional.fused_layer_norm",
+        "paddle.ldexp",
+        "paddle.linalg.lstsq",
         "paddle.nn.functional.adaptive_max_pool1d",
         "paddle.nn.functional.adaptive_max_pool2d",
         "paddle.nn.functional.adaptive_max_pool3d",
+        "paddle.nn.functional.conv2d_transpose",
+        "paddle.nn.functional.linear",
         "paddle.nn.functional.max_pool1d",
         "paddle.nn.functional.max_pool2d",
         "paddle.nn.functional.max_pool3d",
-        "paddle.copysign",
-        "paddle.cumprod",
-        "paddle.incubate.nn.functional.fused_layer_norm",
-        "paddle.clip",
-        "paddle.histogram",
-        "paddle.linalg.lstsq",
+        "paddle.nn.functional.one_hot",
         "paddle.nn.functional.smooth_l1_loss",
-        "paddle.atan2",
-        "paddle.nn.functional.conv2d_transpose",
-        "paddle.nn.functional.linear",
         "paddle.vision.ops.roi_align",
+        "paddle.where",
     ]
 )
 
@@ -845,50 +847,20 @@ class APITestBase:
         torch.cuda.empty_cache()
         return True
 
-    def np_assert_accuracy(
-        self,
-        np_paddle,
-        np_torch,
-        atol,
-        rtol,
-        api,
-    ):
+    def np_assert_accuracy(self, np_paddle, np_torch, atol=1e-2, rtol=1e-2):
         if np_paddle.dtype == numpy.bool_:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
-        # max_atol_idx = numpy.argmax(numpy.abs(np_paddle - np_torch))
-        # np_paddle_flatten = np_paddle.flatten()
-        # np_torch_flatten = np_torch.flatten()
-        # sub_res = np_paddle_flatten - np_torch_flatten
-        # nonzero_idx = numpy.nonzero(np_torch_flatten)
-        # sub_res = sub_res.take(nonzero_idx)
-        # np_torch_flatten_nonzero = np_torch_flatten.take(nonzero_idx).flatten()
-        # np_paddle_flatten_nonzero = np_paddle_flatten.take(nonzero_idx).flatten()
-        # if sub_res.size ==0:
-        #     max_rtol_idx = 0
-        # else:
-        #     max_rtol_idx = numpy.argmax(numpy.abs(sub_res / np_torch_flatten_nonzero))
+
         numpy.testing.assert_allclose(
             np_paddle,
             np_torch,
-            atol,
-            rtol,
-            # err_msg=(
-            #     '{api}: compare failed,\n'.format(
-            #         api=api,
-            #     )
-            #     + 'max_atol value, paddle_value: {value_paddle}, torch_value: {value_torch},\n'.format(
-            #         value_paddle=str(np_paddle_flatten[max_atol_idx].item()),
-            #         value_torch=str(np_torch_flatten[max_atol_idx].item()),
-            #     )
-            #     + 'max_rtol value , torch_value: {value_paddle}, paddle_value: {value_torch},\n'.format(
-            #         value_paddle=str(np_paddle_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_paddle_flatten_nonzero) else '',
-            #         value_torch=str(np_torch_flatten_nonzero[max_rtol_idx].item()) if max_rtol_idx < len(np_torch_flatten_nonzero) else '',
-            #     )
-            # ),
+            rtol=rtol,
+            atol=atol,
+            equal_nan=True,
         )
 
-    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol, rtol):
+    def torch_assert_accuracy(self, paddle_tensor, torch_tensor, atol=1e-2, rtol=1e-2):
         is_check_dtype = self.api_config.api_name not in not_check_dtype
 
         if not paddle_tensor.is_contiguous():
@@ -930,7 +902,6 @@ class APITestBase:
                     torch_tensor.numpy(),
                     atol,
                     rtol,
-                    self.api_config,
                 )
             else:
                 raise
@@ -1105,6 +1076,7 @@ class APITestBase:
             "distributed_push_sparse",
             "dpsgd",
             "edit_distance",
+            "eigh",
             "eigvals",
             "embedding_grad_dense",
             "embedding_with_eltwise_add_xpu",

@@ -279,7 +279,15 @@ def run_test_case(api_config_str, options):
     elif options.accuracy:
         test_class = APITestAccuracy
 
-    case = test_class(api_config, options.test_amp)
+    if options.accuracy:
+        case = test_class(
+            api_config,
+            test_amp=options.test_amp,
+            atol=options.atol,
+            rtol=options.rtol,
+        )
+    else:
+        case = test_class(api_config, test_amp=options.test_amp)
     try:
         case.test()
     except Exception as err:
@@ -370,6 +378,18 @@ def main():
         default="",
         help="Log directory",
     )
+    parser.add_argument(
+        "--atol",
+        type=float,
+        default=1e-2,
+        help="Absolute tolerance for accuracy tests",
+    )
+    parser.add_argument(
+        "--rtol",
+        type=float,
+        default=1e-2,
+        help="Relative tolerance for accuracy tests",
+    )
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
@@ -398,7 +418,15 @@ def main():
         elif options.accuracy:
             test_class = APITestAccuracy
 
-        case = test_class(api_config, options.test_amp)
+        if options.accuracy:
+            case = test_class(
+                api_config,
+                test_amp=options.test_amp,
+                atol=options.atol,
+                rtol=options.rtol,
+            )
+        else:
+            case = test_class(api_config, test_amp=options.test_amp)
         try:
             case.test()
         except Exception as err:
@@ -506,8 +534,6 @@ def main():
                 options,
             ],
         )
-
-        from tester import APIConfig
 
         def cleanup_handler(*args):
             cleanup(pool)

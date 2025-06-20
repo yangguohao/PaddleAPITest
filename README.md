@@ -66,10 +66,10 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
        * accuracy_*.txt 为测试通过。
        * accuracy_cpu_error.txt 为 **在 cpu 上运行精度测试不通过（--test_cpu=True）** 的配置集。
        * accuracy_cpu_kernel.txt 为 **paddle 内核抛出错误** 的配置集。
+       * accuracy_gpu_error.txt 为 **在 gpu 上运行精度测试不通过** 的配置集。
        * accuracy_gpu_error_dtype_diff.txt 为回归测试中发现精度错误，但是检查精度时 **不强制对齐 dtype 后能够通过** 的配置（base.py 中的 not_check_dtype 列表中的 api）。
        * accuracy_gpu_error_grads_diff.txt 为 **paddle 和 torch api 反向梯度结果不同，无法进行比较，输出 [not compare]** 的配置集。
        * accuracy_gpu_error_uncertain.txt 为 **不确定是因为 PaddleAPITest 引擎转化能力 还是 Paddle 内核实现** 导致的 accuracy error 的配置集。
-       * accuracy_cpu_error.txt 为 **在 cpu 上运行精度测试不通过（--test_cpu=True）** 的配置集。
      * 6_accuracy_amp 类似 5_accuracy，只是需要混合精度运行测试（--test_amp=True）的配置集。
      * 7_0_size 张量形状含有 0（0-size）的配置集。
      * 8_big_tensor 对配置的张量形状基于 to_big_size_config.py 进行篡改的配置集。
