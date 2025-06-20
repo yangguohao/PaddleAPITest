@@ -201,6 +201,7 @@ def aggregate_logs(end=False):
                             "API",
                             "config",
                             "dtype",
+                            "mode",
                             "max_abs_diff",
                             "max_rel_diff",
                         ]
