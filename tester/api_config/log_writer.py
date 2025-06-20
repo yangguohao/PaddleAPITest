@@ -1,4 +1,6 @@
+import csv
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -60,7 +62,7 @@ def get_log_file(log_type: str):
     """获取指定日志类型和PID对应的日志文件路径"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-        
+
     prefix = LOG_PREFIXES[log_type]
 
     if not is_engineV2:
@@ -123,7 +125,7 @@ def aggregate_logs(end=False):
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
-                os.remove(str(file_path))
+                file_path.unlink()
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
 
@@ -135,15 +137,17 @@ def aggregate_logs(end=False):
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
 
     log_file = TEST_LOG_PATH / f"log_inorder.log"
-    tmp_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
+    tmp_log_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
     try:
         with log_file.open("ab") as out_f:
-            for file_path in tmp_files:
+            for file_path in tmp_log_files:
                 try:
                     with file_path.open("rb") as in_f:
                         for line in in_f:
-                            if len(line) > 10000:
-                                print(f"Truncating long line ({len(line)} bytes) in {file_path.name}")
+                            if len(line) > 10000:  # 如果行长度超过10000字节，截断
+                                print(
+                                    f"Truncating long line ({len(line)} bytes) in {file_path.name}"
+                                )
                                 out_f.write(line[:10000] + b"\n")
                             else:
                                 out_f.write(line)
@@ -155,6 +159,36 @@ def aggregate_logs(end=False):
                     print(f"Error reading {file_path}: {err}", flush=True)
     except Exception as err:
         print(f"Error writing to {log_file}: {err}", flush=True)
+
+    tol_file = TEST_LOG_PATH / f"tol.csv"
+    tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
+    if tmp_tol_files:
+        try:
+            with tol_file.open("a", newline="") as out_f:
+                writer = csv.writer(out_f)
+                if not tol_file.exists() or tol_file.stat().st_size == 0:
+                    writer.writerow(
+                        [
+                            "API",
+                            "config",
+                            "dtype",
+                            "max_abs_diff",
+                            "max_rel_diff",
+                        ]
+                    )
+                for file_path in tmp_tol_files:
+                    try:
+                        with file_path.open("r") as in_f:
+                            reader = csv.reader(in_f)
+                            next(reader, None)
+                            for row in reader:
+                                if row:  # 确保行不为空
+                                    writer.writerow(row)
+                        file_path.unlink()
+                    except Exception as err:
+                        print(f"Error reading {file_path}: {err}", flush=True)
+        except Exception as err:
+            print(f"Error writing to {tol_file}: {err}", flush=True)
 
     if end:
         try:
@@ -267,3 +301,49 @@ def restore_stdio():
         os.dup2(orig_stderr_fd, stderr_fd)
         os.close(orig_stderr_fd)
         orig_stderr_fd = None
+
+
+def parse_accuracy_tolerance(error_msg, api, config, dtype):
+    """
+    从 torch.testing.assert_close 的异常消息中提取最大绝对误差和相对误差
+    将误差数据记录到 CSV 文件
+    """
+    output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
+
+    if error_msg == "same":
+        max_abs_diff = 0.0
+        max_rel_diff = 0.0
+    else:
+        max_abs_diff = None
+        max_rel_diff = None
+
+        # 使用正则表达式提取误差值
+        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
+        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
+        abs_match = re.search(abs_pattern, error_msg)
+        rel_match = re.search(rel_pattern, error_msg)
+
+        if abs_match and rel_match:
+            try:
+                max_abs_diff = float(abs_match.group(1))
+                max_rel_diff = float(rel_match.group(1))
+            except ValueError:
+                pass
+
+    row = [api, config, dtype, str(max_abs_diff), str(max_rel_diff)]
+    try:
+        with open(output_file, mode="a", newline="") as f:
+            writer = csv.writer(f)
+            if not output_file.exists() or output_file.stat().st_size == 0:
+                writer.writerow(
+                    [
+                        "API",
+                        "config",
+                        "dtype",
+                        "max_abs_diff",
+                        "max_rel_diff",
+                    ]
+                )
+            writer.writerow(row)
+    except Exception as e:
+        print(f"Error writing to {output_file}: {e}", flush=True)

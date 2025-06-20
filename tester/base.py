@@ -6,6 +6,7 @@ import paddle
 import torch
 
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
+from .api_config.log_writer import parse_accuracy_tolerance
 
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = frozenset(
@@ -69,6 +70,7 @@ stochastic_behavior_apis = frozenset(
         # "paddle.nn.functional.rrelu", # If parameter "training=True" is set, the result involves random calculation.
         # "paddle.nn.functional.scaled_dot_product_attention", # If parameter "dropout_p=0.0" is not equal to 0.0 or 1.0, the result involves random calculation.
         # "paddle.scatter", # If overwrite is set to True and index contain duplicate values, the result involves random calculation.
+        # "paddle.nn.functional.gumbel_softmax",
     ]
 )
 
@@ -884,6 +886,10 @@ class APITestBase:
                 f"{torch_tensor}"
             )
 
+        test_tol = getattr(self, "test_tol", False)
+        if test_tol:
+            atol, rtol = 0.0, 0.0
+
         try:
             torch.testing.assert_close(
                 converted_paddle_tensor,
@@ -894,7 +900,21 @@ class APITestBase:
                 check_dtype=is_check_dtype,
                 msg=error_msg,
             )
+            if test_tol:
+                parse_accuracy_tolerance(
+                    "same",
+                    self.api_config.api_name,
+                    self.api_config.config,
+                    str(paddle_tensor.dtype),
+                )
         except Exception as e:
+            if test_tol:
+                parse_accuracy_tolerance(
+                    str(e),
+                    self.api_config.api_name,
+                    self.api_config.config,
+                    str(paddle_tensor.dtype),
+                )
             if "Comparing" in str(e):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(
