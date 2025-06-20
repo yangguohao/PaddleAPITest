@@ -18,6 +18,8 @@ class APITestAccuracy(APITestBase):
         self.atol = kwargs.get("atol", 1e-2)
         self.rtol = kwargs.get("rtol", 1e-2)
         self.test_tol = kwargs.get("test_tol", False)
+        if self.test_tol:
+            torch.set_printoptions(profile="short")
         self.converter = get_converter()
 
     # @func_set_timeout(600)

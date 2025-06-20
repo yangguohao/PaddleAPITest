@@ -193,38 +193,49 @@ def aggregate_logs(end=False):
     tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
     if tmp_tol_files:
         try:
-            dfs = []
-            for file_path in tmp_tol_files:
-                try:
-                    df = pd.read_csv(file_path)
-                    dfs.append(df)
-                except Exception as err:
-                    print(f"Error reading {file_path}: {err}", flush=True)
-                    tol_success = False
-                    break
-
-            if tol_success and dfs:
-                df = pd.concat(dfs, ignore_index=True)
-                df = df.drop_duplicates(subset=["config", "mode"], keep="last")
-                df = df.sort_values(
-                    by=["API", "dtype", "config", "mode"], ignore_index=True
-                )
-                df.to_csv(tol_file, index=False)
-
+            with tol_file.open("a", newline="") as out_f:
+                writer = csv.writer(out_f)
+                if not tol_file.exists() or tol_file.stat().st_size == 0:
+                    writer.writerow(
+                        [
+                            "API",
+                            "config",
+                            "dtype",
+                            "max_abs_diff",
+                            "max_rel_diff",
+                        ]
+                    )
+                for file_path in tmp_tol_files:
+                    try:
+                        with file_path.open("r") as in_f:
+                            reader = csv.reader(in_f)
+                            next(reader, None)
+                            for row in reader:
+                                if row:  # 确保行不为空
+                                    writer.writerow(row)
+                    except Exception as err:
+                        print(f"Error reading {file_path}: {err}", flush=True)
+                        tol_success = False
+                        break
         except Exception as err:
             print(f"Error writing to {tol_file}: {err}", flush=True)
             tol_success = False
 
-    if not tol_success:
-        tol_file.unlink(missing_ok=True)
-        all_success = False
-    else:
-        for file_path in tmp_tol_files:
-            file_path.unlink()
+        if not tol_success:
+            tol_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in tmp_tol_files:
+                file_path.unlink()
 
     if end:
         if all_success:
             shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
+
+        df = pd.read_csv(tol_file)
+        df = df.drop_duplicates(subset=["config", "mode"], keep="last")
+        df = df.sort_values(by=["API", "dtype", "config", "mode"], ignore_index=True)
+        df.to_csv(tol_file, index=False)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
@@ -237,7 +248,7 @@ def aggregate_logs(end=False):
             print(f"Error reading {checkpoint_file}: {err}", flush=True)
 
         for log_type, prefix in LOG_PREFIXES.items():
-            if log_type == "checkpoint":
+            if log_type in {"checkpoint", "forward", "backward"}:
                 continue
             log_file = TEST_LOG_PATH / f"{prefix}.txt"
             if not log_file.exists():
