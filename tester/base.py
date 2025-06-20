@@ -899,6 +899,13 @@ class APITestBase:
                 check_dtype=is_check_dtype,
                 msg=error_msg,
             )
+            if test_tol:
+                parse_accuracy_tolerance(
+                    "same",
+                    self.api_config.api_name,
+                    self.api_config.config,
+                    str(paddle_tensor.dtype),
+                )
         except Exception as e:
             if test_tol:
                 parse_accuracy_tolerance(

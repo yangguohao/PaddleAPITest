@@ -297,23 +297,28 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
     从 torch.testing.assert_close 的异常消息中提取最大绝对误差和相对误差
     将误差数据记录到 CSV 文件
     """
-    max_abs_diff = None
-    max_rel_diff = None
-
-    # 使用正则表达式提取误差值
-    abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
-    rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
-    abs_match = re.search(abs_pattern, error_msg)
-    rel_match = re.search(rel_pattern, error_msg)
-
-    if abs_match and rel_match:
-        try:
-            max_abs_diff = float(abs_match.group(1))
-            max_rel_diff = float(rel_match.group(1))
-        except ValueError:
-            pass
-
     output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
+
+    if error_msg == "same":
+        max_abs_diff = 0.0
+        max_rel_diff = 0.0
+    else:
+        max_abs_diff = None
+        max_rel_diff = None
+
+        # 使用正则表达式提取误差值
+        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
+        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
+        abs_match = re.search(abs_pattern, error_msg)
+        rel_match = re.search(rel_pattern, error_msg)
+
+        if abs_match and rel_match:
+            try:
+                max_abs_diff = float(abs_match.group(1))
+                max_rel_diff = float(rel_match.group(1))
+            except ValueError:
+                pass
+
     row = [api, config, dtype, str(max_abs_diff), str(max_rel_diff)]
     try:
         with open(output_file, mode="a", newline="") as f:
