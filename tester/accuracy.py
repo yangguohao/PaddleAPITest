@@ -364,7 +364,7 @@ class APITestAccuracy(APITestBase):
                             return
 
         if self.need_check_grad() and torch_grad_success:
-            self.backward = True
+            self.is_backward = True
             try:
                 paddle_out_grads = None
                 inputs_list = self.get_paddle_input_list()

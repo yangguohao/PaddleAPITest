@@ -887,6 +887,7 @@ class APITestBase:
             )
 
         test_tol = getattr(self, "test_tol", False)
+        is_backward = getattr(self, "is_backward", False)
         if test_tol:
             atol, rtol = 0.0, 0.0
 
@@ -906,6 +907,7 @@ class APITestBase:
                     self.api_config.api_name,
                     self.api_config.config,
                     str(paddle_tensor.dtype),
+                    is_backward,
                 )
         except Exception as e:
             if test_tol:
@@ -914,6 +916,7 @@ class APITestBase:
                     self.api_config.api_name,
                     self.api_config.config,
                     str(paddle_tensor.dtype),
+                    is_backward,
                 )
                 print("[accuracy error]", self.api_config.config, "\n", str(e), flush=True)
                 write_to_log("accuracy_error", self.api_config.config)

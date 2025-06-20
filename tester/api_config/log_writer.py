@@ -116,7 +116,7 @@ def aggregate_logs(end=False):
     if not TMP_LOG_PATH.exists() and not end:
         TMP_LOG_PATH.mkdir(exist_ok=True)
         return
-    
+
     all_success = True
     for prefix in LOG_PREFIXES.values():
         log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
@@ -144,7 +144,7 @@ def aggregate_logs(end=False):
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
             prefix_success = False
-        
+
         if not prefix_success:
             aggregated_file.unlink(missing_ok=True)
             all_success = False
@@ -188,8 +188,8 @@ def aggregate_logs(end=False):
 
     tol_success = True
     for mode in {"forward", "backward"}:
-        tol_file = TEST_LOG_PATH / f"tol.csv"
-        tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
+        tol_file = TEST_LOG_PATH / f"tol_{mode}.csv"
+        tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_{mode}_*.csv"))
         if tmp_tol_files:
             try:
                 with tol_file.open("a", newline="") as out_f:
@@ -200,6 +200,7 @@ def aggregate_logs(end=False):
                                 "API",
                                 "config",
                                 "dtype",
+                                "mode",
                                 "max_abs_diff",
                                 "max_rel_diff",
                             ]
@@ -219,7 +220,7 @@ def aggregate_logs(end=False):
             except Exception as err:
                 print(f"Error writing to {tol_file}: {err}", flush=True)
                 tol_success = False
-        
+
         if not tol_success:
             tol_file.unlink(missing_ok=True)
             all_success = False
