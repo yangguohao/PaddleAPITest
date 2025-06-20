@@ -318,7 +318,7 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
     try:
         with open(output_file, mode="a", newline="") as f:
             writer = csv.writer(f)
-            if not output_file:
+            if not output_file.exists() or output_file.stat().st_size == 0:
                 writer.writerow(
                     [
                         "API",
