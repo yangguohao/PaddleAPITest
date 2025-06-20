@@ -14,14 +14,15 @@ GPU_IDS="4,5,6,7"
 # REQUIRED_MEMORY=10
 
 TEST_MODE_ARGS=(
-	--accuracy=True
-	# --paddle_only=True
+    --accuracy=True
+    # --paddle_only=True
     # --paddle_cinn=True
-	# --test_amp=True
-	# --test_cpu=True
-	# --use_cached_numpy=True
-	# --atol=1e-2
-	# --rtol=1e-2
+    # --test_amp=True
+    # --test_cpu=True
+    # --use_cached_numpy=True
+    # --atol=1e-2
+    # --rtol=1e-2
+    # --test_tol=True
 )
 
 IN_OUT_ARGS=(
