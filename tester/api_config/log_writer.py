@@ -140,8 +140,8 @@ def aggregate_logs(end=False):
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
             prefix_success = False
         
-        if not prefix_success and aggregated_file.exists():
-            aggregated_file.unlink()
+        if not prefix_success:
+            aggregated_file.unlink(missing_ok=True)
         else:
             for file_path in log_files:
                 file_path.unlink()
@@ -161,10 +161,6 @@ def aggregate_logs(end=False):
                                 out_f.write(line[:10000] + b"\n")
                             else:
                                 out_f.write(line)
-                    if end:
-                        file_path.unlink()
-                    else:
-                        file_path.open("wb").close()
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
                     log_success = False
@@ -173,22 +169,19 @@ def aggregate_logs(end=False):
         print(f"Error writing to {log_file}: {err}", flush=True)
         log_success = False
 
-    if not log_success and log_file.exists():
-        log_file.unlink()
+    if not log_success:
+        log_file.unlink(missing_ok=True)
     else:
         for file_path in tmp_files:
             if end:
                 file_path.unlink()
             else:
-                file_path.open("wb").close()
+                file_path.write_bytes(b"")
     all_success = all_success and log_success
 
     if end:
         if all_success:
-            try:
-                shutil.rmtree(TMP_LOG_PATH)
-            except OSError:
-                pass
+            shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
