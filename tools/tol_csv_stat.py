@@ -1,4 +1,4 @@
-# 整理 tol_*.csv 精度统计数据
+# 整理 tol_*.csv 精度统计数据，产出：tol_full.csv、tol_stat.csv、tol_stat_api.csv
 # @author: cangtianhuang
 # @date: 2025-06-20
 
@@ -33,6 +33,7 @@ for file_path in file_list:
         continue
     try:
         df = pd.read_csv(file_path)
+        df = df.drop_duplicates(subset=["config"], keep="last")
         dfs.append(df)
         print(f"Read {len(df)} configs in {file_path}")
         config_count += len(df)
@@ -53,6 +54,7 @@ if not stats:
 
 # 合并所有DataFrame并保存
 merged_df = pd.concat(dfs, ignore_index=True)
+merged_df = merged_df.drop_duplicates(subset=["config"], keep="last")
 merged_df = merged_df.sort_values(by=["API", "dtype", "config"]).reset_index(drop=True)
 numeric_cols = ["max_abs_diff", "max_rel_diff"]
 for col in numeric_cols:

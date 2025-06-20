@@ -166,10 +166,21 @@ def aggregate_logs(end=False):
         try:
             with tol_file.open("a", newline="") as out_f:
                 writer = csv.writer(out_f)
+                if not tol_file.exists() or tol_file.stat().st_size == 0:
+                    writer.writerow(
+                        [
+                            "API",
+                            "config",
+                            "dtype",
+                            "max_abs_diff",
+                            "max_rel_diff",
+                        ]
+                    )
                 for file_path in tmp_tol_files:
                     try:
                         with file_path.open("r") as in_f:
                             reader = csv.reader(in_f)
+                            next(reader, None)
                             for row in reader:
                                 if row:  # 确保行不为空
                                     writer.writerow(row)
