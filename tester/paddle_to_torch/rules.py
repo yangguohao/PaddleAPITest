@@ -982,9 +982,11 @@ elif isinstance(max, torch.Tensor):
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
+        post = "result = result.to(x.dtype) if 'x' in locals() else result"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=[core],
+            postprocess=[post]
         )
         return ConvertResult.success(paddle_api, code)
 
