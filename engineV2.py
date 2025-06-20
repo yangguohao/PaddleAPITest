@@ -402,8 +402,10 @@ def main():
 
     mode = [options.accuracy, options.paddle_only, options.paddle_cinn]
     if len([m for m in mode if m is True]) != 1:
-        print(f"Exactly one of --accuracy, --paddle_only, or --paddle_cinn must be True.", flush=True)
+        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn to True.", flush=True)
         return
+    if options.test_tol and not options.accuracy:
+        print(f"--test_tol takes effect when --accuracy is True.", flush=True)
     os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
 
     if options.log_dir:
