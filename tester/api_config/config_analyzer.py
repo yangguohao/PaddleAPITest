@@ -424,6 +424,8 @@ class TensorConfig:
                 return self.numpy_tensor
             elif api_config.api_name in ["paddle.clip", "paddle.Tensor.clip"] and self.check_arg(api_config, 0, "x"):
                 # if both min and max need a Tensor instead of None, init min and max at the same TensorConfig numpy tensor init process
+                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
+                self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype)
                 min_config = self.get_arg(api_config, 1, "min")
                 max_config = self.get_arg(api_config, 2, "max")
                 if (isinstance(min_config, TensorConfig) and isinstance(max_config, TensorConfig)):
@@ -455,8 +457,6 @@ class TensorConfig:
                         self.set_tensor_arg_value(api_config, 2, "max", max_numpy_tensor)
                         max_config = max_numpy_tensor
                     # for both min and max are scalar, there is no need to init numpy tensor
-                # init input tensor x randomly (index == 0 indicates we are init TensorConfig(x).numpy_tensor)
-                self.numpy_tensor = self.get_random_numpy_tensor(shape=self.shape, data_type=self.dtype, min=min_config-1000, max=max_config+1000)
                 return self.numpy_tensor
             elif api_config.api_name == "paddle.vision.ops.distribute_fpn_proposals":
                 if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
