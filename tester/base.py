@@ -6,7 +6,7 @@ import paddle
 import torch
 
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
-from .api_config.log_writer import parse_accuracy_tolerance
+from .api_config.log_writer import parse_accuracy_tolerance, write_to_log
 
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = frozenset(
@@ -915,7 +915,9 @@ class APITestBase:
                     self.api_config.config,
                     str(paddle_tensor.dtype),
                 )
-            if "Comparing" in str(e):
+                print("[accuracy error]", self.api_config.config, "\n", str(e), flush=True)
+                write_to_log("accuracy_error", self.api_config.config)
+            elif "Comparing" in str(e):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(
                     paddle_tensor.numpy(),

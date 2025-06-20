@@ -23,6 +23,8 @@ LOG_PREFIXES = {
     "crash": "api_config_crash",
     "oom": "api_config_oom",
     "numpy_error": "api_config_numpy_error",
+    "forward": "api_config_accuracy_tolerance_forward",
+    "backward": "api_config_accuracy_tolerance_backward",
 }
 
 is_engineV2 = False
@@ -185,44 +187,45 @@ def aggregate_logs(end=False):
                 file_path.write_bytes(b"")
 
     tol_success = True
-    tol_file = TEST_LOG_PATH / f"tol.csv"
-    tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
-    if tmp_tol_files:
-        try:
-            with tol_file.open("a", newline="") as out_f:
-                writer = csv.writer(out_f)
-                if not tol_file.exists() or tol_file.stat().st_size == 0:
-                    writer.writerow(
-                        [
-                            "API",
-                            "config",
-                            "dtype",
-                            "max_abs_diff",
-                            "max_rel_diff",
-                        ]
-                    )
-                for file_path in tmp_tol_files:
-                    try:
-                        with file_path.open("r") as in_f:
-                            reader = csv.reader(in_f)
-                            next(reader, None)
-                            for row in reader:
-                                if row:  # 确保行不为空
-                                    writer.writerow(row)
-                    except Exception as err:
-                        print(f"Error reading {file_path}: {err}", flush=True)
-                        tol_success = False
-                        break
-        except Exception as err:
-            print(f"Error writing to {tol_file}: {err}", flush=True)
-            tol_success = False
-    
-    if not tol_success:
-        tol_file.unlink(missing_ok=True)
-        all_success = False
-    else:
-        for file_path in tmp_tol_files:
-            file_path.unlink()
+    for mode in {"forward", "backward"}:
+        tol_file = TEST_LOG_PATH / f"tol.csv"
+        tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
+        if tmp_tol_files:
+            try:
+                with tol_file.open("a", newline="") as out_f:
+                    writer = csv.writer(out_f)
+                    if not tol_file.exists() or tol_file.stat().st_size == 0:
+                        writer.writerow(
+                            [
+                                "API",
+                                "config",
+                                "dtype",
+                                "max_abs_diff",
+                                "max_rel_diff",
+                            ]
+                        )
+                    for file_path in tmp_tol_files:
+                        try:
+                            with file_path.open("r") as in_f:
+                                reader = csv.reader(in_f)
+                                next(reader, None)
+                                for row in reader:
+                                    if row:  # 确保行不为空
+                                        writer.writerow(row)
+                        except Exception as err:
+                            print(f"Error reading {file_path}: {err}", flush=True)
+                            tol_success = False
+                            break
+            except Exception as err:
+                print(f"Error writing to {tol_file}: {err}", flush=True)
+                tol_success = False
+        
+        if not tol_success:
+            tol_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in tmp_tol_files:
+                file_path.unlink()
 
     if end:
         if all_success:
@@ -335,12 +338,13 @@ def restore_stdio():
         orig_stderr_fd = None
 
 
-def parse_accuracy_tolerance(error_msg, api, config, dtype):
+def parse_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
     """
     从 torch.testing.assert_close 的异常消息中提取最大绝对误差和相对误差
     将误差数据记录到 CSV 文件
     """
-    output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
+    mode = "backward" if is_backward else "forward"
+    output_file = TMP_LOG_PATH / f"tol_{mode}_{os.getpid()}.csv"
 
     if error_msg == "same":
         max_abs_diff = 0.0
@@ -362,7 +366,7 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
             except ValueError:
                 pass
 
-    row = [api, config, dtype, str(max_abs_diff), str(max_rel_diff)]
+    row = [api, config, dtype, mode, str(max_abs_diff), str(max_rel_diff)]
     try:
         with open(output_file, mode="a", newline="") as f:
             writer = csv.writer(f)
@@ -372,6 +376,7 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
                         "API",
                         "config",
                         "dtype",
+                        "mode",
                         "max_abs_diff",
                         "max_rel_diff",
                     ]
