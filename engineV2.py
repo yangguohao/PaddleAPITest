@@ -285,6 +285,7 @@ def run_test_case(api_config_str, options):
             test_amp=options.test_amp,
             atol=options.atol,
             rtol=options.rtol,
+            test_tol=options.test_tol,
         )
     else:
         case = test_class(api_config, test_amp=options.test_amp)
@@ -390,10 +391,23 @@ def main():
         default=1e-2,
         help="Relative tolerance for accuracy tests",
     )
+    parser.add_argument(
+        "--test_tol",
+        type=parse_bool,
+        default=False,
+        help="Whether to test tolerance range in accuracy",
+    )
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
+    mode = [options.accuracy, options.paddle_only, options.paddle_cinn]
+    if len([m for m in mode if m is True]) != 1:
+        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn to True.", flush=True)
+        return
+    if options.test_tol and not options.accuracy:
+        print(f"--test_tol takes effect when --accuracy is True.", flush=True)
     os.environ["USE_CACHED_NUMPY"] = str(options.use_cached_numpy)
+
     if options.log_dir:
         set_test_log_path(options.log_dir)
 
@@ -424,6 +438,7 @@ def main():
                 test_amp=options.test_amp,
                 atol=options.atol,
                 rtol=options.rtol,
+                test_tol=options.test_tol,
             )
         else:
             case = test_class(api_config, test_amp=options.test_amp)

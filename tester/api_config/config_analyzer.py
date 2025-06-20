@@ -73,6 +73,7 @@ class TensorConfig:
         self.numpy_tensor = None
         self.paddle_tensor = None
         self.torch_tensor = None
+
     def __deepcopy__(self, memo):
         cls = self.__class__
         result = cls.__new__(cls)
@@ -83,9 +84,10 @@ class TensorConfig:
         return result
 
     def __str__(self):
-        return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
+        return f'Tensor({self.shape},"{self.dtype}")'
+
     def __repr__(self):
-        return "Tensor("+str(self.shape)+",\""+self.dtype+"\")"
+        return f'Tensor({self.shape},"{self.dtype}")'
 
     def convert_dtype_to_torch_type(self, dtype):
         if dtype in ["float32", numpy.float32]:
@@ -2113,16 +2115,16 @@ class APIConfig:
 
 
     def __str__(self):
-        result = ""
-        result = result + self.api_name + "("
+        result = self.api_name + "("
         for arg in self.args:
-            result = result + self.dump_item_str(arg) + ", "
-        
+            result += self.dump_item_str(arg) + ", "
         for key, value in self.kwargs.items():
-            result = result + key + "=" + self.dump_item_str(value) + ", "
-
-        result = result + ")"
+            result += key + "=" + self.dump_item_str(value) + ", "
+        result += ")"
         return result
+    
+    def __repr__(self):
+        return self.__str__()
 
     # def get_tocken(self, config, offset):
     #     def is_int(tocken):

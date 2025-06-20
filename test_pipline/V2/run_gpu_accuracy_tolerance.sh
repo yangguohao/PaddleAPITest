@@ -3,14 +3,16 @@
 # Script to run engineV2.py
 # Usage: ./run.sh
 
+# export PYTHONPATH=/root/paddlejob/Paddle/build/python
+
 # 配置参数
 # NUM_GPUS!=0 时，engineV2 不受外部 "CUDA_VISIBLE_DEVICES" 影响
-FILE_INPUT="tester/api_config/5_accuracy/accuracy_1.txt"
-# FILE_PATTERN="tester/api_config/5_accuracy/accuracy_*.txt"
-LOG_DIR="tester/api_config/test_log"
+# FILE_INPUT="tester/api_config/5_accuracy/accuracy_1.txt"
+FILE_PATTERN="tester/api_config/5_accuracy/accuracy_*.txt"
+LOG_DIR="tester/api_config/test_log_tol"
 NUM_GPUS=-1
 NUM_WORKERS_PER_GPU=-1
-GPU_IDS="4,5,6,7"
+GPU_IDS="-1"
 # REQUIRED_MEMORY=10
 
 TEST_MODE_ARGS=(
@@ -22,12 +24,12 @@ TEST_MODE_ARGS=(
     # --use_cached_numpy=True
     # --atol=1e-2
     # --rtol=1e-2
-    # --test_tol=True
+    --test_tol=True
 )
 
 IN_OUT_ARGS=(
-    --api_config_file="$FILE_INPUT"
-    # --api_config_file_pattern="$FILE_PATTERN"
+    # --api_config_file="$FILE_INPUT"
+    --api_config_file_pattern="$FILE_PATTERN"
     --log_dir="$LOG_DIR"
 )
 
