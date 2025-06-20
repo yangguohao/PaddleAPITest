@@ -5718,10 +5718,10 @@ axis = locals().get('axis', -1)
 axis = axis if axis >= 0 else logits.dim() + axis
 
 ogits = logits.transpose(axis, -1)
-orig_shape = ogits.shape
+abel = label.transpose(axis, -1)
 
 logits_flat = ogits.reshape(-1, ogits.shape[-1])
-label_flat = label.reshape(-1)  
+label_flat = abel.reshape(-1)  
 if numeric_stable_mode:
     max_logits = torch.max(logits_flat, dim=-1, keepdim=True).values
     logits_flat = logits_flat - max_logits
@@ -5734,13 +5734,13 @@ loss = torch.nn.functional.nll_loss(
     ignore_index=ignore_index
 )
 if loss.ndim < ogits.ndim:
-    loss = loss.reshape(*ogits.shape[:-1])
+    loss = loss.reshape(*ogits.shape[:-1]).unsqueeze(-1).transpose(-1, axis)
 if return_softmax:
-    softmax = torch.nn.functional.softmax(logits, dim=-1)
+    softmax = torch.nn.functional.softmax(ogits, dim=-1)
     softmax = softmax.transpose(-1, axis).contiguous()
-    result = (loss.unsqueeze(axis), softmax)
+    result = (loss, softmax)
 else:
-    result = loss.reshape(*label.shape)
+    result = loss
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
