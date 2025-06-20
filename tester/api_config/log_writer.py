@@ -176,7 +176,7 @@ def aggregate_logs(end=False):
     if not log_success:
         log_file.unlink(missing_ok=True)
     else:
-        for file_path in tmp_files:
+        for file_path in tmp_log_files:
             if end:
                 file_path.unlink()
             else:
