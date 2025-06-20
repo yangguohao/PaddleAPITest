@@ -600,9 +600,7 @@ distribution = torch.distributions.binomial.Binomial(total_count=total_count, pr
 """
         core = "result = distribution.sample()"
         code = Code(preprocess=pre.splitlines(), core=[core])
-        return ConvertResult.success(
-            paddle_api, code, "result", is_torch_corresponding=False
-        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class BroadcastShapeRule(BaseRule):
@@ -613,7 +611,7 @@ y_shape = locals().get('y_shape')
 """
         core = "result = torch.broadcast_shapes(x_shape, y_shape)"
         code = Code(preprocess=pre.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class BroadcastTensorsRule(BaseRule):
@@ -674,7 +672,7 @@ else:
     result = torch.corrcoef(x).t()
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class CosineEmbeddingLossRule(BaseRule):
@@ -984,10 +982,7 @@ if isinstance(max, torch.Tensor):
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
-        code = Code(
-            preprocess=defaults_code + pre.splitlines() + map_code,
-            core=[core]
-        )
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1550,7 +1545,7 @@ mode = locals().get('mode')
 """
         core = "result = axis_dropout(x, p, axis, training, mode) if axis is not None else torch.nn.functional.dropout(input=x, p=float(p), training=training)"
         code = Code(preprocess=pre.splitlines(), core=[core])
-        return ConvertResult.success(paddle_api, code, "result", is_torch_corresponding=False)
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class Dropout2dRule(BaseRule):
@@ -1569,8 +1564,10 @@ if data_format == "NHWC":
 if data_format == "NHWC":
     result = result.permute(0, 2, 3, 1)
 """
-        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        code = Code(
+            preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 class Dropout3dRule(BaseRule):
@@ -1589,8 +1586,10 @@ if data_format == "NDHWC":
 if data_format == "NDHWC":
     result = result.permute(0, 2, 3, 4, 1)
 """
-        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        code = Code(
+            preprocess=pre.splitlines(), core=[core], postprocess=post.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
 
 
 # e
@@ -3245,7 +3244,7 @@ _kwargs['index'] = torch.squeeze(_kwargs['index'])
 result = torch.index_select( **_kwargs)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class ItemRule(BaseRule):
@@ -4199,7 +4198,7 @@ else:
     result = torch.ones(shape, dtype=dtype)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class OuterRule(BaseRule):
@@ -4278,9 +4277,7 @@ imag = abs * torch.sin(angle)
 result = torch.complex(real, imag)
 """
         code = Code(core=core.splitlines())
-        return ConvertResult.success(
-            paddle_api, code, "result", is_torch_corresponding=False
-        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class PositiveRule(BaseRule):
@@ -4289,9 +4286,7 @@ class PositiveRule(BaseRule):
 result = x
 """
         code = Code(core=core.splitlines())
-        return ConvertResult.success(
-            paddle_api, code, "result", is_torch_corresponding=False
-        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 class ProdRule(BaseRule):
@@ -4340,7 +4335,7 @@ else:
     result = x
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class Put_along_axisRule(BaseRule):
@@ -4382,7 +4377,7 @@ else:
     result = torch.scatter_reduce(input, dim, index, src, reduce, include_self=include_self)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class PoolRule(BaseRule):
@@ -4675,9 +4670,7 @@ if mode == "r":
             core=core.splitlines(),
             postprocess=post.splitlines(),
         )
-        return ConvertResult.success(
-            paddle_api, code, "result", is_torch_corresponding=False
-        )
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
 # r
@@ -4748,7 +4741,7 @@ else:
 result = torch.flip(x,dim)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class Roi_aignRule(BaseRule):
@@ -4778,7 +4771,7 @@ for i in range(boxnum.shape[0]):
 result = torchvision.ops.roi_align( **_kwargs, boxes = ans)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class Roi_poolRule(BaseRule):
@@ -4806,7 +4799,7 @@ for i in range(boxnum.shape[0]):
 """
         core = f"result = {self.torch_api}(boxes = ans, **_kwargs)"
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
-        return ConvertResult.success(paddle_api, code, "result")
+        return ConvertResult.success(paddle_api, code)
 
 
 class RollRule(BaseRule):
@@ -6492,4 +6485,4 @@ __all__ = [
     cls.__name__
     for cls in globals().values()
     if isinstance(cls, type) and issubclass(cls, BaseRule) and cls != BaseRule
-] # type: ignore
+]  # type: ignore
