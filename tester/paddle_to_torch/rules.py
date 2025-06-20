@@ -4371,6 +4371,7 @@ if broadcast == True:
     if broadcast_shape:
         index = torch.broadcast_to(index, broadcast_shape)
         src = torch.broadcast_to(src, broadcast_shape)
+index = index.to(dtype=torch.int64)
 """
         core = """
 if reduce == 'assign':
@@ -5190,7 +5191,7 @@ class SigmoidFocalLossRule(BaseRule):
 normalizer = locals().get('normalizer', None)
 alpha = locals().get('alpha', 0.25)
 gamma = locals().get('gamma', 2.0)
-reduction = locals().get('reduction', 'mean')
+reduction = locals().get('reduction', 'sum')
 prob = torch.sigmoid(logit)
 
 pos_loss = -label * alpha * ((1 - prob) ** gamma) * torch.log(prob)

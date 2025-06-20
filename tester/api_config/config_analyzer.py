@@ -1682,10 +1682,11 @@ class TensorConfig:
                         raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk / paddle.Tensor.topk")
                 elif self.check_arg(api_config, 1, "k"):
                     x_config = self.get_arg(api_config, 0, "x")
+                    axis = self.get_arg(api_config, 2, "axis", -1)
                     max_k_value = 1
                     if isinstance(x_config, TensorConfig) and x_config.shape:
                         if len(x_config.shape) > 0:
-                            max_k_value = x_config.shape[-1]
+                            max_k_value = x_config.shape[axis]
                         else:
                             max_k_value = 1
                     if not self.shape:
@@ -1800,6 +1801,10 @@ class TensorConfig:
                 else:
                     # self.check_arg(api_config, 1, "other"): 
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
+
+            elif api_config.api_name == "paddle.nn.functional.sigmoid_focal_loss":
+                if self.check_arg(api_config, 1, "label"):
+                    self.numpy_tensor = numpy.random.randint(low=0, high=2, size=self.shape).astype(self.dtype)
 
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
