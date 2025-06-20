@@ -112,20 +112,25 @@ def aggregate_logs(end=False):
     if not TMP_LOG_PATH.exists() and not end:
         TMP_LOG_PATH.mkdir(exist_ok=True)
         return
-
+    
+    all_success = True
     for prefix in LOG_PREFIXES.values():
         log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
         if not log_files:
             continue
 
+        prefix_success = True
         all_lines = set()
         for file_path in log_files:
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
-                os.remove(str(file_path))
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
+                prefix_success = False
+                break
+        if not prefix_success:
+            continue
 
         aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
         try:
@@ -133,7 +138,16 @@ def aggregate_logs(end=False):
                 f.writelines(f"{line}\n" for line in sorted(all_lines))
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
+            prefix_success = False
+        
+        if not prefix_success and aggregated_file.exists():
+            aggregated_file.unlink()
+        else:
+            for file_path in log_files:
+                file_path.unlink()
+        all_success = all_success and prefix_success
 
+    log_success = True
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     tmp_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
     try:
@@ -153,14 +167,28 @@ def aggregate_logs(end=False):
                         file_path.open("wb").close()
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
+                    log_success = False
+                    break
     except Exception as err:
         print(f"Error writing to {log_file}: {err}", flush=True)
+        log_success = False
+
+    if not log_success and log_file.exists():
+        log_file.unlink()
+    else:
+        for file_path in tmp_files:
+            if end:
+                file_path.unlink()
+            else:
+                file_path.open("wb").close()
+    all_success = all_success and log_success
 
     if end:
-        try:
-            shutil.rmtree(TMP_LOG_PATH)
-        except OSError:
-            pass
+        if all_success:
+            try:
+                shutil.rmtree(TMP_LOG_PATH)
+            except OSError:
+                pass
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
