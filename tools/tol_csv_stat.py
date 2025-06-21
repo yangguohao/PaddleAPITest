@@ -1,9 +1,8 @@
 # 整理 tol_*.csv 精度统计数据，产出：tol_full.csv、tol_stat.csv、tol_stat_api.csv
 # @author: cangtianhuang
-# @date: 2025-06-20
+# @date: 2025-06-21
 
 from pathlib import Path
-from turtle import forward
 import pandas as pd
 import glob
 from collections import defaultdict
