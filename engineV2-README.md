@@ -22,7 +22,7 @@
     ```bash
     pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
     pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-    pip install func_timeout pebble pynvml
+    pip install pebble pynvml pandas
     ```
 2. 克隆 PaddleAPITest 仓库并进入项目目录
    ```bash
