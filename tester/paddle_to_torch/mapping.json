@@ -56,13 +56,13 @@
     "paddle.all": {
         "Rule": "AllRule",
         "torch_api": "torch.all",
+        "set_defaults": {
+            "keepdim": false
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "axis": "dim",
             "keepdim": "keepdim"
-        },
-        "set_defaults": {
-            "keepdim": false
         }
     },
     "paddle.Tensor.all": {
@@ -179,17 +179,17 @@
         "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.argmax(dim=axis, keepdim=keepdim)"
     },
     "paddle.argmin": {
-        "torch_api": "torch.argmin",
         "Rule": "ArgminRule",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "axis": "dim",
-            "keepdim": "keepdim"
-        },
+        "torch_api": "torch.argmin",
         "set_defaults": {
             "axis": "None",
             "keepdim": false,
             "dtype": "torch.int64"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "axis": "dim",
+            "keepdim": "keepdim"
         }
     },
     "paddle.argsort": {
@@ -244,8 +244,8 @@
         }
     },
     "paddle.assign": {
-        "torch_api": "torch.clone",
         "Rule": "AssignRule",
+        "torch_api": "torch.clone",
         "description": "result = torch.clone(input=x)"
     },
     "paddle.atan": {
@@ -440,15 +440,15 @@
         "torch_api": "torch.Tensor.ceil"
     },
     "paddle.chunk": {
-        "torch_api": "torch.chunk",
         "Rule": "ChunkRule",
+        "torch_api": "torch.chunk",
+        "set_defaults": {
+            "axis": "0"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "chunks": "chunks",
             "axis": "dim"
-        },
-        "set_defaults": {
-            "axis": "0"
         }
     },
     "paddle.Tensor.chunk": {
@@ -575,16 +575,16 @@
         }
     },
     "paddle.cummax": {
-        "torch_api": "torch.cummax",
-        "Rule": "CumRule"
+        "Rule": "CumRule",
+        "torch_api": "torch.cummax"
     },
     "paddle.cummin": {
-        "torch_api": "torch.cummin",
-        "Rule": "CumRule"
+        "Rule": "CumRule",
+        "torch_api": "torch.cummin"
     },
     "paddle.cumprod": {
-        "torch_api": "torch.cumprod",
-        "Rule": "CumprodRule"
+        "Rule": "CumprodRule",
+        "torch_api": "torch.cumprod"
     },
     "paddle.Tensor.cumprod": {
         "torch_api": "torch.Tensor.cumprod",
@@ -594,28 +594,28 @@
         }
     },
     "paddle.cumsum": {
-        "torch_api": "torch.cumsum",
         "Rule": "CumsumRule",
+        "torch_api": "torch.cumsum",
+        "set_defaults": {
+            "axis": "None",
+            "dtype": "None"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "axis": "dim",
             "dtype": "dtype"
-        },
-        "set_defaults": {
-            "axis": "None",
-            "dtype": "None"
         }
     },
     "paddle.Tensor.cumsum": {
-        "torch_api": "torch.Tensor.cumsum",
         "Rule": "CumsumRule",
-        "paddle_torch_args_map": {
-            "axis": "dim",
-            "dtype": "dtype"
-        },
+        "torch_api": "torch.Tensor.cumsum",
         "set_defaults": {
             "axis": "None",
             "dtype": "None"
+        },
+        "paddle_torch_args_map": {
+            "axis": "dim",
+            "dtype": "dtype"
         }
     },
     "paddle.cumulative_trapezoid": {
@@ -640,8 +640,8 @@
         }
     },
     "paddle.diag": {
-        "torch_api": "torch.diag",
         "Rule": "DiagRule",
+        "torch_api": "torch.diag",
         "set_defaults": {
             "offset": "0",
             "padding_value": "0"
@@ -748,12 +748,12 @@
         }
     },
     "paddle.dot": {
-        "torch_api": "torch.dot",
-        "Rule": "DotRule"
+        "Rule": "DotRule",
+        "torch_api": "torch.dot"
     },
     "paddle.Tensor.dot": {
-        "torch_api": "torch.Tensor.dot",
-        "Rule": "DotRule"
+        "Rule": "DotRule",
+        "torch_api": "torch.Tensor.dot"
     },
     "paddle.dsplit": {
         "Rule": "SsplitRule",
@@ -854,16 +854,16 @@
         }
     },
     "paddle.eye": {
-        "torch_api": "torch.eye",
         "Rule": "EyeRule",
+        "torch_api": "torch.eye",
+        "set_defaults": {
+            "dtype": "None",
+            "num_columns": "None"
+        },
         "paddle_torch_args_map": {
             "dtype": "dtype",
             "num_columns": "m",
             "num_rows": "n"
-        },
-        "set_defaults": {
-            "dtype": "None",
-            "num_columns": "None"
         }
     },
     "paddle.fft.fft": {
@@ -1415,13 +1415,13 @@
     },
     "paddle.index_put": {
         "Rule": "IndexPutRule",
+        "set_defaults": {
+            "accumulate": "False"
+        },
         "paddle_torch_args_map": {
             "indices": "indices",
             "accumulate": "accumulate",
             "value": "values"
-        },
-        "set_defaults": {
-            "accumulate": "False"
         }
     },
     "paddle.index_sample": {
@@ -1699,11 +1699,11 @@
     },
     "paddle.linalg.lstsq": {
         "Rule": "LstsqRule",
+        "torch_api": "torch.linalg.lstsq",
         "set_defaults": {
             "rcond": "None",
             "driver": "None"
         },
-        "torch_api": "torch.linalg.lstsq",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "b",
@@ -1748,18 +1748,18 @@
     "paddle.linalg.matrix_rank": {
         "Rule": "MatrixRankRule",
         "torch_api": "torch.linalg.matrix_rank",
+        "set_defaults": {
+            "tol": "None",
+            "hermitian": "False",
+            "atol": "None",
+            "rtol": "None"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "tol": "tol",
             "hermitian": "hermitian",
             "atol": "atol",
             "rtol": "rtol"
-        },
-        "set_defaults": {
-            "tol": "None",
-            "hermitian": "False",
-            "atol": "None",
-            "rtol": "None"
         }
     },
     "paddle.linalg.matrix_transpose": {
@@ -1773,13 +1773,13 @@
     },
     "paddle.linalg.norm": {
         "Rule": "NormRule",
+        "torch_api": "torch.linalg.norm",
         "set_defaults": {
             "p": "None",
             "axis": "None",
             "keepdim": "False",
             "name": "None"
         },
-        "torch_api": "torch.linalg.norm",
         "paddle_torch_args_map": {
             "x": "input",
             "p": "ord",
@@ -1899,16 +1899,16 @@
         }
     },
     "paddle.log_normal": {
-        "torch_api": "torch.normal",
         "Rule": "LogNormalRule",
+        "torch_api": "torch.normal",
+        "set_defaults": {
+            "mean": 1.0,
+            "std": 2.0
+        },
         "paddle_torch_args_map": {
             "mean": "mean",
             "std": "std",
             "shape": "size"
-        },
-        "set_defaults": {
-            "mean": 1.0,
-            "std": 2.0
         }
     },
     "paddle.logaddexp": {
@@ -1980,6 +1980,9 @@
     },
     "paddle.logspace": {
         "torch_api": "torch.logspace",
+        "set_defaults": {
+            "base": 10.0
+        },
         "paddle_torch_args_map": {
             "dtype": "dtype"
         },
@@ -1988,9 +1991,6 @@
             "end": "stop.reshape([]) if isinstance(stop, torch.Tensor) else stop",
             "steps": "int(num.item()) if isinstance(num, torch.Tensor) else int(num)",
             "base": "float(base.item()) if isinstance(base, torch.Tensor) else float(base)"
-        },
-        "set_defaults": {
-            "base": 10.0
         },
         "description": "result = torch.logspace(start=start, end=stop, steps=num, base=base, dtype=dtype)"
     },
@@ -2055,22 +2055,22 @@
         }
     },
     "paddle.Tensor.matmul": {
-        "torch_api": "torch.Tensor.matmul",
         "Rule": "MatmulTensorRule",
-        "paddle_torch_args_map": {
-            "y": "other"
-        },
+        "torch_api": "torch.Tensor.matmul",
         "set_defaults": {
             "transpose_x": "False",
             "transpose_y": "False"
+        },
+        "paddle_torch_args_map": {
+            "y": "other"
         }
     },
     "paddle.matrix_transpose": {
         "Rule": "Matrix_transposeRule"
     },
     "paddle.max": {
-        "torch_api": "torch.amax",
         "Rule": "ReduceRule",
+        "torch_api": "torch.amax",
         "set_defaults": {
             "axis": "None",
             "keepdim": "False"
@@ -2091,16 +2091,16 @@
         }
     },
     "paddle.mean": {
-        "torch_api": "torch.mean",
         "Rule": "ReduceRule",
+        "torch_api": "torch.mean",
         "set_defaults": {
             "axis": "None",
             "keepdim": "False"
         }
     },
     "paddle.Tensor.mean": {
-        "torch_api": "torch.Tensor.mean",
         "Rule": "ReduceRule",
+        "torch_api": "torch.Tensor.mean",
         "set_defaults": {
             "axis": "None",
             "keepdim": "False"
@@ -2110,8 +2110,8 @@
         "Rule": "MedianRule"
     },
     "paddle.Tensor.median": {
-        "torch_api": "torch.Tensor.median",
-        "Rule": "MedianRule"
+        "Rule": "MedianRule",
+        "torch_api": "torch.Tensor.median"
     },
     "paddle.meshgrid": {
         "torch_api": "torch.meshgrid",
@@ -2120,8 +2120,8 @@
         ]
     },
     "paddle.min": {
-        "torch_api": "torch.amin",
         "Rule": "ReduceRule",
+        "torch_api": "torch.amin",
         "set_defaults": {
             "axis": "None",
             "keepdim": "False"
@@ -2142,8 +2142,8 @@
         }
     },
     "paddle.mm": {
-        "torch_api": "torch.matmul",
         "Rule": "MmRule",
+        "torch_api": "torch.matmul",
         "paddle_torch_args_map": {
             "input": "input",
             "mat2": "other"
@@ -2326,8 +2326,8 @@
         }
     },
     "paddle.nn.functional.adaptive_avg_pool2d": {
-        "torch_api": "torch.nn.functional.adaptive_avg_pool2d",
         "Rule": "AdaptiveAvgPoolRule",
+        "torch_api": "torch.nn.functional.adaptive_avg_pool2d",
         "set_defaults": {
             "data_format": "'NCHW'"
         },
@@ -2337,8 +2337,8 @@
         }
     },
     "paddle.nn.functional.adaptive_avg_pool3d": {
-        "torch_api": "torch.nn.functional.adaptive_avg_pool3d",
         "Rule": "AdaptiveAvgPoolRule",
+        "torch_api": "torch.nn.functional.adaptive_avg_pool3d",
         "set_defaults": {
             "data_format": "'NCDHW'"
         },
@@ -2824,13 +2824,13 @@
     "paddle.nn.functional.hardsigmoid": {
         "Rule": "HardsigmoidRule",
         "torch_api": "torch.nn.functional.hardsigmoid",
-        "paddle_torch_args_map": {
-            "x": "input",
-            "inplace": "inplace"
-        },
         "set_defaults": {
             "slope": "0.1666667",
             "offset": "0.5"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "inplace": "inplace"
         }
     },
     "paddle.nn.functional.hardswish": {
@@ -2843,15 +2843,15 @@
     "paddle.nn.functional.hardtanh": {
         "Rule": "HardtanhRule",
         "torch_api": "torch.nn.functional.hardtanh",
+        "set_defaults": {
+            "min": "-1.0",
+            "max": "1.0"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "min": "min_val",
             "max": "max_val",
             "inplace": "inplace"
-        },
-        "set_defaults": {
-            "min": "-1.0",
-            "max": "1.0"
         }
     },
     "paddle.nn.functional.hinge_embedding_loss": {
@@ -2964,8 +2964,8 @@
         }
     },
     "paddle.nn.functional.lp_pool1d": {
-        "torch_api": "torch.nn.functional.lp_pool1d",
         "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.lp_pool1d",
         "set_defaults": {
             "stride": "None",
             "padding": 0,
@@ -2980,8 +2980,8 @@
         }
     },
     "paddle.nn.functional.lp_pool2d": {
-        "torch_api": "torch.nn.functional.lp_pool2d",
         "Rule": "PoolRule",
+        "torch_api": "torch.nn.functional.lp_pool2d",
         "set_defaults": {
             "stride": "None",
             "padding": 0,
@@ -3061,8 +3061,8 @@
         }
     },
     "paddle.nn.functional.max_unpool1d": {
-        "torch_api": "torch.nn.functional.max_unpool1d",
         "Rule": "UnpoolRule",
+        "torch_api": "torch.nn.functional.max_unpool1d",
         "set_defaults": {
             "stride": "None",
             "padding": 0,
@@ -3079,8 +3079,8 @@
         }
     },
     "paddle.nn.functional.max_unpool2d": {
-        "torch_api": "torch.nn.functional.max_unpool2d",
         "Rule": "UnpoolRule",
+        "torch_api": "torch.nn.functional.max_unpool2d",
         "set_defaults": {
             "stride": "None",
             "padding": 0,
@@ -3097,8 +3097,8 @@
         }
     },
     "paddle.nn.functional.max_unpool3d": {
-        "torch_api": "torch.nn.functional.max_unpool3d",
         "Rule": "UnpoolRule",
+        "torch_api": "torch.nn.functional.max_unpool3d",
         "set_defaults": {
             "stride": "None",
             "padding": 0,
@@ -3184,8 +3184,8 @@
         }
     },
     "paddle.nn.functional.pad": {
-        "torch_api": "paddle.nn.functional.pad",
-        "Rule": "PadRule"
+        "Rule": "PadRule",
+        "torch_api": "paddle.nn.functional.pad"
     },
     "paddle.nn.functional.pairwise_distance": {
         "torch_api": "torch.nn.functional.pairwise_distance",
@@ -3458,12 +3458,12 @@
     },
     "paddle.nonzero": {
         "torch_api": "torch.nonzero",
+        "set_defaults": {
+            "as_tuple": "False"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "as_tuple": "as_tuple"
-        },
-        "set_defaults": {
-            "as_tuple": "False"
         }
     },
     "paddle.Tensor.nonzero": {
@@ -3502,8 +3502,8 @@
         }
     },
     "paddle.outer": {
-        "torch_api": "torch.outer",
         "Rule": "OuterRule",
+        "torch_api": "torch.outer",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "vec2"
@@ -3556,8 +3556,8 @@
         }
     },
     "paddle.prod": {
-        "torch_api": "torch.prod",
         "Rule": "ReduceRule",
+        "torch_api": "torch.prod",
         "set_defaults": {
             "axis": "None",
             "keepdim": "False",
@@ -3579,19 +3579,19 @@
         "Rule": "Put_along_axisRule"
     },
     "paddle.quantile": {
-        "torch_api": "torch.quantile",
         "Rule": "QuantileRule",
+        "torch_api": "torch.quantile",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False",
+            "interpolation": "'linear'"
+        },
         "paddle_torch_args_map": {
             "x": "input",
             "q": "q",
             "axis": "dim",
             "keepdim": "keepdim",
             "interpolation": "interpolation"
-        },
-        "set_defaults": {
-            "axis": "None",
-            "keepdim": "False",
-            "interpolation": "'linear'"
         }
     },
     "paddle.Tensor.quantile": {
@@ -3989,8 +3989,8 @@
         }
     },
     "paddle.standard_gamma": {
-        "torch_api": "torch.distributions.Gamma",
         "Rule": "StandardGammaRule",
+        "torch_api": "torch.distributions.Gamma",
         "paddle_torch_args_map": {
             "x": "concentration",
             "rate": "rate"
@@ -3998,23 +3998,23 @@
     },
     "paddle.standard_normal": {
         "torch_api": "torch.randn",
+        "set_defaults": {
+            "dtype": "None"
+        },
         "paddle_torch_args_map": {
             "shape": "size",
             "dtype": "dtype"
-        },
-        "set_defaults": {
-            "dtype": "None"
         }
     },
     "paddle.stanh": {
-        "torch_api": "torch.tanh",
         "Rule": "StanhRule",
-        "paddle_torch_args_map": {
-            "x": "input"
-        },
+        "torch_api": "torch.tanh",
         "set_defaults": {
             "scale_a": "0.67",
             "scale_b": "1.7159"
+        },
+        "paddle_torch_args_map": {
+            "x": "input"
         }
     },
     "paddle.std": {
@@ -4038,8 +4038,8 @@
         "Rule": "StridedSliceRule"
     },
     "paddle.subtract": {
-        "torch_api": "torch.subtract",
         "Rule": "SubtractRule",
+        "torch_api": "torch.subtract",
         "paddle_torch_args_map": {
             "x": "input",
             "y": "other"
@@ -4052,8 +4052,8 @@
         }
     },
     "paddle.sum": {
-        "torch_api": "torch.sum",
         "Rule": "ReduceRule",
+        "torch_api": "torch.sum",
         "set_defaults": {
             "axis": "None",
             "keepdim": false,
@@ -4127,15 +4127,15 @@
         ]
     },
     "paddle.tensordot": {
-        "torch_api": "torch.tensordot",
         "Rule": "TensordotRule",
+        "torch_api": "torch.tensordot",
+        "set_defaults": {
+            "axes": 2
+        },
         "paddle_torch_args_map": {
             "x": "a",
             "y": "b",
             "axes": "dims"
-        },
-        "set_defaults": {
-            "axes": 2
         }
     },
     "paddle.tile": {
@@ -4154,8 +4154,8 @@
         }
     },
     "paddle.tolist": {
-        "torch_api": "torch.Tensor.tolist",
-        "Rule": "TolistRule"
+        "Rule": "TolistRule",
+        "torch_api": "torch.Tensor.tolist"
     },
     "paddle.Tensor.tolist": {
         "torch_api": "torch.Tensor.tolist"
@@ -4204,8 +4204,8 @@
         }
     },
     "paddle.trapezoid": {
-        "torch_api": "torch.trapezoid",
         "Rule": "TrapezoidRule",
+        "torch_api": "torch.trapezoid",
         "paddle_torch_args_map": {
             "y": "y",
             "x": "x",
@@ -4406,15 +4406,15 @@
         "Rule": "NmsRule"
     },
     "paddle.vision.ops.psroi_pool": {
-        "torch_api": "torchvision.ops.ps_roi_pool",
-        "Rule": "Roi_poolRule"
+        "Rule": "Roi_poolRule",
+        "torch_api": "torchvision.ops.ps_roi_pool"
     },
     "paddle.vision.ops.roi_align": {
         "Rule": "Roi_aignRule"
     },
     "paddle.vision.ops.roi_pool": {
-        "torch_api": "torchvision.ops.roi_pool",
-        "Rule": "Roi_poolRule"
+        "Rule": "Roi_poolRule",
+        "torch_api": "torchvision.ops.roi_pool"
     },
     "paddle.vsplit": {
         "Rule": "SsplitRule",
