@@ -231,10 +231,14 @@ def aggregate_logs(end=False):
         if all_success:
             shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
 
-        df = pd.read_csv(tol_file)
-        df = df.drop_duplicates(subset=["config", "mode"], keep="last")
-        df = df.sort_values(by=["API", "dtype", "config", "mode"], ignore_index=True)
-        df.to_csv(tol_file, index=False)
+        if tol_file.exists():
+            try:
+                df = pd.read_csv(tol_file)
+                df = df.drop_duplicates(subset=["config", "mode"], keep="last")
+                df = df.sort_values(by=["API", "dtype", "config", "mode"], ignore_index=True)
+                df.to_csv(tol_file, index=False)
+            except Exception as err:
+                print(f"Error arranging {tol_file}: {err}", flush=True)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"

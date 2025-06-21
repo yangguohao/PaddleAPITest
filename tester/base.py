@@ -902,30 +902,34 @@ class APITestBase:
                 msg=error_msg,
             )
             if test_tol:
+                api_name = self.api_config.api_name
+                config = self.api_config.config[:1000]
                 parse_accuracy_tolerance(
                     "Identical",
-                    self.api_config.api_name,
-                    self.api_config.config,
+                    api_name,
+                    config,
                     str(paddle_tensor.dtype),
                     is_backward,
                 )
                 if is_backward:
-                    print(f"[backward] {self.api_config.config}\nIdentical", flush=True)
+                    print(f"[backward] {config}\nIdentical", flush=True)
                 else:
-                    print(f"[forward] {self.api_config.config}\nIdentical", flush=True)
+                    print(f"[forward] {config}\nIdentical", flush=True)
         except Exception as e:
             if test_tol and "Tensor-likes are not close!" in str(e):
+                api_name = self.api_config.api_name
+                config = self.api_config.config[:1000]
                 parse_accuracy_tolerance(
                     str(e),
-                    self.api_config.api_name,
-                    self.api_config.config,
+                    api_name,
+                    config,
                     str(paddle_tensor.dtype),
                     is_backward,
                 )
                 if is_backward:
-                    print(f"[backward] {self.api_config.config}\n{str(e)}", flush=True)
+                    print(f"[backward] {config}\n{str(e)}", flush=True)
                 else:
-                    print(f"[forward] {self.api_config.config}\n{str(e)}", flush=True)
+                    print(f"[forward] {config}\n{str(e)}", flush=True)
             elif "Comparing" in str(e):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(
