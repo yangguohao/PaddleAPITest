@@ -17,6 +17,7 @@ TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
 LOG_PREFIXES = {
     "checkpoint": "checkpoint",
     "pass": "api_config_pass",
+    "numpy_error": "api_config_numpy_error",
     "paddle_error": "api_config_paddle_error",
     "torch_error": "api_config_torch_error",
     "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
@@ -24,9 +25,6 @@ LOG_PREFIXES = {
     "timeout": "api_config_timeout",
     "crash": "api_config_crash",
     "oom": "api_config_oom",
-    "numpy_error": "api_config_numpy_error",
-    "forward": "api_config_tol_forward",
-    "backward": "api_config_tol_backward",
 }
 
 is_engineV2 = False
@@ -249,7 +247,7 @@ def aggregate_logs(end=False):
             print(f"Error reading {checkpoint_file}: {err}", flush=True)
 
         for log_type, prefix in LOG_PREFIXES.items():
-            if log_type in {"checkpoint", "forward", "backward"}:
+            if log_type == "checkpoint":
                 continue
             log_file = TEST_LOG_PATH / f"{prefix}.txt"
             if not log_file.exists():
