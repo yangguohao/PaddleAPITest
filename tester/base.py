@@ -6,7 +6,7 @@ import paddle
 import torch
 
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
-from .api_config.log_writer import parse_accuracy_tolerance, write_to_log
+from .api_config.log_writer import parse_accuracy_tolerance
 
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = frozenset(
