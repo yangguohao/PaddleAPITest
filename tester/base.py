@@ -910,11 +910,11 @@ class APITestBase:
                     is_backward,
                 )
                 if is_backward:
-                    print("[backward]", self.api_config.config, "\n", "Identical", flush=True)
+                    print(f"[backward] {self.api_config.config}\nIdentical", flush=True)
                 else:
-                    print("[forward]", self.api_config.config, "\n", "Identical", flush=True)
+                    print(f"[forward] {self.api_config.config}\nIdentical", flush=True)
         except Exception as e:
-            if test_tol:
+            if test_tol and "Tensor-likes are not close!" in str(e):
                 parse_accuracy_tolerance(
                     str(e),
                     self.api_config.api_name,
@@ -923,9 +923,9 @@ class APITestBase:
                     is_backward,
                 )
                 if is_backward:
-                    print("[backward]", self.api_config.config, "\n", str(e), flush=True)
+                    print(f"[backward] {self.api_config.config}\n{str(e)}", flush=True)
                 else:
-                    print("[forward]", self.api_config.config, "\n", str(e), flush=True)
+                    print(f"[forward] {self.api_config.config}\n{str(e)}", flush=True)
             elif "Comparing" in str(e):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(
