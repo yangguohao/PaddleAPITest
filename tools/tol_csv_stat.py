@@ -25,11 +25,8 @@ stats = defaultdict(lambda: defaultdict(list))
 api_stats = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
 config_count = 0
 for file_path in file_list:
-    if (
-        file_path.split("/")[-1] == "tol_stat.csv"
-        or file_path.split("/")[-1] == "tol_stat_api.csv"
-        or file_path.split("/")[-1] == "tol_full.csv"
-    ):
+    file_name = file_path.split("/")[-1]
+    if file_name in ["tol_stat.csv", "tol_stat_api.csv", "tol_full.csv"]:
         continue
     try:
         df = pd.read_csv(file_path, on_bad_lines="warn")
