@@ -32,7 +32,7 @@ for file_path in file_list:
     ):
         continue
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, on_bad_lines="warn")
         dfs.append(df)
         print(f"Read {len(df)} configs in {file_path}")
         config_count += len(df)
