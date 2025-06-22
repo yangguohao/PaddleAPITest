@@ -916,7 +916,7 @@ class APITestBase:
                 else:
                     print(f"[forward] {config}\nIdentical", flush=True)
         except Exception as e:
-            if test_tol and "Tensor-likes are not close!" in str(e):
+            if test_tol and ("Tensor-likes" in str(e) or "Scalars" in str(e)):
                 api_name = self.api_config.api_name
                 config = self.api_config.config[:120000]
                 parse_accuracy_tolerance(
