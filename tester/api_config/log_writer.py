@@ -233,9 +233,11 @@ def aggregate_logs(end=False):
 
         if tol_file.exists():
             try:
-                df = pd.read_csv(tol_file)
+                df = pd.read_csv(tol_file, on_bad_lines="warn")
                 df = df.drop_duplicates(subset=["config", "mode"], keep="last")
-                df = df.sort_values(by=["API", "dtype", "config", "mode"], ignore_index=True)
+                df = df.sort_values(
+                    by=["API", "dtype", "config", "mode"], ignore_index=True
+                )
                 df.to_csv(tol_file, index=False)
             except Exception as err:
                 print(f"Error arranging {tol_file}: {err}", flush=True)

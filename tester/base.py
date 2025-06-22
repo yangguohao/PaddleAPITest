@@ -903,7 +903,7 @@ class APITestBase:
             )
             if test_tol:
                 api_name = self.api_config.api_name
-                config = self.api_config.config[:1000]
+                config = self.api_config.config[:120000]
                 parse_accuracy_tolerance(
                     "Identical",
                     api_name,
@@ -918,7 +918,7 @@ class APITestBase:
         except Exception as e:
             if test_tol and "Tensor-likes are not close!" in str(e):
                 api_name = self.api_config.api_name
-                config = self.api_config.config[:1000]
+                config = self.api_config.config[:120000]
                 parse_accuracy_tolerance(
                     str(e),
                     api_name,
