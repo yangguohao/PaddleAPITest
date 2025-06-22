@@ -349,13 +349,17 @@ def restore_stdio():
         orig_stderr_fd = None
 
 
-def parse_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
+def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
     """
     从 torch.testing.assert_close 的异常消息中提取最大绝对误差和相对误差
     将误差数据记录到 CSV 文件
     """
-    mode = "backward" if is_backward else "forward"
     output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
+    mode = "backward" if is_backward else "forward"
+    if is_backward:
+        print(f"[backward] {config}\n{error_msg}", flush=True)
+    else:
+        print(f"[forward] {config}\n{error_msg}", flush=True)
 
     if error_msg == "Identical":
         max_abs_diff = 0.0
