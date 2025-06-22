@@ -609,7 +609,7 @@ class TensorConfig:
                     num_nodes = self.get_arg(api_config, 0, "x").shape[0]
                     self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
                 elif self.check_arg(api_config, 3, "dst_index"):
-                    num_nodes = self.get_arg(api_config, 1, "y").shape[0]
+                    num_nodes = self.get_arg(api_config, 0, "x").shape[0]
                     self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
             elif api_config.api_name in {"paddle.index_add", "paddle.index_fill"}:
                 if self.check_arg(api_config, 1, "index"):
