@@ -62,7 +62,7 @@ numeric_cols = ["max_abs_diff", "max_rel_diff"]
 for col in numeric_cols:
     merged_df[col] = merged_df[col].apply(lambda x: f"{float(x):.6e}")
 output_file = OUTPUT_PATH / "tol_full.csv"
-merged_df.to_csv(output_file, index=False)
+merged_df.to_csv(output_file, index=False, na_rep="nan")
 
 # 准备结果数据
 stats_data = []
@@ -98,7 +98,7 @@ for api, dtype, mode in sorted(stats.keys()):
 if stats_data:
     df = pd.DataFrame(stats_data)
     output_file = OUTPUT_PATH / "tol_stat.csv"
-    df.to_csv(output_file, index=False)
+    df.to_csv(output_file, index=False, na_rep="nan")
     print(f"\nStatistics saved to {output_file}")
     print("Sample of the results:")
     print(df.head())
@@ -176,7 +176,7 @@ for api in sorted(api_stats.keys()):
 if api_stats_data:
     df = pd.DataFrame(api_stats_data)
     output_file = OUTPUT_PATH / "tol_stat_api.csv"
-    df.to_csv(output_file, index=False)
+    df.to_csv(output_file, index=False, na_rep="nan")
     print(f"\nAPI statistics saved to {output_file}")
     print("Sample of API statistics:")
     print(df.head())

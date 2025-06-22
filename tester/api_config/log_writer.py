@@ -238,7 +238,7 @@ def aggregate_logs(end=False):
                 df = df.sort_values(
                     by=["API", "dtype", "config", "mode"], ignore_index=True
                 )
-                df.to_csv(tol_file, index=False)
+                df.to_csv(tol_file, index=False, na_rep="nan")
             except Exception as err:
                 print(f"Error arranging {tol_file}: {err}", flush=True)
 
@@ -369,8 +369,8 @@ def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
         max_rel_diff = None
 
         # 使用正则表达式提取误差值
-        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
-        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
+        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
         abs_match = re.search(abs_pattern, error_msg)
         rel_match = re.search(rel_pattern, error_msg)
 
