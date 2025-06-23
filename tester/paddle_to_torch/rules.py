@@ -5058,7 +5058,7 @@ elif message_op == 'sub':
 elif message_op == 'mul':
     msg = x_src * y
 elif message_op == 'div':
-    msg = x_src / y
+    msg = x_src / (y + 1e-12)
 
 out_shape[-1] = msg.shape[-1]
 
