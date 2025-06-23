@@ -716,6 +716,8 @@ use_softmax = locals().get('use_softmax',True)
 _kwargs['target'] = _kwargs['target'].squeeze(-1)
 if "weight" in _kwargs:
     _kwargs['weight'].requires_grad = False
+if _kwargs['target'].dtype == torch.int32:
+    _kwargs['target'] = _kwargs['target'].long()
 """
         core = """
 result = torch.nn.functional.cross_entropy(**_kwargs)
