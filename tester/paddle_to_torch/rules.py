@@ -4245,6 +4245,15 @@ if not pad_from_left_axis:
         right = _kwargs["pad"][2 * i + 1]
         new_pad = [right, left] + new_pad
     _kwargs["pad"] = new_pad
+elif len(_kwargs["pad"]) == 2 * _kwargs['input'].ndim:
+    num_dims = len(_kwargs["pad"]) // 2
+    new_pad = []
+    for i in range(num_dims):
+        left = _kwargs["pad"][2 * i]
+        right = _kwargs["pad"][2 * i + 1]
+        new_pad.insert(0, right)
+        new_pad.insert(0, left)
+    _kwargs["pad"] = new_pad
 """
         core = """
 result = torch.nn.functional.pad(**_kwargs)
