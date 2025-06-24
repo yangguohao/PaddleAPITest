@@ -172,5 +172,5 @@ apitest 拥有检查点 checkpoint 机制，保存了所有已经测试过的配
 
 即可在原测试结果目录中生成以下文件：
 - `tol_full.csv`, 包含所有精度测试结果（如果仅有一个 tol*.csv 则去重排序，多个则合并）
-- `tol_stat.csv`，包含所有 API, dtype 级别的精度范围统计
-- `tol_stat_api.csv`，包含所有 API, dtype 级别的精度测试计数
+- `tol_stat.csv`，包含所有 API, dtype, mode（前反向）级别的精度范围统计
+- `tol_stat_api.csv`，包含所有 API, dtype, mode（前反向）级别的精度测试计数

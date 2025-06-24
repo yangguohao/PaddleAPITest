@@ -68,6 +68,7 @@
 | `--log_dir`                 | str   | 日志输出路径（默认 "tester/api_config/test_log"）                                      |
 | `--atol`                    | float | 精度测试的绝对误差容忍度（默认 1e-2）                                                  |
 | `--rtol`                    | float | 精度测试的相对误差容忍度（默认 1e-2）                                                  |
+| `--test_tol`                | bool  | 启用精度误差容忍度范围测试（默认 False）                                               |
 
 ### 示例命令
 

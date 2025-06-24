@@ -13249,7 +13249,6 @@ paddle.nn.functional.temporal_shift(Tensor([64, 64, 56, 9948],"float32"), 8, 0.1
 paddle.nn.functional.temporal_shift(Tensor([64, 64, 9948, 56],"float32"), 8, 0.125, )
 paddle.nn.functional.temporal_shift(Tensor([64, 727584, 7, 7],"float32"), 8, 0.125, )
 paddle.nn.functional.temporal_shift(x=Tensor([119304648, 4, 3, 3],"float16"), seg_num=4, )
-paddle.nn.functional.temporal_shift(x=Tensor([2, 2, 357913942, 3],"float32"), seg_num=2, )
 paddle.nn.functional.temporal_shift(x=Tensor([4, 119304648, 3, 3],"float16"), seg_num=4, )
 paddle.nn.functional.temporal_shift(x=Tensor([4, 4, 3, 89478486],"float16"), seg_num=4, )
 paddle.nn.functional.temporal_shift(x=Tensor([4, 4, 89478486, 3],"float16"), seg_num=4, )
