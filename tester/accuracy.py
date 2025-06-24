@@ -264,6 +264,7 @@ class APITestAccuracy(APITestBase):
                 paddle_output.append([coef_vector, abs_coef])
                 torch_output.append([coef_vector_approx, one])
 
+        self.is_backward = False
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
                 try:
