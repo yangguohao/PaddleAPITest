@@ -4,6 +4,8 @@ import re
 import shutil
 from pathlib import Path
 
+import pandas as pd
+
 # 日志文件路径
 DIR_PATH = Path(__file__).resolve()
 DIR_PATH = DIR_PATH.parent.parent.parent
@@ -15,6 +17,7 @@ TMP_LOG_PATH = TEST_LOG_PATH / ".tmp"
 LOG_PREFIXES = {
     "checkpoint": "checkpoint",
     "pass": "api_config_pass",
+    "numpy_error": "api_config_numpy_error",
     "paddle_error": "api_config_paddle_error",
     "torch_error": "api_config_torch_error",
     "paddle_to_torch_failed": "api_config_paddle_to_torch_failed",
@@ -22,7 +25,6 @@ LOG_PREFIXES = {
     "timeout": "api_config_timeout",
     "crash": "api_config_crash",
     "oom": "api_config_oom",
-    "numpy_error": "api_config_numpy_error",
 }
 
 is_engineV2 = False
@@ -115,19 +117,25 @@ def aggregate_logs(end=False):
         TMP_LOG_PATH.mkdir(exist_ok=True)
         return
 
+    all_success = True
     for prefix in LOG_PREFIXES.values():
         log_files = list(TMP_LOG_PATH.glob(f"{prefix}_*.txt"))
         if not log_files:
             continue
 
+        prefix_success = True
         all_lines = set()
         for file_path in log_files:
             try:
                 with file_path.open("r") as f:
                     all_lines.update(line.strip() for line in f if line.strip())
-                file_path.unlink()
             except Exception as err:
                 print(f"Error reading {file_path}: {err}", flush=True)
+                prefix_success = False
+                break
+        if not prefix_success:
+            all_success = False
+            continue
 
         aggregated_file = TEST_LOG_PATH / f"{prefix}.txt"
         try:
@@ -135,7 +143,16 @@ def aggregate_logs(end=False):
                 f.writelines(f"{line}\n" for line in sorted(all_lines))
         except Exception as err:
             print(f"Error writing to {aggregated_file}: {err}", flush=True)
+            prefix_success = False
 
+        if not prefix_success:
+            aggregated_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in log_files:
+                file_path.unlink()
+
+    log_success = True
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     tmp_log_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
     try:
@@ -151,15 +168,25 @@ def aggregate_logs(end=False):
                                 out_f.write(line[:10000] + b"\n")
                             else:
                                 out_f.write(line)
-                    if end:
-                        file_path.unlink()
-                    else:
-                        file_path.open("wb").close()
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
+                    log_success = False
+                    break
     except Exception as err:
         print(f"Error writing to {log_file}: {err}", flush=True)
+        log_success = False
 
+    if not log_success:
+        log_file.unlink(missing_ok=True)
+        all_success = False
+    else:
+        for file_path in tmp_log_files:
+            if end:
+                file_path.unlink()
+            else:
+                file_path.write_bytes(b"")
+
+    tol_success = True
     tol_file = TEST_LOG_PATH / f"tol.csv"
     tmp_tol_files = sorted(TMP_LOG_PATH.glob(f"tol_*.csv"))
     if tmp_tol_files:
@@ -172,6 +199,7 @@ def aggregate_logs(end=False):
                             "API",
                             "config",
                             "dtype",
+                            "mode",
                             "max_abs_diff",
                             "max_rel_diff",
                         ]
@@ -184,17 +212,35 @@ def aggregate_logs(end=False):
                             for row in reader:
                                 if row:  # 确保行不为空
                                     writer.writerow(row)
-                        file_path.unlink()
                     except Exception as err:
                         print(f"Error reading {file_path}: {err}", flush=True)
+                        tol_success = False
+                        break
         except Exception as err:
             print(f"Error writing to {tol_file}: {err}", flush=True)
+            tol_success = False
+
+        if not tol_success:
+            tol_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in tmp_tol_files:
+                file_path.unlink()
 
     if end:
-        try:
-            shutil.rmtree(TMP_LOG_PATH)
-        except OSError:
-            pass
+        if all_success:
+            shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
+
+        if tol_file.exists():
+            try:
+                df = pd.read_csv(tol_file, on_bad_lines="warn")
+                df = df.drop_duplicates(subset=["config", "mode"], keep="last")
+                df = df.sort_values(
+                    by=["API", "dtype", "config", "mode"], ignore_index=True
+                )
+                df.to_csv(tol_file, index=False, na_rep="nan")
+            except Exception as err:
+                print(f"Error arranging {tol_file}: {err}", flush=True)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
@@ -303,14 +349,19 @@ def restore_stdio():
         orig_stderr_fd = None
 
 
-def parse_accuracy_tolerance(error_msg, api, config, dtype):
+def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
     """
     从 torch.testing.assert_close 的异常消息中提取最大绝对误差和相对误差
     将误差数据记录到 CSV 文件
     """
     output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
+    mode = "backward" if is_backward else "forward"
+    if is_backward:
+        print(f"[backward] {config}\n{error_msg}", flush=True)
+    else:
+        print(f"[forward] {config}\n{error_msg}", flush=True)
 
-    if error_msg == "same":
+    if error_msg == "Identical":
         max_abs_diff = 0.0
         max_rel_diff = 0.0
     else:
@@ -318,8 +369,8 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
         max_rel_diff = None
 
         # 使用正则表达式提取误差值
-        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
-        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)"
+        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
         abs_match = re.search(abs_pattern, error_msg)
         rel_match = re.search(rel_pattern, error_msg)
 
@@ -330,7 +381,7 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
             except ValueError:
                 pass
 
-    row = [api, config, dtype, str(max_abs_diff), str(max_rel_diff)]
+    row = [api, config, dtype, mode, str(max_abs_diff), str(max_rel_diff)]
     try:
         with open(output_file, mode="a", newline="") as f:
             writer = csv.writer(f)
@@ -340,6 +391,7 @@ def parse_accuracy_tolerance(error_msg, api, config, dtype):
                         "API",
                         "config",
                         "dtype",
+                        "mode",
                         "max_abs_diff",
                         "max_rel_diff",
                     ]

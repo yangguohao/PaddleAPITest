@@ -16575,6 +16575,7 @@ Max relative difference: 1.5597023
  y: array([[[-314.75308 ,   38.42414 ]],
 
        [[  87.148766,   77.98037 ]],...
+
 2025-03-10 10:16:05.147512 test begin: paddle.minimum(Tensor([3, 1, 2],"float32"), Tensor([283905, 2],"float32"), )
 
 [accuracy error] backward  paddle.minimum(Tensor([3, 1, 2],"float32"), Tensor([283905, 2],"float32"), ) 
@@ -41808,6 +41809,7 @@ Max relative difference: 0.02384507
  y: array([[[[ 0.429503, -0.315528],
          [-0.264698,  0.      ],
          [ 0.      ,  0.      ],...
+
 2025-03-10 09:50:23.655795 test begin: paddle.maximum(Tensor([8, 7, 1, 2],"float32"), Tensor([8, 1, 8400, 2],"float32"), )
 
 [accuracy error] backward  paddle.maximum(Tensor([8, 7, 1, 2],"float32"), Tensor([8, 1, 8400, 2],"float32"), ) 

@@ -1410,8 +1410,10 @@ elif data_format == "NDHWC":
 class DiceLossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
+label = label.squeeze(-1)
+label = torch.nn.functional.one_hot(label, input.size()[-1])
 intersection = (input * label).sum(dim=1)
-union = input.square().sum(dim=1) + label.square().sum(dim=1)
+union = input.sum(dim=1) + label.sum(dim=1)
 
 dice = (2 * intersection + epsilon) / (union + epsilon)
 
@@ -5062,7 +5064,7 @@ elif message_op == 'sub':
 elif message_op == 'mul':
     msg = x_src * y
 elif message_op == 'div':
-    msg = x_src / y
+    msg = x_src / (y + 1e-12)
 
 out_shape[-1] = msg.shape[-1]
 
@@ -5714,10 +5716,10 @@ axis = locals().get('axis', -1)
 axis = axis if axis >= 0 else logits.dim() + axis
 
 ogits = logits.transpose(axis, -1)
-orig_shape = ogits.shape
+abel = label.transpose(axis, -1)
 
 logits_flat = ogits.reshape(-1, ogits.shape[-1])
-label_flat = label.reshape(-1)  
+label_flat = abel.reshape(-1)  
 if numeric_stable_mode:
     max_logits = torch.max(logits_flat, dim=-1, keepdim=True).values
     logits_flat = logits_flat - max_logits
@@ -5730,13 +5732,13 @@ loss = torch.nn.functional.nll_loss(
     ignore_index=ignore_index
 )
 if loss.ndim < ogits.ndim:
-    loss = loss.reshape(*ogits.shape[:-1])
+    loss = loss.reshape(*ogits.shape[:-1]).unsqueeze(-1).transpose(-1, axis)
 if return_softmax:
-    softmax = torch.nn.functional.softmax(logits, dim=-1)
+    softmax = torch.nn.functional.softmax(ogits, dim=-1)
     softmax = softmax.transpose(-1, axis).contiguous()
-    result = (loss.unsqueeze(axis), softmax)
+    result = (loss, softmax)
 else:
-    result = loss.reshape(*label.shape)
+    result = loss
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -5825,12 +5827,13 @@ if data_format == "NCHW":
     n = n_t // seg_num
     x = x.view(n, seg_num, c, h, w)
 
-    fold = int(c * shift_ratio)
+    fold1 = int(c * shift_ratio)
+    fold2 = int(c * shift_ratio * 2)
     x_padded = torch.nn.functional.pad(x, pad=(0, 0, 0, 0, 0, 0, 1, 1))  # Pad T-dim: (left=1, right=1)
 
-    slice1 = x_padded[:, 0:seg_num, :fold, :, :]
-    slice2 = x_padded[:, 2:seg_num+2, fold:2*fold, :, :]
-    slice3 = x_padded[:, 1:seg_num+1, 2*fold:, :, :] 
+    slice1 = x_padded[:, 0:seg_num, :fold1, :, :]
+    slice2 = x_padded[:, 2:seg_num+2, fold1:fold2, :, :]
+    slice3 = x_padded[:, 1:seg_num+1, fold2:, :, :]
 
     out = torch.cat((slice1, slice2, slice3), dim=2)
     result = out.view(n_t, c, h, w)
@@ -5840,12 +5843,13 @@ elif data_format == "NHWC":
     n = n_t // seg_num
     x = x.view(n, seg_num, h, w, c)
 
-    fold = int(c * shift_ratio)
+    fold1 = int(c * shift_ratio)
+    fold2 = int(c * shift_ratio * 2)
     x_padded = torch.nn.functional.pad(x, pad=(0, 0, 0, 0, 0, 0, 1, 1)) 
 
-    slice1 = x_padded[:, 0:seg_num, :, :, :fold]
-    slice2 = x_padded[:, 2:seg_num+2, :, :, fold:2*fold]
-    slice3 = x_padded[:, 1:seg_num+1, :, :, 2*fold:] 
+    slice1 = x_padded[:, 0:seg_num, :, :, :fold1]
+    slice2 = x_padded[:, 2:seg_num+2, :, :, fold1:fold2]
+    slice3 = x_padded[:, 1:seg_num+1, :, :, fold2:]
 
     out = torch.cat((slice1, slice2, slice3), dim=4)
     result = out.view(n_t, h, w, c)

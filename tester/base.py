@@ -6,7 +6,7 @@ import paddle
 import torch
 
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
-from .api_config.log_writer import parse_accuracy_tolerance
+from .api_config.log_writer import log_accuracy_tolerance
 
 # Todo: check paddle.linalg.pca_lowrank @cangtianhuang
 not_support_api = frozenset(
@@ -887,6 +887,7 @@ class APITestBase:
             )
 
         test_tol = getattr(self, "test_tol", False)
+        is_backward = getattr(self, "is_backward", False)
         if test_tol:
             atol, rtol = 0.0, 0.0
 
@@ -901,21 +902,18 @@ class APITestBase:
                 msg=error_msg,
             )
             if test_tol:
-                parse_accuracy_tolerance(
-                    "same",
-                    self.api_config.api_name,
-                    self.api_config.config,
+                api_name = self.api_config.api_name
+                config = self.api_config.config[:120000]
+                log_accuracy_tolerance(
+                    "Identical",
+                    api_name,
+                    config,
                     str(paddle_tensor.dtype),
+                    is_backward,
                 )
         except Exception as e:
-            if test_tol:
-                parse_accuracy_tolerance(
-                    str(e),
-                    self.api_config.api_name,
-                    self.api_config.config,
-                    str(paddle_tensor.dtype),
-                )
-            if "Comparing" in str(e):
+            error_str = str(e)
+            if error_str.startswith("Comparing"):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 self.np_assert_accuracy(
                     paddle_tensor.numpy(),
@@ -923,6 +921,23 @@ class APITestBase:
                     atol,
                     rtol,
                 )
+            elif test_tol:
+                error_info = (
+                    error_str.split("\n", maxsplit=2)[1] if "\n" in error_str else None
+                )
+                if error_info and (
+                    error_info.startswith("Tensor-likes")
+                    or error_info.startswith("Scalars")
+                ):
+                    api_name = self.api_config.api_name
+                    config = self.api_config.config[:120000]
+                    log_accuracy_tolerance(
+                        error_str,
+                        api_name,
+                        config,
+                        str(paddle_tensor.dtype),
+                        is_backward,
+                    )
             else:
                 raise
 

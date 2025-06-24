@@ -609,7 +609,7 @@ class TensorConfig:
                     num_nodes = self.get_arg(api_config, 0, "x").shape[0]
                     self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
                 elif self.check_arg(api_config, 3, "dst_index"):
-                    num_nodes = self.get_arg(api_config, 1, "y").shape[0]
+                    num_nodes = self.get_arg(api_config, 0, "x").shape[0]
                     self.numpy_tensor = numpy.random.randint(0, num_nodes, size=self.shape).astype(self.dtype)
             elif api_config.api_name in {"paddle.index_add", "paddle.index_fill"}:
                 if self.check_arg(api_config, 1, "index"):
@@ -1803,6 +1803,14 @@ class TensorConfig:
             elif api_config.api_name == "paddle.nn.functional.sigmoid_focal_loss":
                 if self.check_arg(api_config, 1, "label"):
                     self.numpy_tensor = numpy.random.randint(low=0, high=2, size=self.shape).astype(self.dtype)
+
+            elif api_config.api_name.endswith("cholesky_solve"):
+                if self.check_arg(api_config, 1, "y"):
+                    is_upper = self.get_arg(api_config, 2, "upper")
+                    if is_upper:
+                        self.numpy_tensor = numpy.triu(self.get_random_numpy_tensor(self.shape, self.dtype))
+                    else:
+                        self.numpy_tensor = numpy.tril(self.get_random_numpy_tensor(self.shape, self.dtype))
 
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
