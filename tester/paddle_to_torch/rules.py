@@ -969,20 +969,24 @@ if isinstance(max, torch.Tensor):
     max = max.item()
 """
         if paddle_api == "paddle.clip":
-            if min is not None or max is not None:
-                core = f"result = torch.clamp(**_kwargs)"
-            else:
-                core = f"result = x"
+            core = """
+if min is None and max is None:
+    result = x
+else:
+    result = torch.clamp(**_kwargs)
+"""
         elif paddle_api == "paddle.Tensor.clip":
-            if min is not None or max is not None:
-                core = f"result = x.clamp(**_kwargs)"
-            else:
-                core = f"result = x"
+                core = """
+if min is None and max is None:
+    result = x
+else:
+    result = x.clamp(**_kwargs)
+"""
         else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
