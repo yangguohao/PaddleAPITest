@@ -127,6 +127,8 @@ class APITestAccuracy(APITestBase):
                 raise err
             return
 
+        torch_grad_success = False
+        torch_out_grads = None
         if self.need_check_grad():
             try:
                 inputs_list = self.get_torch_input_list()
@@ -139,14 +141,10 @@ class APITestAccuracy(APITestBase):
                         grad_outputs=result_outputs_grads
                     )
                     torch_grad_success = True
-                else:
-                    torch_out_grads = None
-                    torch_grad_success = False
                 del inputs_list, result_outputs, result_outputs_grads
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 print(str(err), flush=True)
-                torch_grad_success = False
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise err
         else:
@@ -170,7 +168,7 @@ class APITestAccuracy(APITestBase):
                         torch_output[i] = torch_output[i].to(dtype=torch.float32)
                     torch_output[i] = torch_output[i].cpu().detach()
 
-        if self.need_check_grad() and torch_grad_success:
+        if torch_grad_success:
             if isinstance(torch_out_grads, torch.Tensor):
                 if torch_out_grads.dtype == torch.bfloat16:
                     torch_out_grads = torch_out_grads.to(dtype=torch.float32)
@@ -247,8 +245,7 @@ class APITestAccuracy(APITestBase):
         } and any(s < 0 for s in paddle_output.strides):
             # torch's from_dlpack now don't support negative strides
             paddle_output = paddle_output.contiguous()
-
-        if self.api_config.api_name == "paddle.linalg.eigh":
+        elif self.api_config.api_name == "paddle.linalg.eigh":
             # The output of eigen vectors are not unique, because multiplying an eigen vector by -1 in the real case
             # or by e^(i*\theta) in the complex case produces another set of valid eigen vectors of the matrix.
             # So we test whether the elements of each coef_vector (i.e. paddle_output / torch_output for each eigen vector)
@@ -257,6 +254,7 @@ class APITestAccuracy(APITestBase):
             eigvector_len = paddle_output[1].shape[-2]
             paddle_eigvectors = paddle_output.pop(1).matrix_transpose().reshape([-1, eigvector_len])
             torch_eigvectors = torch_output.pop(1).transpose(-1, -2).reshape((-1, eigvector_len))
+            paddle_output, torch_output = [], []
             for i in range(paddle_eigvectors.shape[0]):
                 coef_vector = paddle.to_tensor(paddle_eigvectors[i].numpy()/torch_eigvectors[i].numpy(), dtype=paddle_eigvectors[i].dtype)
                 coef_vector = coef_vector.round(2)
@@ -267,6 +265,7 @@ class APITestAccuracy(APITestBase):
                 paddle_output.append([coef_vector, abs_coef])
                 torch_output.append([coef_vector_approx, one])
 
+        self.is_backward = False
         if isinstance(paddle_output, paddle.Tensor):
             if isinstance(torch_output, torch.Tensor):
                 try:
@@ -366,7 +365,7 @@ class APITestAccuracy(APITestBase):
                             write_to_log("accuracy_error", self.api_config.config)
                             return
 
-        if self.need_check_grad() and torch_grad_success:
+        if torch_grad_success:
             self.is_backward = True
             try:
                 paddle_out_grads = None
