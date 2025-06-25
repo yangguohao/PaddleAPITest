@@ -558,6 +558,7 @@ forward_only_apis = frozenset(
         "unique_consecutive",
         "update_loss_scaling_",
         "upper",
+        "vander",
         "variable_length_memory_efficient_attention",
         "variable_length_memory_efficient_attention",
         "viterbi_decode",
