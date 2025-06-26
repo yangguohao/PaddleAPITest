@@ -406,6 +406,7 @@ class APITestAccuracy(APITestBase):
             elif self.api_config.api_name in {
                 "paddle.Tensor.fill_diagonal_tensor",
                 "paddle.diagonal_scatter",
+                "paddle.incubate.softmax_mask_fuse",
                 "paddle.nn.functional.binary_cross_entropy",
                 "paddle.nn.functional.binary_cross_entropy_with_logits",
                 "paddle.nn.functional.sigmoid_focal_loss",
