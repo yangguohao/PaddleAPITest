@@ -258,6 +258,11 @@ class APITestAccuracy(APITestBase):
                 one = torch.tensor(1.0, dtype=torch.float64)
                 paddle_output.append([coef_vector, abs_coef])
                 torch_output.append([coef_vector_approx, one])
+        elif self.api_config.api_name == "paddle.incubate.nn.functional.fused_layer_norm":
+            paddle_output, torch_output = zip(*(
+                (p, t) for p, t in zip(paddle_output, torch_output) if p._is_initialized()
+            ))
+
 
 
         self.is_backward = False
