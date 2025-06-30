@@ -75,7 +75,6 @@ paddle.nn.functional.max_unpool2d
 paddle.nn.functional.max_unpool3d
 paddle.nn.functional.maxout
 paddle.nn.functional.mse_loss
-paddle.nn.functional.multi_margin_loss
 paddle.nn.functional.pad
 paddle.nn.functional.pixel_shuffle
 paddle.nn.functional.pixel_unshuffle
