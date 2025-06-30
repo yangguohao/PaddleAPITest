@@ -106,10 +106,10 @@ paddle.concat(tuple(Tensor([31376, 768],"float32"),Tensor([1, 768],"float32"),),
    ```
    - 安装第三方库：
    ```bash
-   pip install func_timeout pebble pynvml
+   pip install pebble pynvml pandas
    ```
 
-4. PaddlePaddle 与 PyTorch 的部分依赖项可能发生冲突，请先安装 *paddlepaddle-gpu* 再安装 *torch*，重新安装请添加 `--force-reinstall` 参数；engineV2 建议使用 python>=3.10
+4. PaddlePaddle 与 PyTorch 的部分依赖项可能发生冲突，请先安装 *paddlepaddle-gpu* 再安装 *torch*，重新安装请在 pip 后添加 `--force-reinstall` 参数，仅更新 paddle 请添加 `--no-deps` 参数；engineV2 建议使用 python>=3.10
 
 ### 3.2 使用说明
 

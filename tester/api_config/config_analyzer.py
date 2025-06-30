@@ -11,26 +11,28 @@ import torch
 USE_CACHED_NUMPY = os.getenv("USE_CACHED_NUMPY", "False").lower() == "true"
 cached_numpy = {}
 
-not_zero_apis = [
-    "paddle.Tensor.__div__",
-    "paddle.Tensor.__floordiv__",
-    "paddle.Tensor.__rdiv__",
-    "paddle.Tensor.__rfloordiv__",
-    "paddle.Tensor.__rtruediv__",
-    "paddle.Tensor.__truediv__",
-    "paddle.Tensor.divide",
-    "paddle.Tensor.floor_divide",
-    "paddle.divide",
-    "paddle.floor_divide",
-    "paddle.nn.functional.kl_div",
-    "paddle.sparse.divide",
-    "paddle.Tensor.__mod__",
-    "paddle.Tensor.__rmod__",
-    "paddle.Tensor.floor_mod",
-    "paddle.Tensor.mod",
-    "paddle.floor_mod",
-    "paddle.mod",
-]
+not_zero_apis = frozenset(
+    [
+        "paddle.Tensor.__div__",
+        "paddle.Tensor.__floordiv__",
+        "paddle.Tensor.__mod__",
+        "paddle.Tensor.__rdiv__",
+        "paddle.Tensor.__rfloordiv__",
+        "paddle.Tensor.__rmod__",
+        "paddle.Tensor.__rtruediv__",
+        "paddle.Tensor.__truediv__",
+        "paddle.Tensor.divide",
+        "paddle.Tensor.floor_divide",
+        "paddle.Tensor.floor_mod",
+        "paddle.Tensor.mod",
+        "paddle.divide",
+        "paddle.floor_divide",
+        "paddle.floor_mod",
+        "paddle.mod",
+        "paddle.nn.functional.kl_div",
+        "paddle.sparse.divide",
+    ]
+)
 
 def generate_unique_array(num_items, float_dtype):
     def get_integer_dtype(float_dtype):
@@ -1779,6 +1781,9 @@ class TensorConfig:
                 arr = self.get_arg(api_config, 0, "arr")
                 min_dim = min(arr.shape)
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
+                if self.dtype == 'bool':
+                    ind = numpy.random.choice(self.numel(), self.get_arg(api_config, 2, "value").shape[0], replace=False)
+                    indices[ind] = 1
                 self.numpy_tensor = indices.reshape(self.shape)
             
             elif api_config.api_name == "paddle.poisson":
@@ -1871,7 +1876,7 @@ class TensorConfig:
         self.paddle_tensor = None
         paddle.device.cuda.empty_cache()
 
-    def clear_numpy_tensors(self):
+    def clear_numpy_tensor(self):
         del self.numpy_tensor
         self.numpy_tensor = None
 

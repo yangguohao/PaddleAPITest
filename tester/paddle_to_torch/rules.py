@@ -716,6 +716,8 @@ use_softmax = locals().get('use_softmax',True)
 _kwargs['target'] = _kwargs['target'].squeeze(-1)
 if "weight" in _kwargs:
     _kwargs['weight'].requires_grad = False
+if _kwargs['target'].dtype == torch.int32:
+    _kwargs['target'] = _kwargs['target'].long()
 """
         core = """
 result = torch.nn.functional.cross_entropy(**_kwargs)
@@ -969,14 +971,24 @@ if isinstance(max, torch.Tensor):
     max = max.item()
 """
         if paddle_api == "paddle.clip":
-            core = f"result = torch.clamp(**_kwargs)"
+            core = """
+if min is None and max is None:
+    result = x
+else:
+    result = torch.clamp(**_kwargs)
+"""
         elif paddle_api == "paddle.Tensor.clip":
-            core = f"result = x.clamp(**_kwargs)"
+                core = """
+if min is None and max is None:
+    result = x
+else:
+    result = x.clamp(**_kwargs)
+"""
         else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
+        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
@@ -4244,6 +4256,15 @@ if not pad_from_left_axis:
         left = _kwargs["pad"][2 * i]
         right = _kwargs["pad"][2 * i + 1]
         new_pad = [right, left] + new_pad
+    _kwargs["pad"] = new_pad
+elif len(_kwargs["pad"]) == 2 * _kwargs['input'].ndim:
+    num_dims = len(_kwargs["pad"]) // 2
+    new_pad = []
+    for i in range(num_dims):
+        left = _kwargs["pad"][2 * i]
+        right = _kwargs["pad"][2 * i + 1]
+        new_pad.insert(0, right)
+        new_pad.insert(0, left)
     _kwargs["pad"] = new_pad
 """
         core = """
