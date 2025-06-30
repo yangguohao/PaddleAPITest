@@ -1781,6 +1781,9 @@ class TensorConfig:
                 arr = self.get_arg(api_config, 0, "arr")
                 min_dim = min(arr.shape)
                 indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
+                if self.dtype == 'bool':
+                    ind = numpy.random.choice(self.numel(), self.get_arg(api_config, 2, "value").shape[0], replace=False)
+                    indices[ind] = 1
                 self.numpy_tensor = indices.reshape(self.shape)
             
             elif api_config.api_name == "paddle.poisson":
