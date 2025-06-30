@@ -16,7 +16,6 @@ paddle.allclose
 paddle.cummax
 paddle.cummin
 paddle.einsum
-paddle.expand
 paddle.flip
 paddle.frac
 paddle.frexp
