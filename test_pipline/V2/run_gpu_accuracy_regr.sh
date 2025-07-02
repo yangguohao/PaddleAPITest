@@ -12,6 +12,7 @@ NUM_GPUS=-1
 NUM_WORKERS_PER_GPU=-1
 GPU_IDS="-1"
 # REQUIRED_MEMORY=10
+backprocess="${ppapitest_bp:-1}"
 
 TEST_MODE_ARGS=(
 	--accuracy=True
@@ -42,11 +43,19 @@ mkdir -p "$LOG_DIR" || {
 
 # 执行程序
 LOG_FILE="$LOG_DIR/log_$(date +%Y%m%d_%H%M%S).log"
-nohup python engineV2.py \
-        "${TEST_MODE_ARGS[@]}" \
-        "${IN_OUT_ARGS[@]}" \
-        "${PARALLEL_ARGS[@]}" \
-        >> "$LOG_FILE" 2>&1 &
+if [ "$backprocess" -eq 1 ]; then
+    nohup python engineV2.py \
+            "${TEST_MODE_ARGS[@]}" \
+            "${IN_OUT_ARGS[@]}" \
+            "${PARALLEL_ARGS[@]}" \
+            >> "$LOG_FILE" 2>&1 &
+else
+    python engineV2.py \
+            "${TEST_MODE_ARGS[@]}" \
+            "${IN_OUT_ARGS[@]}" \
+            "${PARALLEL_ARGS[@]}" \
+            2>&1 | tee -a "$LOG_FILE"
+fi
 
 PYTHON_PID=$!
 
