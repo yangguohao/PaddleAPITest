@@ -64,9 +64,9 @@ class APITestAccuracy(APITestBase):
                 return
 
             # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensors）
-            # 以下代码等价于:
+            # (弃用)以下代码等价于:
             # torch_output = Paddle2TorchConverter.execute(convert_result, self.torch_args, self.torch_kwargs)
-            # 准备执行环境，将参数(torch tensors)直接映射至locals
+            # 准备执行环境，将参数(torch tensors)直接映射至locals()
             exec_globals = {"torch": torch}
             exec_locals = {
                 "args": self.torch_args,
@@ -235,7 +235,8 @@ class APITestAccuracy(APITestBase):
         elif self.api_config.api_name in {
             "paddle.mode",
             "paddle.Tensor.mode",
-            "paddle.incubate.nn.functional.fused_layer_norm"
+            "paddle.incubate.nn.functional.fused_layer_norm",
+            "paddle.kthvalue"
         }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
