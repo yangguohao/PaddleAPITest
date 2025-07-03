@@ -169,7 +169,6 @@ paddle.scatter
 paddle.scatter_nd
 paddle.scatter_nd_add
 paddle.sgn
-paddle.shard_index
 paddle.slice
 paddle.slice_scatter
 paddle.split
