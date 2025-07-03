@@ -79,7 +79,7 @@ class APITestAccuracy(APITestBase):
                     exec_locals["fused_log_softmax"] = False
 
             # convert_result.is_torch_corresponding 为 True 时代表有对应的 Torch API
-            # 执行 *_compiled 编译好的代码速度更快
+            # 执行 *_compiled 编译好的代码速度更快，定位 compile error 时可删去 _compiled
             code = convert_result.code
             if code.preprocess_compiled:
                 exec(code.preprocess_compiled, exec_globals, exec_locals)
@@ -236,7 +236,7 @@ class APITestAccuracy(APITestBase):
             "paddle.mode",
             "paddle.Tensor.mode",
             "paddle.incubate.nn.functional.fused_layer_norm",
-            "paddle.kthvalue"
+            "paddle.kthvalue",
         }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
