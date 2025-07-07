@@ -331,7 +331,10 @@ class TensorConfig:
                         if dim_size % chunks == 0:
                             valid_axes.append(i)
                     if not valid_axes:
-                        valid_axes = [0]
+                        raise ValueError(
+                            f"No valid axis found in x.shape = {x_tensor.shape} for chunks = {chunks}. "
+                            f"Each dim must be divisible by chunks."
+                        )
                     chosen_axis = random.choice(valid_axes)
                     if len(self.shape) == 0:  
                         self.numpy_tensor = numpy.array(chosen_axis, dtype=self.dtype)
