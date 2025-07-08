@@ -213,7 +213,6 @@ paddle.nn.functional.log_loss
 paddle.nn.functional.log_softmax
 paddle.nn.functional.lp_pool1d
 paddle.nn.functional.lp_pool2d
-paddle.nn.functional.margin_cross_entropy
 paddle.nn.functional.margin_ranking_loss
 paddle.nn.functional.max_pool1d
 paddle.nn.functional.max_pool2d

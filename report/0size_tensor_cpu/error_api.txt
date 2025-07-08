@@ -144,7 +144,6 @@ paddle.nn.functional.kl_div
 paddle.nn.functional.layer_norm
 paddle.nn.functional.linear
 paddle.nn.functional.log_loss
-paddle.nn.functional.margin_cross_entropy
 paddle.nn.functional.max_pool1d
 paddle.nn.functional.max_pool3d
 paddle.nn.functional.max_unpool2d
