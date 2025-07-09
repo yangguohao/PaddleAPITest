@@ -205,7 +205,15 @@ class TensorConfig:
         if self.numpy_tensor is None:
             if api_config.api_name in not_zero_apis:
                 if "int" in self.dtype:
-                    self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
+                    if self.dtype == 'int8':
+                        arr = numpy.random.randint(1, 256, size=self.shape, dtype=numpy.int32)
+                        # 128-255 -> -128~-1
+                        arr[arr > 127] -= 256
+                        self.numpy_tensor = arr.astype(self.dtype)
+                    elif self.dtype == 'uint8':
+                        self.numpy_tensor = numpy.random.randint(1, 256, size=self.shape).astype(self.dtype)
+                    else:
+                        self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                 else:
                     self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
             elif api_config.api_name == "paddle.arange":
