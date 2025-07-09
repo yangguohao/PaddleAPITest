@@ -95,6 +95,7 @@ def main():
     elif options.accuracy:
         test_class = APITestAccuracy
     elif options.paddle_gpu_performance:
+        paddle.framework.set_flags({"FLAGS_use_system_allocator": False})
         test_class = APITestPaddleGPUPerformance
     elif options.torch_gpu_performance:
         test_class = APITestTorchGPUPerformance
