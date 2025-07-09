@@ -79,23 +79,30 @@ class APITestPaddleGPUPerformance(APITestBase):
             test_loop = 2147483647 * 20 // numel
             if self.test_amp:
                 with paddle.amp.auto_cast():
+                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+            else:
+                paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+
+            with paddle.no_grad():
+                if self.test_amp:
+                    with paddle.amp.auto_cast():
+                        paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
+                        start = time.time()
+                        for i in range(test_loop):
+                            self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                        paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
+                        end = time.time()
+                        timeused = end - start
+                        print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
+                else:
                     paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
                     start = time.time()
                     for i in range(test_loop):
-                        paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                        self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
                     paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
                     end = time.time()
                     timeused = end - start
                     print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
-            else:
-                paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
-                start = time.time()
-                for i in range(test_loop):
-                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
-                paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
-                end = time.time()
-                timeused = end - start
-                print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
         except Exception as err:
             paddle_output = None
             result_outputs = None
