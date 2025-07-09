@@ -339,7 +339,10 @@ class TensorConfig:
                         if dim_size % chunks == 0:
                             valid_axes.append(i)
                     if not valid_axes:
-                        valid_axes = [0]
+                        raise ValueError(
+                            f"No valid axis found in x.shape = {x_tensor.shape} for chunks = {chunks}. "
+                            f"Each dim must be divisible by chunks."
+                        )
                     chosen_axis = random.choice(valid_axes)
                     if len(self.shape) == 0:  
                         self.numpy_tensor = numpy.array(chosen_axis, dtype=self.dtype)
@@ -1824,6 +1827,13 @@ class TensorConfig:
                         self.numpy_tensor = numpy.triu(self.get_random_numpy_tensor(self.shape, self.dtype))
                     else:
                         self.numpy_tensor = numpy.tril(self.get_random_numpy_tensor(self.shape, self.dtype))
+            elif api_config.api_name in {"paddle.rsqrt", "paddle.Tensor.rsqrt"}:  
+                if self.check_arg(api_config, 0, "x"):
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1e-7, max=1000)
+            elif api_config.api_name in {"paddle.remainder", "paddle.Tensor.remainder"}:
+                if self.check_arg(api_config, 1, "y"):
+                    if self.dtype in {"int32", "int64"}:
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
 
             if self.numpy_tensor is None:
                 if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:

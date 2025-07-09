@@ -7,6 +7,7 @@ __all__ = [
     'APITestAccuracy', 
     'APITestPaddleOnly',
     'APITestCINNVSDygraph', 
+    'APITestPaddleGPUPerformance',
     'paddle_to_torch',
     'TensorConfig', 
     'APIConfig', 
@@ -21,6 +22,7 @@ if TYPE_CHECKING:
     from .base import APITestBase
     from .accuracy import APITestAccuracy
     from .paddle_only import APITestPaddleOnly
+    from .paddle_gpu_performance import APITestPaddleGPUPerformance
     from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
     from . import paddle_to_torch
     from .api_config import (
@@ -49,6 +51,9 @@ def __getattr__(name: str) -> Any:
     elif name == 'APITestCINNVSDygraph':
         from .paddle_cinn_vs_dygraph import APITestCINNVSDygraph
         return APITestCINNVSDygraph
+    elif name == 'APITestPaddleGPUPerformance':
+        from .paddle_gpu_performance import APITestPaddleGPUPerformance
+        return APITestPaddleGPUPerformance
     elif name == 'paddle_to_torch':
         from . import paddle_to_torch
         return paddle_to_torch
