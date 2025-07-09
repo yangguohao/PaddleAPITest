@@ -178,7 +178,8 @@ class APITestTorchGPUPerformance(APITestBase):
                         torch.autograd.grad(
                             outputs=result_outputs,
                             inputs=inputs_list,
-                            grad_outputs=result_outputs_grads
+                            grad_outputs=result_outputs_grads,
+                            retain_graph=True
                         )
                     torch.cuda.synchronize()
                     end = time.time()
