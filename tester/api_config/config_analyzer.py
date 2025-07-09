@@ -472,11 +472,15 @@ class TensorConfig:
                     num = api_config.num
                     re = self.shape[0]
                     self.numpy_tensor =  numpy.zeros(self.shape)
-                    for i in range(self.shape[0]-1):
-                        self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
-                        num = num - self.numpy_tensor[i]
-                        re -= 1
-                    self.numpy_tensor[self.shape[0]-1] = num
+                    if num < re:
+                        indices = numpy.random.choice(re, num, replace=False)
+                        self.numpy_tensor[indices] = 1
+                    else:
+                        for i in range(self.shape[0]-1):
+                            self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
+                            num = num - self.numpy_tensor[i]
+                            re -= 1
+                        self.numpy_tensor[self.shape[0]-1] = num
 
             elif api_config.api_name == "paddle.dot":
                 if "int" in self.dtype:
