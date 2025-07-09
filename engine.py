@@ -7,7 +7,7 @@ import argparse
 from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                    APITestPaddleOnly,APITestPaddleGPUPerformance, set_cfg)
+                    APITestPaddleOnly,APITestPaddleGPUPerformance, APITestTorchGPUPerformance, set_cfg)
 from tester.api_config.log_writer import read_log, write_to_log
 import torch
 import paddle
@@ -48,6 +48,10 @@ def main():
     )
     parser.add_argument(
         '--paddle_gpu_performance',
+        default=False,
+    )
+    parser.add_argument(
+        '--torch_gpu_performance',
         default=False,
     )
     parser.add_argument(
@@ -92,6 +96,8 @@ def main():
         test_class = APITestAccuracy
     elif options.paddle_gpu_performance:
         test_class = APITestPaddleGPUPerformance
+    elif options.torch_gpu_performance:
+        test_class = APITestTorchGPUPerformance
 
     if options.api_config != "":
         options.api_config = options.api_config.strip()

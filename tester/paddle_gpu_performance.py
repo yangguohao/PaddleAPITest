@@ -96,6 +96,18 @@ class APITestPaddleGPUPerformance(APITestBase):
                 end = time.time()
                 timeused = end - start
                 print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
+        except Exception as err:
+            paddle_output = None
+            result_outputs = None
+            result_outputs_grads = None
+            out_grads = None
+            print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", "faild")
+            if "CUDA error" in str(err) or "memory corruption" in str(err):
+                raise err
+            if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
+                raise err
+
+        try:
             if self.need_check_grad():
                 inputs_list = self.get_paddle_input_list()
                 result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
@@ -107,13 +119,13 @@ class APITestPaddleGPUPerformance(APITestBase):
                     paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
                     end = time.time()
                     timeused = end - start
-                    print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
+                    print(self.api_config.api_name, "\t", self.api_config.config, "\tbackward\t", numel, "\t", test_loop, "\t", timeused)
         except Exception as err:
             paddle_output = None
             result_outputs = None
             result_outputs_grads = None
             out_grads = None
-            print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", "faild")
+            print(self.api_config.api_name, "\t", self.api_config.config, "\tbackward\t", numel, "\t", test_loop, "\t", "faild")
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
