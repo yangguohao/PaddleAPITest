@@ -310,8 +310,9 @@ def run_test_case(api_config_str, options):
     finally:
         del test_class, api_config, case
         gc.collect()
-        torch.cuda.empty_cache()
-        paddle.device.cuda.empty_cache()
+        if not options.paddle_gpu_performance and not options.torch_gpu_performance:
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
 
 
 def main():

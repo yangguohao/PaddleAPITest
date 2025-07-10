@@ -122,8 +122,9 @@ def main():
         case.clear_tensor()
         del case
         del api_config
-        torch.cuda.empty_cache()
-        paddle.device.cuda.empty_cache()
+        if not options.paddle_gpu_performance and not options.torch_gpu_performance:
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
     elif options.api_config_file != "":
         finish_configs = read_log("checkpoint")
         with open(options.api_config_file, "r") as f:
@@ -157,8 +158,9 @@ def main():
             case.clear_tensor()
             del case
             del api_config
-            torch.cuda.empty_cache()
-            paddle.device.cuda.empty_cache()
+            if not options.paddle_gpu_performance and not options.torch_gpu_performance:
+                torch.cuda.empty_cache()
+                paddle.device.cuda.empty_cache()
 
         # elif options.api_config_file != "":
         #     with open(options.api_config_file, "r") as f:
