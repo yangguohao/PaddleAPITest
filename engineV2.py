@@ -421,9 +421,9 @@ def main():
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
-    mode = [options.accuracy, options.paddle_only, options.paddle_cinn]
+    mode = [options.accuracy, options.paddle_only, options.paddle_cinn, options.paddle_gpu_performance, options.torch_gpu_performance]
     if len([m for m in mode if m is True]) != 1:
-        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn to True.", flush=True)
+        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn, or --paddle_gpu_performance, or --torch_gpu_performance to True.", flush=True)
         return
     if options.test_tol and not options.accuracy:
         print(f"--test_tol takes effect when --accuracy is True.", flush=True)
