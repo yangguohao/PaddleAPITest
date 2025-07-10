@@ -5,12 +5,12 @@
 
 # 配置参数
 # NUM_GPUS!=0 时，engineV2 不受外部 "CUDA_VISIBLE_DEVICES" 影响
-FILE_INPUT="tester/api_config/10_performance/case_little.txt"
-# FILE_PATTERN="report/ci_ce_gpu/error_config.txt"
-LOG_DIR="tester/api_config/test_log_gpu_accuracy_regr"
-NUM_GPUS=7
+FILE_INPUT="tester/api_config/10_performance/case_middle.txt"
+# FILE_PATTERN="tester/api_config/10_performance/case_*.txt"
+LOG_DIR="tester/api_config/test_log_paddle_performance"
+NUM_GPUS=8
 NUM_WORKERS_PER_GPU=1
-GPU_IDS="0,1,2,3,4,5,6"
+GPU_IDS="0,1,2,3,4,5,6,7"
 # REQUIRED_MEMORY=10
 backprocess="${ppapitest_bp:-1}"
 
@@ -52,7 +52,7 @@ if [ "$backprocess" -eq 1 ]; then
             >> "$LOG_FILE" 2>&1 &
     PYTHON_PID=$!
 
-    sleep 1
+    sleep 3
     if ! ps -p "$PYTHON_PID" > /dev/null; then
         echo "错误：engineV2 启动失败，请检查 $LOG_FILE"
         exit 1
