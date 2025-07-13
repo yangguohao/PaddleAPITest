@@ -194,6 +194,12 @@ class APITestAccuracy(APITestBase):
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed")
                 return
+            if self.api_config.api_name == "paddle.vision.ops.deform_conv2d":
+                # Ensure mask is after weight
+                if "weight" in self.paddle_kwargs and "mask" in self.paddle_kwargs:
+                    mask = self.paddle_kwargs["mask"]
+                    del self.paddle_kwargs["mask"]
+                    self.paddle_kwargs["mask"] = mask
             if "paddle.Tensor." in self.api_config.api_name:
                 api = getattr(self.paddle_args[0], self.api_config.api_name[self.api_config.api_name.rindex(".")+1:])
                 if self.test_amp:
