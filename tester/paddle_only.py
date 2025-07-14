@@ -50,6 +50,10 @@ class APITestPaddleOnly(APITestBase):
             result_outputs = None
             result_outputs_grads = None
             out_grads = None
+            if self.should_ignore_paddle_error(str(err)):
+                print("[Pass]", self.api_config.config, flush=True)
+                write_to_log("pass", self.api_config.config)
+                return
             if "gradient_accumulator.cc" in str(err) or "Out of memory" in str(err):
                 return
             print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)

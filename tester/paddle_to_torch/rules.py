@@ -3383,6 +3383,7 @@ prior_dist = locals().get('prior_dist', None)
 if prior_dist is None:
     prior_dist = torch.full((1, num_classes,), 1.0 / num_classes)
 result = (1 - epsilon) * label + epsilon * prior_dist
+result = result.to(dtype=label.dtype)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)

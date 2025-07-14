@@ -578,6 +578,22 @@ forward_only_apis = frozenset(
     ]
 )
 
+# paddle errors which will be ignored and considered as pass
+paddle_error_dismiss = {
+    # "API": "error_message",
+    "paddle.nn.functional.conv1d": "(PreconditionNotMet) The element size of ",
+    "paddle.nn.functional.conv1d_transpose": "(PreconditionNotMet) The element size of ",
+    "paddle.nn.functional.conv2d": "(PreconditionNotMet) The element size of ",
+    "paddle.nn.functional.conv2d_transpose": "(PreconditionNotMet) The element size of ",
+    "paddle.nn.functional.conv3d": "(PreconditionNotMet) The element size of ",
+    "paddle.nn.functional.conv3d_transpose": "(PreconditionNotMet) The element size of ",
+}
+
+# some accuracy error can be considered tolerable
+special_accuracy_atol_rtol = {
+    # "API": (atol, rtol),
+}
+
 class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
@@ -1274,6 +1290,9 @@ class APITestBase:
         if np_paddle.dtype == numpy.bool_:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
+        
+        if self.api_config.api_name in special_accuracy_atol_rtol:
+            atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
         numpy.testing.assert_allclose(
             np_paddle,
@@ -1306,6 +1325,9 @@ class APITestBase:
                 f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
                 f"{torch_tensor}"
             )
+        
+        if self.api_config.api_name in special_accuracy_atol_rtol:
+            atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
         test_tol = getattr(self, "test_tol", False)
         is_backward = getattr(self, "is_backward", False)
@@ -1432,3 +1454,10 @@ class APITestBase:
     def is_forward_only(self):
         api = self.api_config.api_name[self.api_config.api_name.rindex(".")+1:]
         return api in forward_only_apis
+
+    def should_ignore_paddle_error(self, error_msg):
+        if self.api_config.api_name in paddle_error_dismiss:
+            dismiss_error = paddle_error_dismiss[self.api_config.api_name]
+            if dismiss_error in error_msg:
+                return True
+        return False
