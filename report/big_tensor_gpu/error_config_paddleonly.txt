@@ -5670,7 +5670,6 @@ paddle.nn.functional.multi_margin_loss(input=Tensor([2147483649, 2],"float16"), 
 paddle.nn.functional.multi_margin_loss(input=Tensor([2281701379, 2],"float64"), label=Tensor([2281701379],"int64"), p=1, margin=1.0, weight=Tensor([2],"float64"), reduction="mean", )
 paddle.nn.functional.multi_margin_loss(input=Tensor([5, 858993460],"float16"), label=Tensor([5],"int64"), p=1, margin=1.0, weight=Tensor([858993460],"float16"), reduction="mean", )
 paddle.nn.functional.pad(Tensor([1, 1, 4294967295, 1],"float16"), pad=list[0,0,0,1,], mode="replicate", value=0.0, data_format="NCHW", name=None, )
-paddle.nn.functional.pad(Tensor([13, 47197443, 7],"float32"), tuple(-3,0,), data_format="NCL", )
 paddle.nn.functional.pad(Tensor([14, 43826197, 7],"float32"), tuple(-3,0,), data_format="NCL", )
 paddle.nn.functional.pad(Tensor([9586981, 64, 7],"float32"), tuple(-3,0,), data_format="NCL", )
 paddle.nn.functional.pad(x=Tensor([1, 1, 1, 2, 1073741825],"float64"), pad=tuple(2,2,1,1,0,0,), mode="reflect", data_format="NCDHW", )

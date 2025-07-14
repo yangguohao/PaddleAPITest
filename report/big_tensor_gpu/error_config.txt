@@ -12278,7 +12278,6 @@ paddle.nn.functional.pad(Tensor([1, 45474, 224, 224],"float32"), list[0,1,0,0,],
 paddle.nn.functional.pad(Tensor([1, 57066, 14, 14, 384],"float16"), tuple(0,0,0,0,0,0,), data_format="NDHWC", )
 paddle.nn.functional.pad(Tensor([1, 760567127, 3],"float32"), list[1,0,], value=1, mode="constant", data_format="NCL", )
 paddle.nn.functional.pad(Tensor([1, 760567127, 3],"float32"), list[1,0,], value=2, mode="constant", data_format="NCL", )
-paddle.nn.functional.pad(Tensor([13, 47197443, 7],"float32"), tuple(-3,0,), data_format="NCL", )
 paddle.nn.functional.pad(Tensor([14, 43826197, 7],"float32"), tuple(-3,0,), data_format="NCL", )
 paddle.nn.functional.pad(Tensor([16, 64, 16, 139265],"float32"), list[0,3,0,3,], mode="constant", )
 paddle.nn.functional.pad(Tensor([1895, 16, 14, 14, 384],"float32"), tuple(0,0,0,0,0,0,), data_format="NDHWC", )
