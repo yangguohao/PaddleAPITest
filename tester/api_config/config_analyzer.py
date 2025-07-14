@@ -1210,7 +1210,6 @@ class TensorConfig:
                             if axis < len(self.shape):
                                 dim_size = x_tensor.shape[axis]
                                 if dim_size > 0:
-                                    # axis_indices = numpy.random.randint(0, dim_size, size=new_shape[axis])
                                     axis_indices = numpy.random.choice(dim_size, size=new_shape[axis], replace=False).astype("int64")
                                     idx_tuple = tuple([slice(None)] * axis + [slice(None, new_shape[axis])] + [slice(None)] * (x_dims - axis - 1))
                                     indices[idx_tuple] = axis_indices.reshape([-1] + [1] * (x_dims - axis - 1))
@@ -1222,8 +1221,6 @@ class TensorConfig:
                         axis = axis if axis >= 0 else axis + x_dims
                         if 0 <= axis < x_dims:
                             dim_size = x_tensor.shape[axis]
-                            print(self.shape[:-1])
-                            print(self.shape[-1])
                             indices = numpy.zeros(self.shape, dtype="int64")
                             for idx in numpy.ndindex(tuple(self.shape[:-1])):
                                 indices[idx] = numpy.random.choice(dim_size, size=self.shape[-1], replace=False)
