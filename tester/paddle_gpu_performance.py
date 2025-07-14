@@ -109,10 +109,13 @@ class APITestPaddleGPUPerformance(APITestBase):
             result_outputs_grads = None
             out_grads = None
             print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", "faild")
+            if self.should_ignore_paddle_error(str(err)):
+                return
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
                 raise err
+            return
 
         try:
             if self.need_check_grad():
@@ -133,11 +136,12 @@ class APITestPaddleGPUPerformance(APITestBase):
             result_outputs_grads = None
             out_grads = None
             print(self.api_config.api_name, "\t", self.api_config.config, "\tbackward\t", numel, "\t", test_loop, "\t", "faild")
+            if self.should_ignore_paddle_error(str(err)):
+                return
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
                 raise err
-
             return
 
         paddle_output = None
