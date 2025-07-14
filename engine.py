@@ -7,7 +7,7 @@ import argparse
 from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                    APITestPaddleOnly,APITestPaddleGPUPerformance, APITestTorchGPUPerformance, set_cfg)
+                    APITestPaddleOnly,APITestPaddleGPUPerformance, APITestTorchGPUPerformance, APITestPaddleTorchGPUPerformance, set_cfg)
 from tester.api_config.log_writer import read_log, write_to_log
 import torch
 import paddle
@@ -55,6 +55,10 @@ def main():
         default=False,
     )
     parser.add_argument(
+        '--paddle_torch_gpu_performance',
+        default=False,
+    )
+    parser.add_argument(
         '--test_amp',
         default=False,
     )
@@ -99,6 +103,9 @@ def main():
         test_class = APITestPaddleGPUPerformance
     elif options.torch_gpu_performance:
         test_class = APITestTorchGPUPerformance
+    elif options.paddle_torch_gpu_performance:
+        paddle.set_flags({"FLAGS_use_system_allocator": False})
+        test_class = APITestPaddleTorchGPUPerformance
 
     if options.api_config != "":
         options.api_config = options.api_config.strip()
@@ -122,7 +129,7 @@ def main():
         case.clear_tensor()
         del case
         del api_config
-        if not options.paddle_gpu_performance and not options.torch_gpu_performance:
+        if not options.paddle_gpu_performance and not options.torch_gpu_performance and not options.paddle_torch_gpu_performance:
             torch.cuda.empty_cache()
             paddle.device.cuda.empty_cache()
     elif options.api_config_file != "":
@@ -158,7 +165,7 @@ def main():
             case.clear_tensor()
             del case
             del api_config
-            if not options.paddle_gpu_performance and not options.torch_gpu_performance:
+            if not options.paddle_gpu_performance and not options.torch_gpu_performance and not options.paddle_torch_gpu_performance:
                 torch.cuda.empty_cache()
                 paddle.device.cuda.empty_cache()
 
