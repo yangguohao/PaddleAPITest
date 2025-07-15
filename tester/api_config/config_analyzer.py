@@ -799,6 +799,16 @@ class TensorConfig:
                         self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
                 elif api_config.api_name.endswith("pca_lowrank"):
                     self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
+                elif api_config.api_name.endswith("cond"):
+                    # produce non-singular matrix
+                    n = self.shape[-1]
+                    # Generate random matrix, value in [0, 1)
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                    # Create scaled identity matrix, value is n
+                    eye_matrix = n * numpy.eye(n, dtype=self.dtype)
+                    # Construct a non-singular matrix: A = random_matrix + n*I
+                    # strict diagonal dominant matrix is non-singular. https://en.wikipedia.org/wiki/Diagonally_dominant_matrix
+                    self.numpy_tensor += eye_matrix
                     
             elif api_config.api_name == "paddle.linspace":
                 if "int" in self.dtype:
