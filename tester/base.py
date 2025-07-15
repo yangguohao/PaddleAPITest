@@ -581,6 +581,7 @@ forward_only_apis = frozenset(
 # paddle errors which will be ignored and considered as pass
 paddle_error_dismiss = {
     # "API": "error_message",
+    # "API": ("error_msg1", "error_msg2"),
     "paddle.nn.functional.conv1d": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv1d_transpose": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv2d": "(PreconditionNotMet) The element size of ",
@@ -1456,8 +1457,11 @@ class APITestBase:
         return api in forward_only_apis
 
     def should_ignore_paddle_error(self, error_msg):
-        if self.api_config.api_name in paddle_error_dismiss:
-            dismiss_error = paddle_error_dismiss[self.api_config.api_name]
-            if dismiss_error in error_msg:
-                return True
+        dismiss_errors = paddle_error_dismiss.get(self.api_config.api_name, None)
+        if dismiss_errors is None:
+            return False
+        if isinstance(dismiss_errors, str):
+            return dismiss_errors in error_msg
+        elif isinstance(dismiss_errors, (list, tuple)):
+            return any(error in error_msg for error in dismiss_errors)
         return False
