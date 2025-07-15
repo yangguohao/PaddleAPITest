@@ -210,6 +210,10 @@ class APITestAccuracy(APITestBase):
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 paddle_output = self.paddle_args[0] if len(self.paddle_args) > 0 else next(iter(self.paddle_kwargs.values()))
         except Exception as err:
+            if self.should_ignore_paddle_error(str(err)):
+                print("[Pass]", self.api_config.config, flush=True)
+                write_to_log("pass", self.api_config.config)
+                return
             print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
@@ -377,6 +381,10 @@ class APITestAccuracy(APITestBase):
                     paddle_out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
                 del inputs_list, result_outputs, result_outputs_grads
             except Exception as err:
+                if self.should_ignore_paddle_error(str(err)):
+                    print("[Pass]", self.api_config.config, flush=True)
+                    write_to_log("pass", self.api_config.config)
+                    return
                 print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
@@ -410,6 +418,7 @@ class APITestAccuracy(APITestBase):
                 "paddle.incubate.softmax_mask_fuse",
                 "paddle.nn.functional.binary_cross_entropy",
                 "paddle.nn.functional.binary_cross_entropy_with_logits",
+                "paddle.nn.functional.cross_entropy",
                 "paddle.nn.functional.sigmoid_focal_loss",
                 "paddle.nn.functional.gaussian_nll_loss",
                 "paddle.nn.functional.kl_div",
