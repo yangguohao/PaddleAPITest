@@ -472,7 +472,6 @@ class TensorConfig:
             elif api_config.api_name == "paddle.vision.ops.distribute_fpn_proposals":
                 if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
                     num = self.shape[0]
-                    self.numpy_tensor = numpy.zeros(self.shape)
                     self.numpy_tensor = numpy.random.randint(1, 1024, [num, 4])
                     self.numpy_tensor[:, 0] += numpy.random.random([num])
                     self.numpy_tensor[:, 1] += numpy.random.random([num])
