@@ -209,8 +209,8 @@ class APITestPaddleTorchGPUPerformance(APITestBase):
                 else:
                     exec(code.core_compiled, exec_globals, exec_locals)
 
-            if code.postprocess_compiled:
-                exec(code.postprocess_compiled, exec_globals, exec_locals)
+            # if code.postprocess_compiled:
+            #     exec(code.postprocess_compiled, exec_globals, exec_locals)
             output_var = convert_result.output_var or "result"
             torch_output = exec_locals[output_var]
 
