@@ -959,21 +959,21 @@ class APITestBase:
     def get_paddle_input_list(self):
         result = []
 
-        for i in range(len(self.paddle_args)):
-            if isinstance(self.paddle_args[i], paddle.Tensor):
-                result.append(self.paddle_args[i])
-            elif isinstance(self.paddle_args[i], tuple) or isinstance(self.paddle_args[i], list):
-                for item in self.paddle_args[i]:
-                    if isinstance(item, paddle.Tensor):
-                        result.append(item)
+        for arg in self.paddle_args:
+            if isinstance(arg, paddle.Tensor):
+                result.append(arg)
+            elif isinstance(arg, (tuple, list)):
+                result.extend(item for item in arg if isinstance(item, paddle.Tensor))
 
-        for key, value in self.paddle_kwargs.items():
-            if isinstance(value, paddle.Tensor):
-                result.append(value)
-            elif isinstance(value, tuple) or isinstance(value, list):
-                for item in value:
-                    if isinstance(item, paddle.Tensor):
-                        result.append(item)
+        # 按 merged_kwargs 顺序遍历，确保 paddle 关键字参数与 torch 参数顺序一致，避免反向比较无法对应
+        # torch 参数顺序通过 paddle_sig.bind 绑定，见 ana_torch_api_info()
+        for key in self.paddle_merged_kwargs_config:
+            if key in self.paddle_kwargs:
+                value = self.paddle_kwargs[key]
+                if isinstance(value, paddle.Tensor):
+                    result.append(value)
+                elif isinstance(value, (tuple, list)):
+                    result.extend(item for item in value if isinstance(item, paddle.Tensor))
 
         return result
 
