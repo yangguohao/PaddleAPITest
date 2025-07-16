@@ -620,7 +620,7 @@ class APITestBase:
         #     return True
         # if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
         #     return True
-        if self.api_config.config in torch_error_skip:
+        if not paddle_only and self.api_config.config in torch_error_skip:
             return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
