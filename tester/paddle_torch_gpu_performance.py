@@ -141,6 +141,7 @@ class APITestPaddleTorchGPUPerformance(APITestBase):
             result_outputs = None
             result_outputs_grads = None
             print_performance(False, self.api_config.api_name, self.api_config.config, numel, test_loop, paddle_forward, torch_forward, paddle_backward, torch_backward, combined)
+            print("[Error]", str(err))
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
@@ -164,6 +165,7 @@ class APITestPaddleTorchGPUPerformance(APITestBase):
             result_outputs = None
             result_outputs_grads = None
             print_performance(False, self.api_config.api_name, self.api_config.config, numel, test_loop, paddle_forward, torch_forward, paddle_backward, torch_backward, combined)
+            print("[Error]", str(err))
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
@@ -241,6 +243,7 @@ class APITestPaddleTorchGPUPerformance(APITestBase):
             del exec_globals, exec_locals, output_var, convert_result, code
         except Exception as err:
             print_performance(False, self.api_config.api_name, self.api_config.config, numel, test_loop, paddle_forward, torch_forward, paddle_backward, torch_backward, combined)
+            print("[Error]", str(err))
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
@@ -271,7 +274,7 @@ class APITestPaddleTorchGPUPerformance(APITestBase):
                 del self.torch_args, self.torch_kwargs, torch_output
         except Exception as err:
             print_performance(False, self.api_config.api_name, self.api_config.config, numel, test_loop, paddle_forward, torch_forward, paddle_backward, torch_backward, combined)
-            print(str(err))
+            print("[Error]", str(err))
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
