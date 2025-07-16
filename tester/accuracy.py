@@ -151,7 +151,7 @@ class APITestAccuracy(APITestBase):
             except Exception as err:
                 print("[torch error] backward", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("torch_error", self.api_config.config)
-                return
+                raise
         else:
             del self.torch_args, self.torch_kwargs
 
@@ -238,7 +238,7 @@ class APITestAccuracy(APITestBase):
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
-            return
+            raise
 
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm":
             paddle_output = paddle_output[0]
@@ -409,7 +409,7 @@ class APITestAccuracy(APITestBase):
             except Exception as err:
                 print("[cuda error] backward", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
-                return
+                raise
 
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
