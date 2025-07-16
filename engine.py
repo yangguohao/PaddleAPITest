@@ -100,11 +100,13 @@ def main():
         test_class = APITestAccuracy
     elif options.paddle_gpu_performance:
         paddle.framework.set_flags({"FLAGS_use_system_allocator": False})
+        paddle.framework.set_flags({"FLAGS_share_tensor_for_grad_tensor_holder": True})
         test_class = APITestPaddleGPUPerformance
     elif options.torch_gpu_performance:
         test_class = APITestTorchGPUPerformance
     elif options.paddle_torch_gpu_performance:
         paddle.set_flags({"FLAGS_use_system_allocator": False})
+        paddle.framework.set_flags({"FLAGS_share_tensor_for_grad_tensor_holder": True})
         test_class = APITestPaddleTorchGPUPerformance
 
     if options.api_config != "":
