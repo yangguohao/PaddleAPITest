@@ -120,7 +120,7 @@ class APITestAccuracy(APITestBase):
 
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
-            print("[torch error]", self.api_config.config, flush=True)
+            print("[torch error]", self.api_config.config, "\n", str(err), flush=True)
             traceback.print_exc()
             write_to_log("torch_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
@@ -142,11 +142,16 @@ class APITestAccuracy(APITestBase):
                     )
                     torch_grad_success = True
                 del inputs_list, result_outputs, result_outputs_grads
-                paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 print(str(err), flush=True)
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise err
+            try:
+                paddle.base.core.eager._for_test_check_cuda_error()
+            except Exception as err:
+                print("[torch error] backward", self.api_config.config, "\n", str(err), flush=True)
+                write_to_log("torch_error", self.api_config.config)
+                raise
         else:
             del self.torch_args, self.torch_kwargs
 
@@ -233,7 +238,7 @@ class APITestAccuracy(APITestBase):
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
-            return
+            raise
 
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm":
             paddle_output = paddle_output[0]
@@ -391,7 +396,7 @@ class APITestAccuracy(APITestBase):
                     print("[Pass]", self.api_config.config, flush=True)
                     write_to_log("pass", self.api_config.config)
                     return
-                print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
+                print("[paddle error] backward", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
                     raise err
@@ -404,7 +409,7 @@ class APITestAccuracy(APITestBase):
             except Exception as err:
                 print("[cuda error] backward", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
-                return
+                raise
 
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
