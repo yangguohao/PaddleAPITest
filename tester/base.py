@@ -595,6 +595,13 @@ special_accuracy_atol_rtol = {
     # "API": (atol, rtol),
 }
 
+torch_error_skip = frozenset(
+    [
+        'paddle.kthvalue(Tensor([4294967295],"float32"), 1, )',
+        'paddle.kthvalue(Tensor([4294967295],"float32"), k=2, )',
+    ]
+)
+
 class APITestBase:
     def __init__(self, api_config):
         self.api_config = api_config
@@ -612,6 +619,8 @@ class APITestBase:
         #     return True
         # if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
         #     return True
+        if self.api_config.config in torch_error_skip:
+            return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
