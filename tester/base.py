@@ -588,6 +588,7 @@ paddle_error_dismiss = {
     "paddle.nn.functional.conv2d_transpose": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv3d": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv3d_transpose": "(PreconditionNotMet) The element size of ",
+    "paddle.vision.ops.distribute_fpn_proposals": ("(PreconditionNotMet) The number of proposals in FPN ", "(PreconditionNotMet) The number of images ", ),
 }
 
 # some accuracy error can be considered tolerable

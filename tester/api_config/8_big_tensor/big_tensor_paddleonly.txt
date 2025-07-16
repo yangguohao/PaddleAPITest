@@ -1051,7 +1051,7 @@ paddle.nn.functional.embedding(Tensor([7, 165],"int64"), weight=Tensor([2228225,
 paddle.nn.functional.embedding(Tensor([7, 165],"int64"), weight=Tensor([50000, 45635],"float32"), padding_idx=1, max_norm=None, norm_type=2.0, sparse=False, scale_grad_by_freq=False, name=None, )
 paddle.nn.functional.embedding(Tensor([8, 25],"int64"), weight=Tensor([4456449, 512],"float32"), padding_idx=6626, max_norm=None, norm_type=2.0, sparse=False, scale_grad_by_freq=False, name=None, )
 paddle.nn.functional.embedding(Tensor([8, 25],"int64"), weight=Tensor([6627, 344304],"float32"), padding_idx=6626, max_norm=None, norm_type=2.0, sparse=False, scale_grad_by_freq=False, name=None, )
-paddle.nn.functional.gaussian_nll_loss(Tensor([10, 2, 114085069],"float32"), Tensor([10, 2, 114085069],"float32"), Tensor([10, 2, 1],"float32"), False, 1e-06, "none", None, )
+paddle.nn.functional.gaussian_nll_loss(Tensor([10, 2, 11408506],"float32"), Tensor([10, 2, 11408506],"float32"), Tensor([10, 2, 1],"float32"), False, 1e-06, "none", None, )
 paddle.nn.functional.interpolate(Tensor([1, 1, 4753545, 480],"float32"), size=list[10,8,], )
 paddle.nn.functional.interpolate(Tensor([1, 1, 640, 3565159],"float32"), size=list[10,8,], )
 paddle.nn.functional.interpolate(Tensor([1, 128, 128, 139265],"float32"), list[256,256,], mode="bilinear", align_corners=True, )
