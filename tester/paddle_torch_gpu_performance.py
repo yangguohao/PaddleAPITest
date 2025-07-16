@@ -6,6 +6,7 @@ from .base import APITestBase
 import time
 from .api_config.config_analyzer import TensorConfig, APIConfig, analyse_configs
 from .paddle_to_torch import get_converter
+from func_timeout import func_set_timeout
 
 def tensor_numel(tensor_config):
     numel = 1
@@ -61,6 +62,7 @@ class APITestPaddleTorchGPUPerformance(APITestBase):
         self.test_amp = kwargs.get("test_amp", False)
         self.converter = get_converter()
 
+    @func_set_timeout(600)
     def test(self):
         
         if self.need_skip(paddle_only=True):
