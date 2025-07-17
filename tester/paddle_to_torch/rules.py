@@ -1885,6 +1885,9 @@ def fused_bias_act(
     def geglu(x):
         x, gate = x.chunk(2, dim=-1)
         return F.gelu(x) * gate
+    
+    if dequant_scales is not None:
+        x = x * dequant_scales
 
     if compute_dtype != 'default':
         if compute_dtype == 'fp16':
@@ -1897,11 +1900,7 @@ def fused_bias_act(
             x = x.to(getattr(torch, compute_dtype))
     else:
         x = x.float() if not x.is_floating_point() else x
-    
-    if dequant_scales is not None:
-        dequant_scales = dequant_scales.to(x.dtype)
-        x = x * dequant_scales
-    
+
     if bias is not None:
         bias = bias.to(x.dtype)
         x = x + bias
