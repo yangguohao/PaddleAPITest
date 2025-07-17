@@ -968,13 +968,24 @@ class APITestBase:
 
         # 按 merged_kwargs 顺序遍历，确保 paddle 关键字参数与 torch 参数顺序一致，避免反向比较无法对应
         # torch 参数顺序通过 paddle_sig.bind 绑定，见 ana_torch_api_info()
-        for key in self.paddle_merged_kwargs_config:
-            if key in self.paddle_kwargs:
-                value = self.paddle_kwargs[key]
+        if hasattr(self, "paddle_merged_kwargs_config"):
+            for key in self.paddle_merged_kwargs_config:
+                if key in self.paddle_kwargs:
+                    value = self.paddle_kwargs[key]
+                    if isinstance(value, paddle.Tensor):
+                        result.append(value)
+                    elif isinstance(value, (tuple, list)):
+                        result.extend(
+                            item for item in value if isinstance(item, paddle.Tensor)
+                        )
+        else:  #  paddle_only
+            for key, value in self.paddle_kwargs.items():
                 if isinstance(value, paddle.Tensor):
                     result.append(value)
                 elif isinstance(value, (tuple, list)):
-                    result.extend(item for item in value if isinstance(item, paddle.Tensor))
+                    result.extend(
+                        item for item in value if isinstance(item, paddle.Tensor)
+                    )
 
         return result
 
@@ -1302,7 +1313,7 @@ class APITestBase:
         if np_paddle.dtype == numpy.bool_:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
-        
+
         if self.api_config.api_name in special_accuracy_atol_rtol:
             atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
@@ -1337,7 +1348,7 @@ class APITestBase:
                 f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
                 f"{torch_tensor}"
             )
-        
+
         if self.api_config.api_name in special_accuracy_atol_rtol:
             atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
