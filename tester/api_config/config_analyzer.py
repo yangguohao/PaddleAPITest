@@ -816,7 +816,14 @@ class TensorConfig:
                     # Construct a non-singular matrix: A = random_matrix + n*I
                     # strict diagonal dominant matrix is non-singular. https://en.wikipedia.org/wiki/Diagonally_dominant_matrix
                     self.numpy_tensor += eye_matrix
-                    
+                elif api_config.api_name.endswith("det"):
+                    if self.check_arg(api_config, 0, "x"):
+                        assert len(self.shape) >= 2, "Input must be at least 2D."
+                        assert self.shape[-1] == self.shape[-2], "Input must be square matrices."
+                        n = self.shape[-1]
+                        A = numpy.random.uniform(low=0.5, high=1.0, size=self.shape).astype(self.dtype)
+                        A_T = numpy.swapaxes(A, -1, -2)
+                        self.numpy_tensor = numpy.matmul(A, A_T) + numpy.eye(n, dtype=self.dtype)
             elif api_config.api_name == "paddle.linspace":
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
