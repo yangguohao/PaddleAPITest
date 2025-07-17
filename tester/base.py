@@ -989,6 +989,8 @@ class APITestBase:
         numel = 1
         for i in shape:
             numel = numel * i
+        if numel > 4300000000:
+            raise RuntimeError(f"Too large tensor to get cached numpy: {numel}")
 
         start = (4300000000 - numel - 100) if (4300000000 - numel - 100) > 0 else 0
         if dtype in cached_numpy:

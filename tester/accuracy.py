@@ -53,6 +53,7 @@ class APITestAccuracy(APITestBase):
                 return
         except Exception as err:
             print("[numpy error]", self.api_config.config, "\n", str(err))
+            traceback.print_exc()
             write_to_log("numpy_error", self.api_config.config)
             return
 
@@ -144,6 +145,10 @@ class APITestAccuracy(APITestBase):
                 del inputs_list, result_outputs, result_outputs_grads
                 paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
+                if str(err).startswith("Too large tensor to get cached numpy: "):
+                    print("[numpy error]", self.api_config.config, "\n", str(err))
+                    write_to_log("numpy_error", self.api_config.config)
+                    return
                 print(str(err), flush=True)
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise err
@@ -381,6 +386,10 @@ class APITestAccuracy(APITestBase):
                     paddle_out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
                 del inputs_list, result_outputs, result_outputs_grads
             except Exception as err:
+                if str(err).startswith("Too large tensor to get cached numpy: "):
+                    print("[numpy error]", self.api_config.config, "\n", str(err))
+                    write_to_log("numpy_error", self.api_config.config)
+                    return
                 if self.should_ignore_paddle_error(str(err)):
                     print("[Pass]", self.api_config.config, flush=True)
                     write_to_log("pass", self.api_config.config)
