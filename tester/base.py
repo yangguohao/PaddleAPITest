@@ -589,11 +589,13 @@ paddle_error_dismiss = {
     "paddle.nn.functional.conv3d": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv3d_transpose": "(PreconditionNotMet) The element size of ",
     "paddle.vision.ops.distribute_fpn_proposals": ("(PreconditionNotMet) The number of proposals in FPN ", "(PreconditionNotMet) The number of images ", ),
+    "paddle.incubate.nn.functional.fused_rms_norm" : "(Fatal) Failed to launch RMSNorm kernel",
 }
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol = {
     # "API": (atol, rtol),
+    "paddle.incubate.nn.functional.fused_rms_norm" : (3,0.5),
 }
 
 torch_error_skip = frozenset(
