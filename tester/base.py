@@ -149,6 +149,7 @@ not_check_dtype = frozenset(
         "paddle.histogram",
         "paddle.incubate.nn.functional.fused_layer_norm",
         "paddle.ldexp",
+        "paddle.ldexp_",
         "paddle.linalg.lstsq",
         "paddle.nn.functional.adaptive_max_pool1d",
         "paddle.nn.functional.adaptive_max_pool2d",
