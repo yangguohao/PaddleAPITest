@@ -600,6 +600,7 @@ torch_error_skip = frozenset(
     [
         'paddle.kthvalue(Tensor([4294967295],"float32"), 1, )',
         'paddle.kthvalue(Tensor([4294967295],"float32"), k=2, )',
+        'paddle.nn.functional.log_softmax(Tensor([1, 4294967297],"float16"), )',
     ]
 )
 
