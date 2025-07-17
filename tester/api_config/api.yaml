@@ -313,7 +313,6 @@ apis:
  - paddle.Tensor.subtract
  - paddle.Tensor.sum
  - paddle.Tensor.svd_lowrank
- - paddle.Tensor.T
  - paddle.Tensor.take
  - paddle.Tensor.take_along_axis
  - paddle.Tensor.tan

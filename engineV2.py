@@ -20,6 +20,9 @@ if TYPE_CHECKING:
         APITestAccuracy,
         APITestCINNVSDygraph,
         APITestPaddleOnly,
+        APITestPaddleGPUPerformance,
+        APITestTorchGPUPerformance,
+        APITestPaddleTorchGPUPerformance
     )
     import torch
     import paddle
@@ -202,12 +205,16 @@ def init_worker_gpu(
         globals()["paddle"] = paddle
 
         from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                            APITestPaddleOnly)
+                            APITestPaddleOnly,APITestPaddleGPUPerformance,
+                            APITestTorchGPUPerformance, APITestPaddleTorchGPUPerformance)
 
         globals()["APIConfig"] = APIConfig
         globals()["APITestAccuracy"] = APITestAccuracy
         globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
         globals()["APITestPaddleOnly"] = APITestPaddleOnly
+        globals()["APITestPaddleGPUPerformance"] = APITestPaddleGPUPerformance
+        globals()["APITestTorchGPUPerformance"] = APITestTorchGPUPerformance
+        globals()["APITestPaddleTorchGPUPerformance"] = APITestPaddleTorchGPUPerformance
 
         def signal_handler(*args):
             torch.cuda.empty_cache()
@@ -278,6 +285,12 @@ def run_test_case(api_config_str, options):
         test_class = APITestCINNVSDygraph
     elif options.accuracy:
         test_class = APITestAccuracy
+    elif options.paddle_gpu_performance:
+        test_class = APITestPaddleGPUPerformance
+    elif options.torch_gpu_performance:
+        test_class = APITestTorchGPUPerformance
+    elif options.paddle_torch_gpu_performance:
+        test_class = APITestPaddleTorchGPUPerformance
 
     if options.accuracy:
         case = test_class(
@@ -301,8 +314,9 @@ def run_test_case(api_config_str, options):
     finally:
         del test_class, api_config, case
         gc.collect()
-        torch.cuda.empty_cache()
-        paddle.device.cuda.empty_cache()
+        if not options.paddle_gpu_performance and not options.torch_gpu_performance and not options.paddle_torch_gpu_performance:
+            torch.cuda.empty_cache()
+            paddle.device.cuda.empty_cache()
 
 
 def main():
@@ -335,6 +349,24 @@ def main():
         type=parse_bool,
         default=False,
         help="test paddle api to corespoding torch api",
+    )
+    parser.add_argument(
+        "--paddle_gpu_performance",
+        type=parse_bool,
+        default=False,
+        help="test paddle api performance",
+    )
+    parser.add_argument(
+        "--torch_gpu_performance",
+        type=parse_bool,
+        default=False,
+        help="test torch api performance",
+    )
+    parser.add_argument(
+        "--paddle_torch_gpu_performance",
+        type=parse_bool,
+        default=False,
+        help="test paddle and torch api performance",
     )
     parser.add_argument(
         "--test_amp",
@@ -400,9 +432,9 @@ def main():
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
-    mode = [options.accuracy, options.paddle_only, options.paddle_cinn]
+    mode = [options.accuracy, options.paddle_only, options.paddle_cinn, options.paddle_gpu_performance, options.torch_gpu_performance, options.paddle_torch_gpu_performance ]
     if len([m for m in mode if m is True]) != 1:
-        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn to True.", flush=True)
+        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn, or --paddle_gpu_performance, or --torch_gpu_performance, or --paddle_torch_gpu_performance to True.", flush=True)
         return
     if options.test_tol and not options.accuracy:
         print(f"--test_tol takes effect when --accuracy is True.", flush=True)
@@ -414,7 +446,8 @@ def main():
     if options.api_config:
         # Single config execution
         from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                            APITestPaddleOnly)
+                            APITestPaddleOnly, APITestPaddleGPUPerformance,
+                            APITestTorchGPUPerformance,APITestPaddleTorchGPUPerformance)
 
         options.api_config = options.api_config.strip()
         print(f"{datetime.now()} test begin: {options.api_config}", flush=True)
@@ -431,6 +464,12 @@ def main():
             test_class = APITestCINNVSDygraph
         elif options.accuracy:
             test_class = APITestAccuracy
+        elif options.paddle_gpu_performance:
+            test_class = APITestPaddleGPUPerformance
+        elif options.torch_gpu_performance:
+            test_class = APITestTorchGPUPerformance
+        elif options.paddle_torch_gpu_performance:
+            test_class = APITestPaddleTorchGPUPerformance
 
         if options.accuracy:
             case = test_class(

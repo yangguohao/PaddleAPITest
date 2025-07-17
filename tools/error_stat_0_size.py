@@ -92,6 +92,8 @@ for content in logs:
         "CUDA out of memory" in content
         or "Out of memory error" in content
         or "[torch error]" in content
+        or "[numpy error]" in content
+        or "[paddle_to_torch]" in content
         or "(NotFound)" in content
         or "output type diff error" in content
     ):

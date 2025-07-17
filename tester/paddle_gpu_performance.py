@@ -79,23 +79,45 @@ class APITestPaddleGPUPerformance(APITestBase):
             test_loop = 2147483647 * 20 // numel
             if self.test_amp:
                 with paddle.amp.auto_cast():
+                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+            else:
+                paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+
+            with paddle.no_grad():
+                if self.test_amp:
+                    with paddle.amp.auto_cast():
+                        paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
+                        start = time.time()
+                        for i in range(test_loop):
+                            self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                        paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
+                        end = time.time()
+                        timeused = end - start
+                        print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
+                else:
                     paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
                     start = time.time()
                     for i in range(test_loop):
-                        paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
+                        self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
                     paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
                     end = time.time()
                     timeused = end - start
                     print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
-            else:
-                paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
-                start = time.time()
-                for i in range(test_loop):
-                    paddle_output = self.paddle_api(*tuple(self.paddle_args), **self.paddle_kwargs)
-                paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
-                end = time.time()
-                timeused = end - start
-                print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
+        except Exception as err:
+            paddle_output = None
+            result_outputs = None
+            result_outputs_grads = None
+            out_grads = None
+            print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", "faild")
+            if self.should_ignore_paddle_error(str(err)):
+                return
+            if "CUDA error" in str(err) or "memory corruption" in str(err):
+                raise err
+            if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
+                raise err
+            return
+
+        try:
             if self.need_check_grad():
                 inputs_list = self.get_paddle_input_list()
                 result_outputs, result_outputs_grads = self.gen_paddle_output_and_output_grad(paddle_output)
@@ -107,18 +129,19 @@ class APITestPaddleGPUPerformance(APITestBase):
                     paddle.base.core._cuda_synchronize(paddle.CUDAPlace(0))
                     end = time.time()
                     timeused = end - start
-                    print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", timeused)
+                    print(self.api_config.api_name, "\t", self.api_config.config, "\tbackward\t", numel, "\t", test_loop, "\t", timeused)
         except Exception as err:
             paddle_output = None
             result_outputs = None
             result_outputs_grads = None
             out_grads = None
-            print(self.api_config.api_name, "\t", self.api_config.config, "\tforward\t", numel, "\t", test_loop, "\t", "faild")
+            print(self.api_config.api_name, "\t", self.api_config.config, "\tbackward\t", numel, "\t", test_loop, "\t", "faild")
+            if self.should_ignore_paddle_error(str(err)):
+                return
             if "CUDA error" in str(err) or "memory corruption" in str(err):
                 raise err
             if "CUDA out of memory" in str(err) or "Out of memory error" in str(err):
                 raise err
-
             return
 
         paddle_output = None
