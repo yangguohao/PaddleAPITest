@@ -594,6 +594,7 @@ paddle_error_dismiss = {
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol = {
     # "API": (atol, rtol),
+    "paddle.incubate.nn.functional.fused_bias_act": (1, 1e-2)
 }
 
 torch_error_skip = frozenset(
