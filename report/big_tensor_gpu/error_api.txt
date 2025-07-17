@@ -141,7 +141,6 @@ paddle.multigammaln
 paddle.multiplex
 paddle.multiply
 paddle.mv
-paddle.nan_to_num
 paddle.nanmedian
 paddle.nanquantile
 paddle.nn.functional.adaptive_avg_pool1d
