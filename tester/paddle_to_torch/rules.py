@@ -1866,18 +1866,6 @@ def fused_bias_act(
 ) -> torch.Tensor:
     import torch.nn.functional as F
 
-    def quant_helper_func(input, scale, round_type, max_bound, min_bound):
-        quant_value = max_bound * scale * input
-
-        if round_type == 0:
-            quant_value = torch.round(quant_value)
-        else:
-            quant_value = torch.where(quant_value >= 0, torch.ceil(quant_value - 0.5), torch.floor(quant_value + 0.5))
-
-        quant_value = torch.clamp(quant_value, min=min_bound, max=max_bound)
-
-        return quant_value
-
     def swiglu(x):
         x, gate = x.chunk(2, dim=-1)
         return x * torch.sigmoid(x) * gate
@@ -1934,10 +1922,14 @@ def fused_bias_act(
         x = x * smooth
 
     if quant_scale > 0:
-        x = quant_helper_func(x, quant_scale, quant_round_type, quant_max_bound, quant_min_bound)
-        print("after quant", x)
+        x = quant_max_bound * quant_scale * x
+        if quant_round_type == 0:
+            x = torch.round(x)
+        else:
+            x = torch.where(x >= 0, torch.ceil(x - 0.5), torch.floor(x + 0.5))
+        x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
         
-        x = x.to(getattr(torch, "int8"))
+        x = x.to(torch.int8)
 
     return x
 """
