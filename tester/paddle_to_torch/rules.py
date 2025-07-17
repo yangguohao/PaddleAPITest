@@ -1925,7 +1925,7 @@ def fused_bias_act(
         x = quant_max_bound * quant_scale * x
         if quant_round_type == 0:
             x = torch.round(x)
-        else if quant_round_type == 1:
+        elif quant_round_type == 1:
             x = torch.where(x >= 0, torch.ceil(x - 0.5), torch.floor(x + 0.5))
         else:
             raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
