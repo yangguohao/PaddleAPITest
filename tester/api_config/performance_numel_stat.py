@@ -104,7 +104,7 @@ if __name__ == '__main__':
             elif numel < 1000000:
                 apis_map[api_config.api_name].numel_1000000_configs.append(api_config.config)
                 apis_map[api_config.api_name].numel_1000000 += 1
-            elif numel == 2147483647:
+            elif numel < 2147483647:
                 apis_map[api_config.api_name].numel_2147483647_configs.append(api_config.config)
                 apis_map[api_config.api_name].numel_2147483647 += 1
             else:

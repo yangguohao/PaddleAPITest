@@ -471,27 +471,34 @@ class TensorConfig:
                 return self.numpy_tensor
             elif api_config.api_name == "paddle.vision.ops.distribute_fpn_proposals":
                 if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
-                    self.numpy_tensor = numpy.zeros(self.shape)
-                    for i in range(self.shape[0]):
-                        self.numpy_tensor[i][0] = numpy.random.randint(1,1024) + numpy.random.random()
-                        self.numpy_tensor[i][1] = numpy.random.randint(1,1024) + numpy.random.random()
-                        self.numpy_tensor[i][2] = self.numpy_tensor[i][0] + numpy.random.randint(1,1024) + numpy.random.random()
-                        self.numpy_tensor[i][3] = self.numpy_tensor[i][1] + numpy.random.randint(1,1024) + numpy.random.random()
+                    num = self.shape[0]
+                    self.numpy_tensor = numpy.random.randint(1, 1024, [num, 4])
+                    self.numpy_tensor[:, 0] += numpy.random.random([num])
+                    self.numpy_tensor[:, 1] += numpy.random.random([num])
+                    self.numpy_tensor[:, 2] = self.numpy_tensor[:, 0] + numpy.random.randint(1, 1024, [num])+numpy.random.random([num])
+                    self.numpy_tensor[:, 3] = self.numpy_tensor[:, 1] + numpy.random.randint(1, 1024, [num])+numpy.random.random([num])
                     if not hasattr(api_config, "num"):
-                        api_config.num = self.shape[0]
+                        api_config.num = num
                 elif (index is not None and index == 6 ) or (key is not None and key == "rois_num"):
                     num = api_config.num
                     re = self.shape[0]
                     self.numpy_tensor =  numpy.zeros(self.shape)
-                    if num < re:
-                        indices = numpy.random.choice(re, num, replace=False)
-                        self.numpy_tensor[indices] = 1
+                    if num > 4096 or re > 4096:
+                        if num < re:
+                            self.numpy_tensor[:num] = 1
+                        else:
+                            self.numpy_tensor += num//re
+                            self.numpy_tensor[:num%re] += 1
                     else:
-                        for i in range(self.shape[0]-1):
-                            self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
-                            num = num - self.numpy_tensor[i]
-                            re -= 1
-                        self.numpy_tensor[self.shape[0]-1] = num
+                        if num < re:
+                            indices = numpy.random.choice(re, num, replace=False)
+                            self.numpy_tensor[indices] = 1
+                        else:
+                            for i in range(self.shape[0]-1):
+                                self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
+                                num = num - self.numpy_tensor[i]
+                                re -= 1
+                            self.numpy_tensor[self.shape[0]-1] = num
 
             elif api_config.api_name == "paddle.dot":
                 if "int" in self.dtype:
@@ -799,6 +806,16 @@ class TensorConfig:
                         self.numpy_tensor = numpy.random.randint(1, M + 1, size=self.shape).astype(self.dtype)
                 elif api_config.api_name.endswith("pca_lowrank"):
                     self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype)
+                elif api_config.api_name.endswith("cond"):
+                    # produce non-singular matrix
+                    n = self.shape[-1]
+                    # Generate random matrix, value in [0, 1)
+                    self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
+                    # Create scaled identity matrix, value is n
+                    eye_matrix = n * numpy.eye(n, dtype=self.dtype)
+                    # Construct a non-singular matrix: A = random_matrix + n*I
+                    # strict diagonal dominant matrix is non-singular. https://en.wikipedia.org/wiki/Diagonally_dominant_matrix
+                    self.numpy_tensor += eye_matrix
                     
             elif api_config.api_name == "paddle.linspace":
                 if "int" in self.dtype:

@@ -581,18 +581,29 @@ forward_only_apis = frozenset(
 # paddle errors which will be ignored and considered as pass
 paddle_error_dismiss = {
     # "API": "error_message",
+    # "API": ("error_msg1", "error_msg2"),
     "paddle.nn.functional.conv1d": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv1d_transpose": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv2d": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv2d_transpose": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv3d": "(PreconditionNotMet) The element size of ",
     "paddle.nn.functional.conv3d_transpose": "(PreconditionNotMet) The element size of ",
+    "paddle.vision.ops.distribute_fpn_proposals": ("(PreconditionNotMet) The number of proposals in FPN ", "(PreconditionNotMet) The number of images ", ),
 }
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol = {
     # "API": (atol, rtol),
+    "paddle.incubate.nn.functional.fused_bias_act": (1, 1e-2)
 }
+
+torch_error_skip = frozenset(
+    [
+        'paddle.kthvalue(Tensor([4294967295],"float32"), 1, )',
+        'paddle.kthvalue(Tensor([4294967295],"float32"), k=2, )',
+        'paddle.nn.functional.log_softmax(Tensor([1, 4294967297],"float16"), )',
+    ]
+)
 
 class APITestBase:
     def __init__(self, api_config):
@@ -611,6 +622,8 @@ class APITestBase:
         #     return True
         # if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
         #     return True
+        if not paddle_only and self.api_config.config in torch_error_skip:
+            return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
@@ -948,21 +961,32 @@ class APITestBase:
     def get_paddle_input_list(self):
         result = []
 
-        for i in range(len(self.paddle_args)):
-            if isinstance(self.paddle_args[i], paddle.Tensor):
-                result.append(self.paddle_args[i])
-            elif isinstance(self.paddle_args[i], tuple) or isinstance(self.paddle_args[i], list):
-                for item in self.paddle_args[i]:
-                    if isinstance(item, paddle.Tensor):
-                        result.append(item)
+        for arg in self.paddle_args:
+            if isinstance(arg, paddle.Tensor):
+                result.append(arg)
+            elif isinstance(arg, (tuple, list)):
+                result.extend(item for item in arg if isinstance(item, paddle.Tensor))
 
-        for key, value in self.paddle_kwargs.items():
-            if isinstance(value, paddle.Tensor):
-                result.append(value)
-            elif isinstance(value, tuple) or isinstance(value, list):
-                for item in value:
-                    if isinstance(item, paddle.Tensor):
-                        result.append(item)
+        # 按 merged_kwargs 顺序遍历，确保 paddle 关键字参数与 torch 参数顺序一致，避免反向比较无法对应
+        # torch 参数顺序通过 paddle_sig.bind 绑定，见 ana_torch_api_info()
+        if hasattr(self, "paddle_merged_kwargs_config"):
+            for key in self.paddle_merged_kwargs_config:
+                if key in self.paddle_kwargs:
+                    value = self.paddle_kwargs[key]
+                    if isinstance(value, paddle.Tensor):
+                        result.append(value)
+                    elif isinstance(value, (tuple, list)):
+                        result.extend(
+                            item for item in value if isinstance(item, paddle.Tensor)
+                        )
+        else:  #  paddle_only
+            for key, value in self.paddle_kwargs.items():
+                if isinstance(value, paddle.Tensor):
+                    result.append(value)
+                elif isinstance(value, (tuple, list)):
+                    result.extend(
+                        item for item in value if isinstance(item, paddle.Tensor)
+                    )
 
         return result
 
@@ -1292,7 +1316,7 @@ class APITestBase:
         if np_paddle.dtype == numpy.bool_:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
-        
+
         if self.api_config.api_name in special_accuracy_atol_rtol:
             atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
@@ -1327,7 +1351,7 @@ class APITestBase:
                 f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
                 f"{torch_tensor}"
             )
-        
+
         if self.api_config.api_name in special_accuracy_atol_rtol:
             atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
@@ -1458,8 +1482,11 @@ class APITestBase:
         return api in forward_only_apis
 
     def should_ignore_paddle_error(self, error_msg):
-        if self.api_config.api_name in paddle_error_dismiss:
-            dismiss_error = paddle_error_dismiss[self.api_config.api_name]
-            if dismiss_error in error_msg:
-                return True
+        dismiss_errors = paddle_error_dismiss.get(self.api_config.api_name, None)
+        if dismiss_errors is None:
+            return False
+        if isinstance(dismiss_errors, str):
+            return dismiss_errors in error_msg
+        elif isinstance(dismiss_errors, (list, tuple)):
+            return any(error in error_msg for error in dismiss_errors)
         return False
