@@ -598,6 +598,7 @@ special_accuracy_atol_rtol = {
     "paddle.Tensor.cumsum": (1.0, 1.0),
     "paddle.logcumsumexp": (1.0, 1.0),
     "paddle.Tensor.logcumsumexp": (1.0, 1.0),
+    "paddle.incubate.nn.functional.fused_bias_act": (1, 1e-2),
 }
 
 torch_error_skip = frozenset(

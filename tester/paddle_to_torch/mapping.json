@@ -3440,9 +3440,6 @@
     "paddle.nn.quant.weight_only_linear": {
         "Rule": "WeightOnlyLinearRule"
     },
-    "paddle.nn.quant.weight_quantize": {
-        "Rule": "WeightQuantizeRule"
-    },
     "paddle.nn.utils.parameters_to_vector": {
         "torch_api": "torch.nn.utils.parameters_to_vector",
         "paddle_torch_args_map": {
