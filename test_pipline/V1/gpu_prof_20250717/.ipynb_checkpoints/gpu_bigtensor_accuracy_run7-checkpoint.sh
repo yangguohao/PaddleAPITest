@@ -1,3 +1,0 @@
-export CUDA_VISIBLE_DEVICES=6
-# sleep 3h
-for i in {1..10000}; do python engine.py --api_config_file=test_pipline/gpu_bigtensor/gpu_bigtensor_accuracy/gpu_bigtensor_accuracy_errorconfig_7.txt --paddle_torch_gpu_performance=True >> test_pipline/gpu_bigtensor/gpu_bigtensor_accuracy/gpu_bigtensor_accuracy_errorconfig_7.log 2>&1; done
