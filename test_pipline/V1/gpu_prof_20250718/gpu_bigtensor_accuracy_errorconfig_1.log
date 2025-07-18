@@ -1,0 +1,498 @@
+2025-07-17 14:35:30.331608 test begin: paddle.Tensor.__abs__(Tensor([10, 1024],"complex64"), )
+W0717 14:35:30.588449 110037 gpu_resources.cc:114] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.2, Runtime API Version: 11.8
+[Prof] paddle.Tensor.__abs__ 	 paddle.Tensor.__abs__(Tensor([10, 1024],"complex64"), ) 	 10240 	 1081430 	 9.655718088150024 	 27.283058643341064 	 0.3539089298738388 	 59.47502827644348 	 77.78817319869995 	 0.7645767451630741 	 
+2025-07-17 14:38:25.230699 test begin: paddle.Tensor.__abs__(Tensor([10, 1024],"float32"), )
+[Prof] paddle.Tensor.__abs__ 	 paddle.Tensor.__abs__(Tensor([10, 1024],"float32"), ) 	 10240 	 1081430 	 9.709195852279663 	 12.79006028175354 	 0.7591204136958544 	 60.424530267715454 	 77.42469191551208 	 0.7804297152858204 	 
+2025-07-17 14:41:06.839751 test begin: paddle.Tensor.__abs__(Tensor([1],"float32"), )
+[Prof] paddle.Tensor.__abs__ 	 paddle.Tensor.__abs__(Tensor([1],"float32"), ) 	 1 	 1081430 	 17.539551258087158 	 20.137343883514404 	 0.8709962624438295 	 68.81889581680298 	 76.85969996452332 	 0.8953833523754089 	 
+2025-07-17 14:44:10.203314 test begin: paddle.Tensor.__add__(Tensor([1, 32, 4096, 4096],"float32"), Tensor([1, 1, 4096, 4096],"float32"), )
+[Prof] paddle.Tensor.__add__ 	 paddle.Tensor.__add__(Tensor([1, 32, 4096, 4096],"float32"), Tensor([1, 1, 4096, 4096],"float32"), ) 	 553648128 	 4909 	 23.040344715118408 	 22.706934928894043 	 1.0146831700213361 	 24.31219744682312 	 7.658644437789917 	 3.1744778915260596 	 
+2025-07-17 14:45:47.830241 test begin: paddle.Tensor.__add__(Tensor([8, 256, 336, 336],"float16"), Tensor([8, 256, 336, 336],"float32"), )
+W0717 14:45:55.551995 25249 dygraph_functions.cc:87088] got different data type, run type promotion automatically, this may cause data type been changed.
+[Prof] paddle.Tensor.__add__ 	 paddle.Tensor.__add__(Tensor([8, 256, 336, 336],"float16"), Tensor([8, 256, 336, 336],"float32"), ) 	 462422016 	 4909 	 15.301759719848633 	 9.069725036621094 	 1.6871249853842614 	 15.709420442581177 	 5.945452451705933 	 2.6422581914810643 	 
+2025-07-17 14:46:47.386824 test begin: paddle.Tensor.__add__(Tensor([8, 256, 336, 336],"float32"), Tensor([8, 256, 336, 336],"float32"), )
+[Prof] paddle.Tensor.__add__ 	 paddle.Tensor.__add__(Tensor([8, 256, 336, 336],"float32"), Tensor([8, 256, 336, 336],"float32"), ) 	 462422016 	 4909 	 9.95795202255249 	 9.883251428604126 	 1.0075583014848906 	 10.738255262374878 	 0.2625424861907959 	 40.901019176649115 	 
+2025-07-17 14:47:30.265041 test begin: paddle.Tensor.__and__(Tensor([1, 1, 2048, 2048],"bool"), Tensor([1, 1, 2048, 2048],"bool"), )
+[Prof] paddle.Tensor.__and__ 	 paddle.Tensor.__and__(Tensor([1, 1, 2048, 2048],"bool"), Tensor([1, 1, 2048, 2048],"bool"), ) 	 8388608 	 626993 	 5.350342750549316 	 7.1814124584198 	 0.7450265225020382 	 None 	 None 	 None 	 
+2025-07-17 14:47:43.309517 test begin: paddle.Tensor.__and__(Tensor([13, 1, 1007, 1007],"bool"), Tensor([13, 1, 1007, 1007],"bool"), )
+[Prof] paddle.Tensor.__and__ 	 paddle.Tensor.__and__(Tensor([13, 1, 1007, 1007],"bool"), Tensor([13, 1, 1007, 1007],"bool"), ) 	 26365274 	 626993 	 21.366474390029907 	 22.156363248825073 	 0.9643493451554125 	 None 	 None 	 None 	 
+2025-07-17 14:48:27.232339 test begin: paddle.Tensor.__and__(Tensor([8, 1, 512, 512],"bool"), Tensor([8, 1, 512, 512],"bool"), )
+[Prof] paddle.Tensor.__and__ 	 paddle.Tensor.__and__(Tensor([8, 1, 512, 512],"bool"), Tensor([8, 1, 512, 512],"bool"), ) 	 4194304 	 626993 	 5.318623781204224 	 7.194783926010132 	 0.7392332884350659 	 None 	 None 	 None 	 
+2025-07-17 14:48:39.939483 test begin: paddle.Tensor.__div__(Tensor([2, 3, 4],"float32"), Tensor([],"float32"), )
+[Prof] paddle.Tensor.__div__ 	 paddle.Tensor.__div__(Tensor([2, 3, 4],"float32"), Tensor([],"float32"), ) 	 25 	 843500 	 8.83992886543274 	 9.758687734603882 	 0.9058522114696566 	 68.60188269615173 	 95.42174053192139 	 0.7189334664588557 	 
+2025-07-17 14:51:42.618826 test begin: paddle.Tensor.__div__(Tensor([8, 16, 32],"float32"), 2, )
+[Prof] paddle.Tensor.__div__ 	 paddle.Tensor.__div__(Tensor([8, 16, 32],"float32"), 2, ) 	 4096 	 843500 	 7.682568311691284 	 17.57288932800293 	 0.4371829907019832 	 47.873455286026 	 53.26598930358887 	 0.8987621540861996 	 
+2025-07-17 14:53:49.377844 test begin: paddle.Tensor.__div__(Tensor([],"float32"), Tensor([2, 3, 4],"float32"), )
+[Prof] paddle.Tensor.__div__ 	 paddle.Tensor.__div__(Tensor([],"float32"), Tensor([2, 3, 4],"float32"), ) 	 25 	 843500 	 8.926608324050903 	 9.779199123382568 	 0.9128158872138029 	 68.55601215362549 	 95.41925859451294 	 0.7184714402881326 	 
+2025-07-17 14:56:52.067448 test begin: paddle.Tensor.__eq__(Tensor([49, 369303],"float32"), Tensor([49, 1],"float32"), )
+[Prof] paddle.Tensor.__eq__ 	 paddle.Tensor.__eq__(Tensor([49, 369303],"float32"), Tensor([49, 1],"float32"), ) 	 18095896 	 129842 	 9.44882321357727 	 11.653998613357544 	 0.8107795038474818 	 None 	 None 	 None 	 
+2025-07-17 14:57:13.545429 test begin: paddle.Tensor.__eq__(Tensor([53, 369303],"float32"), Tensor([53, 1],"float32"), )
+[Prof] paddle.Tensor.__eq__ 	 paddle.Tensor.__eq__(Tensor([53, 369303],"float32"), Tensor([53, 1],"float32"), ) 	 19573112 	 129842 	 10.149540901184082 	 12.545212268829346 	 0.8090370002269547 	 None 	 None 	 None 	 
+2025-07-17 14:57:37.062889 test begin: paddle.Tensor.__eq__(Tensor([55, 349866],"float32"), Tensor([55, 1],"float32"), )
+[Prof] paddle.Tensor.__eq__ 	 paddle.Tensor.__eq__(Tensor([55, 349866],"float32"), Tensor([55, 1],"float32"), ) 	 19242685 	 129842 	 10.009160280227661 	 12.342049598693848 	 0.8109803967476298 	 None 	 None 	 None 	 
+2025-07-17 14:57:59.773868 test begin: paddle.Tensor.__floordiv__(Tensor([10, 1024],"float32"), Tensor([10, 1024],"float16"), )
+W0717 14:57:59.781150 25593 dygraph_functions.cc:89596] got different data type, run type promotion automatically, this may cause data type been changed.
+[Prof] paddle.Tensor.__floordiv__ 	 paddle.Tensor.__floordiv__(Tensor([10, 1024],"float32"), Tensor([10, 1024],"float16"), ) 	 20480 	 616075 	 17.864019870758057 	 15.191650629043579 	 1.1759103936082764 	 None 	 None 	 None 	 
+2025-07-17 14:58:32.871903 test begin: paddle.Tensor.__floordiv__(Tensor([10, 1024],"int64"), Tensor([10, 1024],"int64"), )
+[Prof] paddle.Tensor.__floordiv__ 	 paddle.Tensor.__floordiv__(Tensor([10, 1024],"int64"), Tensor([10, 1024],"int64"), ) 	 20480 	 616075 	 5.389265298843384 	 15.015358686447144 	 0.3589168538283226 	 None 	 None 	 None 	 
+2025-07-17 14:58:53.678648 test begin: paddle.Tensor.__floordiv__(Tensor([4, 300],"int64"), 4, )
+[Prof] paddle.Tensor.__floordiv__ 	 paddle.Tensor.__floordiv__(Tensor([4, 300],"int64"), 4, ) 	 1200 	 616075 	 9.511581897735596 	 10.669500589370728 	 0.8914739558861186 	 None 	 None 	 None 	 
+2025-07-17 14:59:13.881628 test begin: paddle.Tensor.__ge__(Tensor([3437280],"int32"), 0, )
+[Prof] paddle.Tensor.__ge__ 	 paddle.Tensor.__ge__(Tensor([3437280],"int32"), 0, ) 	 3437280 	 368189 	 8.90803599357605 	 4.885596513748169 	 1.8233261728652077 	 None 	 None 	 None 	 
+2025-07-17 14:59:27.730375 test begin: paddle.Tensor.__ge__(Tensor([3523464],"int32"), 0, )
+[Prof] paddle.Tensor.__ge__ 	 paddle.Tensor.__ge__(Tensor([3523464],"int32"), 0, ) 	 3523464 	 368189 	 9.682988405227661 	 4.966862440109253 	 1.9495181358424476 	 None 	 None 	 None 	 
+2025-07-17 14:59:43.482299 test begin: paddle.Tensor.__ge__(Tensor([3609144],"int32"), 0, )
+[Prof] paddle.Tensor.__ge__ 	 paddle.Tensor.__ge__(Tensor([3609144],"int32"), 0, ) 	 3609144 	 368189 	 9.926370859146118 	 4.987851142883301 	 1.9901096834674248 	 None 	 None 	 None 	 
+2025-07-17 14:59:59.045430 test begin: paddle.Tensor.__gt__(Tensor([1, 400, 65856],"float32"), 0, )
+[Prof] paddle.Tensor.__gt__ 	 paddle.Tensor.__gt__(Tensor([1, 400, 65856],"float32"), 0, ) 	 26342400 	 40382 	 10.161028623580933 	 3.988349437713623 	 2.5476776251094697 	 None 	 None 	 None 	 
+2025-07-17 15:00:13.668524 test begin: paddle.Tensor.__gt__(Tensor([1, 400, 65856],"float32"), 1e-09, )
+[Prof] paddle.Tensor.__gt__ 	 paddle.Tensor.__gt__(Tensor([1, 400, 65856],"float32"), 1e-09, ) 	 26342400 	 40382 	 10.161078691482544 	 3.988363027572632 	 2.5476814977062667 	 None 	 None 	 None 	 
+2025-07-17 15:00:28.248744 test begin: paddle.Tensor.__gt__(Tensor([324000, 80],"float32"), 0.0, )
+[Prof] paddle.Tensor.__gt__ 	 paddle.Tensor.__gt__(Tensor([324000, 80],"float32"), 0.0, ) 	 25920000 	 40382 	 10.012013673782349 	 4.160078525543213 	 2.40668862674293 	 None 	 None 	 None 	 
+2025-07-17 15:00:43.879668 test begin: paddle.Tensor.__le__(Tensor([243360, 80],"float32"), 0.0, )
+[Prof] paddle.Tensor.__le__ 	 paddle.Tensor.__le__(Tensor([243360, 80],"float32"), 0.0, ) 	 19468800 	 40382 	 7.670652627944946 	 3.017036199569702 	 2.5424463349292776 	 None 	 None 	 None 	 
+2025-07-17 15:00:56.133726 test begin: paddle.Tensor.__le__(Tensor([282240, 80],"float32"), 0.0, )
+[Prof] paddle.Tensor.__le__ 	 paddle.Tensor.__le__(Tensor([282240, 80],"float32"), 0.0, ) 	 22579200 	 40382 	 8.823108196258545 	 3.455146551132202 	 2.5536133028474115 	 None 	 None 	 None 	 
+2025-07-17 15:01:08.805640 test begin: paddle.Tensor.__le__(Tensor([324000, 80],"float32"), 0.0, )
+[Prof] paddle.Tensor.__le__ 	 paddle.Tensor.__le__(Tensor([324000, 80],"float32"), 0.0, ) 	 25920000 	 40382 	 10.009523868560791 	 3.9281094074249268 	 2.548178482412112 	 None 	 None 	 None 	 
+2025-07-17 15:01:23.265165 test begin: paddle.Tensor.__len__(Tensor([100, 376, 376],"float32"), )
+[Prof] paddle.Tensor.__len__ 	 paddle.Tensor.__len__(Tensor([100, 376, 376],"float32"), ) 	 14137600 	 2108496 	 9.230767250061035 	 10.00304126739502 	 0.9227960780436629 	 None 	 None 	 None 	 
+2025-07-17 15:01:42.781487 test begin: paddle.Tensor.__len__(Tensor([100000, 100],"float32"), )
+[Prof] paddle.Tensor.__len__ 	 paddle.Tensor.__len__(Tensor([100000, 100],"float32"), ) 	 10000000 	 2108496 	 9.321465492248535 	 10.240111112594604 	 0.91028948707244 	 None 	 None 	 None 	 
+2025-07-17 15:02:02.880675 test begin: paddle.Tensor.__len__(Tensor([50, 1501, 1501],"float32"), )
+[Prof] paddle.Tensor.__len__ 	 paddle.Tensor.__len__(Tensor([50, 1501, 1501],"float32"), ) 	 112650050 	 2108496 	 9.2489013671875 	 10.19768238067627 	 0.9069611135088275 	 None 	 None 	 None 	 
+2025-07-17 15:02:24.279259 test begin: paddle.Tensor.__lshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), )
+[Prof] paddle.Tensor.__lshift__ 	 paddle.Tensor.__lshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), ) 	 120000 	 1046216 	 9.87402892112732 	 12.649604558944702 	 0.7805800469980118 	 None 	 None 	 None 	 
+2025-07-17 15:02:46.837871 test begin: paddle.Tensor.__lshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), False, )
+[Prof] paddle.Tensor.__lshift__ 	 paddle.Tensor.__lshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), False, ) 	 120000 	 1046216 	 9.862939834594727 	 12.62897276878357 	 0.7809772033853812 	 None 	 None 	 None 	 
+2025-07-17 15:03:09.415176 test begin: paddle.Tensor.__lshift__(Tensor([200, 300],"int32"), Tensor([200, 300],"int32"), )
+[Prof] paddle.Tensor.__lshift__ 	 paddle.Tensor.__lshift__(Tensor([200, 300],"int32"), Tensor([200, 300],"int32"), ) 	 120000 	 1046216 	 9.877129077911377 	 12.591134548187256 	 0.7844510786625964 	 None 	 None 	 None 	 
+2025-07-17 15:03:31.889894 test begin: paddle.Tensor.__lt__(Tensor([256, 3, 64, 128],"float64"), 1, )
+[Prof] paddle.Tensor.__lt__ 	 paddle.Tensor.__lt__(Tensor([256, 3, 64, 128],"float64"), 1, ) 	 6291456 	 286174 	 35.94845271110535 	 13.253151416778564 	 2.712445635050574 	 None 	 None 	 None 	 
+2025-07-17 15:04:21.281799 test begin: paddle.Tensor.__lt__(Tensor([4, 157920, 7],"float32"), 0.1111111111111111, )
+[Prof] paddle.Tensor.__lt__ 	 paddle.Tensor.__lt__(Tensor([4, 157920, 7],"float32"), 0.1111111111111111, ) 	 4421760 	 286174 	 10.995533466339111 	 5.9196977615356445 	 1.857448455862843 	 None 	 None 	 None 	 
+2025-07-17 15:04:39.204346 test begin: paddle.Tensor.__lt__(Tensor([4194304],"float32"), 0.7, )
+[Prof] paddle.Tensor.__lt__ 	 paddle.Tensor.__lt__(Tensor([4194304],"float32"), 0.7, ) 	 4194304 	 286174 	 9.924361944198608 	 4.24406361579895 	 2.3384102696420905 	 None 	 None 	 None 	 
+2025-07-17 15:04:54.769331 test begin: paddle.Tensor.__matmul__(Tensor([176, 3, 392, 392],"float32"), Tensor([176, 3, 392, 32],"float32"), )
+[Prof] paddle.Tensor.__matmul__ 	 paddle.Tensor.__matmul__(Tensor([176, 3, 392, 392],"float32"), Tensor([176, 3, 392, 32],"float32"), ) 	 87757824 	 6104 	 9.67468810081482 	 9.674733877182007 	 0.999995268462392 	 13.663695335388184 	 13.661849975585938 	 1.0001350739325598 	 
+2025-07-17 15:05:43.861909 test begin: paddle.Tensor.__matmul__(Tensor([60, 2304, 2304],"float32"), Tensor([60, 2304, 64],"float32"), )
+[Prof] paddle.Tensor.__matmul__ 	 paddle.Tensor.__matmul__(Tensor([60, 2304, 2304],"float32"), Tensor([60, 2304, 64],"float32"), ) 	 327352320 	 6104 	 28.075384616851807 	 28.076008558273315 	 0.9999777767049681 	 44.1636221408844 	 44.17180871963501 	 0.9998146650773897 	 
+2025-07-17 15:08:14.726772 test begin: paddle.Tensor.__matmul__(Tensor([96, 1024, 1024],"float32"), Tensor([96, 1024, 64],"float32"), )
+[Prof] paddle.Tensor.__matmul__ 	 paddle.Tensor.__matmul__(Tensor([96, 1024, 1024],"float32"), Tensor([96, 1024, 64],"float32"), ) 	 106954752 	 6104 	 10.048487663269043 	 10.05163049697876 	 0.9996873309548474 	 15.143974542617798 	 15.133812427520752 	 1.000671484144905 	 
+2025-07-17 15:09:08.626078 test begin: paddle.Tensor.__mod__(Tensor([10, 1024],"int64"), Tensor([10, 1024],"int64"), )
+[Prof] paddle.Tensor.__mod__ 	 paddle.Tensor.__mod__(Tensor([10, 1024],"int64"), Tensor([10, 1024],"int64"), ) 	 20480 	 368371 	 3.4907822608947754 	 6.472388744354248 	 0.53933445575866 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 15:09:45.634564 test begin: paddle.Tensor.__mod__(Tensor([13, 2, 64],"int64"), 16, )
+[Prof] paddle.Tensor.__mod__ 	 paddle.Tensor.__mod__(Tensor([13, 2, 64],"int64"), 16, ) 	 1664 	 368371 	 5.798522710800171 	 7.6669957637786865 	 0.7562965846667382 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 15:10:22.609485 test begin: paddle.Tensor.__mod__(Tensor([26, 64],"int64"), 64, )
+[Prof] paddle.Tensor.__mod__ 	 paddle.Tensor.__mod__(Tensor([26, 64],"int64"), 64, ) 	 1664 	 368371 	 5.718286752700806 	 5.000166416168213 	 1.1436192871922273 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 15:10:54.609387 test begin: paddle.Tensor.__mul__(Tensor([108544, 3584],"float32"), Tensor([108544, 3584],"float32"), )
+[Prof] paddle.Tensor.__mul__ 	 paddle.Tensor.__mul__(Tensor([108544, 3584],"float32"), Tensor([108544, 3584],"float32"), ) 	 778043392 	 2795 	 9.512518882751465 	 9.463744640350342 	 1.0051537995005873 	 23.99584722518921 	 18.917507648468018 	 1.2684465454482026 	 
+2025-07-17 15:12:20.306525 test begin: paddle.Tensor.__mul__(Tensor([111616, 3584],"float32"), Tensor([111616, 3584],"float32"), )
+[Prof] paddle.Tensor.__mul__ 	 paddle.Tensor.__mul__(Tensor([111616, 3584],"float32"), Tensor([111616, 3584],"float32"), ) 	 800063488 	 2795 	 9.776595115661621 	 9.73231053352356 	 1.0045502639877264 	 24.68288254737854 	 19.451746940612793 	 1.2689288331138935 	 
+2025-07-17 15:13:47.178807 test begin: paddle.Tensor.__mul__(Tensor([2, 1, 32768, 32768],"float16"), 10000.0, )
+[Prof] paddle.Tensor.__mul__ 	 paddle.Tensor.__mul__(Tensor([2, 1, 32768, 32768],"float16"), 10000.0, ) 	 2147483648 	 2795 	 17.349397897720337 	 17.282251358032227 	 1.003885288918501 	 17.34249258041382 	 17.280544757843018 	 1.003584830422819 	 
+2025-07-17 15:16:19.126474 test begin: paddle.Tensor.__ne__(Tensor([144, 392, 392],"float32"), 0, )
+[Prof] paddle.Tensor.__ne__ 	 paddle.Tensor.__ne__(Tensor([144, 392, 392],"float32"), 0, ) 	 22127616 	 38692 	 8.396548509597778 	 3.253650665283203 	 2.5806545856904184 	 None 	 None 	 None 	 
+2025-07-17 15:16:31.746260 test begin: paddle.Tensor.__ne__(Tensor([160, 392, 392],"float32"), 0, )
+[Prof] paddle.Tensor.__ne__ 	 paddle.Tensor.__ne__(Tensor([160, 392, 392],"float32"), 0, ) 	 24586240 	 38692 	 9.230450868606567 	 3.5966384410858154 	 2.5664105580264884 	 None 	 None 	 None 	 
+2025-07-17 15:16:45.050889 test begin: paddle.Tensor.__ne__(Tensor([176, 392, 392],"float32"), 0, )
+[Prof] paddle.Tensor.__ne__ 	 paddle.Tensor.__ne__(Tensor([176, 392, 392],"float32"), 0, ) 	 27044864 	 38692 	 10.07016634941101 	 3.9188709259033203 	 2.5696601240036463 	 None 	 None 	 None 	 
+2025-07-17 15:16:59.546338 test begin: paddle.Tensor.__neg__(Tensor([128, 192612],"float16"), )
+[Prof] paddle.Tensor.__neg__ 	 paddle.Tensor.__neg__(Tensor([128, 192612],"float16"), ) 	 24654336 	 169274 	 12.864302396774292 	 12.754084587097168 	 1.0086417656182576 	 12.865834712982178 	 12.750113248825073 	 1.0090761126508243 	 
+2025-07-17 15:17:51.819190 test begin: paddle.Tensor.__neg__(Tensor([128, 192612],"float32"), )
+[Prof] paddle.Tensor.__neg__ 	 paddle.Tensor.__neg__(Tensor([128, 192612],"float32"), ) 	 24654336 	 169274 	 24.66189169883728 	 24.879202127456665 	 0.9912653779045606 	 24.670756578445435 	 24.87545132637024 	 0.991771214711276 	 
+2025-07-17 15:19:32.717336 test begin: paddle.Tensor.__neg__(Tensor([4, 81, 94, 311],"float32"), )
+[Prof] paddle.Tensor.__neg__ 	 paddle.Tensor.__neg__(Tensor([4, 81, 94, 311],"float32"), ) 	 9471816 	 169274 	 9.981022596359253 	 10.043732166290283 	 0.9937563478503039 	 9.997830152511597 	 11.481619596481323 	 0.8707682804240918 	 
+2025-07-17 15:20:14.574828 test begin: paddle.Tensor.__nonzero__(Tensor([1, 1, 1],"int64"), )
+[Prof] paddle.Tensor.__nonzero__ 	 paddle.Tensor.__nonzero__(Tensor([1, 1, 1],"int64"), ) 	 1 	 308263 	 10.525510549545288 	 9.895074367523193 	 1.0637121216684597 	 None 	 None 	 None 	 combined
+2025-07-17 15:20:35.004281 test begin: paddle.Tensor.__nonzero__(Tensor([1, 1],"bool"), )
+[Prof] paddle.Tensor.__nonzero__ 	 paddle.Tensor.__nonzero__(Tensor([1, 1],"bool"), ) 	 1 	 308263 	 10.48856806755066 	 10.01485013961792 	 1.0473015493321014 	 None 	 None 	 None 	 combined
+2025-07-17 15:20:55.619547 test begin: paddle.Tensor.__nonzero__(Tensor([1],"bool"), )
+[Prof] paddle.Tensor.__nonzero__ 	 paddle.Tensor.__nonzero__(Tensor([1],"bool"), ) 	 1 	 308263 	 9.942890882492065 	 10.010294437408447 	 0.9932665761893581 	 None 	 None 	 None 	 combined
+2025-07-17 15:21:15.583228 test begin: paddle.Tensor.__or__(Tensor([1, 210, 75600],"bool"), Tensor([1, 210, 75600],"bool"), )
+[Prof] paddle.Tensor.__or__ 	 paddle.Tensor.__or__(Tensor([1, 210, 75600],"bool"), Tensor([1, 210, 75600],"bool"), ) 	 31752000 	 158365 	 6.353798151016235 	 6.623936176300049 	 0.9592179003399297 	 None 	 None 	 None 	 
+2025-07-17 15:21:29.036527 test begin: paddle.Tensor.__or__(Tensor([1, 218, 70644],"bool"), Tensor([1, 218, 70644],"bool"), )
+[Prof] paddle.Tensor.__or__ 	 paddle.Tensor.__or__(Tensor([1, 218, 70644],"bool"), Tensor([1, 218, 70644],"bool"), ) 	 30800784 	 158365 	 6.212393760681152 	 6.2294580936431885 	 0.9972607034664139 	 None 	 None 	 None 	 
+2025-07-17 15:21:43.437325 test begin: paddle.Tensor.__or__(Tensor([1, 400, 65856],"bool"), Tensor([1, 400, 65856],"bool"), )
+[Prof] paddle.Tensor.__or__ 	 paddle.Tensor.__or__(Tensor([1, 400, 65856],"bool"), Tensor([1, 400, 65856],"bool"), ) 	 52684800 	 158365 	 9.983800649642944 	 9.847599029541016 	 1.0138309469844728 	 None 	 None 	 None 	 
+2025-07-17 15:22:04.041832 test begin: paddle.Tensor.__pow__(Tensor([24, 17, 256, 256],"float64"), 2, )
+[Prof] paddle.Tensor.__pow__ 	 paddle.Tensor.__pow__(Tensor([24, 17, 256, 256],"float64"), 2, ) 	 26738688 	 89020 	 53.67896103858948 	 27.914562940597534 	 1.922973365293909 	 57.9157612323761 	 98.47153568267822 	 0.5881472329121384 	 
+2025-07-17 15:26:03.598721 test begin: paddle.Tensor.__pow__(Tensor([64, 3, 256, 256],"float32"), 2, )
+[Prof] paddle.Tensor.__pow__ 	 paddle.Tensor.__pow__(Tensor([64, 3, 256, 256],"float32"), 2, ) 	 12582912 	 89020 	 8.687312126159668 	 6.87751317024231 	 1.26314729046947 	 10.365716934204102 	 24.136727571487427 	 0.4294582562405461 	 
+2025-07-17 15:26:54.548468 test begin: paddle.Tensor.__pow__(Tensor([8, 32, 241, 241],"float32"), 2, )
+[Prof] paddle.Tensor.__pow__ 	 paddle.Tensor.__pow__(Tensor([8, 32, 241, 241],"float32"), 2, ) 	 14868736 	 89020 	 10.021764039993286 	 8.049935817718506 	 1.24494955822314 	 12.188248634338379 	 28.538376092910767 	 0.4270827672414783 	 
+2025-07-17 15:27:54.000490 test begin: paddle.Tensor.__radd__(Tensor([192, 128, 16, 160],"float16"), 0, )
+[Prof] paddle.Tensor.__radd__ 	 paddle.Tensor.__radd__(Tensor([192, 128, 16, 160],"float16"), 0, ) 	 62914560 	 11905 	 2.2192482948303223 	 2.202294111251831 	 1.0076984193400282 	 2.224628448486328 	 0.8514647483825684 	 2.6127076343585616 	 
+2025-07-17 15:28:03.912544 test begin: paddle.Tensor.__radd__(Tensor([192, 240, 16, 80],"float16"), 0, )
+[Prof] paddle.Tensor.__radd__ 	 paddle.Tensor.__radd__(Tensor([192, 240, 16, 80],"float16"), 0, ) 	 58982400 	 11905 	 2.0843472480773926 	 2.066462993621826 	 1.008654524426891 	 2.087104082107544 	 0.8492591381072998 	 2.457558580716559 	 
+2025-07-17 15:28:13.182719 test begin: paddle.Tensor.__radd__(Tensor([192, 64, 32, 160],"float16"), 0, )
+[Prof] paddle.Tensor.__radd__ 	 paddle.Tensor.__radd__(Tensor([192, 64, 32, 160],"float16"), 0, ) 	 62914560 	 11905 	 2.219252586364746 	 2.20226788520813 	 1.0077123683593157 	 2.2246687412261963 	 0.8142998218536377 	 2.732001999167892 	 
+2025-07-17 15:28:23.078326 test begin: paddle.Tensor.__rlshift__(Tensor([200, 300],"int16"), -212, )
+[Prof] paddle.Tensor.__rlshift__ 	 paddle.Tensor.__rlshift__(Tensor([200, 300],"int16"), -212, ) 	 60000 	 152274 	 11.979872465133667 	 2.7729549407958984 	 4.320255006269659 	 None 	 None 	 None 	 
+2025-07-17 15:28:38.279924 test begin: paddle.Tensor.__rlshift__(Tensor([200, 300],"int16"), 63, )
+[Prof] paddle.Tensor.__rlshift__ 	 paddle.Tensor.__rlshift__(Tensor([200, 300],"int16"), 63, ) 	 60000 	 152274 	 12.02135682106018 	 2.798717975616455 	 4.295308396842778 	 None 	 None 	 None 	 
+2025-07-17 15:28:53.105157 test begin: paddle.Tensor.__rlshift__(Tensor([200, 300],"int32"), -223, )
+[Prof] paddle.Tensor.__rlshift__ 	 paddle.Tensor.__rlshift__(Tensor([200, 300],"int32"), -223, ) 	 60000 	 152274 	 10.212966203689575 	 2.808439016342163 	 3.6365276740071075 	 None 	 None 	 None 	 
+2025-07-17 15:29:06.133626 test begin: paddle.Tensor.__rmatmul__(Tensor([3, 5],"float32"), Tensor([2, 3],"float32"), )
+[Prof] paddle.Tensor.__rmatmul__ 	 paddle.Tensor.__rmatmul__(Tensor([3, 5],"float32"), Tensor([2, 3],"float32"), ) 	 21 	 811721 	 10.586337566375732 	 15.88888955116272 	 0.6662729659166801 	 63.00259590148926 	 82.64206957817078 	 0.762355011473852 	 
+2025-07-17 15:31:58.678374 test begin: paddle.Tensor.__rmod__(Tensor([2, 3, 4],"float32"), Tensor([2, 3, 4],"float32"), )
+[Prof] paddle.Tensor.__rmod__ 	 paddle.Tensor.__rmod__(Tensor([2, 3, 4],"float32"), Tensor([2, 3, 4],"float32"), ) 	 48 	 1058662 	 10.386307001113892 	 15.776620864868164 	 0.6583353361962586 	 65.00269341468811 	 100.01671171188354 	 0.6499183216694854 	 
+2025-07-17 15:35:09.871514 test begin: paddle.Tensor.__rmul__(Tensor([176, 392, 392],"float32"), -100.0, )
+[Prof] paddle.Tensor.__rmul__ 	 paddle.Tensor.__rmul__(Tensor([176, 392, 392],"float32"), -100.0, ) 	 27044864 	 65160 	 10.37520432472229 	 10.47846269607544 	 0.9901456564433041 	 10.386204957962036 	 10.478972673416138 	 0.9911472509428866 	 
+2025-07-17 15:35:52.536797 test begin: paddle.Tensor.__rmul__(Tensor([324000, 80],"float32"), 0.75, )
+[Prof] paddle.Tensor.__rmul__ 	 paddle.Tensor.__rmul__(Tensor([324000, 80],"float32"), 0.75, ) 	 25920000 	 65160 	 9.960145235061646 	 10.056362390518188 	 0.990432210801466 	 9.971628904342651 	 10.05448842048645 	 0.9917589525514825 	 
+2025-07-17 15:36:33.487578 test begin: paddle.Tensor.__rmul__(Tensor([324000, 80],"float32"), 1.0, )
+[Prof] paddle.Tensor.__rmul__ 	 paddle.Tensor.__rmul__(Tensor([324000, 80],"float32"), 1.0, ) 	 25920000 	 65160 	 9.960915565490723 	 10.05859112739563 	 0.9902893396631982 	 9.971892356872559 	 10.054248571395874 	 0.9918088145584925 	 
+2025-07-17 15:37:14.434553 test begin: paddle.Tensor.__ror__(Tensor([2, 3, 5],"int32"), 5, )
+[Prof] paddle.Tensor.__ror__ 	 paddle.Tensor.__ror__(Tensor([2, 3, 5],"int32"), 5, ) 	 30 	 172078 	 11.20429015159607 	 2.403165578842163 	 4.66230469104599 	 None 	 None 	 None 	 
+2025-07-17 15:37:28.348856 test begin: paddle.Tensor.__ror__(Tensor([2, 3, 5],"int32"), True, )
+[Prof] paddle.Tensor.__ror__ 	 paddle.Tensor.__ror__(Tensor([2, 3, 5],"int32"), True, ) 	 30 	 172078 	 10.078075170516968 	 2.403252601623535 	 4.193514724048836 	 None 	 None 	 None 	 
+2025-07-17 15:37:41.101357 test begin: paddle.Tensor.__rpow__(Tensor([153],"float32"), 10000, )
+[Prof] paddle.Tensor.__rpow__ 	 paddle.Tensor.__rpow__(Tensor([153],"float32"), 10000, ) 	 153 	 634258 	 10.025624752044678 	 16.79845666885376 	 0.5968182047719491 	 34.45038652420044 	 50.06387996673584 	 0.6881285778707216 	 
+2025-07-17 15:39:32.453037 test begin: paddle.Tensor.__rpow__(Tensor([192],"float32"), 10000.0, )
+[Prof] paddle.Tensor.__rpow__ 	 paddle.Tensor.__rpow__(Tensor([192],"float32"), 10000.0, ) 	 192 	 634258 	 10.008570909500122 	 16.832831859588623 	 0.594586281915414 	 34.59566640853882 	 50.14374232292175 	 0.6899298856823539 	 
+2025-07-17 15:41:24.041594 test begin: paddle.Tensor.__rpow__(Tensor([256],"float32"), 10000.0, )
+[Prof] paddle.Tensor.__rpow__ 	 paddle.Tensor.__rpow__(Tensor([256],"float32"), 10000.0, ) 	 256 	 634258 	 10.290646076202393 	 16.821935176849365 	 0.6117397295861986 	 34.47715902328491 	 49.801246643066406 	 0.692295099967844 	 
+2025-07-17 15:43:15.440409 test begin: paddle.Tensor.__rrshift__(Tensor([200, 300],"int16"), -255, )
+[Prof] paddle.Tensor.__rrshift__ 	 paddle.Tensor.__rrshift__(Tensor([200, 300],"int16"), -255, ) 	 60000 	 154635 	 12.215773820877075 	 2.8493542671203613 	 4.287207793653081 	 None 	 None 	 None 	 
+2025-07-17 15:43:30.511325 test begin: paddle.Tensor.__rrshift__(Tensor([200, 300],"int16"), 11, )
+[Prof] paddle.Tensor.__rrshift__ 	 paddle.Tensor.__rrshift__(Tensor([200, 300],"int16"), 11, ) 	 60000 	 154635 	 12.285852909088135 	 3.004142999649048 	 4.089636515479922 	 None 	 None 	 None 	 
+2025-07-17 15:43:45.806307 test begin: paddle.Tensor.__rrshift__(Tensor([200, 300],"int32"), 232, )
+[Prof] paddle.Tensor.__rrshift__ 	 paddle.Tensor.__rrshift__(Tensor([200, 300],"int32"), 232, ) 	 60000 	 154635 	 10.06612229347229 	 2.814053773880005 	 3.577089530735287 	 None 	 None 	 None 	 
+2025-07-17 15:43:58.691620 test begin: paddle.Tensor.__rshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), )
+[Prof] paddle.Tensor.__rshift__ 	 paddle.Tensor.__rshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), ) 	 120000 	 1077739 	 10.177886724472046 	 12.543595314025879 	 0.8114010751838775 	 None 	 None 	 None 	 combined
+2025-07-17 15:44:21.419001 test begin: paddle.Tensor.__rshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), False, )
+[Prof] paddle.Tensor.__rshift__ 	 paddle.Tensor.__rshift__(Tensor([200, 300],"int16"), Tensor([200, 300],"int16"), False, ) 	 120000 	 1077739 	 10.165016651153564 	 156.85635137557983 	 0.06480462258626847 	 None 	 None 	 None 	 combined
+2025-07-17 15:47:08.471925 test begin: paddle.Tensor.__rshift__(Tensor([200, 300],"int32"), Tensor([200, 300],"int32"), )
+[Prof] paddle.Tensor.__rshift__ 	 paddle.Tensor.__rshift__(Tensor([200, 300],"int32"), Tensor([200, 300],"int32"), ) 	 120000 	 1077739 	 10.144821405410767 	 12.381852149963379 	 0.8193298775127735 	 None 	 None 	 None 	 combined
+2025-07-17 15:47:31.474975 test begin: paddle.Tensor.__rsub__(Tensor([2, 1, 4096, 4096],"float16"), 1, )
+[Prof] paddle.Tensor.__rsub__ 	 paddle.Tensor.__rsub__(Tensor([2, 1, 4096, 4096],"float16"), 1, ) 	 33554432 	 60675 	 6.16717004776001 	 6.111709833145142 	 1.0090744188007905 	 6.1622796058654785 	 6.107924938201904 	 1.0088990398889177 	 
+2025-07-17 15:47:57.307566 test begin: paddle.Tensor.__rsub__(Tensor([2944, 6629],"float32"), 1, )
+[Prof] paddle.Tensor.__rsub__ 	 paddle.Tensor.__rsub__(Tensor([2944, 6629],"float32"), 1, ) 	 19515776 	 60675 	 7.05382227897644 	 7.1168739795684814 	 0.9911405343451277 	 7.063329219818115 	 7.115908622741699 	 0.99261100644891 	 
+2025-07-17 15:48:27.132854 test begin: paddle.Tensor.__rsub__(Tensor([4224, 6629],"float32"), 1, )
+[Prof] paddle.Tensor.__rsub__ 	 paddle.Tensor.__rsub__(Tensor([4224, 6629],"float32"), 1, ) 	 28000896 	 60675 	 9.998793601989746 	 10.099831581115723 	 0.9899960728736414 	 9.997260570526123 	 10.092103481292725 	 0.9906022653312654 	 
+2025-07-17 15:49:08.324911 test begin: paddle.Tensor.__rtruediv__(Tensor([15548, 1358],"float32"), 1.0, )
+[Prof] paddle.Tensor.__rtruediv__ 	 paddle.Tensor.__rtruediv__(Tensor([15548, 1358],"float32"), 1.0, ) 	 21114184 	 41935 	 10.436447381973267 	 10.635681629180908 	 0.9812673739066233 	 10.32803988456726 	 23.790754556655884 	 0.4341198956078427 	 
+2025-07-17 15:50:05.509579 test begin: paddle.Tensor.__rtruediv__(Tensor([26736, 3029],"float32"), 1.0, )
+[Prof] paddle.Tensor.__rtruediv__ 	 paddle.Tensor.__rtruediv__(Tensor([26736, 3029],"float32"), 1.0, ) 	 80983344 	 41935 	 38.86311149597168 	 39.553375482559204 	 0.9825485441339414 	 38.97259545326233 	 88.98655104637146 	 0.43796051195369357 	 
+2025-07-17 15:53:34.708338 test begin: paddle.Tensor.__rtruediv__(Tensor([6684, 3029],"float32"), 1.0, )
+[Prof] paddle.Tensor.__rtruediv__ 	 paddle.Tensor.__rtruediv__(Tensor([6684, 3029],"float32"), 1.0, ) 	 20245836 	 41935 	 10.016479015350342 	 10.206008911132812 	 0.9814295776700989 	 9.918566465377808 	 22.853034019470215 	 0.434015302166331 	 
+2025-07-17 15:54:28.398853 test begin: paddle.Tensor.__rxor__(Tensor([2, 3, 5],"int32"), 5, )
+[Prof] paddle.Tensor.__rxor__ 	 paddle.Tensor.__rxor__(Tensor([2, 3, 5],"int32"), 5, ) 	 30 	 171797 	 11.086394786834717 	 2.3951642513275146 	 4.628657421172726 	 None 	 None 	 None 	 
+2025-07-17 15:54:42.094137 test begin: paddle.Tensor.__rxor__(Tensor([2, 3, 5],"int32"), True, )
+[Prof] paddle.Tensor.__rxor__ 	 paddle.Tensor.__rxor__(Tensor([2, 3, 5],"int32"), True, ) 	 30 	 171797 	 10.068059921264648 	 2.3880252838134766 	 4.216060855598145 	 None 	 None 	 None 	 
+2025-07-17 15:54:55.498560 test begin: paddle.Tensor.__sub__(Tensor([128, 192, 96, 96],"float32"), Tensor([128, 1, 96, 96],"float32"), )
+[Prof] paddle.Tensor.__sub__ 	 paddle.Tensor.__sub__(Tensor([128, 192, 96, 96],"float32"), Tensor([128, 1, 96, 96],"float32"), ) 	 227672064 	 6993 	 9.134203910827637 	 9.499257802963257 	 0.9615702721509735 	 14.355982303619385 	 13.534278869628906 	 1.0607127606801712 	 
+2025-07-17 15:55:49.796707 test begin: paddle.Tensor.__sub__(Tensor([2, 1, 32768, 32768],"float16"), 1, )
+[Prof] paddle.Tensor.__sub__ 	 paddle.Tensor.__sub__(Tensor([2, 1, 32768, 32768],"float16"), 1, ) 	 2147483648 	 6993 	 43.40423059463501 	 43.233253955841064 	 1.0039547483279556 	 43.40127205848694 	 0.3775296211242676 	 114.96123649646285 	 
+2025-07-17 15:59:30.609219 test begin: paddle.Tensor.__sub__(Tensor([26736, 3029, 2],"float32"), Tensor([26736, 3029, 2],"float32"), )
+[Prof] paddle.Tensor.__sub__ 	 paddle.Tensor.__sub__(Tensor([26736, 3029, 2],"float32"), Tensor([26736, 3029, 2],"float32"), ) 	 323933376 	 6993 	 9.949575185775757 	 9.88311219215393 	 1.006724905306103 	 10.591748714447021 	 6.556181192398071 	 1.615536301334718 	 
+2025-07-17 16:00:15.936955 test begin: paddle.Tensor.__truediv__(Tensor([124, 128, 96, 96],"float32"), Tensor([124, 1, 96, 96],"float32"), )
+[Prof] paddle.Tensor.__truediv__ 	 paddle.Tensor.__truediv__(Tensor([124, 128, 96, 96],"float32"), Tensor([124, 1, 96, 96],"float32"), ) 	 147419136 	 7542 	 6.370774984359741 	 6.833983421325684 	 0.9322198477215375 	 16.087894439697266 	 39.58928346633911 	 0.4063699322412854 	 
+2025-07-17 16:01:29.898480 test begin: paddle.Tensor.__truediv__(Tensor([128, 128, 96, 96],"float32"), Tensor([128, 1, 96, 96],"float32"), )
+[Prof] paddle.Tensor.__truediv__ 	 paddle.Tensor.__truediv__(Tensor([128, 128, 96, 96],"float32"), Tensor([128, 1, 96, 96],"float32"), ) 	 152174592 	 7542 	 6.5760087966918945 	 7.0370869636535645 	 0.9344788306094367 	 16.65732979774475 	 40.858596086502075 	 0.4076823824900733 	 
+2025-07-17 16:02:46.255597 test begin: paddle.Tensor.__truediv__(Tensor([128, 192, 96, 96],"float32"), Tensor([128, 1, 96, 96],"float32"), )
+[Prof] paddle.Tensor.__truediv__ 	 paddle.Tensor.__truediv__(Tensor([128, 192, 96, 96],"float32"), Tensor([128, 1, 96, 96],"float32"), ) 	 227672064 	 7542 	 9.833243608474731 	 10.51715636253357 	 0.9349717042816615 	 24.888945817947388 	 61.04873180389404 	 0.40768980914948055 	 
+2025-07-17 16:04:40.500223 test begin: paddle.Tensor.__xor__(Tensor([2, 3, 3, 3, 4, 1, 5, 2],"bool"), Tensor([2, 3, 3, 3, 4, 1, 5, 2],"bool"), )
+[Prof] paddle.Tensor.__xor__ 	 paddle.Tensor.__xor__(Tensor([2, 3, 3, 3, 4, 1, 5, 2],"bool"), Tensor([2, 3, 3, 3, 4, 1, 5, 2],"bool"), ) 	 4320 	 1138100 	 15.150043249130249 	 13.869350671768188 	 1.092339764684801 	 None 	 None 	 None 	 
+2025-07-17 16:05:09.527860 test begin: paddle.Tensor.__xor__(Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int16"), Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int16"), )
+[Prof] paddle.Tensor.__xor__ 	 paddle.Tensor.__xor__(Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int16"), Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int16"), ) 	 4320 	 1138100 	 18.308992385864258 	 21.611226320266724 	 0.8471982160815338 	 None 	 None 	 None 	 
+2025-07-17 16:05:49.456654 test begin: paddle.Tensor.__xor__(Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int32"), Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int32"), )
+[Prof] paddle.Tensor.__xor__ 	 paddle.Tensor.__xor__(Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int32"), Tensor([2, 3, 3, 3, 4, 1, 5, 2],"int32"), ) 	 4320 	 1138100 	 10.643223762512207 	 13.850236892700195 	 0.7684506658598559 	 None 	 None 	 None 	 
+2025-07-17 16:06:13.969830 test begin: paddle.Tensor.abs(Tensor([243360, 80],"float32"), )
+[Prof] paddle.Tensor.abs 	 paddle.Tensor.abs(Tensor([243360, 80],"float32"), ) 	 19468800 	 65200 	 7.571243762969971 	 7.625920057296753 	 0.992830203579899 	 11.448055744171143 	 18.949589014053345 	 0.6041321389968439 	 
+2025-07-17 16:07:00.294014 test begin: paddle.Tensor.abs(Tensor([282240, 80],"float32"), )
+[Prof] paddle.Tensor.abs 	 paddle.Tensor.abs(Tensor([282240, 80],"float32"), ) 	 22579200 	 65200 	 8.734445095062256 	 8.803789615631104 	 0.9921233328377445 	 13.229047060012817 	 21.860400199890137 	 0.6051603327957052 	 
+2025-07-17 16:07:53.762692 test begin: paddle.Tensor.abs(Tensor([324000, 80],"float32"), )
+[Prof] paddle.Tensor.abs 	 paddle.Tensor.abs(Tensor([324000, 80],"float32"), ) 	 25920000 	 65200 	 9.966604471206665 	 10.070780754089355 	 0.9896555902241851 	 15.133960247039795 	 24.97035813331604 	 0.606077020050734 	 
+2025-07-17 16:08:55.491778 test begin: paddle.Tensor.add(Tensor([17157],"float32"), Tensor([17157],"float32"), )
+[Prof] paddle.Tensor.add 	 paddle.Tensor.add(Tensor([17157],"float32"), Tensor([17157],"float32"), ) 	 34314 	 1044111 	 11.882665872573853 	 11.804127931594849 	 1.006653430175794 	 64.91333436965942 	 62.83966827392578 	 1.0329993163982705 	 
+2025-07-17 16:11:26.941907 test begin: paddle.Tensor.add(Tensor([23619],"float32"), Tensor([23619],"float32"), )
+[Prof] paddle.Tensor.add 	 paddle.Tensor.add(Tensor([23619],"float32"), Tensor([23619],"float32"), ) 	 47238 	 1044111 	 10.541708946228027 	 11.7846200466156 	 0.8945310841188705 	 63.381648540496826 	 62.047361612319946 	 1.0215043298136297 	 
+2025-07-17 16:13:55.181169 test begin: paddle.Tensor.add(Tensor([66244],"float32"), Tensor([66244],"float32"), )
+[Prof] paddle.Tensor.add 	 paddle.Tensor.add(Tensor([66244],"float32"), Tensor([66244],"float32"), ) 	 132488 	 1044111 	 12.138641357421875 	 11.810722827911377 	 1.0277644759163727 	 63.220016956329346 	 62.86455583572388 	 1.005654396438183 	 
+2025-07-17 16:16:25.226410 test begin: paddle.Tensor.all(Tensor([1, 1, 2048, 2048],"bool"), )
+[Prof] paddle.Tensor.all 	 paddle.Tensor.all(Tensor([1, 1, 2048, 2048],"bool"), ) 	 4194304 	 582443 	 14.96421194076538 	 14.21328854560852 	 1.0528324879036437 	 None 	 None 	 None 	 
+2025-07-17 16:16:54.502157 test begin: paddle.Tensor.all(Tensor([2, 10, 256000],"bool"), )
+[Prof] paddle.Tensor.all 	 paddle.Tensor.all(Tensor([2, 10, 256000],"bool"), ) 	 5120000 	 582443 	 14.56039547920227 	 14.065624475479126 	 1.035175900265622 	 None 	 None 	 None 	 
+2025-07-17 16:17:23.205544 test begin: paddle.Tensor.all(Tensor([2, 10, 32000],"bool"), )
+[Prof] paddle.Tensor.all 	 paddle.Tensor.all(Tensor([2, 10, 32000],"bool"), ) 	 640000 	 582443 	 12.229774475097656 	 13.92002248764038 	 0.878574333192098 	 None 	 None 	 None 	 
+2025-07-17 16:17:50.382843 test begin: paddle.Tensor.amax(Tensor([3, 2, 4, 5],"float32"), axis=-1, keepdim=True, )
+[Prof] paddle.Tensor.amax 	 paddle.Tensor.amax(Tensor([3, 2, 4, 5],"float32"), axis=-1, keepdim=True, ) 	 120 	 755849 	 8.84748888015747 	 10.441904306411743 	 0.8473060679865416 	 65.84921956062317 	 87.98298501968384 	 0.748431296640949 	 
+2025-07-17 16:20:43.542160 test begin: paddle.Tensor.amax(Tensor([3, 2, 5, 4],"float32"), axis=2, keepdim=True, )
+[Prof] paddle.Tensor.amax 	 paddle.Tensor.amax(Tensor([3, 2, 5, 4],"float32"), axis=2, keepdim=True, ) 	 120 	 755849 	 8.741031408309937 	 10.252645492553711 	 0.852563508087583 	 62.4078688621521 	 83.99636936187744 	 0.7429829329084848 	 
+2025-07-17 16:23:28.947531 test begin: paddle.Tensor.amax(Tensor([3, 2, 5, 4],"float32"), axis=None, keepdim=False, )
+[Prof] paddle.Tensor.amax 	 paddle.Tensor.amax(Tensor([3, 2, 5, 4],"float32"), axis=None, keepdim=False, ) 	 120 	 755849 	 9.620848894119263 	 10.43536925315857 	 0.9219461871181254 	 65.2526593208313 	 85.7931718826294 	 0.7605810333029901 	 
+2025-07-17 16:26:20.056333 test begin: paddle.Tensor.amin(Tensor([3, 2, 4, 5],"float32"), axis=-1, keepdim=True, )
+[Prof] paddle.Tensor.amin 	 paddle.Tensor.amin(Tensor([3, 2, 4, 5],"float32"), axis=-1, keepdim=True, ) 	 120 	 761038 	 8.934367895126343 	 10.141891241073608 	 0.8809370641782353 	 69.30014228820801 	 91.81587409973145 	 0.7547729950589307 	 
+2025-07-17 16:29:21.399709 test begin: paddle.Tensor.amin(Tensor([3, 2, 5, 4],"float32"), axis=2, keepdim=True, )
+[Prof] paddle.Tensor.amin 	 paddle.Tensor.amin(Tensor([3, 2, 5, 4],"float32"), axis=2, keepdim=True, ) 	 120 	 761038 	 8.824409246444702 	 10.331409931182861 	 0.8541340732023766 	 69.55139780044556 	 89.43060350418091 	 0.7777136134074507 	 
+2025-07-17 16:32:20.249302 test begin: paddle.Tensor.amin(Tensor([3, 2, 5, 4],"float32"), axis=None, keepdim=False, )
+[Prof] paddle.Tensor.amin 	 paddle.Tensor.amin(Tensor([3, 2, 5, 4],"float32"), axis=None, keepdim=False, ) 	 120 	 761038 	 14.768895149230957 	 10.5567946434021 	 1.3989942637049761 	 68.55115675926208 	 86.99788999557495 	 0.7879634409840154 	 
+2025-07-17 16:35:21.133502 test begin: paddle.Tensor.any(Tensor([1, 300, 184, 184],"bool"), axis=list[2,3,], )
+[Prof] paddle.Tensor.any 	 paddle.Tensor.any(Tensor([1, 300, 184, 184],"bool"), axis=list[2,3,], ) 	 10156800 	 524676 	 11.515043020248413 	 10.350446939468384 	 1.1125165017115526 	 None 	 None 	 None 	 
+2025-07-17 16:35:43.152501 test begin: paddle.Tensor.any(Tensor([1, 300, 192, 192],"bool"), axis=list[2,3,], )
+[Prof] paddle.Tensor.any 	 paddle.Tensor.any(Tensor([1, 300, 192, 192],"bool"), axis=list[2,3,], ) 	 11059200 	 524676 	 11.837519884109497 	 10.020479917526245 	 1.1813326289297952 	 None 	 None 	 None 	 
+2025-07-17 16:36:05.184530 test begin: paddle.Tensor.any(Tensor([2, 300, 136, 136],"bool"), axis=list[2,3,], )
+[Prof] paddle.Tensor.any 	 paddle.Tensor.any(Tensor([2, 300, 136, 136],"bool"), axis=list[2,3,], ) 	 11097600 	 524676 	 12.356600046157837 	 10.259152173995972 	 1.2044465114259928 	 None 	 None 	 None 	 
+2025-07-17 16:36:27.958106 test begin: paddle.Tensor.argmax(Tensor([30, 457, 8000],"float32"), axis=2, )
+[Prof] paddle.Tensor.argmax 	 paddle.Tensor.argmax(Tensor([30, 457, 8000],"float32"), axis=2, ) 	 109680000 	 15838 	 9.172436237335205 	 5.2580060958862305 	 1.7444704456526885 	 None 	 None 	 None 	 
+2025-07-17 16:36:45.589318 test begin: paddle.Tensor.argmax(Tensor([30, 477, 8000],"float32"), axis=2, )
+[Prof] paddle.Tensor.argmax 	 paddle.Tensor.argmax(Tensor([30, 477, 8000],"float32"), axis=2, ) 	 114480000 	 15838 	 9.56904935836792 	 5.772700786590576 	 1.6576382030047172 	 None 	 None 	 None 	 
+2025-07-17 16:37:02.808390 test begin: paddle.Tensor.argmax(Tensor([30, 498, 8000],"float32"), axis=2, )
+[Prof] paddle.Tensor.argmax 	 paddle.Tensor.argmax(Tensor([30, 498, 8000],"float32"), axis=2, ) 	 119520000 	 15838 	 9.986912965774536 	 5.91713547706604 	 1.6877952185618132 	 None 	 None 	 None 	 
+2025-07-17 16:37:20.774775 test begin: paddle.Tensor.astype(Tensor([1, 32, 4096, 4096],"float32"), "float32", )
+[Prof] paddle.Tensor.astype 	 paddle.Tensor.astype(Tensor([1, 32, 4096, 4096],"float32"), "float32", ) 	 536870912 	 2546 	 0.012953519821166992 	 0.005634307861328125 	 2.299043669600542 	 0.10507416725158691 	 0.1569819450378418 	 0.6693391856385644 	 
+2025-07-17 16:37:42.480305 test begin: paddle.Tensor.astype(Tensor([100352, 8192],"bfloat16"), "float32", )
+[Prof] paddle.Tensor.astype 	 paddle.Tensor.astype(Tensor([100352, 8192],"bfloat16"), "float32", ) 	 822083584 	 2546 	 9.802476644515991 	 11.729613065719604 	 0.8357033253862595 	 9.253943681716919 	 9.264075517654419 	 0.9989063305973498 	 
+2025-07-17 16:38:50.760278 test begin: paddle.Tensor.astype(Tensor([8192, 100352],"bfloat16"), "float32", )
+[Prof] paddle.Tensor.astype 	 paddle.Tensor.astype(Tensor([8192, 100352],"bfloat16"), "float32", ) 	 822083584 	 2546 	 9.79990553855896 	 11.428390502929688 	 0.857505309785025 	 9.534201383590698 	 9.264541625976562 	 1.0291066486072062 	 
+2025-07-17 16:40:01.980457 test begin: paddle.Tensor.atanh(Tensor([1, 2, 3],"float32"), )
+[Prof] paddle.Tensor.atanh 	 paddle.Tensor.atanh(Tensor([1, 2, 3],"float32"), ) 	 6 	 1155819 	 10.164096593856812 	 11.64807939529419 	 0.8725984987673672 	 63.2333824634552 	 125.02686071395874 	 0.5057583794583387 	 
+2025-07-17 16:43:32.071106 test begin: paddle.Tensor.atanh(Tensor([1, 2, 3],"float64"), )
+[Prof] paddle.Tensor.atanh 	 paddle.Tensor.atanh(Tensor([1, 2, 3],"float64"), ) 	 6 	 1155819 	 9.847172498703003 	 11.58849549293518 	 0.8497369226839016 	 63.79270887374878 	 123.55234479904175 	 0.5163213128614257 	 
+2025-07-17 16:47:00.869084 test begin: paddle.Tensor.atanh(Tensor([2, 4],"float64"), )
+[Prof] paddle.Tensor.atanh 	 paddle.Tensor.atanh(Tensor([2, 4],"float64"), ) 	 8 	 1155819 	 9.714913606643677 	 11.55839490890503 	 0.8405071537362802 	 62.75840711593628 	 122.8233118057251 	 0.5109649478854954 	 
+2025-07-17 16:50:27.730922 test begin: paddle.Tensor.bmm(Tensor([1, 170476, 3],"float32"), Tensor([1, 3, 2],"float32"), )
+[Prof] paddle.Tensor.bmm 	 paddle.Tensor.bmm(Tensor([1, 170476, 3],"float32"), Tensor([1, 3, 2],"float32"), ) 	 511434 	 436172 	 9.30981159210205 	 9.328142404556274 	 0.9980348914436308 	 37.25984501838684 	 45.93324828147888 	 0.8111737447797849 	 
+2025-07-17 16:52:09.614223 test begin: paddle.Tensor.bmm(Tensor([1, 179876, 3],"float32"), Tensor([1, 3, 2],"float32"), )
+[Prof] paddle.Tensor.bmm 	 paddle.Tensor.bmm(Tensor([1, 179876, 3],"float32"), Tensor([1, 3, 2],"float32"), ) 	 539634 	 436172 	 9.77086591720581 	 9.793150186538696 	 0.9977245044844184 	 37.465086221694946 	 45.30562138557434 	 0.8269412288344448 	 
+2025-07-17 16:53:51.974246 test begin: paddle.Tensor.bmm(Tensor([1, 191277, 3],"float32"), Tensor([1, 3, 2],"float32"), )
+[Prof] paddle.Tensor.bmm 	 paddle.Tensor.bmm(Tensor([1, 191277, 3],"float32"), Tensor([1, 3, 2],"float32"), ) 	 573837 	 436172 	 10.058363437652588 	 10.060219764709473 	 0.999815478478572 	 37.25808000564575 	 45.86852502822876 	 0.8122798799986722 	 
+2025-07-17 16:55:36.102603 test begin: paddle.Tensor.broadcast_to(Tensor([1],"float32"), list[3,2,], )
+[Prof] paddle.Tensor.broadcast_to 	 paddle.Tensor.broadcast_to(Tensor([1],"float32"), list[3,2,], ) 	 1 	 940740 	 10.578293800354004 	 4.368248701095581 	 2.421632678034314 	 60.80667471885681 	 85.3132209777832 	 0.7127462077031619 	 
+2025-07-17 16:58:17.179619 test begin: paddle.Tensor.cast(Tensor([128256, 4096],"float16"), Dtype(float16), )
+[Prof] paddle.Tensor.cast 	 paddle.Tensor.cast(Tensor([128256, 4096],"float16"), Dtype(float16), ) 	 525336576 	 6064 	 9.599814414978027 	 0.015070199966430664 	 637.0064389564777 	 9.598651885986328 	 0.3700578212738037 	 25.938248928089372 	 combined
+2025-07-17 16:58:58.634725 test begin: paddle.Tensor.cast(Tensor([152064, 3584],"float16"), Dtype(float16), )
+[Prof] paddle.Tensor.cast 	 paddle.Tensor.cast(Tensor([152064, 3584],"float16"), Dtype(float16), ) 	 544997376 	 6064 	 9.979611158370972 	 0.011421442031860352 	 873.7610479073165 	 9.981461524963379 	 0.2898850440979004 	 34.43248186889016 	 combined
+2025-07-17 16:59:40.460107 test begin: paddle.Tensor.cast(Tensor([3584, 152064],"float16"), Dtype(float16), )
+[Prof] paddle.Tensor.cast 	 paddle.Tensor.cast(Tensor([3584, 152064],"float16"), Dtype(float16), ) 	 544997376 	 6064 	 9.979735851287842 	 0.019656658172607422 	 507.7025689542246 	 9.981875896453857 	 0.29364585876464844 	 33.992905394433436 	 combined
+2025-07-17 17:00:26.021090 test begin: paddle.Tensor.ceil(Tensor([1, 2],"float32"), )
+[Prof] paddle.Tensor.ceil 	 paddle.Tensor.ceil(Tensor([1, 2],"float32"), ) 	 2 	 1197035 	 10.661803007125854 	 19.700947284698486 	 0.5411822514446685 	 72.68943047523499 	 83.01793146133423 	 0.8755871074562998 	 
+2025-07-17 17:03:32.104172 test begin: paddle.Tensor.ceil(Tensor([10, 20, 1],"float32"), )
+[Prof] paddle.Tensor.ceil 	 paddle.Tensor.ceil(Tensor([10, 20, 1],"float32"), ) 	 200 	 1197035 	 10.702655792236328 	 12.447340488433838 	 0.8598347415804457 	 63.10575246810913 	 83.54728436470032 	 0.7553297865749905 	 
+2025-07-17 17:06:21.915714 test begin: paddle.Tensor.ceil(Tensor([10, 20],"float32"), )
+[Prof] paddle.Tensor.ceil 	 paddle.Tensor.ceil(Tensor([10, 20],"float32"), ) 	 200 	 1197035 	 10.668419599533081 	 12.60765027999878 	 0.8461861935096533 	 69.80864381790161 	 93.74945306777954 	 0.7446298781863926 	 
+2025-07-17 17:09:28.757789 test begin: paddle.Tensor.chunk(Tensor([128, 3136, 192],"float32"), 3, axis=-1, )
+[Prof] paddle.Tensor.chunk 	 paddle.Tensor.chunk(Tensor([128, 3136, 192],"float32"), 3, axis=-1, ) 	 77070336 	 28949 	 15.107348680496216 	 0.2358860969543457 	 64.04510005276042 	 13.404013872146606 	 13.47971248626709 	 0.9943842560293772 	 
+2025-07-17 17:10:13.732269 test begin: paddle.Tensor.chunk(Tensor([512, 32, 64, 48],"float16"), 2, axis=1, )
+[Prof] paddle.Tensor.chunk 	 paddle.Tensor.chunk(Tensor([512, 32, 64, 48],"float16"), 2, axis=1, ) 	 50331648 	 28949 	 6.538187503814697 	 0.19869303703308105 	 32.90597195273699 	 4.552365303039551 	 6.568775415420532 	 0.6930310469060402 	 
+2025-07-17 17:10:34.080690 test begin: paddle.Tensor.chunk(Tensor([512, 32, 64, 48],"float32"), 2, axis=1, )
+[Prof] paddle.Tensor.chunk 	 paddle.Tensor.chunk(Tensor([512, 32, 64, 48],"float32"), 2, axis=1, ) 	 50331648 	 28949 	 10.005156993865967 	 0.19599580764770508 	 51.047811246298956 	 8.832697629928589 	 8.914399862289429 	 0.9908348028332827 	 
+2025-07-17 17:11:03.806241 test begin: paddle.Tensor.clip(Tensor([1, 400, 65856, 2],"float32"), 0, )
+[Prof] paddle.Tensor.clip 	 paddle.Tensor.clip(Tensor([1, 400, 65856, 2],"float32"), 0, ) 	 52684800 	 33823 	 10.367804765701294 	 11.97195839881897 	 0.8660074166916647 	 15.784682989120483 	 20.863149881362915 	 0.7565819676740647 	 
+2025-07-17 17:12:05.366473 test begin: paddle.Tensor.clip(Tensor([2100, 12096, 2],"float32"), 0, )
+[Prof] paddle.Tensor.clip 	 paddle.Tensor.clip(Tensor([2100, 12096, 2],"float32"), 0, ) 	 50803200 	 33823 	 9.997472286224365 	 10.068652153015137 	 0.9929305466403012 	 15.228902578353882 	 20.144248723983765 	 0.7559925806626054 	 
+2025-07-17 17:13:02.620148 test begin: paddle.Tensor.clip(Tensor([4, 525, 12096, 2],"float32"), 0, )
+[Prof] paddle.Tensor.clip 	 paddle.Tensor.clip(Tensor([4, 525, 12096, 2],"float32"), 0, ) 	 50803200 	 33823 	 9.99754023551941 	 10.068816184997559 	 0.9929211192091927 	 15.22883152961731 	 20.142881631851196 	 0.756040362444295 	 
+2025-07-17 17:14:01.176342 test begin: paddle.Tensor.clone(Tensor([6017, 32, 896],"bfloat16"), )
+[Prof] paddle.Tensor.clone 	 paddle.Tensor.clone(Tensor([6017, 32, 896],"bfloat16"), ) 	 172519424 	 18935 	 9.904816627502441 	 9.904942035675049 	 0.9999873388282177 	 19.7863347530365 	 14.51675009727478 	 1.3630003010626306 	 
+2025-07-17 17:15:03.442174 test begin: paddle.Tensor.clone(Tensor([6036, 32, 896],"bfloat16"), )
+[Prof] paddle.Tensor.clone 	 paddle.Tensor.clone(Tensor([6036, 32, 896],"bfloat16"), ) 	 173064192 	 18935 	 9.936765432357788 	 9.940481901168823 	 0.9996261279032561 	 19.87134575843811 	 14.563498735427856 	 1.364462353410869 	 
+2025-07-17 17:16:04.635492 test begin: paddle.Tensor.clone(Tensor([6078, 32, 896],"bfloat16"), )
+[Prof] paddle.Tensor.clone 	 paddle.Tensor.clone(Tensor([6078, 32, 896],"bfloat16"), ) 	 174268416 	 18935 	 10.000815868377686 	 10.026467561721802 	 0.9974416021209656 	 20.009321451187134 	 14.663641691207886 	 1.364553353972393 	 
+2025-07-17 17:17:05.954134 test begin: paddle.Tensor.conj(Tensor([10, 20],"float64"), )
+[Prof] paddle.Tensor.conj 	 paddle.Tensor.conj(Tensor([10, 20],"float64"), ) 	 200 	 1288918 	 10.227181911468506 	 2.104522228240967 	 4.859621710917609 	 67.29868936538696 	 61.49212026596069 	 1.0944278563548007 	 
+2025-07-17 17:19:27.085314 test begin: paddle.Tensor.conj(Tensor([2, 20, 2, 3],"complex128"), )
+[Prof] paddle.Tensor.conj 	 paddle.Tensor.conj(Tensor([2, 20, 2, 3],"complex128"), ) 	 240 	 1288918 	 10.34061312675476 	 4.297384738922119 	 2.4062572366625985 	 66.00947070121765 	 75.98508763313293 	 0.8687161225623767 	 
+2025-07-17 17:22:03.724328 test begin: paddle.Tensor.conj(Tensor([2, 20, 2, 3],"complex64"), )
+[Prof] paddle.Tensor.conj 	 paddle.Tensor.conj(Tensor([2, 20, 2, 3],"complex64"), ) 	 240 	 1288918 	 10.440839290618896 	 4.378525257110596 	 2.384556141057604 	 66.22560334205627 	 76.92515277862549 	 0.8609096108348295 	 
+2025-07-17 17:24:41.700997 test begin: paddle.Tensor.cos(Tensor([131072, 128],"float32"), )
+[Prof] paddle.Tensor.cos 	 paddle.Tensor.cos(Tensor([131072, 128],"float32"), ) 	 16777216 	 380516 	 38.59097456932068 	 39.01389455795288 	 0.9891597597875296 	 57.98399806022644 	 134.62758088111877 	 0.43069924959454253 	 
+2025-07-17 17:29:12.527498 test begin: paddle.Tensor.cos(Tensor([131072, 16],"float32"), )
+[Prof] paddle.Tensor.cos 	 paddle.Tensor.cos(Tensor([131072, 16],"float32"), ) 	 2097152 	 380516 	 3.4887819290161133 	 3.8448486328125 	 0.9073912297202908 	 20.953061819076538 	 32.43106961250305 	 0.6460798878800645 	 
+2025-07-17 17:30:13.433350 test begin: paddle.Tensor.cos(Tensor([32768, 128],"float32"), )
+[Prof] paddle.Tensor.cos 	 paddle.Tensor.cos(Tensor([32768, 128],"float32"), ) 	 4194304 	 380516 	 9.92029881477356 	 11.074587106704712 	 0.8957714377240908 	 20.978316068649292 	 31.240774869918823 	 0.6715043450746458 	 
+2025-07-17 17:31:26.792393 test begin: paddle.Tensor.cumprod(Tensor([10],"float64"), -1, )
+[Prof] paddle.Tensor.cumprod 	 paddle.Tensor.cumprod(Tensor([10],"float64"), -1, ) 	 10 	 781350 	 12.365319967269897 	 12.906962871551514 	 0.9580348289778177 	 110.53916645050049 	 128.45637822151184 	 0.8605190959057348 	 
+2025-07-17 17:35:51.105844 test begin: paddle.Tensor.cumprod(Tensor([3],"float32"), -1, )
+[Prof] paddle.Tensor.cumprod 	 paddle.Tensor.cumprod(Tensor([3],"float32"), -1, ) 	 3 	 781350 	 10.61711573600769 	 12.756773471832275 	 0.8322728125141456 	 107.301105260849 	 128.2258656024933 	 0.8368132650668773 	 
+2025-07-17 17:40:10.014376 test begin: paddle.Tensor.cumprod(Tensor([3],"float64"), -1, )
+[Prof] paddle.Tensor.cumprod 	 paddle.Tensor.cumprod(Tensor([3],"float64"), -1, ) 	 3 	 781350 	 10.49968695640564 	 12.733266115188599 	 0.8245870981900957 	 115.13047790527344 	 127.77508068084717 	 0.9010401503313697 	 
+2025-07-17 17:44:36.518603 test begin: paddle.Tensor.cumsum(Tensor([1, 144, 200],"float32"), 1, )
+[Prof] paddle.Tensor.cumsum 	 paddle.Tensor.cumsum(Tensor([1, 144, 200],"float32"), 1, ) 	 28800 	 378545 	 5.424570322036743 	 10.359214544296265 	 0.5236468748514805 	 24.812294721603394 	 34.39839267730713 	 0.7213213406326466 	 
+2025-07-17 17:45:51.525301 test begin: paddle.Tensor.cumsum(Tensor([1, 144, 200],"float32"), 2, )
+[Prof] paddle.Tensor.cumsum 	 paddle.Tensor.cumsum(Tensor([1, 144, 200],"float32"), 2, ) 	 28800 	 378545 	 3.652280330657959 	 4.635684013366699 	 0.7878622270471503 	 25.108829021453857 	 34.334803104400635 	 0.731293811270923 	 
+2025-07-17 17:46:59.264700 test begin: paddle.Tensor.cumsum(Tensor([300, 120],"int64"), )
+[Prof] paddle.Tensor.cumsum 	 paddle.Tensor.cumsum(Tensor([300, 120],"int64"), ) 	 36000 	 378545 	 10.315227746963501 	 6.2121710777282715 	 1.66048674737008 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 17:47:46.060441 test begin: paddle.Tensor.detach(Tensor([100352, 8192],"bfloat16"), )
+[Prof] paddle.Tensor.detach 	 paddle.Tensor.detach(Tensor([100352, 8192],"bfloat16"), ) 	 822083584 	 10602268 	 7.465608358383179 	 29.857876300811768 	 0.25003815687253705 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 17:53:33.343389 test begin: paddle.Tensor.detach(Tensor([8192, 100352],"bfloat16"), )
+[Prof] paddle.Tensor.detach 	 paddle.Tensor.detach(Tensor([8192, 100352],"bfloat16"), ) 	 822083584 	 10602268 	 7.304588079452515 	 29.982553243637085 	 0.24362795323319233 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 17:59:20.425216 test begin: paddle.Tensor.detach(Tensor([8192, 57344],"bfloat16"), )
+[Prof] paddle.Tensor.detach 	 paddle.Tensor.detach(Tensor([8192, 57344],"bfloat16"), ) 	 469762048 	 10602268 	 7.568770885467529 	 30.332560300827026 	 0.24952627837555685 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 18:05:10.543698 test begin: paddle.Tensor.diag_embed(Tensor([1, 1, 2],"float32"), )
+[Prof] paddle.Tensor.diag_embed 	 paddle.Tensor.diag_embed(Tensor([1, 1, 2],"float32"), ) 	 2 	 167722 	 10.428788423538208 	 3.4870901107788086 	 2.9906850962360236 	 None 	 None 	 None 	 
+2025-07-17 18:05:24.469288 test begin: paddle.Tensor.diagonal(Tensor([2, 2],"float32"), axis1=-2, axis2=-1, )
+[Prof] paddle.Tensor.diagonal 	 paddle.Tensor.diagonal(Tensor([2, 2],"float32"), axis1=-2, axis2=-1, ) 	 4 	 2660899 	 10.184166669845581 	 12.453370094299316 	 0.8177839888101863 	 164.60826706886292 	 204.87056255340576 	 0.8034744719654525 	 
+2025-07-17 18:11:56.647095 test begin: paddle.Tensor.diagonal(Tensor([3, 3],"float64"), axis1=-2, axis2=-1, )
+[Prof] paddle.Tensor.diagonal 	 paddle.Tensor.diagonal(Tensor([3, 3],"float64"), axis1=-2, axis2=-1, ) 	 9 	 2660899 	 10.153136730194092 	 12.414458751678467 	 0.817847715577722 	 174.45978713035583 	 205.13331055641174 	 0.8504702949372005 	 
+2025-07-17 18:18:39.236696 test begin: paddle.Tensor.diff(x=Tensor([4, 4, 4, 4],"float64"), )
+[Prof] paddle.Tensor.diff 	 paddle.Tensor.diff(x=Tensor([4, 4, 4, 4],"float64"), ) 	 256 	 261307 	 10.324530363082886 	 4.690260887145996 	 2.20126995310176 	 None 	 None 	 None 	 
+2025-07-17 18:18:54.263138 test begin: paddle.Tensor.diff(x=Tensor([4, 4, 4, 4],"float64"), axis=-2, )
+[Prof] paddle.Tensor.diff 	 paddle.Tensor.diff(x=Tensor([4, 4, 4, 4],"float64"), axis=-2, ) 	 256 	 261307 	 12.018377542495728 	 7.166961431503296 	 1.6769139414741945 	 None 	 None 	 None 	 
+2025-07-17 18:19:13.590903 test begin: paddle.Tensor.diff(x=Tensor([4, 4, 4, 4],"float64"), axis=2, )
+[Prof] paddle.Tensor.diff 	 paddle.Tensor.diff(x=Tensor([4, 4, 4, 4],"float64"), axis=2, ) 	 256 	 261307 	 16.343912839889526 	 7.156590223312378 	 2.2837569750255815 	 None 	 None 	 None 	 
+2025-07-17 18:19:37.530857 test begin: paddle.Tensor.digamma(Tensor([4, 5],"float64"), )
+[Prof] paddle.Tensor.digamma 	 paddle.Tensor.digamma(Tensor([4, 5],"float64"), ) 	 20 	 1234865 	 10.199923753738403 	 11.577554702758789 	 0.8810084698894047 	 65.24407052993774 	 93.85892152786255 	 0.6951291306982434 	 
+2025-07-17 18:22:38.766855 test begin: paddle.Tensor.digamma(Tensor([5, 7, 8, 10],"float64"), )
+[Prof] paddle.Tensor.digamma 	 paddle.Tensor.digamma(Tensor([5, 7, 8, 10],"float64"), ) 	 2800 	 1234865 	 10.489778995513916 	 20.383442640304565 	 0.5146225385290059 	 65.14906525611877 	 95.55575585365295 	 0.6817911142463976 	 
+2025-07-17 18:25:50.410295 test begin: paddle.Tensor.digamma(Tensor([5, 7, 8],"float64"), )
+[Prof] paddle.Tensor.digamma 	 paddle.Tensor.digamma(Tensor([5, 7, 8],"float64"), ) 	 280 	 1234865 	 10.183886051177979 	 11.654696464538574 	 0.8738010536923213 	 67.14912056922913 	 95.38581442832947 	 0.7039738662574748 	 
+2025-07-17 18:28:54.790349 test begin: paddle.Tensor.dim(Tensor([111616, 7168],"bfloat16"), )
+[Prof] paddle.Tensor.dim 	 paddle.Tensor.dim(Tensor([111616, 7168],"bfloat16"), ) 	 800063488 	 9169733 	 5.788126230239868 	 13.55643892288208 	 0.4269650948281129 	 None 	 None 	 None 	 
+2025-07-17 18:29:28.925808 test begin: paddle.Tensor.dim(Tensor([7168, 111616],"bfloat16"), )
+[Prof] paddle.Tensor.dim 	 paddle.Tensor.dim(Tensor([7168, 111616],"bfloat16"), ) 	 800063488 	 9169733 	 5.784315824508667 	 14.828782081604004 	 0.3900735605039647 	 None 	 None 	 None 	 
+2025-07-17 18:30:03.954211 test begin: paddle.Tensor.dim(Tensor([95872, 8192],"bfloat16"), )
+[Prof] paddle.Tensor.dim 	 paddle.Tensor.dim(Tensor([95872, 8192],"bfloat16"), ) 	 785383424 	 9169733 	 5.754859685897827 	 13.2226243019104 	 0.43522825382449737 	 None 	 None 	 None 	 
+2025-07-17 18:30:37.131723 test begin: paddle.Tensor.divide(Tensor([128, 3136, 96],"float32"), Tensor([],"float32"), )
+[Prof] paddle.Tensor.divide 	 paddle.Tensor.divide(Tensor([128, 3136, 96],"float32"), Tensor([],"float32"), ) 	 38535169 	 39354 	 8.923003673553467 	 9.138348579406738 	 0.9764350304672607 	 22.327879428863525 	 54.706809759140015 	 0.40813711359092997 	 
+2025-07-17 18:32:15.345217 test begin: paddle.Tensor.divide(Tensor([128, 96, 56, 56],"float32"), Tensor([],"float32"), )
+[Prof] paddle.Tensor.divide 	 paddle.Tensor.divide(Tensor([128, 96, 56, 56],"float32"), Tensor([],"float32"), ) 	 38535169 	 39354 	 8.92339015007019 	 9.139522552490234 	 0.9763518935284913 	 22.33119225502014 	 54.672324657440186 	 0.4084551442606558 	 
+2025-07-17 18:33:51.751372 test begin: paddle.Tensor.divide(Tensor([144, 3136, 96],"float32"), Tensor([],"float32"), )
+[Prof] paddle.Tensor.divide 	 paddle.Tensor.divide(Tensor([144, 3136, 96],"float32"), Tensor([],"float32"), ) 	 43352065 	 39354 	 10.006733417510986 	 10.258296966552734 	 0.9754770650662606 	 25.045021057128906 	 61.296420097351074 	 0.40858864216462176 	 
+2025-07-17 18:35:43.665057 test begin: paddle.Tensor.dot(Tensor([1],"float32"), Tensor([1],"float32"), )
+Warning: The core code of paddle.Tensor.dot is too complex.
+[Prof] paddle.Tensor.dot 	 paddle.Tensor.dot(Tensor([1],"float32"), Tensor([1],"float32"), ) 	 2 	 1138002 	 10.068889141082764 	 19.080021142959595 	 0.5277189718837455 	 72.20637679100037 	 91.74682760238647 	 0.7870176950851014 	 
+2025-07-17 18:38:56.778095 test begin: paddle.Tensor.dot(Tensor([2],"float32"), Tensor([2],"float32"), )
+[Prof] paddle.Tensor.dot 	 paddle.Tensor.dot(Tensor([2],"float32"), Tensor([2],"float32"), ) 	 4 	 1138002 	 10.338639974594116 	 19.1674485206604 	 0.5393853002109383 	 71.42539739608765 	 93.87470078468323 	 0.7608588554642993 	 
+2025-07-17 18:42:11.591576 test begin: paddle.Tensor.equal(Tensor([128, 128],"int64"), Tensor([128, 128],"int64"), )
+[Prof] paddle.Tensor.equal 	 paddle.Tensor.equal(Tensor([128, 128],"int64"), Tensor([128, 128],"int64"), ) 	 32768 	 135735 	 1.428375005722046 	 1.451601505279541 	 0.9839993968916267 	 None 	 None 	 None 	 
+2025-07-17 18:42:14.477246 test begin: paddle.Tensor.equal(Tensor([2, 10],"int64"), 3, )
+[Prof] paddle.Tensor.equal 	 paddle.Tensor.equal(Tensor([2, 10],"int64"), 3, ) 	 20 	 135735 	 3.346125841140747 	 1.7956733703613281 	 1.8634379149184768 	 None 	 None 	 None 	 
+2025-07-17 18:42:19.622291 test begin: paddle.Tensor.equal(Tensor([],"complex128"), complex(1.0,1.0), )
+W0717 18:42:19.624265 34680 dygraph_functions.cc:89369] got different data type, run type promotion automatically, this may cause data type been changed.
+[Prof] paddle.Tensor.equal 	 paddle.Tensor.equal(Tensor([],"complex128"), complex(1.0,1.0), ) 	 1 	 135735 	 10.399390459060669 	 1.7410948276519775 	 5.972902965362994 	 None 	 None 	 None 	 
+2025-07-17 18:42:31.767786 test begin: paddle.Tensor.equal_all(Tensor([8, 3],"int64"), Tensor([8, 3],"int64"), )
+[Prof] paddle.Tensor.equal_all 	 paddle.Tensor.equal_all(Tensor([8, 3],"int64"), Tensor([8, 3],"int64"), ) 	 48 	 611615 	 10.0863356590271 	 22.72197151184082 	 0.443902310755514 	 None 	 None 	 None 	 
+2025-07-17 18:43:04.582814 test begin: paddle.Tensor.equal_all(Tensor([8],"int64"), Tensor([8],"int64"), )
+[Prof] paddle.Tensor.equal_all 	 paddle.Tensor.equal_all(Tensor([8],"int64"), Tensor([8],"int64"), ) 	 16 	 611615 	 11.563894033432007 	 28.534951210021973 	 0.40525368164535586 	 None 	 None 	 None 	 
+2025-07-17 18:43:44.686930 test begin: paddle.Tensor.erfinv(x=Tensor([4, 2, 3, 5, 4],"float64"), )
+[Prof] paddle.Tensor.erfinv 	 paddle.Tensor.erfinv(x=Tensor([4, 2, 3, 5, 4],"float64"), ) 	 480 	 1206010 	 10.657447099685669 	 11.673356533050537 	 0.9129719519412823 	 64.2960376739502 	 127.05497622489929 	 0.5060489528575421 	 
+2025-07-17 18:47:18.828986 test begin: paddle.Tensor.erfinv(x=Tensor([4, 2, 3, 5],"float64"), )
+[Prof] paddle.Tensor.erfinv 	 paddle.Tensor.erfinv(x=Tensor([4, 2, 3, 5],"float64"), ) 	 120 	 1206010 	 12.821143388748169 	 18.807281732559204 	 0.6817116673778635 	 66.82890629768372 	 127.12429928779602 	 0.5256973424599974 	 
+2025-07-17 18:51:05.868014 test begin: paddle.Tensor.erfinv(x=Tensor([4, 2, 3],"float64"), )
+[Prof] paddle.Tensor.erfinv 	 paddle.Tensor.erfinv(x=Tensor([4, 2, 3],"float64"), ) 	 24 	 1206010 	 10.642632246017456 	 11.394735336303711 	 0.9339955630307578 	 64.33841681480408 	 125.6667730808258 	 0.5119763580896851 	 
+2025-07-17 18:54:38.183787 test begin: paddle.Tensor.exp(Tensor([1000000, 4],"float64"), )
+[Prof] paddle.Tensor.exp 	 paddle.Tensor.exp(Tensor([1000000, 4],"float64"), ) 	 4000000 	 1190179 	 60.86762046813965 	 63.4045307636261 	 0.9599885013747026 	 87.98632597923279 	 87.81165623664856 	 1.0019891407367776 	 
+2025-07-17 18:59:38.784401 test begin: paddle.Tensor.exp(Tensor([2800],"float32"), )
+[Prof] paddle.Tensor.exp 	 paddle.Tensor.exp(Tensor([2800],"float32"), ) 	 2800 	 1190179 	 10.340222835540771 	 11.921745538711548 	 0.8673413471177225 	 65.95189833641052 	 82.09675550460815 	 0.8033435417884278 	 
+2025-07-17 19:02:29.104065 test begin: paddle.Tensor.exp(Tensor([64, 20],"float32"), )
+[Prof] paddle.Tensor.exp 	 paddle.Tensor.exp(Tensor([64, 20],"float32"), ) 	 1280 	 1190179 	 18.42388916015625 	 11.979884386062622 	 1.5379020837288357 	 68.18674802780151 	 82.57684850692749 	 0.8257368652435462 	 
+2025-07-17 19:05:30.278337 test begin: paddle.Tensor.expand(Tensor([1, 1, 1007, 1007],"bool"), list[13,1,1007,1007,], )
+[Prof] paddle.Tensor.expand 	 paddle.Tensor.expand(Tensor([1, 1, 1007, 1007],"bool"), list[13,1,1007,1007,], ) 	 1014049 	 17222 	 0.5742888450622559 	 0.15177106857299805 	 3.7839151457646714 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 19:05:32.437378 test begin: paddle.Tensor.expand(Tensor([1, 1, 1024, 1024],"float32"), list[13,1,1024,1024,], )
+[Prof] paddle.Tensor.expand 	 paddle.Tensor.expand(Tensor([1, 1, 1024, 1024],"float32"), list[13,1,1024,1024,], ) 	 1048576 	 17222 	 0.7969555854797363 	 0.1508791446685791 	 5.28207915832455 	 1.2108817100524902 	 1.275350570678711 	 0.9494500868165904 	 
+2025-07-17 19:05:37.170971 test begin: paddle.Tensor.expand(Tensor([1, 1, 2048, 2048],"bool"), list[Tensor([],"int64"),1,Tensor([],"int64"),Tensor([],"int64"),], )
+[Prof] paddle.Tensor.expand 	 paddle.Tensor.expand(Tensor([1, 1, 2048, 2048],"bool"), list[Tensor([],"int64"),1,Tensor([],"int64"),Tensor([],"int64"),], ) 	 4194307 	 17222 	 18.945563554763794 	 0.8235845565795898 	 23.00378680417003 	 None 	 None 	 None 	 
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 19:06:11.467971 test begin: paddle.Tensor.expand_as(Tensor([1, 1, 1, 1],"float32"), Tensor([1, 3, 391, 436],"float32"), )
+[Prof] paddle.Tensor.expand_as 	 paddle.Tensor.expand_as(Tensor([1, 1, 1, 1],"float32"), Tensor([1, 3, 391, 436],"float32"), ) 	 511429 	 897065 	 16.822793006896973 	 6.975536584854126 	 2.411684434918461 	 None 	 None 	 None 	 
+[Error] One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+2025-07-17 19:07:44.952768 test begin: paddle.Tensor.expand_as(Tensor([1, 1, 1, 1],"float32"), Tensor([1, 3, 466, 386],"float32"), )
+[Prof] paddle.Tensor.expand_as 	 paddle.Tensor.expand_as(Tensor([1, 1, 1, 1],"float32"), Tensor([1, 3, 466, 386],"float32"), ) 	 539629 	 897065 	 9.939799308776855 	 6.838929891586304 	 1.45341441809565 	 None 	 None 	 None 	 
+[Error] One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+2025-07-17 19:09:13.783246 test begin: paddle.Tensor.expand_as(Tensor([1, 1, 1, 1],"float32"), Tensor([1, 3, 477, 401],"float32"), )
+[Prof] paddle.Tensor.expand_as 	 paddle.Tensor.expand_as(Tensor([1, 1, 1, 1],"float32"), Tensor([1, 3, 477, 401],"float32"), ) 	 573832 	 897065 	 9.949887037277222 	 3.651299476623535 	 2.7250262820069135 	 None 	 None 	 None 	 
+[Error] One of the differentiated Tensors appears to not have been used in the graph. Set allow_unused=True if this is the desired behavior.
+2025-07-17 19:10:32.243789 test begin: paddle.Tensor.fill_(Tensor([2048],"float32"), 0, )
+[Prof] paddle.Tensor.fill_ 	 paddle.Tensor.fill_(Tensor([2048],"float32"), 0, ) 	 2048 	 648093 	 9.571165561676025 	 5.385878562927246 	 1.7770852888435826 	 None 	 None 	 None 	 
+2025-07-17 19:11:08.897646 test begin: paddle.Tensor.fill_(Tensor([77, 77],"float32"), value=-math.inf, )
+[Prof] paddle.Tensor.fill_ 	 paddle.Tensor.fill_(Tensor([77, 77],"float32"), value=-math.inf, ) 	 5929 	 648093 	 10.315215110778809 	 5.379995107650757 	 1.917327972307967 	 None 	 None 	 None 	 
+2025-07-17 19:11:46.550857 test begin: paddle.Tensor.fill_(x=Tensor([10, 16, 16],"float64"), value=41.2, )
+[Prof] paddle.Tensor.fill_ 	 paddle.Tensor.fill_(x=Tensor([10, 16, 16],"float64"), value=41.2, ) 	 2560 	 648093 	 9.890397548675537 	 5.447011709213257 	 1.8157474366993904 	 None 	 None 	 None 	 
+2025-07-17 19:12:23.711703 test begin: paddle.Tensor.fill_diagonal_(Tensor([128, 128],"float32"), 0, wrap=False, )
+[Prof] paddle.Tensor.fill_diagonal_ 	 paddle.Tensor.fill_diagonal_(Tensor([128, 128],"float32"), 0, wrap=False, ) 	 16384 	 455076 	 10.38361382484436 	 5.7318596839904785 	 1.8115610634793775 	 15.181334495544434 	 21.234962940216064 	 0.7149216383511129 	 combined
+2025-07-17 19:13:16.251934 test begin: paddle.Tensor.fill_diagonal_(Tensor([3, 3, 3],"float32"), 1, offset=0, wrap=True, )
+[Prof] paddle.Tensor.fill_diagonal_ 	 paddle.Tensor.fill_diagonal_(Tensor([3, 3, 3],"float32"), 1, offset=0, wrap=True, ) 	 27 	 455076 	 9.946367740631104 	 4.900318384170532 	 2.029739082415704 	 15.214265584945679 	 21.379117488861084 	 0.7116414226580022 	 combined
+2025-07-17 19:14:08.038396 test begin: paddle.Tensor.fill_diagonal_(Tensor([3, 3, 3],"float64"), 1, offset=0, wrap=True, )
+[Prof] paddle.Tensor.fill_diagonal_ 	 paddle.Tensor.fill_diagonal_(Tensor([3, 3, 3],"float64"), 1, offset=0, wrap=True, ) 	 27 	 455076 	 10.152315378189087 	 4.822043418884277 	 2.1053969233106007 	 15.182957172393799 	 21.864562273025513 	 0.694409381848231 	 combined
+2025-07-17 19:15:00.067628 test begin: paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 3, 2],"int32"), Tensor([2, 2, 3],"int32"), offset=0, dim1=1, dim2=2, )
+[Prof] paddle.Tensor.fill_diagonal_tensor 	 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 3, 2],"int32"), Tensor([2, 2, 3],"int32"), offset=0, dim1=1, dim2=2, ) 	 60 	 457554 	 10.615110397338867 	 10.611803531646729 	 1.000311621458339 	 None 	 None 	 None 	 combined
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 19:15:52.014581 test begin: paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 7],"int32"), Tensor([2, 4],"int32"), 0, 1, 2, )
+[Prof] paddle.Tensor.fill_diagonal_tensor 	 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 7],"int32"), Tensor([2, 4],"int32"), 0, 1, 2, ) 	 64 	 457554 	 10.08128571510315 	 10.479389905929565 	 0.9620107473431104 	 None 	 None 	 None 	 combined
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 19:16:43.291931 test begin: paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 7],"int64"), Tensor([2, 4],"int64"), 0, 1, 2, )
+[Prof] paddle.Tensor.fill_diagonal_tensor 	 paddle.Tensor.fill_diagonal_tensor(Tensor([2, 4, 7],"int64"), Tensor([2, 4],"int64"), 0, 1, 2, ) 	 64 	 457554 	 10.5723397731781 	 10.474809885025024 	 1.0093108981665153 	 None 	 None 	 None 	 combined
+[Error] element 0 of tensors does not require grad and does not have a grad_fn
+2025-07-17 19:17:36.866300 test begin: paddle.Tensor.flatten(Tensor([128, 512, 56, 56],"float16"), 2, )
+[Prof] paddle.Tensor.flatten 	 paddle.Tensor.flatten(Tensor([128, 512, 56, 56],"float16"), 2, ) 	 205520896 	 1568196 	 16.342302322387695 	 9.903055906295776 	 1.6502282201596203 	 77.41934275627136 	 92.53862619400024 	 0.8366165129139431 	 
+2025-07-17 19:21:00.902419 test begin: paddle.Tensor.flatten(Tensor([128, 512, 56, 56],"float32"), 2, )
+[Prof] paddle.Tensor.flatten 	 paddle.Tensor.flatten(Tensor([128, 512, 56, 56],"float32"), 2, ) 	 205520896 	 1568196 	 16.411048412322998 	 12.878039121627808 	 1.2743437302315488 	 80.21774077415466 	 92.07457280158997 	 0.8712257720382216 	 
+2025-07-17 19:24:29.565925 test begin: paddle.Tensor.flatten(Tensor([4, 64, 25, 376, 280],"float32"), start_axis=1, stop_axis=2, )
+[Prof] paddle.Tensor.flatten 	 paddle.Tensor.flatten(Tensor([4, 64, 25, 376, 280],"float32"), start_axis=1, stop_axis=2, ) 	 673792000 	 1568196 	 8.976078748703003 	 7.231790065765381 	 1.2411973615211704 	 68.64309477806091 	 93.33090806007385 	 0.7354808412865516 	 
+2025-07-17 19:27:50.917250 test begin: paddle.Tensor.flip(Tensor([16, 3, 224, 224],"float32"), 0, )
+[Prof] paddle.Tensor.flip 	 paddle.Tensor.flip(Tensor([16, 3, 224, 224],"float32"), 0, ) 	 2408448 	 959896 	 47.52726483345032 	 13.792012453079224 	 3.445999269152292 	 50.11168694496155 	 69.65137076377869 	 0.7194644756513751 	 
+2025-07-17 19:30:53.136382 test begin: paddle.Tensor.flip(Tensor([3, 400, 300],"float32"), axis=list[-1,], )
+[Prof] paddle.Tensor.flip 	 paddle.Tensor.flip(Tensor([3, 400, 300],"float32"), axis=list[-1,], ) 	 360000 	 959896 	 10.090727090835571 	 13.845832586288452 	 0.7287916438357367 	 50.70118284225464 	 69.12128019332886 	 0.7335104717454002 	 
+2025-07-17 19:33:16.912614 test begin: paddle.Tensor.flip(Tensor([3, 400, 300],"float32"), axis=list[-2,], )
+[Prof] paddle.Tensor.flip 	 paddle.Tensor.flip(Tensor([3, 400, 300],"float32"), axis=list[-2,], ) 	 360000 	 959896 	 10.073955059051514 	 13.474345684051514 	 0.7476396476138529 	 50.28133273124695 	 68.92847752571106 	 0.7294711059371864 	 
+2025-07-17 19:35:39.688205 test begin: paddle.Tensor.floor(Tensor([1857, 4],"float32"), )
+[Prof] paddle.Tensor.floor 	 paddle.Tensor.floor(Tensor([1857, 4],"float32"), ) 	 7428 	 1149251 	 10.096612215042114 	 12.503170490264893 	 0.8075241574049917 	 62.438108921051025 	 96.25902652740479 	 0.6486467936934205 	 
+2025-07-17 19:38:40.994529 test begin: paddle.Tensor.floor(Tensor([1872, 4],"float32"), )
+[Prof] paddle.Tensor.floor 	 paddle.Tensor.floor(Tensor([1872, 4],"float32"), ) 	 7488 	 1149251 	 10.367667436599731 	 12.238291025161743 	 0.8471499341929328 	 62.95347213745117 	 96.22646713256836 	 0.6542220037104972 	 
+2025-07-17 19:41:43.404681 test begin: paddle.Tensor.floor(Tensor([1915, 4],"float32"), )
+[Prof] paddle.Tensor.floor 	 paddle.Tensor.floor(Tensor([1915, 4],"float32"), ) 	 7660 	 1149251 	 10.05665135383606 	 11.462729930877686 	 0.8773347548515465 	 60.45976519584656 	 78.53124690055847 	 0.7698816405195344 	 
+2025-07-17 19:44:23.926938 test begin: paddle.Tensor.gather(Tensor([4, 4],"float32"), Tensor([4, 1],"int64"), 1, )
+[Prof] paddle.Tensor.gather 	 paddle.Tensor.gather(Tensor([4, 4],"float32"), Tensor([4, 1],"int64"), 1, ) 	 20 	 1039269 	 16.655152559280396 	 181.45664882659912 	 0.0917858489450896 	 None 	 None 	 None 	 combined
+[Error] One of the differentiated Tensors does not require grad
+2025-07-17 19:48:51.814041 test begin: paddle.Tensor.gather_nd(Tensor([16, 3, 80, 80, 85],"float32"), Tensor([516, 4],"int64"), )
+Traceback (most recent call last):
+  File "/root/paddlejob/workspace/env_run/PaddleAPITest/engine.py", line 189, in <module>
+    main()
+  File "/root/paddlejob/workspace/env_run/PaddleAPITest/engine.py", line 163, in main
+    case.test()
+  File "/usr/local/lib/python3.10/dist-packages/func_timeout/dafunc.py", line 185, in <lambda>
+    return wraps(func)(lambda *args, **kwargs : func_timeout(defaultTimeout, func, args=args, kwargs=kwargs))
+  File "/usr/local/lib/python3.10/dist-packages/func_timeout/dafunc.py", line 101, in func_timeout
+    raise FunctionTimedOut('', timeout, func, args, kwargs)
+func_timeout.exceptions.FunctionTimedOut: Function test (args=(<tester.paddle_torch_gpu_performance.APITestPaddleTorchGPUPerformance object at 0x7f73b564e890>,)) (kwargs={}) timed out after 600.000000 seconds.
+
+2025-07-17 19:58:56.993840 test begin: paddle.Tensor.gather_nd(Tensor([4, 53568, 8],"float32"), Tensor([4, 500, 2],"int64"), )
+W0717 19:58:57.235984 122632 gpu_resources.cc:114] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.2, Runtime API Version: 11.8
+Traceback (most recent call last):
+  File "/root/paddlejob/workspace/env_run/PaddleAPITest/engine.py", line 189, in <module>
+    main()
+  File "/root/paddlejob/workspace/env_run/PaddleAPITest/engine.py", line 163, in main
+    case.test()
+  File "/usr/local/lib/python3.10/dist-packages/func_timeout/dafunc.py", line 185, in <lambda>
+    return wraps(func)(lambda *args, **kwargs : func_timeout(defaultTimeout, func, args=args, kwargs=kwargs))
+  File "/usr/local/lib/python3.10/dist-packages/func_timeout/dafunc.py", line 101, in func_timeout
+    raise FunctionTimedOut('', timeout, func, args, kwargs)
+func_timeout.exceptions.FunctionTimedOut: Function test (args=(<tester.paddle_torch_gpu_performance.APITestPaddleTorchGPUPerformance object at 0x7feea99d2e30>,)) (kwargs={}) timed out after 600.000000 seconds.
+
+2025-07-17 20:09:01.578936 test begin: paddle.Tensor.gather_nd(Tensor([8, 3, 80, 80, 85],"float32"), Tensor([385, 4],"int64"), )
+W0717 20:09:02.046343 133279 gpu_resources.cc:114] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.2, Runtime API Version: 11.8
+Traceback (most recent call last):
+  File "/root/paddlejob/workspace/env_run/PaddleAPITest/engine.py", line 189, in <module>
+    main()
+  File "/root/paddlejob/workspace/env_run/PaddleAPITest/engine.py", line 163, in main
+    case.test()
+  File "/usr/local/lib/python3.10/dist-packages/func_timeout/dafunc.py", line 185, in <lambda>
+    return wraps(func)(lambda *args, **kwargs : func_timeout(defaultTimeout, func, args=args, kwargs=kwargs))
+  File "/usr/local/lib/python3.10/dist-packages/func_timeout/dafunc.py", line 101, in func_timeout
+    raise FunctionTimedOut('', timeout, func, args, kwargs)
+func_timeout.exceptions.FunctionTimedOut: Function test (args=(<tester.paddle_torch_gpu_performance.APITestPaddleTorchGPUPerformance object at 0x7f17b96cebc0>,)) (kwargs={}) timed out after 600.000000 seconds.
+
+2025-07-17 20:19:06.227244 test begin: paddle.Tensor.gcd(x=Tensor([2, 4, 5],"int32"), y=Tensor([2, 4, 5],"int32"), )
+W0717 20:19:06.427158 143283 gpu_resources.cc:114] Please NOTE: device: 0, GPU Compute Capability: 8.0, Driver API Version: 12.2, Runtime API Version: 11.8
+W0717 20:26:37.049309 143283 backward.cc:462] While running Node (RemainderGradNode) raises an EnforceNotMet exception
+[Error] (Unimplemented) Gradient accumulation of data type (int) on place (Place(gpu:0)) is not supported in imperative mode (at ../paddle/fluid/imperative/gradient_accumulator.cc:242)
+
+2025-07-17 20:26:37.050650 test begin: paddle.Tensor.gcd(x=Tensor([6, 1, 4, 5],"int32"), y=Tensor([2, 1, 5],"int32"), )
+W0717 20:34:20.214596 152849 backward.cc:462] While running Node (RemainderGradNode) raises an EnforceNotMet exception
+[Error] (Unimplemented) Gradient accumulation of data type (int) on place (Place(gpu:0)) is not supported in imperative mode (at ../paddle/fluid/imperative/gradient_accumulator.cc:242)
+
+2025-07-17 20:34:20.216425 test begin: paddle.Tensor.gcd(x=Tensor([6, 2, 4, 5],"int32"), y=Tensor([6, 2, 4, 5],"int32"), )
+W0717 20:43:28.998750 10256 backward.cc:462] While running Node (RemainderGradNode) raises an EnforceNotMet exception
+[Error] (Unimplemented) Gradient accumulation of data type (int) on place (Place(gpu:0)) is not supported in imperative mode (at ../paddle/fluid/imperative/gradient_accumulator.cc:242)
+
