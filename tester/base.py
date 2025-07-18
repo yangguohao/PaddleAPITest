@@ -596,8 +596,7 @@ paddle_error_dismiss = {
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol = {
     # "API": (atol, rtol),
-    "paddle.incubate.nn.functional.fused_rms_norm" : (3,0.5),
-    "paddle.incubate.nn.functional.fused_bias_act": (1, 1e-2)
+    "paddle.incubate.nn.functional.fused_bias_act": (1, 1e-2),
     "paddle.cumsum": (1.0, 1.0),
     "paddle.Tensor.cumsum": (1.0, 1.0),
     "paddle.logcumsumexp": (1.0, 1.0),
@@ -623,6 +622,30 @@ torch_error_skip = frozenset(
         'paddle.logcumsumexp(Tensor([357913942, 12],"float16"), dtype="float16", axis=None, )',
         'paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), )',  # torch CUDA 700
         'paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), dtype="float32", )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([1, 67108865, 64],"float16"), Tensor([64],"float16"), None, 1e-06, begin_norm_axis=1, )', # This API has lower precision in torch(float16) compared to paddle.
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([100, 42949673],"float16"), Tensor([42949673],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([101, 42524429],"float16"), Tensor([42524429],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([104, 41297763],"float16"), Tensor([41297763],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([123, 34918434],"float16"), Tensor([34918434],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([131, 32786010],"float16"), Tensor([32786010],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([136, 31580642],"float16"), Tensor([31580642],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([16777216, 256],"float16"), Tensor([256],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([16777217, 256],"float16"), Tensor([256],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 1, 2147483649],"float16"), Tensor([2147483649],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 1, 2147483649],"float16"), Tensor([2147483649],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 2147483649],"float16"), Tensor([2147483649],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 33554433, 64],"float16"), Tensor([64],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([2, 4194305, 512],"float16"), Tensor([512],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([5592406, 768],"float16"), Tensor([768],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([64, 67108865],"float16"), Tensor([67108865],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([67108864, 1, 64],"float16"), Tensor([64],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([67108864, 64],"float16"), Tensor([64],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([67108865, 1, 64],"float16"), Tensor([64],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([67108865, 64],"float16"), Tensor([64],"float16"), None, 1e-06, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([8388608, 1, 512],"float16"), Tensor([512],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([8388608, 512],"float16"), Tensor([512],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([8388609, 1, 512],"float16"), Tensor([512],"float16"), None, 1e-05, begin_norm_axis=1, )',
+        'paddle.incubate.nn.functional.fused_rms_norm(Tensor([8388609, 512],"float16"), Tensor([512],"float16"), None, 1e-05, begin_norm_axis=1, )',
     ]
 )
 
