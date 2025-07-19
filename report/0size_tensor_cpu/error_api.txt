@@ -120,7 +120,6 @@ paddle.multiplex
 paddle.mv
 paddle.nanmedian
 paddle.nn.functional.adaptive_log_softmax_with_loss
-paddle.nn.functional.affine_grid
 paddle.nn.functional.avg_pool3d
 paddle.nn.functional.batch_norm
 paddle.nn.functional.binary_cross_entropy
