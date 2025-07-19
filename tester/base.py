@@ -149,6 +149,7 @@ not_check_dtype = frozenset(
         "paddle.histogram",
         "paddle.incubate.nn.functional.fused_layer_norm",
         "paddle.ldexp",
+        "paddle.ldexp_",
         "paddle.linalg.lstsq",
         "paddle.nn.functional.adaptive_max_pool1d",
         "paddle.nn.functional.adaptive_max_pool2d",
@@ -594,13 +595,31 @@ paddle_error_dismiss = {
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol = {
     # "API": (atol, rtol),
+    "paddle.cumsum": (1.0, 1.0),
+    "paddle.Tensor.cumsum": (1.0, 1.0),
+    "paddle.logcumsumexp": (1.0, 1.0),
+    "paddle.Tensor.logcumsumexp": (1.0, 1.0),
+    "paddle.incubate.nn.functional.fused_bias_act": (1, 1e-2),
 }
 
 torch_error_skip = frozenset(
     [
-        'paddle.kthvalue(Tensor([4294967295],"float32"), 1, )',
+        'paddle.kthvalue(Tensor([4294967295],"float32"), 1, )',  # torch error
         'paddle.kthvalue(Tensor([4294967295],"float32"), k=2, )',
-        'paddle.nn.functional.log_softmax(Tensor([1, 4294967297],"float16"), )',
+        'paddle.nn.functional.log_softmax(Tensor([1, 4294967297],"float16"), )',  # torch error for fp16
+        'paddle.cumsum(Tensor([10, 429496730],"float16"), dtype="float16", )',  # torch error for fp16
+        'paddle.cumsum(Tensor([357913942, 12],"float16"), dtype="float16", )',
+        'paddle.cumsum(Tensor([4, 1073741825],"float16"), axis=1, )',
+        'paddle.cumsum(x=Tensor([1, 16, 8388609, 32],"float16"), axis=2, )',
+        'paddle.cumsum(x=Tensor([4294967297],"float16"), )',
+        'paddle.cumsum(x=Tensor([715827883, 2, 1, 3],"float16"), axis=-4, )',
+        'paddle.cumsum(x=Tensor([715827883, 2, 1, 3],"float16"), axis=Tensor([1],"float16"), )',
+        'paddle.cumsum(x=Tensor([87382, 16, 96, 32],"float16"), axis=2, )',
+        'paddle.logcumsumexp(Tensor([10, 429496730],"float16"), dtype="float16", axis=1, )',  # torch error for fp16
+        'paddle.logcumsumexp(Tensor([10, 429496730],"float16"), dtype="float16", axis=None, )',
+        'paddle.logcumsumexp(Tensor([357913942, 12],"float16"), dtype="float16", axis=None, )',
+        'paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), )',  # torch CUDA 700
+        'paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), dtype="float32", )',
     ]
 )
 
