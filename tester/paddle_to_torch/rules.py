@@ -4713,10 +4713,7 @@ for i, s in enumerate(shape):
         shape[i] = elements
 """
         core = """
-if x.numel() == 0:
-    result = torch.zeros(shape, dtype=x.dtype)
-else:
-    result = torch.reshape(x, shape)
+result = torch.reshape(x, shape)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
