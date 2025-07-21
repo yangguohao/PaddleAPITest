@@ -2466,11 +2466,11 @@
             "running_var": "running_var",
             "weight": "weight",
             "bias": "bias",
-            "epsilon": "eps",
-            "training": "training"
+            "epsilon": "eps"
         },
         "torch_kwargs": {
-            "momentum": "1 - momentum"
+            "momentum": "1 - momentum",
+            "training": "training and not use_global_stats"
         }
     },
     "paddle.nn.functional.bilinear": {
