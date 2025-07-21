@@ -4,11 +4,10 @@ import inspect
 import numpy
 import paddle
 import torch
+import yaml
 
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
 from .api_config.log_writer import log_accuracy_tolerance
-
-import yaml
 
 with open("tester/base_config.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
