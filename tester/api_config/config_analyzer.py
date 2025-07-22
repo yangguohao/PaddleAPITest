@@ -1054,6 +1054,9 @@ class TensorConfig:
                         self.numpy_tensor = soft_labels.astype(self.dtype)
                     else:
                         self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 3, "weight"):
+                    self.numpy_tensor = numpy.random.random(size=self.shape)
+                    self.numpy_tensor = self.numpy_tensor / self.numpy_tensor.sum()
 
             elif api_config.api_name == "paddle.nn.functional.ctc_loss":
                 if self.check_arg(api_config, 1, "labels"):
