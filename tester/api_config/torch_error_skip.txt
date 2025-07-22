@@ -14,6 +14,7 @@ paddle.logcumsumexp(Tensor([10, 429496730],"float16"), dtype="float16", axis=Non
 paddle.logcumsumexp(Tensor([357913942, 12],"float16"), dtype="float16", axis=None, )
 paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), )
 paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), dtype="float32", )
+paddle.matmul(x=Tensor([4, 1073741825],"float16"), y=Tensor([1073741825],"float16"), transpose_x=False, transpose_y=True, )
 paddle.nn.functional.adaptive_avg_pool1d(Tensor([178956971, 3, 8],"float16"), 2, None, )
 paddle.nn.functional.adaptive_avg_pool1d(Tensor([2, 142606337, 8],"float32"), 2, None, )
 paddle.nn.functional.adaptive_avg_pool1d(Tensor([2, 268435457, 8],"float16"), 2, None, )
