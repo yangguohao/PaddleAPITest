@@ -4483,47 +4483,48 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if isinstance(padding, str):
-    if padding == "VALID":
-        padding = 0
-    elif padding == "SAME":
-        input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
-        pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
-        padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
-        if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
-            x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+if not exclusive:
+    if isinstance(padding, str):
+        if padding == "VALID":
             padding = 0
-elif isinstance(padding, (list, tuple)):
-    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-        max_pad = []
-        for i in range(3):
-            max_pad.append(kernel_size[i] // 2)
-        exceeds_max = False
-        for p, m in zip(padding, max_pad):
-            if p > m:
-                exceeds_max = True
-                break
-        if exceeds_max:
-            pad_d, pad_h, pad_w = padding
-            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+        elif padding == "SAME":
+            input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+            pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+            padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
+            if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
+                x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+                padding = 0
+    elif isinstance(padding, (list, tuple)):
+        if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+            max_pad = []
+            for i in range(3):
+                max_pad.append(kernel_size[i] // 2)
+            exceeds_max = False
+            for p, m in zip(padding, max_pad):
+                if p > m:
+                    exceeds_max = True
+                    break
+            if exceeds_max:
+                pad_d, pad_h, pad_w = padding
+                x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+                padding = 0
+            else:
+                padding = tuple(padding)
+        elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+            pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
             padding = 0
-        else:
-            padding = tuple(padding)
-    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
-        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
-        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-        padding = 0
-    elif len(padding) == 5: # Paddle 的 5D 填充格式
-        if data_format == "NCDHW":
-            pad_front, pad_back = padding[2]
-            pad_top, pad_bottom = padding[3]
-            pad_left, pad_right = padding[4]
-        else: # NDHWC
-            pad_front, pad_back = padding[1]
-            pad_top, pad_bottom = padding[2]
-            pad_left, pad_right = padding[3]
-        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-        padding = 0
+        elif len(padding) == 5: # Paddle 的 5D 填充格式
+            if data_format == "NCDHW":
+                pad_front, pad_back = padding[2]
+                pad_top, pad_bottom = padding[3]
+                pad_left, pad_right = padding[4]
+            else: # NDHWC
+                pad_front, pad_back = padding[1]
+                pad_top, pad_bottom = padding[2]
+                pad_left, pad_right = padding[3]
+            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+            padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post_1d = """
@@ -4712,10 +4713,7 @@ for i, s in enumerate(shape):
         shape[i] = elements
 """
         core = """
-if x.numel() == 0:
-    result = torch.zeros(shape, dtype=x.dtype)
-else:
-    result = torch.reshape(x, shape)
+result = torch.reshape(x, shape)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
