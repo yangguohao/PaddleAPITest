@@ -677,7 +677,7 @@ if weight is not None:
     weight.requires_grad = False
 if label.dtype == torch.int32:
     label = label.long()
-if reduction == "mean" and soft_label and weight is not None and shp == input.shpae:
+if reduction == "mean" and soft_label and weight is not None and shp == input.shape:
     sum_weight = (label@weight).sum()
     reduction = "sum"
 else:
