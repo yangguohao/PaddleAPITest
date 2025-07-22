@@ -2680,7 +2680,19 @@
         }
     },
     "paddle.nn.functional.cross_entropy": {
-        "Rule": "CrossEntropyRule"
+        "Rule": "CrossEntropyRule",
+        "torch_api": "torch.nn.functional.cross_entropy",
+        "set_defaults": {
+            "weight": "None"
+        },
+        "paddle_torch_args_map": {
+            "input": "input",
+            "label": "target",
+            "weight": "weight",
+            "ignore_index": "ignore_index",
+            "reduction": "reduction",
+            "label_smoothing": "label_smoothing"
+        }
     },
     "paddle.nn.functional.ctc_loss": {
         "Rule": "CtcLossRule"
