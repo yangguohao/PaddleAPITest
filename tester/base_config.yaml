@@ -15,6 +15,8 @@ paddle_error_dismiss:
   paddle.vision.ops.distribute_fpn_proposals:
     - "(PreconditionNotMet) The number of proposals in FPN "
     - "(PreconditionNotMet) The number of images "
+  paddle.incubate.nn.functional.variable_length_memory_efficient_attention: "(InvalidArgument) the kernel should not be launched"
+  paddle.Tensor.inverse: "(Unimplemented) cublasMatInv does not support batch_size > 65536."
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
