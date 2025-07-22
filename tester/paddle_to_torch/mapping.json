@@ -2683,7 +2683,9 @@
         "Rule": "CrossEntropyRule",
         "torch_api": "torch.nn.functional.cross_entropy",
         "set_defaults": {
-            "weight": "None"
+            "weight": "None",
+            "reduction": "'mean'",
+            "label_smoothing": "0.0"
         },
         "paddle_torch_args_map": {
             "input": "input",
@@ -2691,7 +2693,8 @@
             "weight": "weight",
             "ignore_index": "ignore_index",
             "reduction": "reduction",
-            "label_smoothing": "label_smoothing"
+            "label_smoothing": "label_smoothing",
+            "sum_weight": "sum_weight"
         }
     },
     "paddle.nn.functional.ctc_loss": {

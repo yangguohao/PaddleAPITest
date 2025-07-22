@@ -676,10 +676,16 @@ label = label.squeeze(-1)
 if weight is not None:
     weight.requires_grad = False
 if label.dtype == torch.int32:
-    label= label.long()
+    label = label.long()
+if reduction == "mean" and soft_label and weight is not None and shp == input.shpae:
+    sum_weight = (label@weight).sum()
+    reduction = "sum"
+else:
+    sum_weight = 1
 """
-        core = """
-result = torch.nn.functional.cross_entropy(**_kwargs)
+        core = f"""
+sum_weight = _kwargs.pop("sum_weight")
+result = {self.torch_api}(**_kwargs)/sum_weight
 """
         post = """
 if "reduction" in _kwargs and _kwargs['reduction'] == "none":
