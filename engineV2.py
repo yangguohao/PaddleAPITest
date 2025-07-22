@@ -22,7 +22,8 @@ if TYPE_CHECKING:
         APITestPaddleOnly,
         APITestPaddleGPUPerformance,
         APITestTorchGPUPerformance,
-        APITestPaddleTorchGPUPerformance
+        APITestPaddleTorchGPUPerformance,
+        APITestAccuracyStable,
     )
     import torch
     import paddle
@@ -204,17 +205,23 @@ def init_worker_gpu(
         globals()["torch"] = torch
         globals()["paddle"] = paddle
 
-        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                            APITestPaddleOnly,APITestPaddleGPUPerformance,
-                            APITestTorchGPUPerformance, APITestPaddleTorchGPUPerformance)
+        from tester import (APIConfig, APITestAccuracy, APITestAccuracyStable,
+                            APITestCINNVSDygraph, APITestPaddleGPUPerformance,
+                            APITestPaddleOnly,
+                            APITestPaddleTorchGPUPerformance,
+                            APITestTorchGPUPerformance)
 
-        globals()["APIConfig"] = APIConfig
-        globals()["APITestAccuracy"] = APITestAccuracy
-        globals()["APITestCINNVSDygraph"] = APITestCINNVSDygraph
-        globals()["APITestPaddleOnly"] = APITestPaddleOnly
-        globals()["APITestPaddleGPUPerformance"] = APITestPaddleGPUPerformance
-        globals()["APITestTorchGPUPerformance"] = APITestTorchGPUPerformance
-        globals()["APITestPaddleTorchGPUPerformance"] = APITestPaddleTorchGPUPerformance
+        test_classes = {
+            "APIConfig": APIConfig,
+            "APITestAccuracy": APITestAccuracy,
+            "APITestCINNVSDygraph": APITestCINNVSDygraph,
+            "APITestPaddleOnly": APITestPaddleOnly,
+            "APITestPaddleGPUPerformance": APITestPaddleGPUPerformance,
+            "APITestTorchGPUPerformance": APITestTorchGPUPerformance,
+            "APITestPaddleTorchGPUPerformance": APITestPaddleTorchGPUPerformance,
+            "APITestAccuracyStable": APITestAccuracyStable,
+        }
+        globals().update(test_classes)
 
         def signal_handler(*args):
             torch.cuda.empty_cache()
@@ -278,19 +285,19 @@ def run_test_case(api_config_str, options):
         print(f"[config parse error] {api_config_str} {str(err)}", flush=True)
         return
 
-    test_class = APITestAccuracy
-    if options.paddle_only:
-        test_class = APITestPaddleOnly
-    elif options.paddle_cinn:
-        test_class = APITestCINNVSDygraph
-    elif options.accuracy:
-        test_class = APITestAccuracy
-    elif options.paddle_gpu_performance:
-        test_class = APITestPaddleGPUPerformance
-    elif options.torch_gpu_performance:
-        test_class = APITestTorchGPUPerformance
-    elif options.paddle_torch_gpu_performance:
-        test_class = APITestPaddleTorchGPUPerformance
+    option_to_class = {
+        "paddle_only": APITestPaddleOnly,
+        "paddle_cinn": APITestCINNVSDygraph,
+        "accuracy": APITestAccuracy,
+        "paddle_gpu_performance": APITestPaddleGPUPerformance,
+        "torch_gpu_performance": APITestTorchGPUPerformance,
+        "paddle_torch_gpu_performance": APITestPaddleTorchGPUPerformance,
+        "accuracy_stable": APITestAccuracyStable,
+    }
+    test_class = next(
+        (cls for opt, cls in option_to_class.items() if getattr(options, opt, False)),
+        APITestAccuracy,  # default fallback
+    )
 
     if options.accuracy:
         case = test_class(
@@ -314,7 +321,15 @@ def run_test_case(api_config_str, options):
     finally:
         del test_class, api_config, case
         gc.collect()
-        if not options.paddle_gpu_performance and not options.torch_gpu_performance and not options.paddle_torch_gpu_performance:
+        if not any(
+            getattr(options, opt)
+            for opt in (
+                "paddle_gpu_performance",
+                "torch_gpu_performance",
+                "paddle_torch_gpu_performance",
+                "accuracy_stable",
+            )
+        ):
             torch.cuda.empty_cache()
             paddle.device.cuda.empty_cache()
 
@@ -367,6 +382,12 @@ def main():
         type=parse_bool,
         default=False,
         help="test paddle and torch api performance",
+    )
+    parser.add_argument(
+        "--accuracy_stable",
+        type=parse_bool,
+        default=False,
+        help="test paddle api to corespoding torch api steadily",
     )
     parser.add_argument(
         "--test_amp",
@@ -432,9 +453,28 @@ def main():
     options = parser.parse_args()
     print(f"Options: {vars(options)}", flush=True)
 
-    mode = [options.accuracy, options.paddle_only, options.paddle_cinn, options.paddle_gpu_performance, options.torch_gpu_performance, options.paddle_torch_gpu_performance ]
+    mode = [
+        options.accuracy,
+        options.paddle_only,
+        options.paddle_cinn,
+        options.paddle_gpu_performance,
+        options.torch_gpu_performance,
+        options.paddle_torch_gpu_performance,
+        options.accuracy_stable,
+    ]
     if len([m for m in mode if m is True]) != 1:
-        print(f"Specify only one test mode: --accuracy, --paddle_only, or --paddle_cinn, or --paddle_gpu_performance, or --torch_gpu_performance, or --paddle_torch_gpu_performance to True.", flush=True)
+        print(
+            "Specify only one test mode:"
+            "--accuracy,"
+            "--paddle_only,"
+            "--paddle_cinn,"
+            "--paddle_gpu_performance,"
+            "--torch_gpu_performance,"
+            "--paddle_torch_gpu_performance"
+            "--accuracy_stable"
+            " to True.",
+            flush=True,
+        )
         return
     if options.test_tol and not options.accuracy:
         print(f"--test_tol takes effect when --accuracy is True.", flush=True)
@@ -445,9 +485,11 @@ def main():
 
     if options.api_config:
         # Single config execution
-        from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                            APITestPaddleOnly, APITestPaddleGPUPerformance,
-                            APITestTorchGPUPerformance,APITestPaddleTorchGPUPerformance)
+        from tester import (APIConfig, APITestAccuracy, APITestAccuracyStable,
+                            APITestCINNVSDygraph, APITestPaddleGPUPerformance,
+                            APITestPaddleOnly,
+                            APITestPaddleTorchGPUPerformance,
+                            APITestTorchGPUPerformance)
 
         options.api_config = options.api_config.strip()
         print(f"{datetime.now()} test begin: {options.api_config}", flush=True)
@@ -457,19 +499,23 @@ def main():
             print(f"[config parse error] {options.api_config} {str(err)}", flush=True)
             return
 
-        test_class = APITestAccuracy
-        if options.paddle_only:
-            test_class = APITestPaddleOnly
-        elif options.paddle_cinn:
-            test_class = APITestCINNVSDygraph
-        elif options.accuracy:
-            test_class = APITestAccuracy
-        elif options.paddle_gpu_performance:
-            test_class = APITestPaddleGPUPerformance
-        elif options.torch_gpu_performance:
-            test_class = APITestTorchGPUPerformance
-        elif options.paddle_torch_gpu_performance:
-            test_class = APITestPaddleTorchGPUPerformance
+        option_to_class = {
+            "paddle_only": APITestPaddleOnly,
+            "paddle_cinn": APITestCINNVSDygraph,
+            "accuracy": APITestAccuracy,
+            "paddle_gpu_performance": APITestPaddleGPUPerformance,
+            "torch_gpu_performance": APITestTorchGPUPerformance,
+            "paddle_torch_gpu_performance": APITestPaddleTorchGPUPerformance,
+            "accuracy_stable": APITestAccuracyStable,
+        }
+        test_class = next(
+            (
+                cls
+                for opt, cls in option_to_class.items()
+                if getattr(options, opt, False)
+            ),
+            APITestAccuracy,  # default fallback
+        )
 
         if options.accuracy:
             case = test_class(
@@ -516,6 +562,9 @@ def main():
                 print(f"No config file found: {options.api_config_file}", flush=True)
                 return
             config_files = [options.api_config_file]
+
+        # when engineV2 was interrupted, resume from .tmp dir
+        aggregate_logs()
 
         # read checkpoint
         finish_configs = read_log("checkpoint")
