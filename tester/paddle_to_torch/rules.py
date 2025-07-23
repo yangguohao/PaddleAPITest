@@ -4010,7 +4010,7 @@ class NpairlossRule(BaseRule):
         core = """
 l2_reg = locals().get('l2_reg', 0.002)
 
-l2_loss = (anchor.pow(2).sum(dim=1) + positive.pow(2).sum(dim=1)).mean() * 0.5 * l2_reg
+l2_loss = (anchor.pow(2).sum(dim=1) + positive.pow(2).sum(dim=1)).mean() * 0.25 * l2_reg
 
 sim_matrix = torch.matmul(anchor, positive.T)
 
