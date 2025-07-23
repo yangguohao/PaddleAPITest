@@ -15,6 +15,7 @@ paddle.logcumsumexp(Tensor([357913942, 12],"float16"), dtype="float16", axis=Non
 paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), )
 paddle.logcumsumexp(Tensor([1073741824, 4],"float32"), dtype="float32", )
 paddle.matmul(x=Tensor([4, 1073741825],"float16"), y=Tensor([1073741825],"float16"), transpose_x=False, transpose_y=True, )
+paddle.matmul(Tensor([1431655766],"float16"), Tensor([3, 1431655766],"float16"), False, True, )
 paddle.nn.functional.adaptive_avg_pool1d(Tensor([178956971, 3, 8],"float16"), 2, None, )
 paddle.nn.functional.adaptive_avg_pool1d(Tensor([2, 142606337, 8],"float32"), 2, None, )
 paddle.nn.functional.adaptive_avg_pool1d(Tensor([2, 268435457, 8],"float16"), 2, None, )
@@ -1764,3 +1765,4 @@ paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weigh
 paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weight=Tensor([3, 1, 3, 79536432, 3],"float64"), bias=Tensor([1],"float64"), stride=1, padding=list[1,0,1,], dilation=1, )
 paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weight=Tensor([3, 1, 79536432, 3, 3],"float64"), bias=Tensor([1],"float64"), stride=1, padding=1, dilation=1, )
 paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weight=Tensor([3, 1, 79536432, 3, 3],"float64"), bias=Tensor([1],"float64"), stride=1, padding=list[1,0,1,], dilation=1, )
+paddle.nn.functional.nll_loss(Tensor([95070891, 3, 2, 4],"float32"), Tensor([95070891, 2, 4],"int64"),)
