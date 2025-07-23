@@ -327,7 +327,6 @@ def run_test_case(api_config_str, options):
                 "paddle_gpu_performance",
                 "torch_gpu_performance",
                 "paddle_torch_gpu_performance",
-                "accuracy_stable",
             )
         ):
             torch.cuda.empty_cache()
