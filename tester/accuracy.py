@@ -303,6 +303,16 @@ class APITestAccuracy(APITestBase):
             for paddle_item, torch_item in zip(paddle_output, torch_output):
                 if isinstance(paddle_item, int) or self.api_config.api_name.endswith('tolist'):
                     self.np_assert_accuracy(numpy.array(paddle_item), numpy.array(torch_item), atol=self.atol, rtol=self.rtol)
+                # especially for paddle.vision.ops.distribute_fpn_proposals
+                elif isinstance(paddle_item, list) and isinstance(torch_item, list):
+                    if any(isinstance(x, paddle.Tensor) for x in paddle_item) and any(isinstance(x, torch.Tensor) for x in torch_item):
+                        for paddle_item_sub, torch_item_sub in zip(paddle_item, torch_item):
+                            if not compare_paddle_and_torch(paddle_item_sub, torch_item_sub):
+                                return
+                    else:
+                        print("[accuracy error]", self.api_config.config, "\n[output type diff error4]", flush=True)
+                        write_to_log("accuracy_error", self.api_config.config)
+                        return
                 elif not isinstance(paddle_item, paddle.Tensor):
                     print("[not compare]", paddle_item, torch_item, flush=True)
                     write_to_log("accuracy_error", self.api_config.config)
