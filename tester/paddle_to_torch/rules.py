@@ -585,7 +585,13 @@ x = convert_seq2tensor_wrap_scalar(x)
 # b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        core = "result = (torch.max(seq_lens_encoder).unsqueeze(0), torch.max(seq_lens_decoder).unsqueeze(0))"
+        core = """
+bsz = batch_size.shape[0]
+if bsz == 0:
+    result = (torch.zeros([1], dtype=seq_lens_encoder.dtype), torch.zeros([1], dtype=seq_lens_decoder.dtype))
+else:
+    result = (torch.max(seq_lens_encoder[:bsz]).unsqueeze(0), torch.max(seq_lens_decoder[:bsz]).unsqueeze(0))
+"""
         code = Code(core=[core])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
