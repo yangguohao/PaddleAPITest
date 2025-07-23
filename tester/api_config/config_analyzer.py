@@ -473,8 +473,8 @@ class TensorConfig:
                 if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
                     num = self.shape[0]
                     self.numpy_tensor = numpy.random.randint(1, 1024, [num, 4])
-                    self.numpy_tensor[:, 0] += numpy.random.random([num])
-                    self.numpy_tensor[:, 1] += numpy.random.random([num])
+                    self.numpy_tensor[:, 0] = self.numpy_tensor[:, 0] + numpy.random.random([num])
+                    self.numpy_tensor[:, 1] = self.numpy_tensor[:, 1] + numpy.random.random([num])
                     self.numpy_tensor[:, 2] = self.numpy_tensor[:, 0] + numpy.random.randint(1, 1024, [num])+numpy.random.random([num])
                     self.numpy_tensor[:, 3] = self.numpy_tensor[:, 1] + numpy.random.randint(1, 1024, [num])+numpy.random.random([num])
                     if not hasattr(api_config, "num"):
