@@ -1882,7 +1882,7 @@ class TensorConfig:
             )
             self.paddle_tensor.stop_gradient = False
             if self.dtype == "bfloat16":
-                self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
+                self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="bfloat16")
         return self.paddle_tensor
 
     def get_torch_tensor(self, api_config):
