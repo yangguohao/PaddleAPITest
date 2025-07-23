@@ -7014,7 +7014,6 @@ paddle.tensordot(x=Tensor([3, 4, 3, 4],"float64"), y=Tensor([4, 4, 3, 0],"float6
 paddle.trapezoid(Tensor([0],"float32"), dx=2.0, )
 paddle.trapezoid(y=Tensor([0, 4],"float16"), x=Tensor([0, 4],"float16"), )
 paddle.trapezoid(y=Tensor([4, 0],"float16"), x=Tensor([4, 0],"float16"), )
-paddle.trapezoid(y=Tensor([4, 0],"float16"), x=Tensor([4, 4],"float16"), )
 paddle.unflatten(x=Tensor([0, 6, 16],"float32"), axis=-1, shape=list[-1,2,], )
 paddle.unflatten(x=Tensor([4, 0, 16],"float32"), axis=0, shape=list[-1,], )
 paddle.unflatten(x=Tensor([4, 0, 16],"float32"), axis=0, shape=tuple(-1,), )
