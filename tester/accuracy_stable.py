@@ -529,9 +529,9 @@ class APITestAccuracyStable(APITestBase):
                 comp,
             )
         except Exception as err:
+            err_str = str(err)
             is_acc_err = False
-            err_info = ""
-            if str(err).startswith("Comparing"):
+            if err_str.startswith("Comparing"):
                 print(f"torch_assert failed, try np_assert", flush=True)
                 try:
                     numpy.testing.assert_allclose(
@@ -550,23 +550,23 @@ class APITestAccuracyStable(APITestBase):
                         comp,
                     )
                 except Exception as err_np:
-                    err_list = str(err_np).split("\n", maxsplit=5)
-                    if len(err_list) == 5 and err_list[3].startswith(
+                    err_str = str(err_np)
+
+                    err_list = err_str.split("\n", maxsplit=3)
+                    if len(err_list) > 3 and err_list[3].startswith(
                         "Mismatched elements"
                     ):
                         is_acc_err = True
-                        err_info = err_list[4]
             else:
-                err_list = str(err).split("\n", maxsplit=5)
-                if len(err_list) == 5 and (
+                err_list = err_str.split("\n", maxsplit=1)
+                if len(err_list) > 1 and (
                     err_list[1].startswith("Tensor-likes")
                     or err_list[1].startswith("Scalars")
                 ):
                     is_acc_err = True
-                    err_info = err_list[4]
             if is_acc_err:
                 log_accuracy_stable(
-                    err_info,
+                    err_str,
                     api_name,
                     config,
                     dtype,
