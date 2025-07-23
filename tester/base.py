@@ -4,103 +4,28 @@ import inspect
 import numpy
 import paddle
 import torch
+import yaml
 
 from .api_config import USE_CACHED_NUMPY, TensorConfig, cached_numpy
 from .api_config.log_writer import log_accuracy_tolerance
 
-# Todo: check paddle.linalg.pca_lowrank @cangtianhuang
-not_support_api = frozenset(
-    [
-        "paddle.Tensor.coalesce",
-        "paddle.Tensor.index_put",
-        "paddle.Tensor.index_sample",
-        "paddle.Tensor.is_coalesced",
-        "paddle.linalg.pca_lowrank",
-    ]
-)
+with open("tester/base_config.yaml", "r", encoding="utf-8") as f:
+    config = yaml.safe_load(f)
 
-# keep rand_apis and stochastic_behavior_apis lists for future reference when checking if new api configs have random behavior @Cutelemon6
-rand_apis = frozenset(
-    [
-        # "paddle.Tensor.__dir__",
-        # "paddle.Tensor.bernoulli_",
-        # "paddle.Tensor.cauchy_",
-        # "paddle.Tensor.exponential_",
-        # "paddle.Tensor.geometric_",
-        # "paddle.Tensor.log_normal_",
-        # "paddle.Tensor.multinomial",
-        # "paddle.Tensor.normal_",
-        # "paddle.Tensor.uniform_",
-        # "paddle.bernoulli_",
-        # "paddle.binomial",
-        # "paddle.cauchy_",
-        # "paddle.empty",
-        # "paddle.empty_like",
-        # "paddle.geometric_",
-        # "paddle.log_normal",
-        # "paddle.log_normal_",
-        # "paddle.multinomial",
-        # "paddle.normal",
-        # "paddle.normal_",
-        # "paddle.poisson",
-        # "paddle.rand",
-        # "paddle.randint",
-        # "paddle.randint_like",
-        # "paddle.randn",
-        # "paddle.randperm",
-        # "paddle.standard_gamma",
-        # "paddle.standard_normal",
-        # "paddle.uniform",
-    ]
-)
+forward_only_apis = frozenset(config.get("forward_only_apis", []))
+handle_axes_api = frozenset(config.get("handle_axes_api", []))
+not_check_dtype = frozenset(config.get("not_check_dtype", []))
+rand_apis = frozenset(config.get("rand_apis", []))
+stochastic_behavior_apis = frozenset(config.get("stochastic_behavior_apis", []))
+single_op_no_signature_apis = frozenset(config.get("single_op_no_signature_apis", []))
 
-stochastic_behavior_apis = frozenset(
-    [
-        # "paddle.Tensor.top_p_sampling",
-        # "paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm",
-        # "paddle.incubate.nn.functional.fused_dropout_add",
-        # "paddle.incubate.nn.functional.fused_multi_head_attention", # If parameter "dropout_rate=0.5, attn_dropout_rate=0.5 (default value)" is not equal to 0.0 or 1.0, the result involves random calculation.
-        # "paddle.incubate.nn.functional.moe_dispatch",
-        # "paddle.nn.functional.alpha_dropout",
-        # "paddle.nn.functional.dropout",
-        # "paddle.nn.functional.dropout2d",
-        # "paddle.nn.functional.dropout3d",
-        # "paddle.nn.functional.feature_alpha_dropout",
-        # "paddle.nn.functional.fused_feedforward",
-        # "paddle.nn.functional.rrelu", # If parameter "training=True" is set, the result involves random calculation.
-        # "paddle.nn.functional.scaled_dot_product_attention", # If parameter "dropout_p=0.0" is not equal to 0.0 or 1.0, the result involves random calculation.
-        # "paddle.scatter", # If overwrite is set to True and index contain duplicate values, the result involves random calculation.
-        # "paddle.nn.functional.gumbel_softmax",
-    ]
-)
+paddle_error_dismiss = config.get("paddle_error_dismiss", {})
+special_accuracy_atol_rtol = config.get("special_accuracy_atol_rtol", {})
 
-single_op_no_signature_apis = frozenset(
-    [
-        "__add__",
-        "__div__",
-        "__eq__",
-        "__floordiv__",
-        "__ge__",
-        "__gt__",
-        "__le__",
-        "__lt__",
-        "__matmul__",
-        "__mod__",
-        "__mul__",
-        "__ne__",
-        "__pow__",
-        "__radd__",
-        "__rmatmul__",
-        "__rmod__",
-        "__rmul__",
-        "__rpow__",
-        "__rsub__",
-        "__rtruediv__",
-        "__sub__",
-        "__truediv__",
-    ]
-)
+with open("tester/api_config/torch_error_skip.txt", "r") as f:
+    torch_error_skip = frozenset(line.strip() for line in f if line.strip())
 
+del config
 
 def get_arg(api_config, arg_pos, arg_name, default=None):
     if 0 <= arg_pos < len(api_config.args):
@@ -117,466 +42,6 @@ no_signature_api_mappings = {
     }
     for method in single_op_no_signature_apis
 }
-
-
-handle_axes_api = frozenset(
-    [
-        "paddle.max",
-        "paddle.mean",
-        "paddle.min",
-        "paddle.prod",
-        "paddle.sum",
-    ]
-)
-
-# All configs that report dtype diff when not in not_check_dtype list should be
-# copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
-not_check_dtype = frozenset(
-    [
-        "paddle.Tensor.cumsum",
-        "paddle.Tensor.frexp",
-        "paddle.add",
-        "paddle.add_n",
-        "paddle.atan2",
-        "paddle.clip",
-        "paddle.copysign",
-        "paddle.cummax",
-        "paddle.cummin",
-        "paddle.cumprod",
-        "paddle.cumsum",
-        "paddle.floor",
-        "paddle.frexp",
-        "paddle.histogram",
-        "paddle.incubate.nn.functional.fused_layer_norm",
-        "paddle.ldexp",
-        "paddle.linalg.lstsq",
-        "paddle.nn.functional.adaptive_max_pool1d",
-        "paddle.nn.functional.adaptive_max_pool2d",
-        "paddle.nn.functional.adaptive_max_pool3d",
-        "paddle.nn.functional.conv2d_transpose",
-        "paddle.nn.functional.linear",
-        "paddle.nn.functional.max_pool1d",
-        "paddle.nn.functional.max_pool2d",
-        "paddle.nn.functional.max_pool3d",
-        "paddle.nn.functional.one_hot",
-        "paddle.nn.functional.smooth_l1_loss",
-        "paddle.vision.ops.roi_align",
-        "paddle.where",
-    ]
-)
-
-forward_only_apis = frozenset(
-    [
-        "__and__",
-        "__eq__",
-        "__floordiv__",
-        "__ge__",
-        "__gt__",
-        "__invert__",
-        "__le__",
-        "__lshift__",
-        "__lt__",
-        "__ne__",
-        "__or__",
-        "__rand__",
-        "__rand__",
-        "__rfloordiv__",
-        "__rlshift__",
-        "__ror__",
-        "__ror__",
-        "__rrshift__",
-        "__rshift__",
-        "__rxor__",
-        "__rxor__",
-        "__xor__",
-        "accuracy",
-        "accuracy_check",
-        "adadelta_",
-        "adagrad_",
-        "adam_",
-        "adamax_",
-        "adamw_",
-        "add_act_xpu",
-        "add_act_xpu",
-        "add_group_norm_silu",
-        "add_group_norm_silu",
-        "add_layernorm_xpu",
-        "add_layernorm_xpu",
-        "add_n",
-        "addcmul_xpu",
-        "addcmul_xpu",
-        "all",
-        "all_reduce",
-        "allclose",
-        "any",
-        "apply_per_channel_scale",
-        "arange",
-        "argmax",
-        "argmin",
-        "asgd_",
-        "assign_pos",
-        "assign_value",
-        "assign_value_",
-        "atleast_1d",
-        "atleast_2d",
-        "atleast_3d",
-        "auc",
-        "average_accumulates_",
-        "barrier",
-        "batch_fc",
-        "bernoulli",
-        "bincount",
-        "binomial",
-        "bipartite_match",
-        "bitwise_and",
-        "bitwise_invert",
-        "bitwise_left_shift",
-        "bitwise_not",
-        "bitwise_or",
-        "bitwise_right_shift",
-        "bitwise_xor",
-        "blha_get_max_len",
-        "blha_get_max_len",
-        "block_multihead_attention",
-        "block_multihead_attention_",
-        "block_multihead_attention_",
-        "block_multihead_attention_xpu",
-        "block_multihead_attention_xpu",
-        "bn_act_xpu",
-        "bn_act_xpu",
-        "box_clip",
-        "box_coder",
-        "bucketize",
-        "c_allgather",
-        "c_allreduce_avg",
-        "c_allreduce_max",
-        "c_allreduce_min",
-        "c_allreduce_prod",
-        "c_allreduce_sum",
-        "c_broadcast",
-        "c_concat",
-        "c_identity",
-        "c_reduce_avg",
-        "c_reduce_max",
-        "c_reduce_min",
-        "c_reduce_prod",
-        "c_reduce_sum",
-        "c_reducescatter",
-        "c_scatter",
-        "c_split",
-        "c_sync_calc_stream",
-        "c_sync_comm_stream",
-        "check_finite_and_unscale_",
-        "check_numerics",
-        "chunk_eval",
-        "class_center_sample",
-        "clip_by_norm",
-        "coalesce",
-        "coalesce_tensor",
-        "coalesce_tensor_",
-        "conv1d_xpu",
-        "conv1d_xpu",
-        "conv2d_transpose_bias",
-        "conv2d_transpose_xpu",
-        "conv2d_transpose_xpu",
-        "conv2d_xpu",
-        "conv2d_xpu",
-        "conv3d_implicit_gemm",
-        "copy_to",
-        "crf_decoding",
-        "cross_attention_xpu",
-        "cross_attention_xpu",
-        "ctc_align",
-        "data",
-        "decayed_adagrad",
-        "decode_jpeg",
-        "depend",
-        "dequantize_abs_max",
-        "dequantize_linear",
-        "dequantize_log",
-        "dequantize_xpu",
-        "dequantize_xpu",
-        "detection_map",
-        "dgc",
-        "dgc_momentum",
-        "diag_embed",
-        "diff",
-        "dirichlet",
-        "distribute_fpn_proposals",
-        "distributed_fused_lamb",
-        "distributed_fused_lamb_init",
-        "distributed_fused_lamb_init",
-        "distributed_lookup_table",
-        "distributed_push_sparse",
-        "dpsgd",
-        "edit_distance",
-        "eigh",
-        "eigvals",
-        "embedding_grad_dense",
-        "embedding_with_eltwise_add_xpu",
-        "embedding_with_eltwise_add_xpu",
-        "empty",
-        "empty_like",
-        "equal",
-        "equal_all",
-        "eye",
-        "fake_channel_wise_dequantize_max_abs",
-        "fake_channel_wise_quantize_abs_max",
-        "fake_dequantize_max_abs",
-        "fake_quantize_abs_max",
-        "fake_quantize_moving_average_abs_max",
-        "fake_quantize_range_abs_max",
-        "fast_layernorm_xpu",
-        "fast_layernorm_xpu",
-        "fast_where_xpu",
-        "fast_where_xpu",
-        "fc",
-        "fc",
-        "fc_xpu",
-        "fc_xpu",
-        "feed",
-        "fetch",
-        "floor_divide",
-        "fp8_fp8_half_gemm_fused",
-        "ftrl",
-        "full",
-        "full_",
-        "full_batch_size_like",
-        "full_int_array",
-        "full_like",
-        "full_with_tensor",
-        "fused_adam_",
-        "fused_bias_act",
-        "fused_bias_act",
-        "fused_bias_residual_layernorm",
-        "fused_bias_residual_layernorm",
-        "fused_conv2d_add_act",
-        "fused_conv2d_add_act",
-        "fused_dconv_drelu_dbn",
-        "fused_dconv_drelu_dbn",
-        "fused_elementwise_add",
-        "fused_elementwise_add",
-        "fused_elementwise_div",
-        "fused_elementwise_div",
-        "fused_elementwise_mul",
-        "fused_elementwise_mul",
-        "fused_elementwise_sub",
-        "fused_elementwise_sub",
-        "fused_embedding_eltwise_layernorm",
-        "fused_embedding_eltwise_layernorm",
-        "fused_embedding_fc_lstm",
-        "fused_fc_elementwise_layernorm",
-        "fused_fc_elementwise_layernorm",
-        "fused_layer_norm",
-        "fused_linear_param_grad_add",
-        "fused_linear_param_grad_add",
-        "fused_moe",
-        "fused_multi_transformer",
-        "fused_multi_transformer_",
-        "fused_multi_transformer_int8_xpu",
-        "fused_multi_transformer_int8_xpu",
-        "fused_multi_transformer_xpu",
-        "fused_multi_transformer_xpu",
-        "fused_scale_bias_add_relu",
-        "fused_scale_bias_add_relu",
-        "fused_scale_bias_relu_conv_bn",
-        "fused_scale_bias_relu_conv_bn",
-        "fused_token_prune",
-        "fused_token_prune",
-        "fusion_group",
-        "fusion_group",
-        "fusion_gru",
-        "fusion_gru",
-        "fusion_lstm",
-        "fusion_lstm",
-        "fusion_repeated_fc_relu",
-        "fusion_repeated_fc_relu",
-        "fusion_seqconv_eltadd_relu",
-        "fusion_seqconv_eltadd_relu",
-        "fusion_seqexpand_concat_fc",
-        "fusion_seqpool_concat",
-        "fusion_seqpool_cvm_concat",
-        "fusion_seqpool_cvm_concat",
-        "fusion_squared_mat_sub",
-        "fusion_squared_mat_sub",
-        "fusion_transpose_flatten_concat",
-        "fusion_transpose_flatten_concat",
-        "gather_tree",
-        "gaussian",
-        "gemm_epilogue",
-        "gemm_epilogue",
-        "generate_proposals",
-        "generate_sequence_xpu",
-        "generate_sequence_xpu",
-        "get_tensor_from_selected_rows",
-        "graph_khop_sampler",
-        "graph_sample_neighbors",
-        "greater_equal",
-        "greater_than",
-        "group_norm_silu_xpu",
-        "group_norm_silu_xpu",
-        "histogram",
-        "histogram_bin_edges",
-        "histogramdd",
-        "increment",
-        "indices",
-        "is_empty",
-        "isclose",
-        "isfinite",
-        "isin",
-        "isinf",
-        "isnan",
-        "isneginf",
-        "isposinf",
-        "isreal",
-        "lamb_",
-        "lars_momentum",
-        "layer_norm_act_xpu",
-        "layer_norm_act_xpu",
-        "layer_norm_relu_xpu",
-        "less",
-        "less_equal",
-        "less_than",
-        "limit_by_capacity",
-        "linspace",
-        "llm_int8_linear",
-        "load_combine",
-        "lod_array_length",
-        "logical_and",
-        "logical_not",
-        "logical_or",
-        "logical_xor",
-        "logspace",
-        "lower",
-        "lstsq",
-        "mask_adaptive_xpu",
-        "mask_adaptive_xpu",
-        "masked_multihead_attention",
-        "masked_multihead_attention_",
-        "matrix_nms",
-        "matrix_rank",
-        "matrix_rank_tol",
-        "memcpy",
-        "memcpy_d2h",
-        "memcpy_h2d",
-        "merge_selected_rows",
-        "merged_adam_",
-        "merged_momentum_",
-        "moe",
-        "momentum_",
-        "moving_average_abs_max_scale",
-        "multi_encoder_xpu",
-        "multi_encoder_xpu",
-        "multiclass_nms3",
-        "multihead_matmul",
-        "multihead_matmul",
-        "multinomial",
-        "nadam_",
-        "nextafter",
-        "nms",
-        "nonzero",
-        "nop",
-        "not_equal",
-        "npu_identity",
-        "number_count",
-        "numel",
-        "one_hot",
-        "onednn_to_paddle_layout",
-        "ones",
-        "ones_like",
-        "pad2d_xpu",
-        "pad2d_xpu",
-        "partial_allgather",
-        "partial_recv",
-        "partial_send",
-        "print",
-        "prior_box",
-        "prune_gate_by_capacity",
-        "pull_box_sparse",
-        "push_dense",
-        "push_sparse_v2",
-        "qkv_attention_xpu",
-        "qkv_attention_xpu",
-        "qkv_unpack_mha",
-        "qkv_unpack_mha",
-        "qr",
-        "quantize_linear",
-        "quantize_xpu",
-        "quantize_xpu",
-        "radam_",
-        "randint",
-        "random_routing",
-        "randperm",
-        "read_file",
-        "recv_v2",
-        "reindex_graph",
-        "remainder",
-        "rmsprop_",
-        "roformer_relative_embedding_xpu",
-        "roformer_relative_embedding_xpu",
-        "row_conv",
-        "rprop_",
-        "sample_neighbors",
-        "save_combine",
-        "searchsorted",
-        "seed",
-        "self_dp_attention",
-        "self_dp_attention",
-        "send_and_recv",
-        "send_v2",
-        "sequence_mask",
-        "sequence_unpad_xpu",
-        "sequence_unpad_xpu",
-        "sgd_",
-        "shadow_feed",
-        "shadow_feed_tensors",
-        "shape",
-        "shard_index",
-        "share_data_",
-        "sine_pos_xpu",
-        "sine_pos_xpu",
-        "skip_layernorm",
-        "skip_layernorm",
-        "sparse_momentum",
-        "spatial_transformer_resblock_xpu",
-        "spatial_transformer_resblock_xpu",
-        "squeeze_excitation_block",
-        "squeeze_excitation_block",
-        "standard_gamma",
-        "standard_normal",
-        "svd_lowrank",
-        "tdm_child",
-        "tdm_sampler",
-        "to_sparse_csr",
-        "top_p_sampling",
-        "tril_indices",
-        "triu_indices",
-        "truncated_gaussian_random",
-        "uniform",
-        "uniform_random_batch_size_like",
-        "unique",
-        "unique_consecutive",
-        "update_loss_scaling_",
-        "upper",
-        "vander",
-        "variable_length_memory_efficient_attention",
-        "variable_length_memory_efficient_attention",
-        "viterbi_decode",
-        "weight_dequantize",
-        "weight_only_linear_xpu",
-        "weight_only_linear_xpu",
-        "weight_quantize",
-        "weighted_sample_neighbors",
-        "write_to_array",
-        "yolo_box",
-        "yolo_box_head",
-        "yolo_box_post",
-        "yolo_box_xpu",
-        "yolo_box_xpu",
-        "zeros",
-        "zeros_like",
-    ]
-)
 
 class APITestBase:
     def __init__(self, api_config):
@@ -595,6 +60,8 @@ class APITestBase:
         #     return True
         # if not paddle_only and self.api_config.api_name in stochastic_behavior_apis:
         #     return True
+        if not paddle_only and self.api_config.config in torch_error_skip:
+            return True
         for i in range(len(self.api_config.args)):
             if isinstance(self.api_config.args[i], TensorConfig):
                 if self.api_config.args[i].dtype in ["float8_e5m2", "float8_e4m3fn"]:
@@ -932,21 +399,32 @@ class APITestBase:
     def get_paddle_input_list(self):
         result = []
 
-        for i in range(len(self.paddle_args)):
-            if isinstance(self.paddle_args[i], paddle.Tensor):
-                result.append(self.paddle_args[i])
-            elif isinstance(self.paddle_args[i], tuple) or isinstance(self.paddle_args[i], list):
-                for item in self.paddle_args[i]:
-                    if isinstance(item, paddle.Tensor):
-                        result.append(item)
+        for arg in self.paddle_args:
+            if isinstance(arg, paddle.Tensor):
+                result.append(arg)
+            elif isinstance(arg, (tuple, list)):
+                result.extend(item for item in arg if isinstance(item, paddle.Tensor))
 
-        for key, value in self.paddle_kwargs.items():
-            if isinstance(value, paddle.Tensor):
-                result.append(value)
-            elif isinstance(value, tuple) or isinstance(value, list):
-                for item in value:
-                    if isinstance(item, paddle.Tensor):
-                        result.append(item)
+        # 按 merged_kwargs 顺序遍历，确保 paddle 关键字参数与 torch 参数顺序一致，避免反向比较无法对应
+        # torch 参数顺序通过 paddle_sig.bind 绑定，见 ana_torch_api_info()
+        if hasattr(self, "paddle_merged_kwargs_config"):
+            for key in self.paddle_merged_kwargs_config:
+                if key in self.paddle_kwargs:
+                    value = self.paddle_kwargs[key]
+                    if isinstance(value, paddle.Tensor):
+                        result.append(value)
+                    elif isinstance(value, (tuple, list)):
+                        result.extend(
+                            item for item in value if isinstance(item, paddle.Tensor)
+                        )
+        else:  #  paddle_only
+            for key, value in self.paddle_kwargs.items():
+                if isinstance(value, paddle.Tensor):
+                    result.append(value)
+                elif isinstance(value, (tuple, list)):
+                    result.extend(
+                        item for item in value if isinstance(item, paddle.Tensor)
+                    )
 
         return result
 
@@ -1275,6 +753,9 @@ class APITestBase:
             numpy.testing.assert_equal(np_paddle, np_torch)
             return
 
+        if self.api_config.api_name in special_accuracy_atol_rtol:
+            atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
+
         numpy.testing.assert_allclose(
             np_paddle,
             np_torch,
@@ -1306,6 +787,9 @@ class APITestBase:
                 f"DESIRED: (shape={torch_tensor.shape}, dtype={torch_tensor.dtype})\n"
                 f"{torch_tensor}"
             )
+
+        if self.api_config.api_name in special_accuracy_atol_rtol:
+            atol, rtol = special_accuracy_atol_rtol[self.api_config.api_name]
 
         test_tol = getattr(self, "test_tol", False)
         is_backward = getattr(self, "is_backward", False)
@@ -1432,3 +916,13 @@ class APITestBase:
     def is_forward_only(self):
         api = self.api_config.api_name[self.api_config.api_name.rindex(".")+1:]
         return api in forward_only_apis
+
+    def should_ignore_paddle_error(self, error_msg):
+        dismiss_errors = paddle_error_dismiss.get(self.api_config.api_name, None)
+        if dismiss_errors is None:
+            return False
+        if isinstance(dismiss_errors, str):
+            return dismiss_errors in error_msg
+        elif isinstance(dismiss_errors, (list, tuple)):
+            return any(error in error_msg for error in dismiss_errors)
+        return False

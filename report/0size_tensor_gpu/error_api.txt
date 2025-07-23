@@ -180,7 +180,6 @@ paddle.nn.functional.adaptive_log_softmax_with_loss
 paddle.nn.functional.adaptive_max_pool1d
 paddle.nn.functional.adaptive_max_pool2d
 paddle.nn.functional.adaptive_max_pool3d
-paddle.nn.functional.affine_grid
 paddle.nn.functional.avg_pool1d
 paddle.nn.functional.avg_pool2d
 paddle.nn.functional.avg_pool3d
@@ -195,7 +194,6 @@ paddle.nn.functional.conv3d
 paddle.nn.functional.conv3d_transpose
 paddle.nn.functional.cosine_similarity
 paddle.nn.functional.cross_entropy
-paddle.nn.functional.ctc_loss
 paddle.nn.functional.dice_loss
 paddle.nn.functional.embedding
 paddle.nn.functional.gather_tree
@@ -213,7 +211,6 @@ paddle.nn.functional.log_loss
 paddle.nn.functional.log_softmax
 paddle.nn.functional.lp_pool1d
 paddle.nn.functional.lp_pool2d
-paddle.nn.functional.margin_cross_entropy
 paddle.nn.functional.margin_ranking_loss
 paddle.nn.functional.max_pool1d
 paddle.nn.functional.max_pool2d
@@ -223,8 +220,6 @@ paddle.nn.functional.max_unpool2d
 paddle.nn.functional.max_unpool3d
 paddle.nn.functional.maxout
 paddle.nn.functional.mse_loss
-paddle.nn.functional.multi_margin_loss
-paddle.nn.functional.nll_loss
 paddle.nn.functional.normalize
 paddle.nn.functional.one_hot
 paddle.nn.functional.pad

@@ -270,19 +270,6 @@ expanded_inputs = torch.broadcast_tensors(*inputs)
 class Adaptive_log_softmax_with_lossRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
-def scatter_nd(index, updates, shape):
-    output = torch.zeros(shape, dtype=updates.dtype).to(updates.device)
-    if index.numel() == 0:
-        result = output + updates
-    else:
-        flat_index = index.view(-1, index.size(-1))
-        flat_updates = updates.reshape(flat_index.size(0), *updates.shape[index.dim()-1:])
-        for i in range(flat_index.size(0)):
-            idx_tuple = tuple(flat_index[i])
-            output[idx_tuple] += flat_updates[i]
-        result = output   
-    return result
-        
 input = locals().get('input')
 label = locals().get('label')
 head_weight = locals().get('head_weight')
@@ -291,83 +278,66 @@ cutoffs = locals().get('cutoffs')
 head_bias = locals().get('head_bias', None)
 
 target_dim = label.dim()
-
 is_batched = target_dim > 0
-input = input if is_batched else input.unsqueeze(0)
-label = label if is_batched else label.unsqueeze(0)
+if not is_batched:
+    input = input.unsqueeze(0)
+    label = label.unsqueeze(0)
 
-used_rows = 0
 batch_size = label.shape[0]
+output = input.new_zeros((batch_size,))
+gather_inds = input.new_empty((batch_size,), dtype=torch.long)
 
-output = torch.zeros([batch_size], dtype = input.dtype)
-gather_inds = torch.empty([batch_size], dtype = label.dtype)
+cutoff_values = [0] + list(cutoffs)
+used_rows = 0
 
-cutoff_values = [0, *cutoffs]
 for i in range(len(cutoff_values) - 1):
-    index1 = cutoff_values[i]
-    index2 = cutoff_values[i + 1]
-    label_mask = (label >= index1) & (label < index2)
-    row_indices = label_mask.nonzero().squeeze()
+    low_idx = cutoff_values[i]
+    high_idx = cutoff_values[i + 1]
+    label_mask = (label >= low_idx) & (label < high_idx)  # shape: (B,)
+    row_indices = label_mask.nonzero(as_tuple=False).squeeze()
     if row_indices.numel() == 0:
         continue
     if row_indices.dim() == 0:
         row_indices = row_indices.unsqueeze(0)
+
     if i == 0:
-        scatter_output = scatter_nd(
-            index = torch.unsqueeze(row_indices, 1),
-            updates = torch.masked_select(label, label_mask),
-            shape = gather_inds.shape
-        )
-        gather_inds = scatter_output
+        gather_inds[row_indices] = label[label_mask]
     else:
-        relative_label = label[label_mask] - index1
-        input_subset = input.index_select(index = row_indices, dim = 0)
+
+        relative_label = label[label_mask] - low_idx
+        input_subset = input[row_indices]
+
+
+        cluster_hidden = torch.nn.functional.linear(
+            input_subset, tail_weights[i-1][0].t()
+        )  
         cluster_output = torch.nn.functional.linear(
-            input = input_subset, weight = tail_weight[i-1][0].t()
-        )
-        cluster_output = torch.nn.functional.linear(
-            input = cluster_output, weight = tail_weight[i-1][1].t()
-        )
+            cluster_hidden, tail_weights[i-1][1].t()
+        ) 
 
-        cluster_index = cutoffs[0] + i - 1
-        
-        gather_inds = torch.index_fill(
-            gather_inds, 0, row_indices, cluster_index
-        )
+        cluster_index = cutoffs[0] + i - 1  
+        gather_inds[row_indices] = cluster_index
 
-        cluster_logprob = torch.nn.functional.log_softmax(
-            cluster_output, dim = 1
-        )
-
-        local_logprob = torch.gather(
-            cluster_logprob, dim = 1, index = relative_label.unsqueeze(1)
-        )
-        
-        scatter_output = scatter_nd(
-            row_indices.unsqueeze(1), local_logprob.squeeze(1), output.shape
-        )
-        output = (
-            output * (scatter_output == 0).float()
-            + scatter_output
-        )
+        cluster_logprob = torch.log_softmax(cluster_output, dim=1)
+        local_logprob = cluster_logprob.gather(1, relative_label.unsqueeze(1)).squeeze(1)
+        output[row_indices] = local_logprob
     used_rows += row_indices.numel()
-if head_bias is not None:
-    head_output = torch.nn.functional.linear(
-        input = input, weight = head_weight.t(), bias = head_bias
+
+if used_rows != batch_size:
+    raise ValueError(
+        f"label values should be in [0, n_classes - 1], "
+        f"but values in range [{label.min().item()}, {label.max().item()}] "
+        "were found. "
     )
-else:
-    head_output = torch.nn.functional.linear(
-        input = input, weight = head_weight.t()
-    )    
-head_logprob = torch.nn.functional.log_softmax(head_output, dim = 1)
-output += torch.gather(
-    head_logprob, dim = 1, index = gather_inds.unsqueeze(1)
-).squeeze()
+
+head_output = torch.nn.functional.linear(input, head_weight.t(), head_bias)
+head_logprob = torch.log_softmax(head_output, dim=1)
+output = output + head_logprob.gather(1, gather_inds.unsqueeze(1)).squeeze(1)
 loss = (-output).mean()
 
 if not is_batched:
     output = output.squeeze(0)
-    
+
 result = [output, loss]
 """
         code = Code(core=core.splitlines())
@@ -716,6 +686,8 @@ use_softmax = locals().get('use_softmax',True)
 _kwargs['target'] = _kwargs['target'].squeeze(-1)
 if "weight" in _kwargs:
     _kwargs['weight'].requires_grad = False
+if _kwargs['target'].dtype == torch.int32:
+    _kwargs['target'] = _kwargs['target'].long()
 """
         core = """
 result = torch.nn.functional.cross_entropy(**_kwargs)
@@ -1894,6 +1866,17 @@ def fused_bias_act(
 ) -> torch.Tensor:
     import torch.nn.functional as F
 
+    def swiglu(x):
+        x, gate = x.chunk(2, dim=-1)
+        return x * torch.sigmoid(x) * gate
+
+    def geglu(x):
+        x, gate = x.chunk(2, dim=-1)
+        return F.gelu(x) * gate
+    
+    if dequant_scales is not None:
+        x = x * dequant_scales
+
     if compute_dtype != 'default':
         if compute_dtype == 'fp16':
             compute_dtype = 'float16'
@@ -1905,30 +1888,10 @@ def fused_bias_act(
             x = x.to(getattr(torch, compute_dtype))
     else:
         x = x.float() if not x.is_floating_point() else x
-    if dequant_scales is not None:
-        dequant_scales = dequant_scales.to(x.dtype)
-        x = x * dequant_scales
+
     if bias is not None:
         bias = bias.to(x.dtype)
         x = x + bias
-    if shift is not None:
-        repeat_factor = x.shape[-1] // shift.shape[-1]
-        shift = shift.repeat(repeat_factor)
-        shift = shift.to(x.dtype)
-        x = x + shift
-    if smooth is not None:
-        repeat_factor = x.shape[-1] // smooth.shape[-1]
-        smooth = smooth.repeat(repeat_factor)
-        smooth = smooth.to(x.dtype)
-        x = x * smooth
-
-    def swiglu(x):
-        x, gate = x.chunk(2, dim=-1)
-        return x * torch.sigmoid(x) * gate
-
-    def geglu(x):
-        x, gate = x.chunk(2, dim=-1)
-        return F.gelu(x) * gate
 
     act_method = act_method.lower()
     if act_method == 'gelu':
@@ -1945,17 +1908,31 @@ def fused_bias_act(
         x = geglu(x)
     else:
         raise ValueError(f"Unsupported activation method: {act_method}")
+    
+    if shift is not None:
+        repeat_factor = x.shape[-1] // shift.shape[-1]
+        shift = shift.repeat(repeat_factor)
+        shift = shift.to(x.dtype)
+        x = x + shift
+
+    if smooth is not None:
+        repeat_factor = x.shape[-1] // smooth.shape[-1]
+        smooth = smooth.repeat(repeat_factor)
+        smooth = smooth.to(x.dtype)
+        x = x * smooth
 
     if quant_scale > 0:
-        x = x / quant_scale
+        x = quant_max_bound * quant_scale * x
         if quant_round_type == 0:
-            x = torch.round(x)  # Round to nearest, ties to even
+            x = torch.round(x)
         elif quant_round_type == 1:
             x = torch.where(x >= 0, torch.ceil(x - 0.5), torch.floor(x + 0.5))
         else:
             raise ValueError(f"Unsupported quant_round_type: {quant_round_type}")
-        x = x * quant_scale
         x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound)
+        
+        x = x.to(torch.int8)
+
     return x
 """
         core = "result = fused_bias_act(**kwargs)"
@@ -3381,6 +3358,7 @@ prior_dist = locals().get('prior_dist', None)
 if prior_dist is None:
     prior_dist = torch.full((1, num_classes,), 1.0 / num_classes)
 result = (1 - epsilon) * label + epsilon * prior_dist
+result = result.to(dtype=label.dtype)
 """
         code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
@@ -3719,7 +3697,7 @@ if axis is None:
     x_flat = x.flatten()
     length = x_flat.numel()
     if length % 2 == 0 and mode == 'avg':
-        sorted_x = torch.sort(x_flat).values
+        sorted_x = torch.sort(x_flat, stable=True).values
         mid = length // 2
         median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
     else:
@@ -3730,7 +3708,7 @@ else:
     if mode == 'avg':
         length = x.shape[axis] if x.ndim > 0 else 1
         if length % 2 == 0:
-            sorted_x = torch.sort(x, dim=axis).values
+            sorted_x = torch.sort(x, dim=axis, stable=True).values
             mid = length // 2
             median = (sorted_x.index_select(axis, torch.tensor([mid - 1])) + 
                       sorted_x.index_select(axis, torch.tensor([mid]))) / 2
@@ -4255,6 +4233,15 @@ if not pad_from_left_axis:
         right = _kwargs["pad"][2 * i + 1]
         new_pad = [right, left] + new_pad
     _kwargs["pad"] = new_pad
+elif len(_kwargs["pad"]) == 2 * _kwargs['input'].ndim:
+    num_dims = len(_kwargs["pad"]) // 2
+    new_pad = []
+    for i in range(num_dims):
+        left = _kwargs["pad"][2 * i]
+        right = _kwargs["pad"][2 * i + 1]
+        new_pad.insert(0, right)
+        new_pad.insert(0, left)
+    _kwargs["pad"] = new_pad
 """
         core = """
 result = torch.nn.functional.pad(**_kwargs)
@@ -4496,47 +4483,48 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if isinstance(padding, str):
-    if padding == "VALID":
-        padding = 0
-    elif padding == "SAME":
-        input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
-        pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
-        padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
-        if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
-            x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+if not exclusive:
+    if isinstance(padding, str):
+        if padding == "VALID":
             padding = 0
-elif isinstance(padding, (list, tuple)):
-    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-        max_pad = []
-        for i in range(3):
-            max_pad.append(kernel_size[i] // 2)
-        exceeds_max = False
-        for p, m in zip(padding, max_pad):
-            if p > m:
-                exceeds_max = True
-                break
-        if exceeds_max:
-            pad_d, pad_h, pad_w = padding
-            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+        elif padding == "SAME":
+            input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+            pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+            padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
+            if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
+                x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
+                padding = 0
+    elif isinstance(padding, (list, tuple)):
+        if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+            max_pad = []
+            for i in range(3):
+                max_pad.append(kernel_size[i] // 2)
+            exceeds_max = False
+            for p, m in zip(padding, max_pad):
+                if p > m:
+                    exceeds_max = True
+                    break
+            if exceeds_max:
+                pad_d, pad_h, pad_w = padding
+                x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
+                padding = 0
+            else:
+                padding = tuple(padding)
+        elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+            pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
             padding = 0
-        else:
-            padding = tuple(padding)
-    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
-        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
-        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-        padding = 0
-    elif len(padding) == 5: # Paddle 的 5D 填充格式
-        if data_format == "NCDHW":
-            pad_front, pad_back = padding[2]
-            pad_top, pad_bottom = padding[3]
-            pad_left, pad_right = padding[4]
-        else: # NDHWC
-            pad_front, pad_back = padding[1]
-            pad_top, pad_bottom = padding[2]
-            pad_left, pad_right = padding[3]
-        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-        padding = 0
+        elif len(padding) == 5: # Paddle 的 5D 填充格式
+            if data_format == "NCDHW":
+                pad_front, pad_back = padding[2]
+                pad_top, pad_bottom = padding[3]
+                pad_left, pad_right = padding[4]
+            else: # NDHWC
+                pad_front, pad_back = padding[1]
+                pad_top, pad_bottom = padding[2]
+                pad_left, pad_right = padding[3]
+            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+            padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post_1d = """
@@ -4725,10 +4713,7 @@ for i, s in enumerate(shape):
         shape[i] = elements
 """
         core = """
-if x.numel() == 0:
-    result = torch.zeros(shape, dtype=x.dtype)
-else:
-    result = torch.reshape(x, shape)
+result = torch.reshape(x, shape)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)

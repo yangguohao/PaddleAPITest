@@ -64,9 +64,9 @@ class APITestAccuracy(APITestBase):
                 return
 
             # torch_args 与 torch_kwargs 是尚未映射的 torch 参数（即按 paddle 的参数顺序与关键字排列的 torch tensors）
-            # 以下代码等价于:
+            # (弃用)以下代码等价于:
             # torch_output = Paddle2TorchConverter.execute(convert_result, self.torch_args, self.torch_kwargs)
-            # 准备执行环境，将参数(torch tensors)直接映射至locals
+            # 准备执行环境，将参数(torch tensors)直接映射至locals()
             exec_globals = {"torch": torch}
             exec_locals = {
                 "args": self.torch_args,
@@ -79,7 +79,7 @@ class APITestAccuracy(APITestBase):
                     exec_locals["fused_log_softmax"] = False
 
             # convert_result.is_torch_corresponding 为 True 时代表有对应的 Torch API
-            # 执行 *_compiled 编译好的代码速度更快
+            # 执行 *_compiled 编译好的代码速度更快，定位 compile error 时可删去 _compiled
             code = convert_result.code
             if code.preprocess_compiled:
                 exec(code.preprocess_compiled, exec_globals, exec_locals)
@@ -120,7 +120,7 @@ class APITestAccuracy(APITestBase):
 
             paddle.base.core.eager._for_test_check_cuda_error()
         except Exception as err:
-            print("[torch error]", self.api_config.config, flush=True)
+            print("[torch error]", self.api_config.config, "\n", str(err), flush=True)
             traceback.print_exc()
             write_to_log("torch_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
@@ -142,11 +142,16 @@ class APITestAccuracy(APITestBase):
                     )
                     torch_grad_success = True
                 del inputs_list, result_outputs, result_outputs_grads
-                paddle.base.core.eager._for_test_check_cuda_error()
             except Exception as err:
                 print(str(err), flush=True)
                 if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
                     raise err
+            try:
+                paddle.base.core.eager._for_test_check_cuda_error()
+            except Exception as err:
+                print("[torch error] backward", self.api_config.config, "\n", str(err), flush=True)
+                write_to_log("torch_error", self.api_config.config)
+                raise
         else:
             del self.torch_args, self.torch_kwargs
 
@@ -210,6 +215,10 @@ class APITestAccuracy(APITestBase):
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
                 paddle_output = self.paddle_args[0] if len(self.paddle_args) > 0 else next(iter(self.paddle_kwargs.values()))
         except Exception as err:
+            if self.should_ignore_paddle_error(str(err)):
+                print("[Pass]", self.api_config.config, flush=True)
+                write_to_log("pass", self.api_config.config)
+                return
             print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
             if "CUDA error" in str(err) or "memory corruption" in str(err):
@@ -223,7 +232,7 @@ class APITestAccuracy(APITestBase):
         except Exception as err:
             print("[cuda error]", self.api_config.config, "\n", str(err), flush=True)
             write_to_log("paddle_error", self.api_config.config)
-            return
+            raise
 
         if self.api_config.api_name == "paddle.incubate.nn.functional.fused_rms_norm":
             paddle_output = paddle_output[0]
@@ -235,7 +244,8 @@ class APITestAccuracy(APITestBase):
         elif self.api_config.api_name in {
             "paddle.mode",
             "paddle.Tensor.mode",
-            "paddle.incubate.nn.functional.fused_layer_norm"
+            "paddle.incubate.nn.functional.fused_layer_norm",
+            "paddle.kthvalue",
         }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
@@ -376,7 +386,11 @@ class APITestAccuracy(APITestBase):
                     paddle_out_grads = paddle.grad(result_outputs, inputs_list, grad_outputs=result_outputs_grads,allow_unused=True)
                 del inputs_list, result_outputs, result_outputs_grads
             except Exception as err:
-                print("[paddle error]", self.api_config.config, "\n", str(err), flush=True)
+                if self.should_ignore_paddle_error(str(err)):
+                    print("[Pass]", self.api_config.config, flush=True)
+                    write_to_log("pass", self.api_config.config)
+                    return
+                print("[paddle error] backward", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
                 if "CUDA error" in str(err) or "memory corruption" in str(err):
                     raise err
@@ -389,7 +403,7 @@ class APITestAccuracy(APITestBase):
             except Exception as err:
                 print("[cuda error] backward", self.api_config.config, "\n", str(err), flush=True)
                 write_to_log("paddle_error", self.api_config.config)
-                return
+                raise
 
             if self.api_config.api_name == "paddle.Tensor.__setitem__":
                 torch_out_grads = torch_out_grads[0]
@@ -409,6 +423,7 @@ class APITestAccuracy(APITestBase):
                 "paddle.incubate.softmax_mask_fuse",
                 "paddle.nn.functional.binary_cross_entropy",
                 "paddle.nn.functional.binary_cross_entropy_with_logits",
+                "paddle.nn.functional.cross_entropy",
                 "paddle.nn.functional.sigmoid_focal_loss",
                 "paddle.nn.functional.gaussian_nll_loss",
                 "paddle.nn.functional.kl_div",

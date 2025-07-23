@@ -92,28 +92,24 @@ for content in logs:
         "CUDA out of memory" in content
         or "Out of memory error" in content
         or "[torch error]" in content
-        or "Invalid TensorConfig" in content
-        or "cannot reshape" in content
-        or "Unable to allocate" in content
-        or "(ResourceExhausted)" in content
-        or "(NotFound)" in content
-        or "Cannot take a larger sample" in content
+        or "[numpy error]" in content
+        or "[paddle_to_torch]" in content
         or "(Cannot allocate memory)" in content
-        or "Too large tensor to get cached numpy" in content
-        or "config_analyzer.py" in content
-        or "output type diff error" in content
         or "(InvalidArgument)" in content
+        or "(NotFound)" in content
+        or "(ResourceExhausted)" in content
         or "(Unimplemented)" in content
+        or "Invalid TensorConfig" in content
+        or "Unable to allocate" in content
+        or "Cannot take a larger sample" in content
+        or "output type diff error" in content
         or "should be" in content
         or "must equal" in content
         or "received:" in content
         or "incorrect shape" in content
         or "variance is of incorrect shape" in content
-        or "'numpy.int64' object is not iterable" in content
-        or "low >= high" in content
         or "The data type of input Variable" in content
         or "should satisfy" in content
-        or "[numpy error]" in content
     ):
         invalid_logs[key] = content
     else:
