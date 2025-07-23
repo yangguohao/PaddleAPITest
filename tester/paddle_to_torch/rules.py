@@ -670,29 +670,39 @@ shp = label.shape
 if len(input.shape) > 2:
     perm = [0] + [len(input.shape)-1]+ [i for i in range(1,len(input.shape)-1)]
     input = input.permute(*perm)
-soft_label = locals().get('soft_label',False)
 axis = locals().get('axis',-1)
 label = label.squeeze(-1)
 if weight is not None:
     weight.requires_grad = False
 if label.dtype == torch.int32:
     label = label.long()
-if reduction == "mean" and soft_label and weight is not None and shp == input.shape:
-    sum_weight = (label@weight).sum()
-    reduction = "sum"
-else:
-    sum_weight = 1
+if soft_label and weight is not None and shp == input.shape:
+    reduction_original = reduction
+    weight_original = weight
+    reduction = "none"
+    weight = None
 """
         core = f"""
-sum_weight = _kwargs.pop("sum_weight")
-result = {self.torch_api}(**_kwargs)/sum_weight
+result = {self.torch_api}(**_kwargs)
 """
         post = """
-if "reduction" in _kwargs and _kwargs['reduction'] == "none":
+if reduction_original is not None:
+    reduction = reduction_original
+    loss_weight = label@weight_original
+    sum_weight = loss_weight.sum()
+    result *= loss_weight
+else:
+    sum_weight = result.numel()
+    
+if reduction == "none":
     if soft_label:
         result = result.unsqueeze(-1)
     else:
         result = result.reshape(shp)
+elif reduction == "sum":
+    result = result.sum()
+else:
+    result = result.sum()/sum_weight
 """
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
