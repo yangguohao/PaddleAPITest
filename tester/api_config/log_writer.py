@@ -462,8 +462,8 @@ def log_accuracy_stable(error_msg, api, config, dtype, comp):
         max_rel_diff = None
 
         # 使用正则表达式提取误差值
-        abs_pattern = r"(?:Absolute|Greatest absolute) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
-        rel_pattern = r"(?:Relative|Greatest relative) difference: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        abs_pattern = r"(?:Absolute|Greatest absolute|Max absolute) difference(?: among violations)?: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        rel_pattern = r"(?:Relative|Greatest relative|Max relative) difference(?: among violations)?: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
         abs_match = re.search(abs_pattern, error_msg)
         rel_match = re.search(rel_pattern, error_msg)
 

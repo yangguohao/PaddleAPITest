@@ -2,6 +2,7 @@ import traceback
 
 import paddle
 import torch
+import numpy
 
 from .api_config.log_writer import log_accuracy_stable, write_to_log
 from .base import APITestBase
@@ -484,7 +485,10 @@ class APITestAccuracyStable(APITestBase):
         if not tensor2.is_contiguous():
             tensor2 = tensor2.contiguous()
 
+        api_name = self.api_config.api_name
+        config = self.api_config.config[:120000]
         dtype = self.api_config.dtype
+        check_dtype = self.should_check_dtype()
 
         first, second = "Torch", "Torch"
         if isinstance(tensor1, paddle.Tensor):
@@ -513,10 +517,10 @@ class APITestAccuracyStable(APITestBase):
                 rtol=0.0,
                 atol=0.0,
                 equal_nan=True,
+                check_device=False,
+                check_dtype=check_dtype,
                 msg=error_msg,
             )
-            api_name = self.api_config.api_name
-            config = self.api_config.config[:120000]
             log_accuracy_stable(
                 "Identical",
                 api_name,
@@ -525,15 +529,44 @@ class APITestAccuracyStable(APITestBase):
                 comp,
             )
         except Exception as err:
-            err_str = str(err)
-            err_info = err_str.split("\n", maxsplit=2)[1] if "\n" in err_str else None
-            if err_info and (
-                err_info.startswith("Tensor-likes") or err_info.startswith("Scalars")
-            ):
-                api_name = self.api_config.api_name
-                config = self.api_config.config[:120000]
+            is_acc_err = False
+            err_info = ""
+            if str(err).startswith("Comparing"):
+                print(f"torch_assert failed, try np_assert", flush=True)
+                try:
+                    numpy.testing.assert_allclose(
+                        tensor1.cpu().numpy(),
+                        tensor2.cpu().numpy(),
+                        rtol=0.0,
+                        atol=0.0,
+                        equal_nan=True,
+                        strict=True,
+                    )
+                    log_accuracy_stable(
+                        "Identical",
+                        api_name,
+                        config,
+                        dtype,
+                        comp,
+                    )
+                except Exception as err_np:
+                    err_list = str(err_np).split("\n", maxsplit=5)
+                    if len(err_list) == 5 and err_list[3].startswith(
+                        "Mismatched elements"
+                    ):
+                        is_acc_err = True
+                        err_info = err_list[4]
+            else:
+                err_list = str(err).split("\n", maxsplit=5)
+                if len(err_list) == 5 and (
+                    err_list[1].startswith("Tensor-likes")
+                    or err_list[1].startswith("Scalars")
+                ):
+                    is_acc_err = True
+                    err_info = err_list[4]
+            if is_acc_err:
                 log_accuracy_stable(
-                    err_str,
+                    err_info,
                     api_name,
                     config,
                     dtype,
