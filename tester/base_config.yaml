@@ -466,6 +466,7 @@ forward_only_apis:
   - partial_allgather
   - partial_recv
   - partial_send
+  - pinv
   - print
   - prior_box
   - prune_gate_by_capacity

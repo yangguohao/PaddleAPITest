@@ -135,7 +135,6 @@ paddle.isin
 paddle.kron
 paddle.lerp
 paddle.lgamma
-paddle.linalg.cholesky
 paddle.linalg.cholesky_solve
 paddle.linalg.cond
 paddle.linalg.cov
