@@ -374,6 +374,21 @@ class APITestBase:
                 self.paddle_args[3] = "gels"
             elif "driver" in self.paddle_kwargs:
                 self.paddle_kwargs["driver"] = "gels"
+        elif self.api_config.api_name == "paddle.nn.functional.cross_entropy":
+            use_softmax = True
+            if 0 <= 8 < len(self.api_config.args):
+                use_softmax = self.api_config.args[8]
+            elif "use_softmax" in self.api_config.kwargs:
+                use_softmax = self.api_config.kwargs["use_softmax"]
+            
+            if not use_softmax:
+                axis = -1
+                if 0 <= 7 < len(self.api_config.args):
+                    axis = self.api_config.args[7]
+                elif "axis" in self.api_config.kwargs:
+                    axis = self.api_config.kwargs["axis"]
+                self.paddle_args[0] = paddle.exp(self.paddle_args[0])
+                self.paddle_args[0] = self.paddle_args[0] / self.paddle_args[0].sum(axis=axis, keepdim=True)
 
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":

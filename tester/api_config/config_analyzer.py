@@ -1883,12 +1883,7 @@ class TensorConfig:
                 dtype="float32" if self.dtype == 'bfloat16' else self.dtype,
                 place=self.place
             )
-            if api_config.api_name == "paddle.nn.functional.cross_entropy":
-                if self.check_arg(api_config, 0, "input") and not self.get_arg(api_config, 8, "use_softmax", True):
-                    axis = self.get_arg(api_config, 7, "axis", -1)
-                    self.paddle_tensor = paddle.exp(self.paddle_tensor)
-                    self.paddle_tensor = self.paddle_tensor / self.paddle_tensor.sum(axis=axis, keepdim=True)
-                    
+
             self.paddle_tensor.stop_gradient = False
             if self.dtype == "bfloat16":
                 self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
