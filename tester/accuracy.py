@@ -256,10 +256,10 @@ class APITestAccuracy(APITestBase):
 
 
         self.is_backward = False
-        def compare_paddle_and_torch(paddle_output, torch_output) -> bool:
+        def compare_paddle_and_torch(paddle_tensor, torch_tensor) -> bool:
             try:
-                # self.np_assert_accuracy(paddle_output.numpy(), torch_output.numpy(), atol=self.atol, rtol=self.rtol)
-                self.torch_assert_accuracy(paddle_output, torch_output, atol=self.atol, rtol=self.rtol)
+                # self.np_assert_accuracy(paddle_tensor.numpy(), torch_tensor.numpy(), atol=self.atol, rtol=self.rtol)
+                self.torch_assert_accuracy(paddle_tensor, torch_tensor, atol=self.atol, rtol=self.rtol)
             except Exception as err:
                 if self.is_backward:
                     print(f"[accuracy error] backward {self.api_config.config}\n{str(err)}", flush=True)
@@ -312,7 +312,7 @@ class APITestAccuracy(APITestBase):
                     write_to_log("accuracy_error", self.api_config.config)
                     return
                 else:
-                    if not compare_paddle_and_torch(paddle_output, torch_output):
+                    if not compare_paddle_and_torch(paddle_item, torch_item):
                         return
 
         if torch_grad_success:
@@ -381,7 +381,7 @@ class APITestAccuracy(APITestBase):
 
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
-                    if not compare_paddle_and_torch(paddle_output, torch_output):
+                    if not compare_paddle_and_torch(paddle_out_grads, torch_out_grads):
                         return
                 else:
                     print("[accuracy error] backward", self.api_config.config, "\n[output type diff error1], ", type(torch_out_grads), flush=True)
@@ -409,7 +409,7 @@ class APITestAccuracy(APITestBase):
                         write_to_log("accuracy_error", self.api_config.config)
                         return
                     else:
-                        if not compare_paddle_and_torch(paddle_output, torch_output):
+                        if not compare_paddle_and_torch(paddle_item, torch_item):
                             return
 
         print("[Pass]", self.api_config.config, flush=True)

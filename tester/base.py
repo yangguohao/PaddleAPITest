@@ -103,11 +103,12 @@ class APITestBase:
             return False
 
         if self.api_config.api_name == "paddle.assign":
-            has_list_arg = len(self.paddle_args) and isinstance(
-                self.paddle_args[0], list
+            has_list_arg = len(self.paddle_args_config) and isinstance(
+                self.paddle_args_config[0], list
             )
             has_second_arg = (
-                len(self.paddle_args) > 1 and self.paddle_args[1] is not None
+                len(self.paddle_args_config) > 1
+                and self.paddle_args_config[1] is not None
             )
             if has_list_arg or has_second_arg:
                 return False
