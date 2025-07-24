@@ -144,7 +144,6 @@ def main():
             not options.paddle_gpu_performance
             and not options.torch_gpu_performance
             and not options.paddle_torch_gpu_performance
-            and not options.accuracy_stable
         ):
             torch.cuda.empty_cache()
             paddle.device.cuda.empty_cache()
