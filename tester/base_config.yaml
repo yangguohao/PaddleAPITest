@@ -18,6 +18,7 @@ paddle_error_dismiss:
   paddle.incubate.nn.functional.variable_length_memory_efficient_attention: "(InvalidArgument) the kernel should not be launched"
   paddle.Tensor.inverse: "(Unimplemented) cublasMatInv does not support batch_size > 65536."
   paddle.incubate.nn.functional.fused_rms_norm : "(Fatal) Failed to launch RMSNorm kernel"
+  paddle.nn.functional.ctc_loss: "(InvalidArgument) The total number of elements "
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
