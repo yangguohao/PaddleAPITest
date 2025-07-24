@@ -670,43 +670,48 @@ if input2.dim() == 1:
 
 class CrossEntropyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
         pre = """
-_kwargs = {}
-for paddle_param, torch_param in {
-    "input": "input",
-    "label": "target",
-    "weight": "weight",
-    "ignore_index": "ignore_index",
-    "reduction": "reduction",
-    "label_smoothing": "label_smoothing"
-}.items():
-    if paddle_param in locals() and locals()[paddle_param] is not None:
-        _kwargs[torch_param] = locals()[paddle_param]
-shp = _kwargs['target'].shape
-if len(_kwargs["input"].shape) > 2:
-    perm = [0] + [len(_kwargs["input"].shape)-1]+ [i for i in range(1,len(_kwargs["input"].shape)-1)]
-    _kwargs['input'] = _kwargs['input'].permute(*perm)
-soft_label = locals().get('soft_label',False)
+shp = label.shape
+if len(input.shape) > 2:
+    perm = [0] + [len(input.shape)-1]+ [i for i in range(1,len(input.shape)-1)]
+    input = input.permute(*perm)
 axis = locals().get('axis',-1)
-use_softmax = locals().get('use_softmax',True)
-_kwargs['target'] = _kwargs['target'].squeeze(-1)
-if "weight" in _kwargs:
-    _kwargs['weight'].requires_grad = False
-if _kwargs['target'].dtype == torch.int32:
-    _kwargs['target'] = _kwargs['target'].long()
+label = label.squeeze(-1)
+if weight is not None:
+    weight.requires_grad = False
+if label.dtype == torch.int32:
+    label = label.long()
+if soft_label and weight is not None and shp == input.shape:
+    reduction_original = reduction
+    weight_original = weight
+    reduction = "none"
+    weight = None
 """
-        core = """
-result = torch.nn.functional.cross_entropy(**_kwargs)
+        core = f"""
+result = {self.torch_api}(**_kwargs)
 """
         post = """
-if "reduction" in _kwargs and _kwargs['reduction'] == "none":
+if reduction_original is not None:
+    reduction = reduction_original
+    loss_weight = label@weight_original
+    sum_weight = loss_weight.sum()
+    result *= loss_weight
+else:
+    sum_weight = result.numel()
+    
+if reduction == "none":
     if soft_label:
         result = result.unsqueeze(-1)
     else:
         result = result.reshape(shp)
+elif reduction == "sum":
+    result = result.sum()
+else:
+    result = result.sum()/sum_weight
 """
         code = Code(
-            preprocess=pre.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
             core=core.splitlines(),
             postprocess=post.splitlines(),
         )
@@ -954,7 +959,7 @@ else:
     result = torch.clamp(**_kwargs)
 """
         elif paddle_api == "paddle.Tensor.clip":
-                core = """
+            core = """
 if min is None and max is None:
     result = x
 else:
@@ -964,7 +969,10 @@ else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
