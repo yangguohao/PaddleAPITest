@@ -3133,10 +3133,6 @@ if not 'align_corners' in _kwargs:
     _kwargs['align_corners'] = False    
 if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
     del _kwargs["align_corners"]
-elif align_mode == 1:
-    _kwargs['align_corners'] = True
-elif align_mode == 0:
-    _kwargs['align_corners'] = False
 """
         core = """
 result = torch.nn.functional.interpolate(**_kwargs)
@@ -6102,10 +6098,6 @@ if not 'align_corners' in _kwargs:
     _kwargs['align_corners'] = False    
 if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
     del _kwargs["align_corners"]
-elif align_mode == 1:
-    _kwargs['align_corners'] = True
-elif align_mode == 0:
-    _kwargs['align_corners'] = False
 """
         core = """
 result = torch.nn.functional.upsample(**_kwargs)
