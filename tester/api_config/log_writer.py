@@ -68,7 +68,7 @@ def close_process_files():
         try:
             handler.close()
         except Exception as err:
-            print(f"Error closing cached file: {err}", flush=True)
+            print(f"Error closing process file: {err}", flush=True)
     _process_file_handlers = {}
 
 
