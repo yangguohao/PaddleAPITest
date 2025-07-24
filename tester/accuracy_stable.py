@@ -420,7 +420,7 @@ class APITestAccuracyStable(APITestBase):
         return paddle_output, torch_output, paddle_out_grads, torch_out_grads
 
     def compare(self, input1, input2, comp):
-        if input1 == [] or input2 == []:
+        if not input1 or not input2:
             return
         if isinstance(input1, (paddle.Tensor, torch.Tensor)):
             if isinstance(input2, (paddle.Tensor, torch.Tensor)):
