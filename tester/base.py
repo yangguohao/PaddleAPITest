@@ -103,11 +103,12 @@ class APITestBase:
             return False
 
         if self.api_config.api_name == "paddle.assign":
-            has_list_arg = len(self.paddle_args) and isinstance(
-                self.paddle_args[0], list
+            has_list_arg = len(self.paddle_args_config) and isinstance(
+                self.paddle_args_config[0], list
             )
             has_second_arg = (
-                len(self.paddle_args) > 1 and self.paddle_args[1] is not None
+                len(self.paddle_args_config) > 1
+                and self.paddle_args_config[1] is not None
             )
             if has_list_arg or has_second_arg:
                 return False
@@ -374,6 +375,12 @@ class APITestBase:
                 self.paddle_args[3] = "gels"
             elif "driver" in self.paddle_kwargs:
                 self.paddle_kwargs["driver"] = "gels"
+        elif self.api_config.api_name == "paddle.nn.functional.cross_entropy":
+            use_softmax = get_arg(self.api_config, 8, "use_softmax", True)
+            if not use_softmax:
+                axis = get_arg(self.api_config, 7, "axis", -1)
+                self.paddle_args[0] = paddle.exp(self.paddle_args[0])
+                self.paddle_args[0] = self.paddle_args[0] / self.paddle_args[0].sum(axis=axis, keepdim=True)
 
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
@@ -451,6 +458,8 @@ class APITestBase:
         numel = 1
         for i in shape:
             numel = numel * i
+        if numel > 4300000000:
+            raise RuntimeError(f"Too large tensor to get cached numpy: {numel}")
 
         start = (4300000000 - numel - 100) if (4300000000 - numel - 100) > 0 else 0
         if dtype in cached_numpy:
@@ -499,10 +508,9 @@ class APITestBase:
                 #     result_outputs.append(output)
 
         result_outputs_grads = []
-
         if len(self.outputs_grad_numpy) == 0:
             for output in result_outputs:
-                dtype = str(output.dtype)[7:]
+                dtype = str(output.dtype).split(".")[-1]
                 if USE_CACHED_NUMPY:
                     dtype = "float32" if dtype == "bfloat16" else dtype
                     numpy_tensor = self.get_cached_numpy(dtype, output.shape)
@@ -513,15 +521,15 @@ class APITestBase:
                         dtype = "float32" if dtype == "bfloat16" else dtype
                         numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
                 self.outputs_grad_numpy.append(numpy_tensor)
-        for numpy_tensor in self.outputs_grad_numpy:
-            dtype = str(numpy_tensor.dtype)
+        for i, numpy_tensor in enumerate(self.outputs_grad_numpy):
+            dtype = str(result_outputs[i].dtype).split(".")[-1]
             result_output_grad = paddle.to_tensor(
                 numpy_tensor,
-                dtype=dtype if dtype != 'bfloat16' else "float32",
+                dtype=dtype if dtype != "bfloat16" else "float32",
             )
             result_output_grad.stop_gradient = False
             if dtype == "bfloat16":
-                result_output_grad = paddle.cast(result_output_grad, dtype="uint16")
+                result_output_grad = paddle.cast(result_output_grad, dtype="bfloat16")
             result_outputs_grads.append(result_output_grad)
         return result_outputs, result_outputs_grads
 
@@ -578,7 +586,7 @@ class APITestBase:
         result_outputs_grads = []
         if len(self.outputs_grad_numpy) == 0:
             for output in result_outputs:
-                dtype = str(output.dtype)[6:]
+                dtype = str(output.dtype).split(".")[-1]
                 if USE_CACHED_NUMPY:
                     dtype = "float32" if dtype == "bfloat16" else dtype
                     numpy_tensor = self.get_cached_numpy(dtype, output.shape)
@@ -589,19 +597,17 @@ class APITestBase:
                         dtype = "float32" if dtype == "bfloat16" else dtype
                         numpy_tensor = (numpy.random.random(output.shape) - 0.5).astype(dtype)
                 self.outputs_grad_numpy.append(numpy_tensor)
-        for numpy_tensor in self.outputs_grad_numpy:
-            dtype = str(numpy_tensor.dtype)
+        for i, numpy_tensor in enumerate(self.outputs_grad_numpy):
+            dtype = str(result_outputs[i].dtype).split(".")[1]
             result_output_grad = torch.tensor(
                 numpy_tensor,
                 dtype=self.convert_dtype_to_torch_type(dtype)
                 if dtype != 'bfloat16'
                 else torch.float32,
             )
-
             if dtype == "bfloat16":
                 result_output_grad = result_output_grad.to(dtype=torch.bfloat16)
             result_outputs_grads.append(result_output_grad)
-
         return result_outputs, result_outputs_grads
 
     def gen_paddle_input_with_merged_kwargs(self):

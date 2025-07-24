@@ -555,8 +555,14 @@ x = convert_seq2tensor_wrap_scalar(x)
 # b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        core = "result = (torch.max(seq_lens_encoder).unsqueeze(0), torch.max(seq_lens_decoder).unsqueeze(0))"
-        code = Code(core=[core])
+        core = """
+bsz = batch_size.shape[0]
+if bsz == 0:
+    result = (torch.zeros([1], dtype=seq_lens_encoder.dtype), torch.zeros([1], dtype=seq_lens_decoder.dtype))
+else:
+    result = (torch.max(seq_lens_encoder[:bsz]).unsqueeze(0), torch.max(seq_lens_decoder[:bsz]).unsqueeze(0))
+"""
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -664,43 +670,48 @@ if input2.dim() == 1:
 
 class CrossEntropyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
         pre = """
-_kwargs = {}
-for paddle_param, torch_param in {
-    "input": "input",
-    "label": "target",
-    "weight": "weight",
-    "ignore_index": "ignore_index",
-    "reduction": "reduction",
-    "label_smoothing": "label_smoothing"
-}.items():
-    if paddle_param in locals() and locals()[paddle_param] is not None:
-        _kwargs[torch_param] = locals()[paddle_param]
-shp = _kwargs['target'].shape
-if len(_kwargs["input"].shape) > 2:
-    perm = [0] + [len(_kwargs["input"].shape)-1]+ [i for i in range(1,len(_kwargs["input"].shape)-1)]
-    _kwargs['input'] = _kwargs['input'].permute(*perm)
-soft_label = locals().get('soft_label',False)
+shp = label.shape
+if len(input.shape) > 2:
+    perm = [0] + [len(input.shape)-1]+ [i for i in range(1,len(input.shape)-1)]
+    input = input.permute(*perm)
 axis = locals().get('axis',-1)
-use_softmax = locals().get('use_softmax',True)
-_kwargs['target'] = _kwargs['target'].squeeze(-1)
-if "weight" in _kwargs:
-    _kwargs['weight'].requires_grad = False
-if _kwargs['target'].dtype == torch.int32:
-    _kwargs['target'] = _kwargs['target'].long()
+label = label.squeeze(-1)
+if weight is not None:
+    weight.requires_grad = False
+if label.dtype == torch.int32:
+    label = label.long()
+if soft_label and weight is not None and shp == input.shape:
+    reduction_original = reduction
+    weight_original = weight
+    reduction = "none"
+    weight = None
 """
-        core = """
-result = torch.nn.functional.cross_entropy(**_kwargs)
+        core = f"""
+result = {self.torch_api}(**_kwargs)
 """
         post = """
-if "reduction" in _kwargs and _kwargs['reduction'] == "none":
+if reduction_original is not None:
+    reduction = reduction_original
+    loss_weight = label@weight_original
+    sum_weight = loss_weight.sum()
+    result *= loss_weight
+else:
+    sum_weight = result.numel()
+    
+if reduction == "none":
     if soft_label:
         result = result.unsqueeze(-1)
     else:
         result = result.reshape(shp)
+elif reduction == "sum":
+    result = result.sum()
+else:
+    result = result.sum()/sum_weight
 """
         code = Code(
-            preprocess=pre.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
             core=core.splitlines(),
             postprocess=post.splitlines(),
         )
@@ -948,7 +959,7 @@ else:
     result = torch.clamp(**_kwargs)
 """
         elif paddle_api == "paddle.Tensor.clip":
-                core = """
+            core = """
 if min is None and max is None:
     result = x
 else:
@@ -958,7 +969,10 @@ else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -2102,7 +2116,6 @@ def fused_rms_norm(
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
-
 class FusedRotaryPositionEmbeddingRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2119,58 +2132,111 @@ def fused_rotary_position_embedding(
     time_major: bool = False,
     rotary_emb_base: float = 10000.0
 ) -> tuple[torch.Tensor, Optional[torch.Tensor], Optional[torch.Tensor]]:
-    if time_major:
-        batch_size, seq_len = q.size(1), q.size(0)
-    else:
-        batch_size, seq_len = q.size(0), q.size(1)
-    num_heads, head_dim = q.size(2), q.size(3)
-    if sin is None or cos is None:
-        if position_ids is None:
-            position_ids = torch.arange(seq_len, device=q.device).unsqueeze(0).expand(batch_size, -1)
-        inv_freq = 1.0 / (rotary_emb_base ** (torch.arange(0, head_dim, 2, device=q.device).float() / head_dim))
-        t = position_ids.float().unsqueeze(-1)
-        freqs = t * inv_freq.unsqueeze(0).unsqueeze(0)
-        sin = freqs.sin().unsqueeze(2).expand(-1, -1, num_heads, -1)
-        cos = freqs.cos().unsqueeze(2).expand(-1, -1, num_heads, -1)
-        sin = torch.cat([sin, sin], dim=-1)
-        cos = torch.cat([cos, cos], dim=-1)
-    else:
-        sin = sin.view(1, seq_len, 1, head_dim) if sin.dim() == 2 else sin
-        cos = cos.view(1, seq_len, 1, head_dim) if cos.dim() == 2 else cos
-    if time_major:
-        q = q.permute(1, 0, 2, 3)
-        if k is not None:
-            k = k.permute(1, 0, 2, 3)
-        if v is not None:
-            v = v.permute(1, 0, 2, 3)
 
-    def apply_rotary_emb(x: torch.Tensor, sin: torch.Tensor, cos: torch.Tensor) -> torch.Tensor:
-        if use_neox_rotary_style:
-            # NeoX style: rotate pairs (x1, x2) -> (x1 * cos - x2 * sin, x1 * sin + x2 * cos)
-            x1, x2 = x[..., :head_dim//2], x[..., head_dim//2:]
-            sin_half, cos_half = sin[..., :head_dim//2], cos[..., :head_dim//2:]
-            x1_rot = x1 * cos_half - x2 * sin_half
-            x2_rot = x1 * sin_half + x2 * cos_half
-            return torch.cat([x1_rot, x2_rot], dim=-1)
+    from typing import Optional
+
+    def _deal_qkv_pytorch(init_value: Optional[torch.Tensor]) -> Optional[torch.Tensor]:
+        if init_value is None:
+            return None
+        return init_value.permute(0, 2, 1, 3)
+
+    def _mult_qkv_pytorch(value: Optional[torch.Tensor], cos_tensor: torch.Tensor, sin_tensor: torch.Tensor) -> Optional[torch.Tensor]:
+        if value is None:
+            return None
+        rotate_half_q = torch.stack([-value[..., 1::2], value[..., 0::2]], dim=-1).reshape(value.shape)
+        query = value * cos_tensor + rotate_half_q * sin_tensor
+        return query
+
+    def _mult_qkv_rotate_half_pytorch(value: Optional[torch.Tensor], cos_tensor: torch.Tensor, sin_tensor: torch.Tensor) -> Optional[torch.Tensor]:
+        if value is None:
+            return None
+        head_dim = value.shape[-1]
+        half_dim = head_dim // 2
+        rotate_half_q = torch.cat([-value[..., half_dim:], value[..., :half_dim]], dim=-1)
+        query = value * cos_tensor + rotate_half_q * sin_tensor
+        return query
+
+    def _get_sin_cos_tensor_pytorch(seq_len: int, head_dim: int, sign: int = 1, rotate_half: bool = False):
+        pos_seq = torch.arange(0, seq_len, 1, dtype=torch.float32)
+        indices = torch.arange(0, head_dim, 2, dtype=torch.float32)
+        indices = 1 / 10000 ** (indices / head_dim)
+        sinusoid_inp = pos_seq.unsqueeze(1) * indices.unsqueeze(0)
+        sin_sin = np.empty((seq_len * head_dim), dtype=np.float32)
+        cos_cos = np.empty((seq_len * head_dim), dtype=np.float32)
+        numpy_array = sinusoid_inp.numpy()
+        iter_array = np.nditer(numpy_array)
+        i = 0
+        if rotate_half:
+            stride = head_dim // 2
+            for value in iter_array:
+                sin_sin[i] = sign * np.sin(value)
+                cos_cos[i] = np.cos(value)
+                sin_sin[i + stride] = np.sin(value)
+                cos_cos[i + stride] = np.cos(value)
+                i += 1
+                if i % head_dim == stride:
+                    i += stride
         else:
-            # Non-NeoX: rotate first and second halves separately
-            x1, x2 = x[..., :head_dim//2], x[..., head_dim//2:]
-            sin1, cos1 = sin[..., :head_dim//2], cos[..., :head_dim//2]
-            sin2, cos2 = sin[..., head_dim//2:], cos[..., head_dim//2:]
-            x1_rot = x1 * cos1 - x2 * sin1
-            x2_rot = x1 * sin1 + x2 * cos1
-            return torch.cat([x1_rot, x2_rot], dim=-1)
-
-    out_q = apply_rotary_emb(q, sin, cos)
-    out_k = apply_rotary_emb(k, sin, cos) if k is not None else None
-    out_v = apply_rotary_emb(v, sin, cos) if v is not None else None
+            for value in iter_array:
+                sin_sin[i * 2] = sign * np.sin(value)
+                cos_cos[i * 2 + 0] = np.cos(value)
+                sin_sin[i * 2 + 1] = np.sin(value)
+                cos_cos[i * 2 + 1] = np.cos(value)
+                i += 1
+        tensor_sin = torch.from_numpy(sin_sin).reshape([1, seq_len, 1, head_dim])
+        tensor_cos = torch.from_numpy(cos_cos).reshape([1, seq_len, 1, head_dim])
+        return tensor_sin, tensor_cos
+    
+    init_q, init_k, init_v = q, k, v
     if time_major:
-        out_q = out_q.permute(1, 0, 2, 3)
-        if out_k is not None:
-            out_k = out_k.permute(1, 0, 2, 3)
-        if out_v is not None:
-            out_v = out_v.permute(1, 0, 2, 3)
-    return out_q, out_k, out_v
+        init_q = init_q.permute(1, 0, 2, 3)
+        if init_k is not None:
+            init_k = init_k.permute(1, 0, 2, 3)
+        if init_v is not None:
+            init_v = init_v.permute(1, 0, 2, 3)
+
+    head_dim = init_q.shape[3]
+    seq_len = init_q.shape[1]
+    
+    sin_tensor, cos_tensor = sin, cos
+    if sin_tensor is None or cos_tensor is None:
+        sin_tensor, cos_tensor = _get_sin_cos_tensor_pytorch(seq_len, head_dim, rotate_half=not use_neox_rotary_style)
+        sin_tensor = sin_tensor.to(q.device)
+        cos_tensor = cos_tensor.to(q.device)
+    
+    q_rope = _deal_qkv_pytorch(init_q)
+    k_rope = _deal_qkv_pytorch(init_k)
+    v_rope = _deal_qkv_pytorch(init_v)
+
+    if position_ids is not None:
+        sin_tensor = sin_tensor.squeeze((0, 2))[position_ids].unsqueeze(2)
+        cos_tensor = cos_tensor.squeeze((0, 2))[position_ids].unsqueeze(2)
+
+    perm = [0, 2, 1, 3]
+    sin_tensor = sin_tensor.permute(*perm)
+    cos_tensor = cos_tensor.permute(*perm)
+    
+    if use_neox_rotary_style:
+        query = _mult_qkv_pytorch(q_rope, cos_tensor, sin_tensor)
+        value = _mult_qkv_pytorch(v_rope, cos_tensor, sin_tensor)
+        key = _mult_qkv_pytorch(k_rope, cos_tensor, sin_tensor)
+    else:
+        query = _mult_qkv_rotate_half_pytorch(q_rope, cos_tensor, sin_tensor)
+        value = _mult_qkv_rotate_half_pytorch(v_rope, cos_tensor, sin_tensor)
+        key = _mult_qkv_rotate_half_pytorch(k_rope, cos_tensor, sin_tensor)
+
+    r_query = _deal_qkv_pytorch(query)
+    r_key = _deal_qkv_pytorch(key)
+    r_value = _deal_qkv_pytorch(value)
+
+    if time_major:
+        r_query = r_query.permute(1, 0, 2, 3)
+        if r_key is not None:
+            r_key = r_key.permute(1, 0, 2, 3)
+        if r_value is not None:
+            r_value = r_value.permute(1, 0, 2, 3)
+            
+    return r_query, r_key, r_value
 """
         core = "result = fused_rotary_position_embedding(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])

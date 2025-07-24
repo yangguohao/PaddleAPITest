@@ -2470,7 +2470,7 @@
         },
         "torch_kwargs": {
             "momentum": "1 - momentum",
-            "training": "training and not use_global_stats"
+            "training": "training if use_global_stats is None else not use_global_stats"
         }
     },
     "paddle.nn.functional.bilinear": {
@@ -2680,7 +2680,23 @@
         }
     },
     "paddle.nn.functional.cross_entropy": {
-        "Rule": "CrossEntropyRule"
+        "Rule": "CrossEntropyRule",
+        "torch_api": "torch.nn.functional.cross_entropy",
+        "set_defaults": {
+            "weight": "None",
+            "reduction": "'mean'",
+            "soft_label": "False",
+            "label_smoothing": "0.0",
+            "reduction_original":"None"
+        },
+        "paddle_torch_args_map": {
+            "input": "input",
+            "label": "target",
+            "weight": "weight",
+            "reduction": "reduction",
+            "ignore_index": "ignore_index",
+            "label_smoothing": "label_smoothing"
+        }
     },
     "paddle.nn.functional.ctc_loss": {
         "Rule": "CtcLossRule"
