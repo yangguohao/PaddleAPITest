@@ -8,7 +8,7 @@ from datetime import datetime
 
 from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
                     APITestPaddleOnly,APITestPaddleGPUPerformance, APITestTorchGPUPerformance, APITestPaddleTorchGPUPerformance, set_cfg)
-from tester.api_config.log_writer import read_log, write_to_log
+from tester.api_config.log_writer import read_log, write_to_log, close_process_files
 import torch
 import paddle
 
@@ -184,6 +184,8 @@ def main():
         #         print(str(res.stdout.read(), encoding="utf-8"), flush=True)
         #         print(str(res.stderr.read(), encoding="utf-8"), flush=True)
         #         # res.terminate()
+
+    close_process_files()
 
 if __name__ == '__main__':
     main()
