@@ -356,10 +356,7 @@ def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
     """
     output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
     mode = "backward" if is_backward else "forward"
-    if is_backward:
-        print(f"[backward] {config}\n{error_msg}", flush=True)
-    else:
-        print(f"[forward] {config}\n{error_msg}", flush=True)
+    print(f"[{mode}] {config}\n{error_msg}", flush=True)
 
     if error_msg == "Identical":
         max_abs_diff = 0.0
