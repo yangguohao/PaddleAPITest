@@ -1766,3 +1766,4 @@ paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weigh
 paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weight=Tensor([3, 1, 79536432, 3, 3],"float64"), bias=Tensor([1],"float64"), stride=1, padding=1, dilation=1, )
 paddle.nn.functional.conv3d_transpose(x=Tensor([2, 3, 2, 2, 2],"float64"), weight=Tensor([3, 1, 79536432, 3, 3],"float64"), bias=Tensor([1],"float64"), stride=1, padding=list[1,0,1,], dilation=1, )
 paddle.nn.functional.nll_loss(Tensor([95070891, 3, 2, 4],"float32"), Tensor([95070891, 2, 4],"int64"),)
+paddle.Tensor.set_(Tensor([3, 8],"float16"), Tensor([6, 3],"float16"), list[3,8,], list[2,2,], 0, )
