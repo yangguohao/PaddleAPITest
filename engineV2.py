@@ -220,6 +220,7 @@ def init_worker_gpu(
             torch.cuda.empty_cache()
             paddle.device.cuda.empty_cache()
             restore_stdio()
+            close_process_files()
             sys.exit(0)
 
         signal.signal(signal.SIGINT, signal_handler)
