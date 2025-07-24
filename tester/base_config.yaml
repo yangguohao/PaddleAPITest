@@ -289,6 +289,7 @@ forward_only_apis:
   - edit_distance
   - eigh
   - eigvals
+  - eigvalsh
   - embedding_grad_dense
   - embedding_with_eltwise_add_xpu
   - embedding_with_eltwise_add_xpu
