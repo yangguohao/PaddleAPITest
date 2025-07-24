@@ -13,7 +13,8 @@ from tester import (APIConfig, APITestAccuracy, APITestAccuracyStable,
                     APITestCINNVSDygraph, APITestPaddleGPUPerformance,
                     APITestPaddleOnly, APITestPaddleTorchGPUPerformance,
                     APITestTorchGPUPerformance, set_cfg)
-from tester.api_config.log_writer import read_log, write_to_log
+from tester.api_config.log_writer import (close_process_files, read_log,
+                                          write_to_log)
 
 
 def parse_bool(value):
@@ -207,6 +208,7 @@ def main():
         #         print(str(res.stderr.read(), encoding="utf-8"), flush=True)
         #         # res.terminate()
 
+    close_process_files()
 
 if __name__ == "__main__":
     main()
