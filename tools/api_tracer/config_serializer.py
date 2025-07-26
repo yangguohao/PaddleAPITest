@@ -1,9 +1,8 @@
-import os
 from typing import Any, Dict, List
 
 import yaml
 
-from .framework_dialect import FrameworkDialect
+from framework_dialect import FrameworkDialect
 
 
 class ConfigSerializer:

@@ -1,13 +1,12 @@
 import functools
 import importlib
 import os
-import traceback
 from typing import Any, Dict, Optional, Tuple
 
 import yaml
 
-from .config_serializer import ConfigSerializer
-from .framework_dialect import FrameworkDialect
+from config_serializer import ConfigSerializer
+from framework_dialect import FrameworkDialect
 
 
 class APITracer:
