@@ -11,13 +11,15 @@ from api_tracer import APITracer
 def run_pytorch_code():
     print("--- [Demo] Running PyTorch code to be traced ---")
     # 1. 常规API调用
-    a = torch.tensor([[1.0, 2.0], [3.0, 4.0]], dtype=torch.float32)
+    a = torch.tensor([[1.0, 2.0], [3.0, 4.0]], dtype=torch.float32, device="cuda")
     b = torch.tensor([[5.0, 6.0], [7.0, 8.0]], device="cpu")
-    c = torch.matmul(a, b)
+    b = b.to(device="cuda")
+    c = a + b
     d = torch.relu(c)
-    e = torch.add(d, 10)
+    e = d + 10
     f = torch.nn.functional.softmax(e, dim=1)
     g = torch.cat((a, b), dim=0)
+    h = g.argmax(dim=0)
 
     # # 2. 自定义算子调用
     # print("\n--- [Demo] Calling custom operator ---")
@@ -26,7 +28,7 @@ def run_pytorch_code():
 
 
 def main():
-    output_dir = "trace_output"
+    output_dir = os.path.join(os.path.dirname(__file__), "trace_output")
     os.makedirs(output_dir, exist_ok=True)
     trace_file = os.path.join(output_dir, "pytorch_api_trace.yaml")
 

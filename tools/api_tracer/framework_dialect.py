@@ -49,6 +49,7 @@ class PyTorchDialect(FrameworkDialect):
         "torch._dynamo.config",
         "torch._dynamo.test_case",
         "torch._dynamo.test_minifier_common",
+        "torch._dynamo.trace_rules",  # this will cause error in destruction
         "torch._functorch.config",
         "torch._inductor.config",
         "torch._inductor.test_case",
@@ -57,7 +58,6 @@ class PyTorchDialect(FrameworkDialect):
         "torch.compiler.config",
         "torch.contrib._tensorboard_vis",
         "torch.distributed._tools.sac_ilp",
-        "torch.distributed.elastic.rendezvous",
         "torch.fx.experimental._config",
         "torch.onnx._internal.exporter",
         "torch.onnx._internal.fx",
@@ -92,6 +92,14 @@ class PyTorchDialect(FrameworkDialect):
         "__slots__",
         "__str__",
         "__weakref__",
+    }
+
+    IGNORE_CLASSES = {
+        "torch._utils.CallbackRegistry",
+        "torch.cuda._gpu_trace.CallbackRegistry",
+        "torch.cuda._sanitizer.StreamSynchronizations",
+        "torch.cuda._sanitizer._TensorsAccessed",
+        "torch.xpu._gpu_trace.CallbackRegistry",
     }
 
     def get_framework_name(self) -> str:
@@ -143,6 +151,8 @@ class PyTorchDialect(FrameworkDialect):
                         or not obj.__module__
                         or not obj.__module__.startswith("torch")
                     ):
+                        continue
+                    if full_name in self.IGNORE_CLASSES:
                         continue
                     if callable(obj) and not inspect.isclass(obj):
                         api_set.add(full_name)
