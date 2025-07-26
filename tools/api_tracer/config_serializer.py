@@ -78,8 +78,10 @@ class ConfigSerializer:
 
     def _serialize_item(self, item: Any) -> Any:
         """递归序列化对象"""
-        if item is None or isinstance(item, (bool, int, float, str)):
+        if item is None or isinstance(item, (bool, int, float)):
             return item
+        if isinstance(item, str):
+            return f'"{item}"'
 
         special_serialization = self.dialect.serialize_special_type(item)
         if special_serialization is not None:

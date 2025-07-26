@@ -406,9 +406,9 @@ class PyTorchDialect(FrameworkDialect):
         if item["type"] == "torch.dtype":
             return f'"{item["value"].replace("torch.", "")}"'
         if item["type"] == "torch.device":
-            return item["value"]
+            return f'"{item["value"]}"'
         if item["type"] == "torch.memory_format":
-            return item["value"]
+            return f'"{item["value"]}"'
         # TODO(@cangtianhuang): add more formatting logic here
         return None
 
