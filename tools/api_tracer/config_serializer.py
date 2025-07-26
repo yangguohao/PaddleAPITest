@@ -66,12 +66,12 @@ class ConfigSerializer:
             return [self._serialize_item(sub_item) for sub_item in item]
         if isinstance(item, tuple):
             return {
-                "_type": "tuple",
+                "type": "tuple",
                 "value": [self._serialize_item(sub_item) for sub_item in item],
             }
         if isinstance(item, set):
             return {
-                "_type": "set",
+                "type": "set",
                 "value": [
                     self._serialize_item(sub_item) for sub_item in sorted(list(item))
                 ],
@@ -79,7 +79,7 @@ class ConfigSerializer:
         if isinstance(item, dict):
             return {str(k): self._serialize_item(v) for k, v in item.items()}
         if isinstance(item, type):
-            return {"_type": "type", "value": f"{item.__module__}.{item.__name__}"}
+            return {"type": "type", "value": f"{item.__module__}.{item.__name__}"}
 
         # 3. 无法处理时，返回描述性字符串
         try:

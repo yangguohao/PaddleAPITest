@@ -26,25 +26,34 @@ class TracingHook(abc.ABC):
         pass
 
 
+# UNUSED for torch
 class SetattrHook(TracingHook):
-    def __init__(self, dialect, serializer):
+    def __init__(self, dialect: "FrameworkDialect", serializer: "ConfigSerializer"):
         self.dialect = dialect
         self.serializer = serializer
-        self._original_apis = {}
+        self._original_apis: Dict[str, Any] = {}
+        self._module_cache: Dict[str, Any] = {}
 
     def _get_api_parent_and_name(
         self, api_name: str
     ) -> Tuple[Optional[Any], Optional[str]]:
         parts = api_name.split(".")
+        if len(parts) < 2:
+            return None, None
+
         for i in range(len(parts) - 1, 0, -1):
             module_name = ".".join(parts[:i])
             try:
-                module = importlib.import_module(module_name)
+                if module_name in self._module_cache:
+                    module = self._module_cache[module_name]
+                else:
+                    module = importlib.import_module(module_name)
+                    self._module_cache[module_name] = module
+
                 parent_obj = module
                 for attr in parts[i:-1]:
                     parent_obj = getattr(parent_obj, attr)
-                func_name = parts[-1]
-                return parent_obj, func_name
+                return parent_obj, parts[-1]
             except (ImportError, AttributeError):
                 continue
         return None, None
@@ -54,10 +63,7 @@ class SetattrHook(TracingHook):
         @functools.wraps(original_api)
         def wrapper(*args, **kwargs):
             output = original_api(*args, **kwargs)
-            try:
-                self.serializer.dump_call(api_name, args, kwargs, output)
-            except Exception as e:
-                print(f"[APITracer] Error during serialization of '{api_name}': {e}")
+            self.serializer.dump_call(api_name, args, kwargs, output)
             return output
 
         return wrapper
@@ -69,8 +75,7 @@ class SetattrHook(TracingHook):
         #     yaml.dump(api_list, f)
 
         print(f"[SetattrHook] Attempting to patch {len(api_list)} APIs...")
-        patched_apis = 0
-        skipped_apis = 0
+        patched_count, skipped_count = 0, 0
         for api_name in api_list:
             if api_name in self._original_apis:
                 # print(f"[SetattrHook] Skipping {api_name}: Already patched")
@@ -120,19 +125,16 @@ class SetattrHook(TracingHook):
                     print(f"[SetattrHook] Could not patch {api_name}: {e}")
             except Exception as e:
                 print(f"[SetattrHook] Could not patch {api_name}: {e}")
-            finally:
-                if api_name in self._original_apis:
-                    del self._original_apis[api_name]
 
         print(
-            f"[SetattrHook] Successfully patched {patched_apis} APIs. Skipped {skipped_apis} non-writable APIs."
+            f"[SetattrHook] Patched {patched_apis} APIs. Skipped {skipped_apis} non-writable APIs."
         )
 
         # with open(os.path.join("trace_output", "api_list_wrap.yaml"), "w") as f:
         #     yaml.dump(list(self._original_apis.keys()), f)
 
     def uninstall(self):
-        print(f"[SetattrHook] Restoring original APIs...")
+        print(f"[SetattrHook] Restoring {len(self._original_apis)} patched APIs...")
         for api_name, original_api in self._original_apis.items():
             parent_obj, func_name = self._get_api_parent_and_name(api_name)
             if parent_obj and func_name:
@@ -140,40 +142,48 @@ class SetattrHook(TracingHook):
                     setattr(parent_obj, func_name, original_api)
                 except Exception as e:
                     print(f"[SetattrHook] Error restoring API '{api_name}': {e}")
-        print("[SetattrHook] Done.")
+        self._original_apis.clear()
+        self._module_cache.clear()
+        print("[SetattrHook] Restoration complete.")
 
 
+# SetattrHook can not hook torch C API
 class TensorTracerMode(torch.overrides.TorchFunctionMode):
-    def __init__(self, serializer):
+    def __init__(self, serializer: "ConfigSerializer"):
         super().__init__()
         self.serializer = serializer
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
         output = func(*args, **kwargs)
-        if hasattr(func, '__module__') and func.__module__:
-            api_name = f"{func.__module__}.{func.__name__}"
-        elif hasattr(func, '__self__') and func.__self__ is torch.Tensor:
-            api_name = f"torch.Tensor.{func.__name__}"
-        else:
-            api_name = f"unknown.{func.__name__}"
+
+        api_name = torch.overrides.resolve_name(func)
+        if not api_name:
+            if hasattr(func, "__module__"):
+                api_name = f"{func.__module__}.{func.__name__}"
+            elif hasattr(func, "__objclass__"):
+                api_name = f"{func.__objclass__.__module__}.{func.__objclass__.__name__}.{func.__name__}"
+            else:
+                api_name = f"unknown.{func.__name__}"
+                print(f"Unknown func: {func}, type: {type(func)}")
+
         self.serializer.dump_call(api_name, args, kwargs, output)
         return output
 
 
 class TorchFunctionHook(TracingHook):
-    def __init__(self, serializer):
+    def __init__(self, serializer: "ConfigSerializer"):
         self.tracing_mode = TensorTracerMode(serializer)
 
     def install(self):
-        print(f"[TorchFunctionHook] Enabling __torch_function__ tracing...")
+        print(f"[TorchFunctionHook] Enabling __torch_function__ tracing mode...")
         self.tracing_mode.__enter__()
-        print("[TorchFunctionHook] Done.")
+        print("[TorchFunctionHook] Mode enabled.")
 
     def uninstall(self):
-        print("[TorchFunctionHook] Disabling __torch_function__ tracing...")
+        print("[TorchFunctionHook] Disabling __torch_function__ tracing mode...")
         self.tracing_mode.__exit__(None, None, None)
-        print("[TorchFunctionHook] Done.")
+        print("[TorchFunctionHook] Mode disabled.")
 
 
 class FrameworkDialect(abc.ABC):
@@ -184,15 +194,13 @@ class FrameworkDialect(abc.ABC):
         """返回框架名称"""
         raise NotImplementedError
 
-    @abc.abstractmethod
     def discover_apis(self) -> List[str]:
         """返回框架API列表"""
-        raise NotImplementedError
+        raise []
 
-    @abc.abstractmethod
     def discover_custom_ops(self) -> List[str]:
         """返回自定义算子API列表"""
-        raise NotImplementedError
+        raise []
 
     @abc.abstractmethod
     def serialize_special_type(self, item: Any) -> Optional[Dict]:
@@ -206,12 +214,11 @@ class FrameworkDialect(abc.ABC):
 
     @classmethod
     def get_dialect(cls, framework_name: str) -> "FrameworkDialect":
-        framework_name_map = {
-            "torch": PyTorchDialect,
-        }
-        if framework_name not in framework_name_map:
+        dialect_map = {"torch": PyTorchDialect}
+        dialect_class = dialect_map.get(framework_name)
+        if not dialect_class:
             raise ValueError(f"Unsupported framework: {framework_name}")
-        return framework_name_map[framework_name]()
+        return dialect_class()
 
 
 class PyTorchDialect(FrameworkDialect):
@@ -277,10 +284,11 @@ class PyTorchDialect(FrameworkDialect):
     def get_framework_name(self) -> str:
         return "torch"
 
+    # UNUSED in TensorTracerMode
     def discover_apis(self) -> List[str]:
         """使用pkgutil遍历torch包"""
         print(
-            f"[{self.__class__.__name__}] Starting to discover APIs for '{self.get_framework_name()}'..."
+            f"[{self.__class__.__name__}] Discovering APIs for '{self.get_framework_name()}'..."
         )
 
         base_module = importlib.import_module(self.get_framework_name())
@@ -305,7 +313,7 @@ class PyTorchDialect(FrameworkDialect):
                     modules.add(sub_module)
                 except Exception as e:
                     print(
-                        f"[Discovery Warning] Could not import module {module_info.name}: {e}"
+                        f"[{self.__class__.__name__}] Could not import module {module_info.name}: {e}"
                     )
                     continue
 
@@ -363,6 +371,7 @@ class PyTorchDialect(FrameworkDialect):
         print(f"[{self.__class__.__name__}] Discovered {len(api_list)} native APIs.")
         return api_list
 
+    # UNUSED in TensorTracerMode
     def discover_custom_ops(self) -> List[str]:
         # TODO(@cangtianhuang): implemente me
         return []
@@ -370,22 +379,22 @@ class PyTorchDialect(FrameworkDialect):
     def serialize_special_type(self, item: Any) -> Optional[Dict]:
         if isinstance(item, torch.Tensor):
             return {
-                "_type": "torch.Tensor",
+                "type": "torch.Tensor",
                 "shape": list(item.shape),
                 "dtype": str(item.dtype).replace("torch.", ""),
                 "device": str(item.device),
             }
         if isinstance(item, torch.dtype):
-            return {"_type": "torch.dtype", "value": str(item).replace("torch.", "")}
+            return {"type": "torch.dtype", "value": str(item).replace("torch.", "")}
         if isinstance(item, torch.device):
-            return {"_type": "torch.device", "value": str(item)}
+            return {"type": "torch.device", "value": str(item)}
         if isinstance(item, torch.memory_format):
-            return {"_type": "torch.memory_format", "value": str(item)}
+            return {"type": "torch.memory_format", "value": str(item)}
         # TODO(@cangtianhuang): add more serialization logic here
         return None
 
     def get_hooks(self, serializer) -> List[TracingHook]:
         return [
-            SetattrHook(self, serializer),
+            # SetattrHook(self, serializer), # keeped but not used
             TorchFunctionHook(serializer),
         ]
