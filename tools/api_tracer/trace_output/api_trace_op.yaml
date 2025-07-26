@@ -1,0 +1,145 @@
+- api: torch.tensor
+  args:
+  - - - 1.0
+      - 2.0
+    - - 3.0
+      - 4.0
+  kwargs:
+    dtype:
+      type: torch.dtype
+      value: float32
+    device: cuda
+- api: torch.tensor
+  args:
+  - - - 5.0
+      - 6.0
+    - - 7.0
+      - 8.0
+  kwargs:
+    device: cpu
+- api: torch.Tensor.to
+  args:
+  - type: torch.Tensor
+    shape:
+    - 2
+    - 2
+    dtype: float32
+    device: cpu
+  kwargs:
+    device: cuda
+- api: torch.Tensor.add
+  args:
+  - type: torch.Tensor
+    shape:
+    - 2
+    - 2
+    dtype: float32
+    device: cuda:0
+  - type: torch.Tensor
+    shape:
+    - 2
+    - 2
+    dtype: float32
+    device: cuda:0
+  kwargs: {}
+- api: torch.relu
+  args:
+  - type: torch.Tensor
+    shape:
+    - 2
+    - 2
+    dtype: float32
+    device: cuda:0
+  kwargs: {}
+- api: torch.Tensor.add
+  args:
+  - type: torch.Tensor
+    shape:
+    - 2
+    - 2
+    dtype: float32
+    device: cuda:0
+  - 10
+  kwargs: {}
+- api: torch.nn.functional.softmax
+  args:
+  - type: torch.Tensor
+    shape:
+    - 2
+    - 2
+    dtype: float32
+    device: cuda:0
+  kwargs:
+    dim: 1
+    _stacklevel: 3
+    dtype: null
+- api: torch.cat
+  args:
+  - type: tuple
+    value:
+    - type: torch.Tensor
+      shape:
+      - 2
+      - 2
+      dtype: float32
+      device: cuda:0
+    - type: torch.Tensor
+      shape:
+      - 2
+      - 2
+      dtype: float32
+      device: cuda:0
+  kwargs:
+    dim: 0
+- api: torch.Tensor.argmax
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 2
+    dtype: float32
+    device: cuda:0
+  kwargs:
+    dim: 0
+- api: torch.tensor
+  args:
+  - - -1.0
+    - 0.0
+    - 1.0
+    - 2.0
+  kwargs:
+    requires_grad: true
+- api: torch.Tensor.clamp
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    dtype: float32
+    device: cpu
+  kwargs:
+    min: 0
+- api: torch.ones_like
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    dtype: float32
+    device: cpu
+  kwargs: {}
+- api: torch.Tensor.backward
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    dtype: float32
+    device: cpu
+  kwargs:
+    gradient:
+      type: torch.Tensor
+      shape:
+      - 4
+      dtype: float32
+      device: cpu
+    retain_graph: null
+    create_graph: false
+    inputs: null
