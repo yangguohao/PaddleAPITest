@@ -30,12 +30,11 @@ def run_pytorch_code():
 def main():
     output_dir = os.path.join(os.path.dirname(__file__), "trace_output")
     os.makedirs(output_dir, exist_ok=True)
-    trace_file = os.path.join(output_dir, "pytorch_api_trace.yaml")
 
     # setup_custom_op()
 
     # 步骤 1: 初始化工具链
-    tracer = APITracer(dialect="torch", output_path=trace_file)
+    tracer = APITracer(dialect="torch", output_path=output_dir)
 
     # 步骤 2: 启动抓取
     try:

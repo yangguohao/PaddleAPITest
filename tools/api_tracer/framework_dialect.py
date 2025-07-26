@@ -1,14 +1,16 @@
 import abc
-from functools import partial
 import functools
 import importlib
 import inspect
+import os
 import pkgutil
 import threading
 import traceback
+from functools import partial
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import torch
+import yaml
 
 if TYPE_CHECKING:
     from config_serializer import ConfigSerializer
@@ -71,7 +73,7 @@ class SetattrHook(TracingHook):
     def install(self):
         api_list = self.dialect.discover_apis() + self.dialect.discover_custom_ops()
 
-        # with open(os.path.join("trace_output", "api_list.yaml"), "w") as f:
+        # with open(os.path.join(os.path.dirname(__file__), "trace_output", "api_list.yaml"), "w") as f:
         #     yaml.dump(api_list, f)
 
         print(f"[SetattrHook] Attempting to patch {len(api_list)} APIs...")
@@ -109,9 +111,9 @@ class SetattrHook(TracingHook):
                     wrapper = self._create_wrapper(api_name, original_api)
 
                 if wrapper:
-                    self._original_apis[api_name] = original_api
                     setattr(parent_obj, func_name, wrapper)
-                    patched_apis += 1
+                    self._original_apis[api_name] = original_api
+                    patched_count += 1
             except (TypeError, AttributeError) as e:
                 error_msg = str(e).lower()
                 if (
@@ -120,17 +122,17 @@ class SetattrHook(TracingHook):
                     or "read-only" in error_msg
                 ):
                     # print(f"[SetattrHook] Skip non-writable API '{api_name}'.")
-                    skipped_apis += 1
+                    skipped_count += 1
                 else:
                     print(f"[SetattrHook] Could not patch {api_name}: {e}")
             except Exception as e:
                 print(f"[SetattrHook] Could not patch {api_name}: {e}")
 
         print(
-            f"[SetattrHook] Patched {patched_apis} APIs. Skipped {skipped_apis} non-writable APIs."
+            f"[SetattrHook] Patched {patched_count} APIs. Skipped {skipped_count} non-writable APIs."
         )
 
-        # with open(os.path.join("trace_output", "api_list_wrap.yaml"), "w") as f:
+        # with open(os.path.join(os.path.dirname(__file__), "trace_output", "api_list_wrap.yaml"), "w") as f:
         #     yaml.dump(list(self._original_apis.keys()), f)
 
     def uninstall(self):
@@ -395,6 +397,6 @@ class PyTorchDialect(FrameworkDialect):
 
     def get_hooks(self, serializer) -> List[TracingHook]:
         return [
-            # SetattrHook(self, serializer), # keeped but not used
+            # SetattrHook(self, serializer),  # keeped but not used
             TorchFunctionHook(serializer),
         ]
