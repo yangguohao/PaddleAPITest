@@ -198,11 +198,11 @@ class FrameworkDialect(abc.ABC):
 
     def discover_apis(self) -> List[str]:
         """返回框架API列表"""
-        raise []
+        return []
 
     def discover_custom_ops(self) -> List[str]:
         """返回自定义算子API列表"""
-        raise []
+        return []
 
     @abc.abstractmethod
     def serialize_special_type(self, item: Any) -> Optional[Dict]:
