@@ -43,7 +43,7 @@ inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
 # sys.setprofile(trace_function)
 
-with APITracer("torch", "tools/api_tracer/trace_output/api_trace_model.yaml") as tracer:
+with APITracer("torch", "tools/api_tracer/trace_output") as tracer:
     outputs = model.generate(
         inputs["input_ids"],
         max_length=100,

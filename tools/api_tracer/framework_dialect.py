@@ -210,6 +210,11 @@ class FrameworkDialect(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def format_special_type(self, item: Any) -> str:
+        """格式化框架所特有的数据类型"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_hooks(self, serializer: "ConfigSerializer") -> List[TracingHook]:
         """获取跟踪钩子, 用于在API调用时进行记录"""
         raise NotImplementedError
@@ -383,16 +388,28 @@ class PyTorchDialect(FrameworkDialect):
             return {
                 "type": "torch.Tensor",
                 "shape": list(item.shape),
-                "dtype": str(item.dtype).replace("torch.", ""),
+                "dtype": str(item.dtype),
                 "device": str(item.device),
             }
         if isinstance(item, torch.dtype):
-            return {"type": "torch.dtype", "value": str(item).replace("torch.", "")}
+            return {"type": "torch.dtype", "value": str(item)}
         if isinstance(item, torch.device):
             return {"type": "torch.device", "value": str(item)}
         if isinstance(item, torch.memory_format):
             return {"type": "torch.memory_format", "value": str(item)}
         # TODO(@cangtianhuang): add more serialization logic here
+        return None
+
+    def format_special_type(self, item: Dict) -> Optional[str]:
+        if item["type"] == "torch.Tensor":
+            return f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")'
+        if item["type"] == "torch.dtype":
+            return item["value"].replace("torch.", "")
+        if item["type"] == "torch.device":
+            return item["value"]
+        if item["type"] == "torch.memory_format":
+            return item["value"]
+        # TODO(@cangtianhuang): add more formatting logic here
         return None
 
     def get_hooks(self, serializer) -> List[TracingHook]:

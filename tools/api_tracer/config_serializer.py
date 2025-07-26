@@ -10,18 +10,24 @@ class ConfigSerializer:
     def __init__(self, dialect: FrameworkDialect, output_path: str):
         self.dialect = dialect
         self.output_path = output_path
-        self.file_handler = None
+        self.file_handler_yaml = None
+        self.file_handler_txt = None
         self.buffer: List[Dict] = []
 
     def open(self):
-        self.file_handler = open(self.output_path, "w", encoding="utf-8")
+        self.file_handler_yaml = open(
+            self.output_path + "/api_trace.yaml", "w", encoding="utf-8"
+        )
+        self.file_handler_txt = open(
+            self.output_path + "/api_trace.txt", "w", encoding="utf-8"
+        )
 
     def close(self):
-        if self.file_handler:
+        if self.file_handler_yaml:
             try:
                 yaml.dump(
                     self.buffer,
-                    self.file_handler,
+                    self.file_handler_yaml,
                     allow_unicode=True,
                     sort_keys=False,
                     default_flow_style=False,
@@ -30,8 +36,24 @@ class ConfigSerializer:
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing YAML file: {e}")
             finally:
-                self.file_handler.close()
-                self.file_handler = None
+                self.file_handler_yaml.close()
+                self.file_handler_yaml = None
+
+        if self.file_handler_txt:
+            try:
+                # Write all buffered calls to TXT file
+                for call_record in self.buffer:
+                    txt_line = self._format_txt_line(
+                        call_record["api"], call_record["args"], call_record["kwargs"]
+                    )
+                    self.file_handler_txt.write(txt_line + "\n")
+                self.file_handler_txt.flush()
+            except Exception as e:
+                print(f"[ConfigSerializer] Error writing TXT file: {e}")
+            finally:
+                self.file_handler_txt.close()
+                self.file_handler_txt = None
+
         print(
             f"[ConfigSerializer] API trace with {len(self.buffer)} calls saved to {self.output_path}"
         )
@@ -62,7 +84,11 @@ class ConfigSerializer:
         if item is None or isinstance(item, (bool, int, float, str)):
             return item
         if isinstance(item, list):
-            return [self._serialize_item(sub_item) for sub_item in item]
+            return {
+                "type": "list",
+                "value": [self._serialize_item(sub_item) for sub_item in item],
+            }
+            # return [self._serialize_item(sub_item) for sub_item in item]
         if isinstance(item, tuple):
             return {
                 "type": "tuple",
@@ -85,3 +111,37 @@ class ConfigSerializer:
             return f"<Unserializable: {type(item).__name__}>"
         except Exception:
             return "<Unserializable: unknown type>"
+
+    def _format_txt_line(self, api_name: str, args: list, kwargs: dict) -> str:
+        """格式化API调用为最通用的TXT配置"""
+
+        def format_arg(arg: Any) -> str:
+            special_format = self.dialect.format_special_type(arg)
+            if special_format is not None:
+                return special_format
+
+            if isinstance(arg, (bool, int, float, str)):
+                return str(arg)
+            elif isinstance(arg, dict) and "type" in arg:
+                if arg["type"] == "list":
+                    return (
+                        f"list[{', '.join(format_arg(item) for item in arg['value'])}]"
+                    )
+                elif arg["type"] == "tuple":
+                    return (
+                        f"tuple({', '.join(format_arg(item) for item in arg['value'])})"
+                    )
+                elif arg["type"] == "set":
+                    return (
+                        f"set({', '.join(format_arg(item) for item in arg['value'])})"
+                    )
+                elif arg["type"] == "dict":
+                    return f"dict({', '.join(f'{k}={format_arg(v)}' for k, v in arg['value'].items())})"
+                elif arg["type"] == "type":
+                    return arg["value"]
+            return str(arg)
+
+        args_str = ", ".join(format_arg(arg) for arg in args)
+        kwargs_str = ", ".join(f"{k}={format_arg(v)}" for k, v in kwargs.items())
+        all_args = args_str + (", " + kwargs_str if kwargs_str else "")
+        return f"{api_name}({all_args})"
