@@ -18,6 +18,7 @@ paddle_error_dismiss:
   paddle.incubate.nn.functional.variable_length_memory_efficient_attention: "(InvalidArgument) the kernel should not be launched"
   paddle.Tensor.inverse: "(Unimplemented) cublasMatInv does not support batch_size > 65536."
   paddle.incubate.nn.functional.fused_rms_norm : "(Fatal) Failed to launch RMSNorm kernel"
+  paddle.nn.functional.ctc_loss: "(InvalidArgument) The total number of elements "
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
@@ -28,6 +29,9 @@ special_accuracy_atol_rtol:
   paddle.Tensor.logcumsumexp: [1.0, 1.0]
   paddle.incubate.nn.functional.fused_bias_act: [1, 0.01]
   paddle.incubate.nn.functional.fused_rms_norm : [3, 0.5]
+  paddle.lerp : [5, 0.05]
+  paddle.nn.functional.upsample: [0.5, 1.5]
+  paddle.nn.functional.interpolate: [0.5, 1.5]
 
 # All configs that report dtype diff when not in not_check_dtype list should be
 # copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
