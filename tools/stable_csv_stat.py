@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-TEST_LOG_PATH = Path("tester/api_config/test_log_stable_EB5")
+TEST_LOG_PATH = Path("tester/api_config/test_log")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -73,7 +73,7 @@ def parallel_process_csv(file_path, chunk_size=2000000):
     except Exception as e:
         print(f"Error reading file {file_path} for merging: {e}")
         return stats, api_stats, config_count, chunks
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(process_chunk, chunk) for chunk in chunks_iterator]
 
         for future in futures:
