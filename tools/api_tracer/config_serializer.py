@@ -1,3 +1,4 @@
+import traceback
 from typing import Any, Dict, List
 
 import yaml
@@ -35,6 +36,7 @@ class ConfigSerializer:
                 )
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing YAML file: {e}")
+                traceback.print_exc()
             finally:
                 self.file_handler_yaml.close()
                 self.file_handler_yaml = None
@@ -50,6 +52,7 @@ class ConfigSerializer:
                 self.file_handler_txt.flush()
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing TXT file: {e}")
+                traceback.print_exc()
             finally:
                 self.file_handler_txt.close()
                 self.file_handler_txt = None
@@ -75,14 +78,13 @@ class ConfigSerializer:
 
     def _serialize_item(self, item: Any) -> Any:
         """递归序列化对象"""
-        # 1. 使用方言进行序列化
+        if item is None or isinstance(item, (bool, int, float, str)):
+            return item
+
         special_serialization = self.dialect.serialize_special_type(item)
         if special_serialization is not None:
             return special_serialization
 
-        # 2. 处理Python基本类型和集合
-        if item is None or isinstance(item, (bool, int, float, str)):
-            return item
         if isinstance(item, list):
             return {
                 "type": "list",
@@ -106,7 +108,6 @@ class ConfigSerializer:
         if isinstance(item, type):
             return {"type": "type", "value": f"{item.__module__}.{item.__name__}"}
 
-        # 3. 无法处理时，返回描述性字符串
         try:
             return f"<Unserializable: {type(item).__name__}>"
         except Exception:
@@ -116,13 +117,14 @@ class ConfigSerializer:
         """格式化API调用为最通用的TXT配置"""
 
         def format_arg(arg: Any) -> str:
+            if arg is None or isinstance(arg, (bool, int, float, str)):
+                return str(arg)
+
             special_format = self.dialect.format_special_type(arg)
             if special_format is not None:
                 return special_format
 
-            if isinstance(arg, (bool, int, float, str)):
-                return str(arg)
-            elif isinstance(arg, dict) and "type" in arg:
+            if isinstance(arg, dict) and "type" in arg:
                 if arg["type"] == "list":
                     return (
                         f"list[{', '.join(format_arg(item) for item in arg['value'])}]"

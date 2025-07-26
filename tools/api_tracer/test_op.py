@@ -49,7 +49,7 @@ def main():
     # setup_custom_op()
 
     # 步骤 1: 初始化工具链
-    tracer = APITracer("torch", "tools/api_tracer/race_output/api_trace_op.yaml")
+    tracer = APITracer("torch", "tools/api_tracer/trace_output")
 
     # 步骤 2: 启动抓取
     try:

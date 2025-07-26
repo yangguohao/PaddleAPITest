@@ -404,7 +404,7 @@ class PyTorchDialect(FrameworkDialect):
         if item["type"] == "torch.Tensor":
             return f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")'
         if item["type"] == "torch.dtype":
-            return item["value"].replace("torch.", "")
+            return f'"{item["value"].replace("torch.", "")}"'
         if item["type"] == "torch.device":
             return item["value"]
         if item["type"] == "torch.memory_format":
