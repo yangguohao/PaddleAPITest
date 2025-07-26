@@ -1,11 +1,27 @@
 # demo.py
 import torch
+from torch.autograd import Function
 import os
 
 from api_tracer import APITracer
 
+
 # def setup_custom_op():
-#     """模拟加载一个C++自定义算子库"""
+#     pass
+
+
+class CustomReLUFunction(Function):
+    @staticmethod
+    def forward(ctx, input):
+        ctx.save_for_backward(input)
+        return input.clamp(min=0)
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        (input,) = ctx.saved_tensors
+        grad_input = grad_output.clone()
+        grad_input[input <= 0] = 0
+        return grad_input
 
 
 def run_pytorch_code():
@@ -22,19 +38,18 @@ def run_pytorch_code():
     h = g.argmax(dim=0)
 
     # # 2. 自定义算子调用
-    # print("\n--- [Demo] Calling custom operator ---")
-    # h =
+    print("\n--- [Demo] Calling custom operator ---")
+    x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
+    y = CustomReLUFunction.apply(x)
+    y.backward(torch.ones_like(y))
     print("--- [Demo] PyTorch code finished ---\n")
 
 
 def main():
-    output_dir = os.path.join(os.path.dirname(__file__), "trace_output")
-    os.makedirs(output_dir, exist_ok=True)
-
     # setup_custom_op()
 
     # 步骤 1: 初始化工具链
-    tracer = APITracer(dialect="torch", output_path=output_dir)
+    tracer = APITracer(dialect="torch", output_path="trace_output/api_trace.yaml")
 
     # 步骤 2: 启动抓取
     try:

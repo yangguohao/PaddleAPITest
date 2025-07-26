@@ -397,6 +397,6 @@ class PyTorchDialect(FrameworkDialect):
 
     def get_hooks(self, serializer) -> List[TracingHook]:
         return [
-            # SetattrHook(self, serializer),  # keeped but not used
+            # SetattrHook(self, serializer),  # kept but not used
             TorchFunctionHook(serializer),
         ]
