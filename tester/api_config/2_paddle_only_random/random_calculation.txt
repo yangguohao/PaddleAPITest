@@ -25629,3 +25629,4 @@ paddle.Tensor.set_(Tensor([20],"float64"), Tensor([15, 0],"float64"), list[20,],
 paddle.Tensor.set_(Tensor([3, 0],"float16"), Tensor([6, 0],"float16"), list[3,8,], list[2,2,], 0, )
 paddle.Tensor.set_(Tensor([3, 8],"float16"), Tensor([0, 3],"float16"), list[3,8,], list[2,2,], 0, )
 paddle.Tensor.set_(Tensor([3, 8],"float16"), Tensor([6, 0],"float16"), list[3,8,], list[2,2,], 0, )
+paddle.Tensor.set_(Tensor([3, 8],"float16"), Tensor([6, 3],"float16"), list[3,8,], list[2,2,], 0, )
