@@ -78,10 +78,8 @@ class ConfigSerializer:
 
     def _serialize_item(self, item: Any) -> Any:
         """递归序列化对象"""
-        if item is None or isinstance(item, (bool, int, float)):
+        if item is None or isinstance(item, (bool, int, float, str)):
             return item
-        if isinstance(item, str):
-            return f'"{item}"'
 
         special_serialization = self.dialect.serialize_special_type(item)
         if special_serialization is not None:
@@ -106,9 +104,19 @@ class ConfigSerializer:
                 ],
             }
         if isinstance(item, dict):
-            return {str(k): self._serialize_item(v) for k, v in item.items()}
+            return {
+                "type": "dict",
+                "value": {str(k): self._serialize_item(v) for k, v in item.items()},
+            }
         if isinstance(item, type):
             return {"type": "type", "value": f"{item.__module__}.{item.__name__}"}
+        if isinstance(item, slice):
+            return {
+                "type": "slice",
+                "value": {"start": item.start, "stop": item.stop, "step": item.step},
+            }
+        if item is ...:
+            return {"type": "ellipsis", "value": "..."}
 
         try:
             return f"<Unserializable: {type(item).__name__}>"
@@ -119,8 +127,10 @@ class ConfigSerializer:
         """格式化API调用为最通用的TXT配置"""
 
         def format_arg(arg: Any) -> str:
-            if arg is None or isinstance(arg, (bool, int, float, str)):
+            if arg is None or isinstance(arg, (bool, int, float)):
                 return str(arg)
+            if isinstance(arg, str):
+                return f'"{arg}"'
 
             special_format = self.dialect.format_special_type(arg)
             if special_format is not None:
@@ -131,18 +141,22 @@ class ConfigSerializer:
                     return (
                         f"list[{', '.join(format_arg(item) for item in arg['value'])}]"
                     )
-                elif arg["type"] == "tuple":
+                if arg["type"] == "tuple":
                     return (
                         f"tuple({', '.join(format_arg(item) for item in arg['value'])})"
                     )
-                elif arg["type"] == "set":
+                if arg["type"] == "set":
                     return (
                         f"set({', '.join(format_arg(item) for item in arg['value'])})"
                     )
-                elif arg["type"] == "dict":
+                if arg["type"] == "dict":
                     return f"dict({', '.join(f'{k}={format_arg(v)}' for k, v in arg['value'].items())})"
-                elif arg["type"] == "type":
+                if arg["type"] == "type":
                     return arg["value"]
+                if arg["type"] == "slice":
+                    return f"slice({arg['value']['start']}, {arg['value']['stop']}, {arg['value']['step']})"
+                if arg["type"] == "ellipsis":
+                    return "ellipsis(...)"
             return str(arg)
 
         args_str = ", ".join(format_arg(arg) for arg in args)
