@@ -56,13 +56,13 @@ def run_pytorch_code():
     h = g.argmax(dim=0)
 
     # # 2. 自定义算子调用
-    print("\n--- [Demo] Calling custom operator ---")
+    print("--- [Demo] Calling custom operator ---")
     x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
     y = CustomReLUFunction.apply(x)
     y.backward(torch.ones_like(y))
     y = custom_leaky_relu(x, 0.2)
     (grad_x,) = torch.autograd.grad(y, x, torch.ones_like(y))
-    print("--- [Demo] PyTorch code finished ---\n")
+    print("--- [Demo] PyTorch code finished ---")
 
 
 def main():
