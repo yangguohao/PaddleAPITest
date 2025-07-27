@@ -3594,7 +3594,10 @@ class LstsqRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-driver='gels'
+# if driver isn't gels, it only can run in cpu mode.
+if driver != 'gels':
+    x = x.cpu()
+    y = y.cpu()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
