@@ -3534,8 +3534,8 @@ class LstsqRule(BaseRule):
         pre = """
 # if driver isn't gels, it only can run in cpu mode.
 if driver != 'gels':
-    locals()['x'] = locals()['x'].cpu()
-    locals()['y'] = locals()['y'].cpu()
+    x = x.cpu()
+    y = y.cpu()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
