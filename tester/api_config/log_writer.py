@@ -27,8 +27,9 @@ LOG_PREFIXES = {
     "oom": "api_config_oom",
 }
 
-is_engineV2 = False
+_is_engineV2 = False
 
+_process_file_handlers = {}
 
 # Command line arguments configuration
 # Used in engine.py
@@ -55,23 +56,31 @@ def set_test_log_path(log_dir):
 
 
 def set_engineV2():
-    global is_engineV2
-    is_engineV2 = True
+    global _is_engineV2
+    _is_engineV2 = True
     TMP_LOG_PATH.mkdir(exist_ok=True)
+
+
+def close_process_files():
+    """关闭本进程持有的所有文件句柄"""
+    global _process_file_handlers
+    for handler in _process_file_handlers.values():
+        try:
+            handler.close()
+        except Exception as err:
+            print(f"Error closing process file: {err}", flush=True)
+    _process_file_handlers = {}
 
 
 def get_log_file(log_type: str):
     """获取指定日志类型和PID对应的日志文件路径"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-
     prefix = LOG_PREFIXES[log_type]
-
-    if not is_engineV2:
+    if not _is_engineV2:
         cfg = get_cfg()
         filename = f"{prefix}{cfg.id}.txt" if cfg else f"{prefix}.txt"
         return TEST_LOG_PATH / filename
-
     pid = os.getpid()
     return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
 
@@ -81,12 +90,12 @@ def write_to_log(log_type, line):
     line = line.strip()
     if not line:
         return
-
     file_path = get_log_file(log_type)
-
     try:
-        with file_path.open("a") as f:
-            f.write(line + "\n")
+        if file_path not in _process_file_handlers:
+            _process_file_handlers[file_path] = file_path.open("a", buffering=1)
+        handler = _process_file_handlers[file_path]
+        handler.write(line + "\n")
     except Exception as err:
         print(f"Error writing to {file_path}: {err}", flush=True)
 
@@ -95,12 +104,10 @@ def read_log(log_type):
     """读取文件所有行，返回集合"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-
     cfg = get_cfg()
     prefix = LOG_PREFIXES[log_type]
     filename = f"{prefix}{cfg.id}.txt" if cfg else f"{prefix}.txt"
     file_path = TEST_LOG_PATH / filename
-
     try:
         with file_path.open("r") as f:
             return set(line.strip() for line in f if line.strip())
@@ -155,19 +162,24 @@ def aggregate_logs(end=False):
     log_success = True
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     tmp_log_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
+    BUFFER_SIZE = 4 * 1024 * 1024
     try:
         with log_file.open("ab") as out_f:
             for file_path in tmp_log_files:
                 try:
                     with file_path.open("rb") as in_f:
-                        for line in in_f:
-                            if len(line) > 10000:  # 如果行长度超过10000字节，截断
-                                print(
-                                    f"Truncating long line ({len(line)} bytes) in {file_path.name}"
-                                )
-                                out_f.write(line[:10000] + b"\n")
-                            else:
-                                out_f.write(line)
+                        while True:
+                            lines = in_f.readlines(BUFFER_SIZE)
+                            if not lines:
+                                break
+                            for line in lines:
+                                if len(line) > 10000:  # 如果行长度超过10000字节，截断
+                                    print(
+                                        f"Truncating long line ({len(line)} bytes) in {file_path.name}"
+                                    )
+                                    out_f.write(line[:10000] + b"\n")
+                                else:
+                                    out_f.write(line)
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
                     log_success = False
@@ -394,5 +406,5 @@ def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
                     ]
                 )
             writer.writerow(row)
-    except Exception as e:
-        print(f"Error writing to {output_file}: {e}", flush=True)
+    except Exception as err:
+        print(f"Error writing to {output_file}: {err}", flush=True)
