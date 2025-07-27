@@ -157,3 +157,49 @@
     retain_graph: null
     create_graph: false
     inputs: null
+- api: custom_ops.custom_leaky_relu.default
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    dtype: torch.float32
+    device: cpu
+  - 0.2
+  kwargs: {}
+- api: torch.ones_like
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    dtype: torch.float32
+    device: cpu
+  kwargs: {}
+- api: torch.autograd.grad
+  args:
+  - type: tuple
+    value:
+    - type: torch.Tensor
+      shape:
+      - 4
+      dtype: torch.float32
+      device: cpu
+  - type: tuple
+    value:
+    - type: torch.Tensor
+      shape:
+      - 4
+      dtype: torch.float32
+      device: cpu
+  kwargs:
+    grad_outputs:
+      type: torch.Tensor
+      shape:
+      - 4
+      dtype: torch.float32
+      device: cpu
+    retain_graph: null
+    create_graph: false
+    only_inputs: true
+    allow_unused: false
+    is_grads_batched: false
+    materialize_grads: false

@@ -1,16 +1,34 @@
-# demo.py
 import torch
-from torch.autograd import Function
-import os
-
 from api_tracer import APITracer
 
 
-# def setup_custom_op():
-#     pass
+@torch.library.custom_op("custom_ops::custom_leaky_relu", mutates_args=())
+def custom_leaky_relu(input: torch.Tensor, negative_slope: float) -> torch.Tensor:
+    return torch.where(input > 0, input, input * negative_slope)
 
 
-class CustomReLUFunction(Function):
+@custom_leaky_relu.register_fake
+def custom_leaky_relu_fake(input: torch.Tensor, negative_slope: float) -> torch.Tensor:
+    return torch.empty_like(input)
+
+
+def backward(ctx, grad_output: torch.Tensor) -> tuple[torch.Tensor, None]:
+    (input,) = ctx.saved_tensors
+    negative_slope = ctx.negative_slope
+    grad_input = torch.where(input > 0, grad_output, grad_output * negative_slope)
+    return grad_input, None
+
+
+def setup_context(ctx, inputs, output):
+    input, negative_slope = inputs
+    ctx.save_for_backward(input)
+    ctx.negative_slope = negative_slope
+
+
+custom_leaky_relu.register_autograd(backward, setup_context=setup_context)
+
+
+class CustomReLUFunction(torch.autograd.Function):
     @staticmethod
     def forward(ctx, input):
         ctx.save_for_backward(input)
@@ -42,6 +60,8 @@ def run_pytorch_code():
     x = torch.tensor([-1.0, 0.0, 1.0, 2.0], requires_grad=True)
     y = CustomReLUFunction.apply(x)
     y.backward(torch.ones_like(y))
+    y = custom_leaky_relu(x, 0.2)
+    (grad_x,) = torch.autograd.grad(y, x, torch.ones_like(y))
     print("--- [Demo] PyTorch code finished ---\n")
 
 
