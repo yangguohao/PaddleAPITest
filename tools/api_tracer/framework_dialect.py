@@ -232,26 +232,21 @@ class PyTorchDialect(FrameworkDialect):
     """PyTorch方言实现"""
 
     MODULE_BLACKLIST = {
-        "torch._dynamo.config",
-        "torch._dynamo.test_case",
-        "torch._dynamo.test_minifier_common",
-        "torch._dynamo.trace_rules",  # this will cause error in destruction
-        "torch._functorch.config",
-        "torch._inductor.config",
-        "torch._inductor.test_case",
-        "torch.ao.pruning._experimental",
-        "torch.backends._coreml.preprocess",
-        "torch.compiler.config",
-        "torch.contrib._tensorboard_vis",
-        "torch.distributed._tools.sac_ilp",
-        "torch.fx.experimental._config",
-        "torch.onnx._internal.exporter",
-        "torch.onnx._internal.fx",
-        "torch.testing._internal",
-        "torch.utils._cxx_pytree",
-        "torch.utils.model_dump",
-        "torch.utils.serialization.config",
-        "torch.utils.tensorboard",
+        "torch._decomp",
+        "torch._dynamo",
+        "torch._functorch",
+        "torch._inductor",
+        "torch._ops",
+        "torch.ao",
+        "torch.backends",
+        "torch.compiler",
+        "torch.contrib",
+        "torch.distributed",
+        "torch.fx",
+        "torch.jit",
+        "torch.onnx",
+        "torch.testing",
+        "torch.utils",
     }
 
     IGNORE_ATTRIBUTES = {

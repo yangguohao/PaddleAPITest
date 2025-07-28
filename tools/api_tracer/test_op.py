@@ -66,21 +66,8 @@ def run_pytorch_code():
 
 
 def main():
-    # setup_custom_op()
-
-    # 步骤 1: 初始化工具链
-    tracer = APITracer("torch", "tools/api_tracer/trace_output")
-
-    # 步骤 2: 启动抓取
-    try:
-        tracer.start()
-
-        # 步骤 3: 运行你的目标PyTorch代码
+    with APITracer("torch", "tools/api_tracer/trace_output") as tracer:
         run_pytorch_code()
-
-    finally:
-        # 步骤 4: 停止抓取
-        tracer.stop()
 
 
 if __name__ == "__main__":

@@ -33,32 +33,35 @@ MODEL_CONFIGS = {
     # },
 }
 
-prompt = "你好！请告诉我如何学习 PyTorch?"
 
-for model_key, config in MODEL_CONFIGS.items():
-    print(f"Running {model_key}...")
-    tokenizer = AutoTokenizer.from_pretrained(config["name"])
-    model = AutoModelForCausalLM.from_pretrained(config["name"])
+def main():
+    prompt = "你好！请告诉我如何学习 PyTorch?"
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = model.to(device)
-    inputs = tokenizer(prompt, return_tensors="pt").to(device)
+    for model_key, config in MODEL_CONFIGS.items():
+        print(f"Running {model_key}...")
+        tokenizer = AutoTokenizer.from_pretrained(config["name"])
+        model = AutoModelForCausalLM.from_pretrained(config["name"])
 
-    params = config["params"]
-    with APITracer("torch", f"tools/api_tracer/trace_output/{model_key}") as tracer:
-        outputs = model.generate(
-            inputs["input_ids"],
-            max_length=params["max_length"],
-            num_return_sequences=1,
-            temperature=params["temperature"],
-            do_sample=params["do_sample"],
-        )
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+        inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    print("Generated Response:", response)
+        params = config["params"]
+        with APITracer("torch", f"tools/api_tracer/trace_output/{model_key}") as tracer:
+            outputs = model.generate(
+                inputs["input_ids"],
+                max_length=params["max_length"],
+                num_return_sequences=1,
+                temperature=params["temperature"],
+                do_sample=params["do_sample"],
+            )
 
-    del model, tokenizer
-    torch.cuda.empty_cache()
+        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        print("Generated Response:", response)
+
+        del model, tokenizer
+        torch.cuda.empty_cache()
+
 
 # api_calls = []
 
@@ -85,3 +88,6 @@ for model_key, config in MODEL_CONFIGS.items():
 
 # with open("tools/api_tracer/trace_output/api_calls.json", "w", encoding="utf-8") as f:
 #     json.dump(api_calls, f, indent=2, ensure_ascii=False)
+
+if __name__ == "__main__":
+    main()
