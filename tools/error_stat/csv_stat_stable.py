@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-TEST_LOG_PATH = Path("tester/api_config/test_log")
+TEST_LOG_PATH = Path("tester/api_config/stable_csv")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
