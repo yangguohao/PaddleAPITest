@@ -239,20 +239,72 @@ def aggregate_logs(end=False):
             for file_path in tmp_tol_files:
                 file_path.unlink()
 
+    stable_success = True
+    stable_file = TEST_LOG_PATH / f"stable.csv"
+    tmp_stable_files = sorted(TMP_LOG_PATH.glob(f"stable_*.csv"))
+    if tmp_stable_files:
+        try:
+            with stable_file.open("a", newline="") as out_f:
+                writer = csv.writer(out_f)
+                if not stable_file.exists() or stable_file.stat().st_size == 0:
+                    writer.writerow(
+                        [
+                            "API",
+                            "config",
+                            "dtype",
+                            "comp",
+                            "max_abs_diff",
+                            "max_rel_diff",
+                        ]
+                    )
+                for file_path in tmp_stable_files:
+                    try:
+                        with file_path.open("r") as in_f:
+                            reader = csv.reader(in_f)
+                            next(reader, None)
+                            for row in reader:
+                                if row:  # 确保行不为空
+                                    writer.writerow(row)
+                    except Exception as err:
+                        print(f"Error reading {file_path}: {err}", flush=True)
+                        stable_success = False
+                        break
+        except Exception as err:
+            print(f"Error writing to {tol_file}: {err}", flush=True)
+            stable_success = False
+
+        if not stable_success:
+            stable_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in tmp_stable_files:
+                file_path.unlink()
+
     if end:
-        if all_success:
-            shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
+        if all_success and not os.listdir(TMP_LOG_PATH):
+            shutil.rmtree(TMP_LOG_PATH)
 
         if tol_file.exists():
             try:
                 df = pd.read_csv(tol_file, on_bad_lines="warn")
-                df = df.drop_duplicates(subset=["config", "mode"], keep="last")
+                # df = df.drop_duplicates(subset=["config", "mode"], keep="last")
                 df = df.sort_values(
                     by=["API", "dtype", "config", "mode"], ignore_index=True
                 )
                 df.to_csv(tol_file, index=False, na_rep="nan")
             except Exception as err:
                 print(f"Error arranging {tol_file}: {err}", flush=True)
+
+        if stable_file.exists():
+            try:
+                df = pd.read_csv(stable_file, on_bad_lines="warn")
+                # df = df.drop_duplicates(subset=["config", "comp"], keep="last")
+                df = df.sort_values(
+                    by=["API", "dtype", "config", "comp"], ignore_index=True
+                )
+                df.to_csv(stable_file, index=False, na_rep="nan")
+            except Exception as err:
+                print(f"Error arranging {stable_file}: {err}", flush=True)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
@@ -401,6 +453,50 @@ def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
                         "config",
                         "dtype",
                         "mode",
+                        "max_abs_diff",
+                        "max_rel_diff",
+                    ]
+                )
+            writer.writerow(row)
+    except Exception as err:
+        print(f"Error writing to {output_file}: {err}", flush=True)
+
+
+def log_accuracy_stable(error_msg, api, config, dtype, comp):
+    output_file = TMP_LOG_PATH / f"stable_{os.getpid()}.csv"
+    print(f"[{comp}] {config}\n{error_msg}", flush=True)
+
+    if error_msg == "Identical":
+        max_abs_diff = 0.0
+        max_rel_diff = 0.0
+    else:
+        max_abs_diff = None
+        max_rel_diff = None
+
+        # 使用正则表达式提取误差值
+        abs_pattern = r"(?:Absolute|Greatest absolute|Max absolute) difference(?: among violations)?: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        rel_pattern = r"(?:Relative|Greatest relative|Max relative) difference(?: among violations)?: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        abs_match = re.search(abs_pattern, error_msg)
+        rel_match = re.search(rel_pattern, error_msg)
+
+        if abs_match and rel_match:
+            try:
+                max_abs_diff = float(abs_match.group(1))
+                max_rel_diff = float(rel_match.group(1))
+            except ValueError:
+                pass
+
+    row = [api, config, dtype, comp, str(max_abs_diff), str(max_rel_diff)]
+    try:
+        with open(output_file, mode="a", newline="") as f:
+            writer = csv.writer(f)
+            if not output_file.exists() or output_file.stat().st_size == 0:
+                writer.writerow(
+                    [
+                        "API",
+                        "config",
+                        "dtype",
+                        "comp",
                         "max_abs_diff",
                         "max_rel_diff",
                     ]

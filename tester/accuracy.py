@@ -263,6 +263,10 @@ class APITestAccuracy(APITestBase):
         self.is_backward = False
         def compare_paddle_and_torch(paddle_tensor, torch_tensor) -> bool:
             try:
+                # if paddle_tensor.dtype == paddle.bfloat16:
+                #     paddle_tensor = paddle.cast(paddle_tensor, dtype="float32")
+                # if torch_tensor.dtype == torch.bfloat16:
+                #     torch_tensor = torch_tensor.to(dtype=torch.float32)
                 # self.np_assert_accuracy(paddle_tensor.numpy(), torch_tensor.numpy(), atol=self.atol, rtol=self.rtol)
                 self.torch_assert_accuracy(paddle_tensor, torch_tensor, atol=self.atol, rtol=self.rtol)
             except Exception as err:

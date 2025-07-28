@@ -3,7 +3,6 @@ paddle.Tensor.clip
 paddle.Tensor.fill_diagonal_tensor
 paddle.Tensor.mean
 paddle.Tensor.median
-paddle.Tensor.set_
 paddle.Tensor.tile
 paddle.clip
 paddle.copysign
