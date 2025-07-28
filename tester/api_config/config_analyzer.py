@@ -471,27 +471,34 @@ class TensorConfig:
                 return self.numpy_tensor
             elif api_config.api_name == "paddle.vision.ops.distribute_fpn_proposals":
                 if (index is not None and index == 0) or  (key is not None and key == "fpn_rois"):
-                    self.numpy_tensor = numpy.zeros(self.shape)
-                    for i in range(self.shape[0]):
-                        self.numpy_tensor[i][0] = numpy.random.randint(1,1024) + numpy.random.random()
-                        self.numpy_tensor[i][1] = numpy.random.randint(1,1024) + numpy.random.random()
-                        self.numpy_tensor[i][2] = self.numpy_tensor[i][0] + numpy.random.randint(1,1024) + numpy.random.random()
-                        self.numpy_tensor[i][3] = self.numpy_tensor[i][1] + numpy.random.randint(1,1024) + numpy.random.random()
+                    num = self.shape[0]
+                    self.numpy_tensor = numpy.random.randint(1, 1024, [num, 4])
+                    self.numpy_tensor[:, 0] = self.numpy_tensor[:, 0] + numpy.random.random([num])
+                    self.numpy_tensor[:, 1] = self.numpy_tensor[:, 1] + numpy.random.random([num])
+                    self.numpy_tensor[:, 2] = self.numpy_tensor[:, 0] + numpy.random.randint(1, 1024, [num])+numpy.random.random([num])
+                    self.numpy_tensor[:, 3] = self.numpy_tensor[:, 1] + numpy.random.randint(1, 1024, [num])+numpy.random.random([num])
                     if not hasattr(api_config, "num"):
-                        api_config.num = self.shape[0]
+                        api_config.num = num
                 elif (index is not None and index == 6 ) or (key is not None and key == "rois_num"):
                     num = api_config.num
                     re = self.shape[0]
                     self.numpy_tensor =  numpy.zeros(self.shape)
-                    if num < re:
-                        indices = numpy.random.choice(re, num, replace=False)
-                        self.numpy_tensor[indices] = 1
+                    if num > 4096 or re > 4096:
+                        if num < re:
+                            self.numpy_tensor[:num] = 1
+                        else:
+                            self.numpy_tensor += num//re
+                            self.numpy_tensor[:num%re] += 1
                     else:
-                        for i in range(self.shape[0]-1):
-                            self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
-                            num = num - self.numpy_tensor[i]
-                            re -= 1
-                        self.numpy_tensor[self.shape[0]-1] = num
+                        if num < re:
+                            indices = numpy.random.choice(re, num, replace=False)
+                            self.numpy_tensor[indices] = 1
+                        else:
+                            for i in range(self.shape[0]-1):
+                                self.numpy_tensor[i] = numpy.random.randint(1, num - re + 2)
+                                num = num - self.numpy_tensor[i]
+                                re -= 1
+                            self.numpy_tensor[self.shape[0]-1] = num
 
             elif api_config.api_name == "paddle.dot":
                 if "int" in self.dtype:
@@ -809,11 +816,39 @@ class TensorConfig:
                     # Construct a non-singular matrix: A = random_matrix + n*I
                     # strict diagonal dominant matrix is non-singular. https://en.wikipedia.org/wiki/Diagonally_dominant_matrix
                     self.numpy_tensor += eye_matrix
+                elif api_config.api_name.endswith("det"):
+                    if self.check_arg(api_config, 0, "x"):
+                        assert len(self.shape) >= 2, "Input must be at least 2D."
+                        assert self.shape[-1] == self.shape[-2], "Input must be square matrices."
+                        n = self.shape[-1]
+                        A = numpy.random.uniform(low=0.5, high=1.0, size=self.shape).astype(self.dtype)
+                        A_T = numpy.swapaxes(A, -1, -2)
+                        self.numpy_tensor = numpy.matmul(A, A_T) + numpy.eye(n, dtype=self.dtype)
+                elif api_config.api_name.endswith("pinv"):
+                    if self.check_arg(api_config, 0, "x") and self.get_arg(api_config, 2, " hermitian"):
+                        is_complex = self.dtype.startswith("complex")
+                        if len(self.shape) not in [2, 3]:
+                            raise ValueError("pinv only supports 2D or 3D tensors")
+                        if is_complex:
+                            if self.dtype == "complex64":
+                                real_dtype = numpy.float32
+                            elif self.dtype == "complex128":
+                                real_dtype = numpy.float64
+                            A_real = numpy.random.randn(*self.shape).astype(real_dtype)
+                            A_imag = numpy.random.randn(*self.shape).astype(real_dtype)
+                            A = A_real + 1j * A_imag
+                            A = A.astype(self.dtype)
+                        else:
+                            A = numpy.random.randn(*self.shape).astype(self.dtype)
+                        if len(self.shape) == 2:
+                            A_T = A.conj().T if is_complex else A.T
+                        else:
+                            A_T = numpy.conj(A).swapaxes(-2, -1) if is_complex else A.swapaxes(-2, -1)
+                        self.numpy_tensor = (A + A_T) / 2
                 elif api_config.api_name.endswith("corrcoef"):
                     if self.dtype == 'float16':
                         # 1e-3 to avoid inf
                         self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype) * 1e-3
-                    
             elif api_config.api_name == "paddle.linspace":
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
@@ -1044,6 +1079,9 @@ class TensorConfig:
                         self.numpy_tensor = soft_labels.astype(self.dtype)
                     else:
                         self.numpy_tensor = numpy.random.randint(0, num_classes, size=self.shape).astype(self.dtype)
+                elif self.check_arg(api_config, 3, "weight"):
+                    self.numpy_tensor = numpy.random.random(size=self.shape)
+                    self.numpy_tensor = self.numpy_tensor / self.numpy_tensor.sum()
 
             elif api_config.api_name == "paddle.nn.functional.ctc_loss":
                 if self.check_arg(api_config, 1, "labels"):
@@ -1870,9 +1908,10 @@ class TensorConfig:
                 dtype="float32" if self.dtype == 'bfloat16' else self.dtype,
                 place=self.place
             )
+
             self.paddle_tensor.stop_gradient = False
             if self.dtype == "bfloat16":
-                self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="uint16")
+                self.paddle_tensor = paddle.cast(self.paddle_tensor, dtype="bfloat16")
         return self.paddle_tensor
 
     def get_torch_tensor(self, api_config):

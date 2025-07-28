@@ -6,11 +6,16 @@ os.environ["NVIDIA_TF32_OVERRIDE"] = "0"
 import argparse
 from datetime import datetime
 
-from tester import (APIConfig, APITestAccuracy, APITestCINNVSDygraph,
-                    APITestPaddleOnly,APITestPaddleGPUPerformance, APITestTorchGPUPerformance, APITestPaddleTorchGPUPerformance, set_cfg)
-from tester.api_config.log_writer import read_log, write_to_log
-import torch
 import paddle
+import torch
+
+from tester import (APIConfig, APITestAccuracy, APITestAccuracyStable,
+                    APITestCINNVSDygraph, APITestPaddleGPUPerformance,
+                    APITestPaddleOnly, APITestPaddleTorchGPUPerformance,
+                    APITestTorchGPUPerformance, set_cfg)
+from tester.api_config.log_writer import (close_process_files, read_log,
+                                          write_to_log)
+
 
 def parse_bool(value):
     if isinstance(value, str):
@@ -22,48 +27,51 @@ def parse_bool(value):
     else:
         raise ValueError(f"Invalid boolean value: {value} parsed from command line")
 
+
 def main():
-    parser = argparse.ArgumentParser(
-        description='API Test'
-    )
+    parser = argparse.ArgumentParser(description="API Test")
     parser.add_argument(
-        '--api_config_file',
+        "--api_config_file",
         default="",
     )
     parser.add_argument(
-        '--api_config',
+        "--api_config",
         default="",
     )
     parser.add_argument(
-        '--paddle_only',
+        "--paddle_only",
         default=False,
     )
     parser.add_argument(
-        '--paddle_cinn',
+        "--paddle_cinn",
         default=False,
     )
     parser.add_argument(
-        '--accuracy',
+        "--accuracy",
         default=False,
     )
     parser.add_argument(
-        '--paddle_gpu_performance',
+        "--paddle_gpu_performance",
         default=False,
     )
     parser.add_argument(
-        '--torch_gpu_performance',
+        "--torch_gpu_performance",
         default=False,
     )
     parser.add_argument(
-        '--paddle_torch_gpu_performance',
+        "--paddle_torch_gpu_performance",
         default=False,
     )
     parser.add_argument(
-        '--test_amp',
+        "--accuracy_stable",
         default=False,
     )
     parser.add_argument(
-        '--id',
+        "--test_amp",
+        default=False,
+    )
+    parser.add_argument(
+        "--id",
         default="",
         type=str,
     )
@@ -100,12 +108,16 @@ def main():
         test_class = APITestAccuracy
     elif options.paddle_gpu_performance:
         paddle.framework.set_flags({"FLAGS_use_system_allocator": False})
+        paddle.framework.set_flags({"FLAGS_share_tensor_for_grad_tensor_holder": True})
         test_class = APITestPaddleGPUPerformance
     elif options.torch_gpu_performance:
         test_class = APITestTorchGPUPerformance
     elif options.paddle_torch_gpu_performance:
         paddle.set_flags({"FLAGS_use_system_allocator": False})
+        paddle.framework.set_flags({"FLAGS_share_tensor_for_grad_tensor_holder": True})
         test_class = APITestPaddleTorchGPUPerformance
+    elif options.accuracy_stable:
+        test_class = APITestAccuracyStable
 
     if options.api_config != "":
         options.api_config = options.api_config.strip()
@@ -129,7 +141,11 @@ def main():
         case.clear_tensor()
         del case
         del api_config
-        if not options.paddle_gpu_performance and not options.torch_gpu_performance and not options.paddle_torch_gpu_performance:
+        if (
+            not options.paddle_gpu_performance
+            and not options.torch_gpu_performance
+            and not options.paddle_torch_gpu_performance
+        ):
             torch.cuda.empty_cache()
             paddle.device.cuda.empty_cache()
     elif options.api_config_file != "":
@@ -160,12 +176,21 @@ def main():
             try:
                 case.test()
             except Exception as err:
-                if "CUDA error" in str(err) or "memory corruption" in str(err) or "CUDA out of memory" in str(err):
+                if (
+                    "CUDA error" in str(err)
+                    or "memory corruption" in str(err)
+                    or "CUDA out of memory" in str(err)
+                    or "Out of memory error" in str(err)
+                ):
                     exit(0)
             case.clear_tensor()
             del case
             del api_config
-            if not options.paddle_gpu_performance and not options.torch_gpu_performance and not options.paddle_torch_gpu_performance:
+            if (
+                not options.paddle_gpu_performance
+                and not options.torch_gpu_performance
+                and not options.paddle_torch_gpu_performance
+            ):
                 torch.cuda.empty_cache()
                 paddle.device.cuda.empty_cache()
 
@@ -183,5 +208,7 @@ def main():
         #         print(str(res.stderr.read(), encoding="utf-8"), flush=True)
         #         # res.terminate()
 
-if __name__ == '__main__':
+    close_process_files()
+
+if __name__ == "__main__":
     main()
