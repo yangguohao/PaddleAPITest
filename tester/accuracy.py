@@ -401,6 +401,10 @@ class APITestAccuracy(APITestBase):
             }:
                 paddle_out_grads = []
                 torch_out_grads = []
+            elif self.api_config.api_name == "paddle.linalg.cholesky_solve":
+                from .base import get_arg
+                is_upper = get_arg(self.api_config, 2, 'upper', default=False)
+                torch_out_grads[1] = torch.triu(torch_out_grads[1]) if is_upper else torch.tril(torch_out_grads[1])
 
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
