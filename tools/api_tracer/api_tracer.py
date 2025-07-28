@@ -8,7 +8,7 @@ from framework_dialect import FrameworkDialect, TracingHook
 class APITracer:
 
     def __init__(self, dialect: str, output_path: str = "trace_output"):
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        os.makedirs(output_path, exist_ok=True)
         self.dialect = FrameworkDialect.get_dialect(dialect)
         self.serializer = ConfigSerializer(self.dialect, output_path)
         self.hooks: List[TracingHook] = self.dialect.get_hooks(self.serializer)
