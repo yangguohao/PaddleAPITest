@@ -639,6 +639,9 @@ class CorrcoefRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 rowvar = locals().get('rowvar',True)
+dtype = x.dtype
+if dtype == torch.float16:
+    x = x.to(torch.float)
 """
         core = """
 if rowvar:
@@ -647,7 +650,11 @@ else:
     x = x.t()
     result = torch.corrcoef(x).t()
 """
-        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        postprocess = """
+if dtype == torch.float16:
+    result = result.to(torch.float16)
+"""
+        code = Code(preprocess=pre.splitlines(), core=core.splitlines(), postprocess=postprocess.splitlines())
         return ConvertResult.success(paddle_api, code)
 
 
