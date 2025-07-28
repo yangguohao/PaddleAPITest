@@ -11,7 +11,6 @@ paddle.Tensor.fill_diagonal_
 paddle.Tensor.logit
 paddle.Tensor.median
 paddle.Tensor.put_along_axis
-paddle.Tensor.set_
 paddle.Tensor.sum
 paddle.Tensor.topk
 paddle.add_n

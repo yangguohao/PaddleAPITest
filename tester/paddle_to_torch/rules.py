@@ -2469,8 +2469,8 @@ def fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha=1.0, beg
         # using banker's rounding
         if quant_round_type == 0:
             x = torch.round(x)
-        else: #  Round to nearest if type != 0
-            x = torch.floor(x + 0.5)
+        else: # round half away from zero
+            x = torch.where(x >= 0, torch.floor(x + 0.5), torch.ceil(x - 0.5))
         x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound).to(torch.int8)
             
     return (x, out_residual, out_mean, out_var)
@@ -3199,10 +3199,6 @@ if not 'align_corners' in _kwargs:
     _kwargs['align_corners'] = False    
 if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
     del _kwargs["align_corners"]
-elif align_mode == 1:
-    _kwargs['align_corners'] = True
-elif align_mode == 0:
-    _kwargs['align_corners'] = False
 """
         core = """
 result = torch.nn.functional.interpolate(**_kwargs)
@@ -3598,7 +3594,10 @@ class LstsqRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-driver='gels'
+# if driver isn't gels, it only can run in cpu mode.
+if driver != 'gels':
+    x = x.cpu()
+    y = y.cpu()
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
@@ -6168,10 +6167,6 @@ if not 'align_corners' in _kwargs:
     _kwargs['align_corners'] = False    
 if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
     del _kwargs["align_corners"]
-elif align_mode == 1:
-    _kwargs['align_corners'] = True
-elif align_mode == 0:
-    _kwargs['align_corners'] = False
 """
         core = """
 result = torch.nn.functional.upsample(**_kwargs)
