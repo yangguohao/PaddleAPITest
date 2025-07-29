@@ -4548,7 +4548,7 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if exclusive:
+if exclusive in locals() and exclusive:
     padding = 0
 
 if isinstance(padding, str):
