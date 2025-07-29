@@ -2218,6 +2218,8 @@ def fused_rotary_position_embedding(
             cos_tensor[..., 0::2] = torch.cos(sinusoid_inp)
             cos_tensor[..., 1::2] = torch.cos(sinusoid_inp)
 
+        sin_tensor = sin_tensor.reshape([1, seq_len, 1, head_dim])
+        cos_tensor = cos_tensor.reshape([1, seq_len, 1, head_dim])
         return sin_tensor, cos_tensor
 
     init_q, init_k, init_v = q, k, v
@@ -3475,7 +3477,7 @@ class LinearRule(BaseRule):
 weight = weight.T
 if weight.dtype == torch.bfloat16:
     weight = weight.to(torch.float32)
-if bias in locals() and bias is not None and bias.dtype == torch.bfloat16:
+if 'bias' in locals() and bias is not None and bias.dtype == torch.bfloat16:
     bias = bias.to(torch.float32)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
