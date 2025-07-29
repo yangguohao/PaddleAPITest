@@ -66,7 +66,9 @@ def run_pytorch_code():
 
 
 def main():
-    with APITracer("torch", "tools/api_tracer/trace_output") as tracer:
+    with APITracer(
+        "torch", output_path="tools/api_tracer/test_op_trace_output"
+    ) as tracer:
         run_pytorch_code()
 
 

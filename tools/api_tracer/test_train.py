@@ -1,8 +1,6 @@
 import os
 
-os.environ["HF_HOME"] = (
-    "/root/paddlejob/workspace/env_run/lihaoyang/PaddleAPITest/tools/api_tracer/.huggingface"
-)
+os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 
 import torch
 from datasets import load_dataset
@@ -12,10 +10,10 @@ from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
 from tools.api_tracer import APITracer
 
-tracer = APITracer("torch", output_path="tools/api_tracer/qwen3_trace_output")
+tracer = APITracer("torch", output_path="tools/api_tracer/test_train_trace_output")
 tracer.start()
 
-model_name = "Qwen/Qwen2-0.5B"
+model_name = "Qwen/Qwen3-0.6B"
 
 model = AutoModelForCausalLM.from_pretrained(
     model_name, torch_dtype=torch.bfloat16, device_map="auto"
@@ -55,7 +53,7 @@ tokenized_dataset = dataset_sample.map(
 )
 
 training_args = TrainingArguments(
-    output_dir="./qwen2-0.5b-finetuned-arena",
+    output_dir="tools/api_tracer/qwen3-0.6b-finetuned-arena",
     per_device_train_batch_size=2,
     gradient_accumulation_steps=8,
     learning_rate=2e-5,
@@ -79,7 +77,7 @@ print("🚀 开始训练...")
 trainer.train()
 print("✅ 训练完成！")
 
-final_model_path = "./qwen2-0.5b-finetuned-final"
+final_model_path = "tools/api_tracer/qwen3-0.6b-finetuned-final"
 trainer.save_model(final_model_path)
 tokenizer.save_pretrained(final_model_path)
 print(f"模型已保存至: {final_model_path}")

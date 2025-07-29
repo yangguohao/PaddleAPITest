@@ -6,9 +6,7 @@ import yaml
 
 from tools.api_tracer import APITracer
 
-os.environ["HF_HOME"] = (
-    "/root/paddlejob/workspace/env_run/lihaoyang/PaddleAPITest/tools/api_tracer/.huggingface"
-)
+os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 
 import torch
 from torch.profiler import ProfilerActivity, profile, record_function
@@ -47,7 +45,9 @@ def main():
         inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
         params = config["params"]
-        with APITracer("torch", f"tools/api_tracer/trace_output/{model_key}") as tracer:
+        with APITracer(
+            "torch", f"tools/api_tracer/test_infer_trace_output/{model_key}"
+        ) as tracer:
             outputs = model.generate(
                 inputs["input_ids"],
                 max_length=params["max_length"],
