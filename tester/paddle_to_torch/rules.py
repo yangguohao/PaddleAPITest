@@ -2201,18 +2201,18 @@ def fused_rotary_position_embedding(
         indices = torch.arange(0, head_dim, 2, dtype=torch.float32)
         indices = 1 / (rotary_emb_base ** (indices / head_dim))
         sinusoid_inp = pos_seq.unsqueeze(1) * indices.unsqueeze(0)
+        sinusoid_inp = sinusoid_inp.unsqueeze(0).unsqueeze(2)
+
+        sin_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
+        cos_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
 
         if rotate_half:
-            sin_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
-            cos_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
             stride = head_dim // 2
             sin_tensor[..., :stride] = sign * torch.sin(sinusoid_inp)
             sin_tensor[..., stride:] = torch.sin(sinusoid_inp)
             cos_tensor[..., :stride] = torch.cos(sinusoid_inp)
             cos_tensor[..., stride:] = torch.cos(sinusoid_inp)
         else:
-            sin_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
-            cos_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
             sin_tensor[..., 0::2] = sign * torch.sin(sinusoid_inp)
             sin_tensor[..., 1::2] = torch.sin(sinusoid_inp)
             cos_tensor[..., 0::2] = torch.cos(sinusoid_inp)
@@ -2234,8 +2234,8 @@ def fused_rotary_position_embedding(
     sin_tensor, cos_tensor = sin, cos
     if sin_tensor is None or cos_tensor is None:
         sin_tensor, cos_tensor = _get_sin_cos_tensor_pytorch(seq_len, head_dim, rotate_half=not use_neox_rotary_style)
-        sin_tensor = sin_tensor.to(q.device)
-        cos_tensor = cos_tensor.to(q.device)
+        sin_tensor = sin_tensor.to(dtype=q.dtype, device=q.device)
+        cos_tensor = cos_tensor.to(dtype=q.dtype, device=q.device)
 
     q_rope = _deal_qkv_pytorch(init_q)
     k_rope = _deal_qkv_pytorch(init_k)
@@ -4998,8 +4998,8 @@ arr, item, value = args
 if isinstance(value, torch.Tensor) and arr.dtype == torch.float32 and value.dtype == torch.bfloat16:
     value = value.to(torch.float32)
 """
-        core = "x.__setitem__(item, value)"
-        post = "result = x"
+        core = "arr.__setitem__(item, value)"
+        post = "result = arr"
         code = Code(preprocess=pre.splitlines(), core=[core], postprocess=[post])
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
