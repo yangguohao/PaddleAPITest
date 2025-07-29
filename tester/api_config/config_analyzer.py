@@ -1838,29 +1838,29 @@ class TensorConfig:
                     # padding value should not be too large 
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=10)
                     
-                elif api_config.api_name == "paddle.Tensor.__getitem__":
-                    if self.check_arg(api_config, 1, "item"):
-                        arr = self.get_arg(api_config, 0, "arr")
-                        min_dim = min(arr.shape)
-                        if self.dtype == "bool":
-                            indices = numpy.random.choice([0, 1], size=self.numel())
-                        else:
-                            indices = numpy.random.randint(0, min_dim, size=self.numel())
-                        self.numpy_tensor = indices.reshape(self.shape).astype(self.dtype)
+            elif api_config.api_name == "paddle.Tensor.__getitem__":
+                if self.check_arg(api_config, 1, "item"):
+                    arr = self.get_arg(api_config, 0, "arr")
+                    min_dim = min(arr.shape)
+                    if self.dtype == "bool":
+                        indices = numpy.random.choice([0, 1], size=self.numel())
+                    else:
+                        indices = numpy.random.randint(0, min_dim, size=self.numel())
+                    self.numpy_tensor = indices.reshape(self.shape).astype(self.dtype)
 
-                elif api_config.api_name == "paddle.Tensor.__setitem__":
-                    if self.check_arg(api_config, 1, "item"):
-                        arr = self.get_arg(api_config, 0, "arr")
-                        value = self.get_arg(api_config, 2, "value")
-                        min_dim = min(arr.shape)
-                        if value is not None and hasattr(value, "shape"):
-                            indices = numpy.zeros(self.numel(), dtype="int64")
-                            num_true = min(value.shape[0], self.numel())
-                            true_indices = numpy.random.choice(self.numel(), size=num_true, replace=False)
-                            indices[true_indices] = 1
-                        else:
-                            indices = numpy.random.choice([0, 1], size=self.numel())
-                        self.numpy_tensor = indices.reshape(self.shape).astype(self.dtype)
+            elif api_config.api_name == "paddle.Tensor.__setitem__":
+                if self.check_arg(api_config, 1, "item"):
+                    arr = self.get_arg(api_config, 0, "arr")
+                    value = self.get_arg(api_config, 2, "value")
+                    min_dim = min(arr.shape)
+                    if value is not None and hasattr(value, "shape"):
+                        indices = numpy.zeros(self.numel(), dtype="int64")
+                        num_true = min(value.shape[0], self.numel())
+                        true_indices = numpy.random.choice(self.numel(), size=num_true, replace=False)
+                        indices[true_indices] = 1
+                    else:
+                        indices = numpy.random.choice([0, 1], size=self.numel())
+                    self.numpy_tensor = indices.reshape(self.shape).astype(self.dtype)
             
             elif api_config.api_name == "paddle.poisson":
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
