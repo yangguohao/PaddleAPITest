@@ -30,6 +30,7 @@ special_accuracy_atol_rtol:
   paddle.Tensor.cumsum: [1.0, 1.0]
   paddle.logcumsumexp: [1.0, 1.0]
   paddle.Tensor.logcumsumexp: [1.0, 1.0]
+  paddle.tensordot: [1.0, 1.0]
   paddle.incubate.nn.functional.fused_bias_act: [1, 0.01]
   paddle.incubate.nn.functional.fused_rms_norm : [3, 0.5]
   paddle.incubate.nn.functional.fused_layer_norm: [1, 0.01]
