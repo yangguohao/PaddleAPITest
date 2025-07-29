@@ -1,4 +1,5 @@
-import traceback
+from queue import Empty, Queue
+from threading import Event, Thread
 from typing import Any, Dict, List
 
 import yaml
@@ -14,7 +15,13 @@ class ConfigSerializer:
         self.file_handler_yaml = None
         self.file_handler_txt = None
         self.buffer: List[Dict] = []
-        self.buffer_limit = 1000
+        self.buffer_limit = 20000
+
+        # asyncio
+        self.log_queue = Queue()
+        self._stop_event = Event()
+        self.writer_thread = Thread(target=self._writer_loop)
+        self.total_calls_processed = 0
 
     def open(self):
         self.file_handler_yaml = open(
@@ -23,11 +30,58 @@ class ConfigSerializer:
         self.file_handler_txt = open(
             self.output_path + "/api_trace.txt", "a", encoding="utf-8"
         )
+        self.writer_thread.start()
 
-    def flush_buffer(self):
+    def close(self):
+        self._stop_event.set()
+        self.writer_thread.join()
+        self._flush_buffer()
+
+        if self.file_handler_yaml:
+            self.file_handler_yaml.close()
+            self.file_handler_yaml = None
+        if self.file_handler_txt:
+            self.file_handler_txt.close()
+            self.file_handler_txt = None
+
+        print(f"[ConfigSerializer] Files closed, final save to {self.output_path}")
+
+    def _writer_loop(self):
+        """线程的工作循环，从队列获取数据并处理"""
+        while not self._stop_event.is_set() or not self.log_queue.empty():
+            try:
+                api_name, args, kwargs, output = self.log_queue.get(timeout=0.1)
+
+                try:
+                    call_record = {
+                        "api": api_name,
+                        "args": [self._serialize_item(arg) for arg in args],
+                        "kwargs": {
+                            key: self._serialize_item(value)
+                            for key, value in kwargs.items()
+                        },
+                    }
+                    self.buffer.append(call_record)
+                except Exception as e:
+                    print(
+                        f"[ConfigSerializer] Error serializing call for '{api_name}': {e}"
+                    )
+
+                if len(self.buffer) >= self.buffer_limit:
+                    self._flush_buffer()
+
+                self.log_queue.task_done()
+            except Empty:
+                pass
+            except Exception as e:
+                print(f"[ConfigSerializer] Error in writer thread: {e}")
+
+    def _flush_buffer(self):
         """将buffer内容写入文件并清空buffer"""
         if not self.buffer:
             return
+
+        self.total_calls_processed += len(self.buffer)
 
         if self.file_handler_yaml:
             try:
@@ -42,7 +96,6 @@ class ConfigSerializer:
                 self.file_handler_yaml.flush()
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing YAML file: {e}")
-                traceback.print_exc()
 
         if self.file_handler_txt:
             try:
@@ -54,51 +107,15 @@ class ConfigSerializer:
                 self.file_handler_txt.flush()
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing TXT file: {e}")
-                traceback.print_exc()
 
         print(
-            f"[ConfigSerializer] Flushed {len(self.buffer)} calls to {self.output_path}"
+            f"[ConfigSerializer] Flushed {len(self.buffer)} calls, total processed: {self.total_calls_processed}"
         )
         self.buffer.clear()
 
-    def close(self):
-        self.flush_buffer()
-
-        if self.file_handler_yaml:
-            try:
-                self.file_handler_yaml.close()
-            except Exception as e:
-                print(f"[ConfigSerializer] Error closing YAML file: {e}")
-            finally:
-                self.file_handler_yaml = None
-
-        if self.file_handler_txt:
-            try:
-                self.file_handler_txt.close()
-            except Exception as e:
-                print(f"[ConfigSerializer] Error closing TXT file: {e}")
-            finally:
-                self.file_handler_txt = None
-
-        print(f"[ConfigSerializer] Files closed, final save to {self.output_path}")
-
     def dump_call(self, api_name: str, args: tuple, kwargs: dict, output: Any):
         """记录一次API调用"""
-        try:
-            call_record = {
-                "api": api_name,
-                "args": [self._serialize_item(arg) for arg in args],
-                "kwargs": {
-                    key: self._serialize_item(value) for key, value in kwargs.items()
-                },
-                # "output_summary": self._serialize_item(output)
-            }
-            self.buffer.append(call_record)
-
-            if len(self.buffer) >= self.buffer_limit:
-                self.flush_buffer()
-        except Exception as e:
-            print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")
+        self.log_queue.put((api_name, args, kwargs, output))
 
     def _serialize_item(self, item: Any) -> Any:
         """递归序列化对象"""
