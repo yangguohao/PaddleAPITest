@@ -2459,6 +2459,7 @@
         "Rule": "BatchNormRule",
         "torch_api": "torch.nn.functional.batch_norm",
         "set_defaults": {
+            "training": false,
             "momentum": 0.9,
             "use_global_stats": "None"
         },

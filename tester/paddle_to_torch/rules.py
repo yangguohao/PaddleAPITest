@@ -1687,9 +1687,9 @@ elif isinstance(shape, (list, tuple)):
 """
         core = """
 if len(size_list) == 0:
-    result = torch.empty([])
+    result = torch.empty([], dtype=dtype)
 else:
-    result = torch.empty(*size_list)
+    result = torch.empty(*size_list, dtype=dtype)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
@@ -2162,6 +2162,8 @@ def fused_rotary_position_embedding(
     time_major: bool = False,
     rotary_emb_base: float = 10000.0,
 ) -> tuple[torch.Tensor, Optional[torch.Tensor], Optional[torch.Tensor]]:
+
+    from typing import Optional
 
     def _deal_qkv_pytorch(init_value: Optional[torch.Tensor]) -> Optional[torch.Tensor]:
         if init_value is None:
@@ -4548,7 +4550,7 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if exclusive in locals() and exclusive:
+if 'exclusive' in locals() and exclusive:
     padding = 0
 
 if isinstance(padding, str):
