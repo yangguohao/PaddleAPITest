@@ -3190,60 +3190,36 @@ result = loss
 # i
 class InterpolateRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
+        default_code, map_code = self.apply_generic()
         pre = """
-_kwargs = {}
-for paddle_param, torch_param in {
-    'x': 'input',
-    'size': 'size',
-    'scale_factor': 'scale_factor',
-    'mode': 'mode',
-    'align_corners': 'align_corners',
-    'recompute_scales': 'recompute_scales'
-}.items():
-    if paddle_param in locals() and not locals()[paddle_param] is None:
-        _kwargs[torch_param] = locals()[paddle_param]
-for k in list(_kwargs.keys()):
-    if _kwargs[k] is None:
-        del _kwargs[k]
-if 'size' in _kwargs and isinstance(_kwargs['size'],torch.Tensor):
-    size = []
-    for i in _kwargs['size']:
-        size.append(int(i.item()))
-    _kwargs['size'] = size
-if 'scale_factor' in _kwargs and isinstance(_kwargs['scale_factor'],torch.Tensor):
-    scale_factor = []
-    for i in _kwargs['scale_factor']:
-        scale_factor.append(i.item())
-    _kwargs['scale_factor'] = scale_factor
-align_mode = locals().get('align_mode', 0)
-data_format = locals().get('data_format', 'None')
+if isinstance(size, torch.Tensor):
+    size = size.tolist()
+elif size is None:
+    del size
+if isinstance(scale_factor, torch.Tensor):
+    scale_factor = scale_factor.tolist()
+elif scale_factor is None:
+    del scale_factor
+
 if data_format == "NHWC":
-    _kwargs['input'] = _kwargs['input'].permute(0,3,1,2)
+    x = x.permute(0, 3, 1, 2)
 elif data_format == "NDHWC":
-    _kwargs['input'] = _kwargs['input'].permute(0,4,1,2,3)
+    x = x.permute(0, 4, 1, 2, 3)
 elif data_format == "NWC":
-    _kwargs['input'] = _kwargs['input'].permute(0,2,1)
-if not 'mode' in _kwargs:
-    _kwargs['mode'] = 'nearest'
-if not 'align_corners' in _kwargs:
-    _kwargs['align_corners'] = False    
-if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
-    del _kwargs["align_corners"]
+    x = x.permute(0, 2, 1)
 """
-        core = """
-result = torch.nn.functional.interpolate(**_kwargs)
-"""
+        core = f"result = {self.torch_api}(**_kwargs)"
         post = """
 if data_format == "NHWC":
-    result = result.permute(0,2,3,1)
+    result = result.permute(0, 2, 3, 1)
 elif data_format == "NDHWC":
-    result = result.permute(0,2,3,4,1)
+    result = result.permute(0, 2, 3, 4, 1)
 elif data_format == "NWC":
-    result = result.permute(0,2,1)
+    result = result.permute(0, 2, 1)
 """
         code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines(),
+            preprocess=default_code + pre.splitlines() + map_code,
+            core=[core],
             postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
@@ -3492,22 +3468,16 @@ result = torch.abs(lcm)
 
 class LinearRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
+        _, map_code = self.apply_generic()
         pre = """
-_kwargs["weight"] = _kwargs["weight"].T
+weight = weight.T
+if weight.dtype == torch.bfloat16:
+    weight = weight.to(torch.float32)
+if bias in locals() and bias is not None and bias.dtype == torch.bfloat16:
+    bias = bias.to(torch.float32)
 """
-        core = """
-if isinstance(_kwargs['input'], tuple):
-    input = _kwargs['input']
-    del _kwargs['input']
-    result = []
-    for i in input:
-        result.append(torch.nn.functional.linear(input=i, **_kwargs))
-    result = torch.stack(result)
-else:
-    result = torch.nn.functional.linear(**_kwargs)
-"""
-        code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(preprocess= pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -4578,48 +4548,50 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if not exclusive:
-    if isinstance(padding, str):
-        if padding == "VALID":
+if exclusive:
+    padding = 0
+
+if isinstance(padding, str):
+    if padding == "VALID":
+        padding = 0
+    elif padding == "SAME":
+        input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+        pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+        padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
+        if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
+            x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
             padding = 0
-        elif padding == "SAME":
-            input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
-            pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
-            padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
-            if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
-                x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
-                padding = 0
-    elif isinstance(padding, (list, tuple)):
-        if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-            max_pad = []
-            for i in range(3):
-                max_pad.append(kernel_size[i] // 2)
-            exceeds_max = False
-            for p, m in zip(padding, max_pad):
-                if p > m:
-                    exceeds_max = True
-                    break
-            if exceeds_max:
-                pad_d, pad_h, pad_w = padding
-                x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
-                padding = 0
-            else:
-                padding = tuple(padding)
-        elif len(padding) == 6:  # [front, back, top, bottom, left, right]
-            pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
-            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+        max_pad = []
+        for i in range(3):
+            max_pad.append(kernel_size[i] // 2)
+        exceeds_max = False
+        for p, m in zip(padding, max_pad):
+            if p > m:
+                exceeds_max = True
+                break
+        if exceeds_max:
+            pad_d, pad_h, pad_w = padding
+            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
             padding = 0
-        elif len(padding) == 5: # Paddle 的 5D 填充格式
-            if data_format == "NCDHW":
-                pad_front, pad_back = padding[2]
-                pad_top, pad_bottom = padding[3]
-                pad_left, pad_right = padding[4]
-            else: # NDHWC
-                pad_front, pad_back = padding[1]
-                pad_top, pad_bottom = padding[2]
-                pad_left, pad_right = padding[3]
-            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-            padding = 0
+        else:
+            padding = tuple(padding)
+    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+    elif len(padding) == 5: # Paddle 的 5D 填充格式
+        if data_format == "NCDHW":
+            pad_front, pad_back = padding[2]
+            pad_top, pad_bottom = padding[3]
+            pad_left, pad_right = padding[4]
+        else: # NDHWC
+            pad_front, pad_back = padding[1]
+            pad_top, pad_bottom = padding[2]
+            pad_left, pad_right = padding[3]
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post_1d = """
