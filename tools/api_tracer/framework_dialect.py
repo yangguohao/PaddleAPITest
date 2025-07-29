@@ -2,15 +2,13 @@ import abc
 import functools
 import importlib
 import inspect
-import os
 import pkgutil
-import threading
 import traceback
 from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 
 import torch
-import yaml
+from torch.utils._python_dispatch import TorchDispatchMode
 
 if TYPE_CHECKING:
     from config_serializer import ConfigSerializer
@@ -150,24 +148,27 @@ class SetattrHook(TracingHook):
 
 
 # SetattrHook can not hook torch C API
-class TensorTracerMode(torch.overrides.TorchFunctionMode):
+class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
     def __init__(self, serializer: "ConfigSerializer"):
-        super().__init__()
         self.serializer = serializer
+        self.ignored_functions = torch.overrides.get_ignored_functions()
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
+        if func in self.ignored_functions:
+            return func(*args, **kwargs)
+
         output = func(*args, **kwargs)
 
         api_name = torch.overrides.resolve_name(func)
-        if not api_name:
-            if hasattr(func, "__module__"):
-                api_name = f"{func.__module__}.{func.__name__}"
-            elif hasattr(func, "__objclass__"):
-                api_name = f"{func.__objclass__.__module__}.{func.__objclass__.__name__}.{func.__name__}"
-            else:
-                api_name = f"unknown.{func.__name__}"
-                print(f"Unknown func: {func}, type: {type(func)}")
+        # if not api_name:
+        #     if hasattr(func, "__module__"):
+        #         api_name = f"{func.__module__}.{func.__name__}"
+        #     elif hasattr(func, "__objclass__"):
+        #         api_name = f"{func.__objclass__.__module__}.{func.__objclass__.__name__}.{func.__name__}"
+        #     else:
+        #         api_name = f"unknown.{func.__name__}"
+        #         print(f"Unknown func: {func}, type: {type(func)}")
 
         self.serializer.dump_call(api_name, args, kwargs, output)
         return output
@@ -175,7 +176,7 @@ class TensorTracerMode(torch.overrides.TorchFunctionMode):
 
 class TorchFunctionHook(TracingHook):
     def __init__(self, serializer: "ConfigSerializer"):
-        self.tracing_mode = TensorTracerMode(serializer)
+        self.tracing_mode = TorchFunctionModeTracer(serializer)
 
     def install(self):
         print(f"[TorchFunctionHook] Enabling __torch_function__ tracing mode...")
@@ -186,6 +187,34 @@ class TorchFunctionHook(TracingHook):
         print("[TorchFunctionHook] Disabling __torch_function__ tracing mode...")
         self.tracing_mode.__exit__(None, None, None)
         print("[TorchFunctionHook] Mode disabled.")
+
+
+class TorchDispatchModeTracer(TorchDispatchMode):
+    def __init__(self, serializer: "ConfigSerializer"):
+        self.serializer = serializer
+
+    def __torch_dispatch__(self, func, types, args=(), kwargs=None):
+        kwargs = kwargs or {}
+
+        output = func(*args, **kwargs)
+        api_name = func.name()
+        self.serializer.dump_call(api_name, args, kwargs, output)
+        return output
+
+
+class TorchDispatchHook(TracingHook):
+    def __init__(self, serializer: "ConfigSerializer"):
+        self.tracing_mode = TorchDispatchModeTracer(serializer)
+
+    def install(self):
+        print(f"[TorchDispatchHook] Enabling __torch_dispatch__ tracing mode...")
+        self.tracing_mode.__enter__()
+        print("[TorchDispatchHook] Mode enabled.")
+
+    def uninstall(self):
+        print("[TorchDispatchHook] Disabling __torch_dispatch__ tracing mode...")
+        self.tracing_mode.__exit__(None, None, None)
+        print("[TorchDispatchHook] Mode disabled.")
 
 
 class FrameworkDialect(abc.ABC):
@@ -215,7 +244,9 @@ class FrameworkDialect(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_hooks(self, serializer: "ConfigSerializer") -> List[TracingHook]:
+    def get_hooks(
+        self, serializer: "ConfigSerializer", level: Union[int, List]
+    ) -> List[TracingHook]:
         """获取跟踪钩子, 用于在API调用时进行记录"""
         raise NotImplementedError
 
@@ -407,8 +438,16 @@ class PyTorchDialect(FrameworkDialect):
         # TODO(@cangtianhuang): add more formatting logic here
         return None
 
-    def get_hooks(self, serializer) -> List[TracingHook]:
-        return [
-            # SetattrHook(self, serializer),  # kept but not used
-            TorchFunctionHook(serializer),
-        ]
+    def get_hooks(self, serializer, level) -> List[TracingHook]:
+        if level == 0:
+            return [TorchFunctionHook(serializer)]
+        if level == 1:
+            return [TorchDispatchHook(serializer)]
+        if level == -1:
+            return [SetattrHook(self, serializer)]  # kept but not used
+        if level == [0, 1]:
+            return [
+                TorchFunctionHook(serializer),
+                TorchDispatchHook(serializer),
+            ]
+        raise ValueError(f"Invalid level: {level}")

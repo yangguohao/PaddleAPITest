@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Union
 
 from config_serializer import ConfigSerializer
 from framework_dialect import FrameworkDialect, TracingHook
@@ -7,11 +7,11 @@ from framework_dialect import FrameworkDialect, TracingHook
 
 class APITracer:
 
-    def __init__(self, dialect: str, output_path: str = "trace_output"):
+    def __init__(self, dialect: str, output_path: str = "trace_output", level: Union[int, List] = 0):
         os.makedirs(output_path, exist_ok=True)
         self.dialect = FrameworkDialect.get_dialect(dialect)
         self.serializer = ConfigSerializer(self.dialect, output_path)
-        self.hooks: List[TracingHook] = self.dialect.get_hooks(self.serializer)
+        self.hooks: List[TracingHook] = self.dialect.get_hooks(self.serializer, level)
         self._is_tracing = False
 
     def start(self):
