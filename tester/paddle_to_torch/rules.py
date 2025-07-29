@@ -256,6 +256,24 @@ class ErrorRule(BaseRule):
 
 
 # a
+class AsComplexRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+dtype = x.dtype
+if dtype == torch.bfloat16:
+    x = x.to(torch.float32)
+"""
+        core = f"result = {self.torch_api}(input=x)"
+        pose = """
+if dtype == torch.bfloat16:
+    result = result.to(torch.bfloat16)        
+"""
+        code = Code(
+            preprocess=pre.splitlines(), core=[core], postprocess=pose.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class AddNRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -654,7 +672,11 @@ else:
 if dtype == torch.float16:
     result = result.to(torch.float16)
 """
-        code = Code(preprocess=pre.splitlines(), core=core.splitlines(), postprocess=postprocess.splitlines())
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+            postprocess=postprocess.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -2122,6 +2144,7 @@ def fused_rms_norm(
         core = "result = fused_rms_norm(**kwargs)"
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
+
 
 class FusedRotaryPositionEmbeddingRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:

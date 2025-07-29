@@ -210,6 +210,7 @@
         }
     },
     "paddle.as_complex": {
+        "Rule": "AsComplexRule",
         "torch_api": "torch.view_as_complex",
         "paddle_torch_args_map": {
             "x": "input"
