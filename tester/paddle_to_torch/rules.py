@@ -2160,24 +2160,30 @@ def fused_rotary_position_embedding(
     position_ids: Optional[torch.Tensor] = None,
     use_neox_rotary_style: bool = True,
     time_major: bool = False,
-    rotary_emb_base: float = 10000.0
+    rotary_emb_base: float = 10000.0,
 ) -> tuple[torch.Tensor, Optional[torch.Tensor], Optional[torch.Tensor]]:
-
-    from typing import Optional
 
     def _deal_qkv_pytorch(init_value: Optional[torch.Tensor]) -> Optional[torch.Tensor]:
         if init_value is None:
             return None
         return init_value.permute(0, 2, 1, 3)
 
-    def _mult_qkv_pytorch(value: Optional[torch.Tensor], cos_tensor: torch.Tensor, sin_tensor: torch.Tensor) -> Optional[torch.Tensor]:
+    def _mult_qkv_pytorch(
+        value: Optional[torch.Tensor],
+        cos_tensor: torch.Tensor,
+        sin_tensor: torch.Tensor,
+    ) -> Optional[torch.Tensor]:
         if value is None:
             return None
         rotate_half_q = torch.stack([-value[..., 1::2], value[..., 0::2]], dim=-1).reshape(value.shape)
         query = value * cos_tensor + rotate_half_q * sin_tensor
         return query
 
-    def _mult_qkv_rotate_half_pytorch(value: Optional[torch.Tensor], cos_tensor: torch.Tensor, sin_tensor: torch.Tensor) -> Optional[torch.Tensor]:
+    def _mult_qkv_rotate_half_pytorch(
+        value: Optional[torch.Tensor],
+        cos_tensor: torch.Tensor,
+        sin_tensor: torch.Tensor,
+    ) -> Optional[torch.Tensor]:
         if value is None:
             return None
         head_dim = value.shape[-1]
@@ -2186,37 +2192,32 @@ def fused_rotary_position_embedding(
         query = value * cos_tensor + rotate_half_q * sin_tensor
         return query
 
-    def _get_sin_cos_tensor_pytorch(seq_len: int, head_dim: int, sign: int = 1, rotate_half: bool = False):
+    def _get_sin_cos_tensor_pytorch(
+        seq_len: int, head_dim: int, sign: int = 1, rotate_half: bool = False
+    ):
         pos_seq = torch.arange(0, seq_len, 1, dtype=torch.float32)
         indices = torch.arange(0, head_dim, 2, dtype=torch.float32)
-        indices = 1 / 10000 ** (indices / head_dim)
+        indices = 1 / (rotary_emb_base ** (indices / head_dim))
         sinusoid_inp = pos_seq.unsqueeze(1) * indices.unsqueeze(0)
-        sin_sin = np.empty((seq_len * head_dim), dtype=np.float32)
-        cos_cos = np.empty((seq_len * head_dim), dtype=np.float32)
-        numpy_array = sinusoid_inp.numpy()
-        iter_array = np.nditer(numpy_array)
-        i = 0
+
         if rotate_half:
+            sin_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
+            cos_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
             stride = head_dim // 2
-            for value in iter_array:
-                sin_sin[i] = sign * np.sin(value)
-                cos_cos[i] = np.cos(value)
-                sin_sin[i + stride] = np.sin(value)
-                cos_cos[i + stride] = np.cos(value)
-                i += 1
-                if i % head_dim == stride:
-                    i += stride
+            sin_tensor[..., :stride] = sign * torch.sin(sinusoid_inp)
+            sin_tensor[..., stride:] = torch.sin(sinusoid_inp)
+            cos_tensor[..., :stride] = torch.cos(sinusoid_inp)
+            cos_tensor[..., stride:] = torch.cos(sinusoid_inp)
         else:
-            for value in iter_array:
-                sin_sin[i * 2] = sign * np.sin(value)
-                cos_cos[i * 2 + 0] = np.cos(value)
-                sin_sin[i * 2 + 1] = np.sin(value)
-                cos_cos[i * 2 + 1] = np.cos(value)
-                i += 1
-        tensor_sin = torch.from_numpy(sin_sin).reshape([1, seq_len, 1, head_dim])
-        tensor_cos = torch.from_numpy(cos_cos).reshape([1, seq_len, 1, head_dim])
-        return tensor_sin, tensor_cos
-    
+            sin_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
+            cos_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
+            sin_tensor[..., 0::2] = sign * torch.sin(sinusoid_inp)
+            sin_tensor[..., 1::2] = torch.sin(sinusoid_inp)
+            cos_tensor[..., 0::2] = torch.cos(sinusoid_inp)
+            cos_tensor[..., 1::2] = torch.cos(sinusoid_inp)
+
+        return sin_tensor, cos_tensor
+
     init_q, init_k, init_v = q, k, v
     if time_major:
         init_q = init_q.permute(1, 0, 2, 3)
@@ -2227,13 +2228,13 @@ def fused_rotary_position_embedding(
 
     head_dim = init_q.shape[3]
     seq_len = init_q.shape[1]
-    
+
     sin_tensor, cos_tensor = sin, cos
     if sin_tensor is None or cos_tensor is None:
         sin_tensor, cos_tensor = _get_sin_cos_tensor_pytorch(seq_len, head_dim, rotate_half=not use_neox_rotary_style)
         sin_tensor = sin_tensor.to(q.device)
         cos_tensor = cos_tensor.to(q.device)
-    
+
     q_rope = _deal_qkv_pytorch(init_q)
     k_rope = _deal_qkv_pytorch(init_k)
     v_rope = _deal_qkv_pytorch(init_v)
@@ -2242,10 +2243,9 @@ def fused_rotary_position_embedding(
         sin_tensor = sin_tensor.squeeze((0, 2))[position_ids].unsqueeze(2)
         cos_tensor = cos_tensor.squeeze((0, 2))[position_ids].unsqueeze(2)
 
-    perm = [0, 2, 1, 3]
-    sin_tensor = sin_tensor.permute(*perm)
-    cos_tensor = cos_tensor.permute(*perm)
-    
+    sin_tensor = sin_tensor.permute(0, 2, 1, 3)
+    cos_tensor = cos_tensor.permute(0, 2, 1, 3)
+
     if use_neox_rotary_style:
         query = _mult_qkv_pytorch(q_rope, cos_tensor, sin_tensor)
         value = _mult_qkv_pytorch(v_rope, cos_tensor, sin_tensor)
@@ -2265,7 +2265,7 @@ def fused_rotary_position_embedding(
             r_key = r_key.permute(1, 0, 2, 3)
         if r_value is not None:
             r_value = r_value.permute(1, 0, 2, 3)
-            
+
     return r_query, r_key, r_value
 """
         core = "result = fused_rotary_position_embedding(**kwargs)"

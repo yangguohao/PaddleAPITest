@@ -51,7 +51,6 @@ not_check_dtype:
   - paddle.cummin
   - paddle.cumprod
   - paddle.cumsum
-  - paddle.empty
   - paddle.floor
   - paddle.frexp
   - paddle.histogram
