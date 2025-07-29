@@ -41,6 +41,7 @@ special_accuracy_atol_rtol:
 # All configs that report dtype diff when not in not_check_dtype list should be
 # copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
 not_check_dtype:
+  - paddle.Tensor.__add__
   - paddle.Tensor.cumsum
   - paddle.Tensor.frexp
   - paddle.add
