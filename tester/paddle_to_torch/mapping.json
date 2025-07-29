@@ -2689,7 +2689,7 @@
             "reduction": "'mean'",
             "soft_label": "False",
             "label_smoothing": "0.0",
-            "reduction_original":"None"
+            "reduction_original": "None"
         },
         "paddle_torch_args_map": {
             "input": "input",
@@ -2910,7 +2910,7 @@
             "scale_factor": "scale_factor",
             "mode": "mode",
             "align_corners": "align_corners",
-            "recompute_scale_factor": "recompute_scale_factor",
+            "recompute_scale_factor": "recompute_scale_factor"
         }
     },
     "paddle.nn.functional.kl_div": {
