@@ -58,10 +58,10 @@ training_args = TrainingArguments(
     gradient_accumulation_steps=8,
     learning_rate=2e-5,
     logging_steps=20,
-    save_steps=100,
+    save_steps=50,
     bf16=True,
     report_to="none",
-    max_steps=200,
+    max_steps=100,
 )
 
 data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)

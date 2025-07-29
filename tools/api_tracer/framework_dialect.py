@@ -409,34 +409,39 @@ class PyTorchDialect(FrameworkDialect):
         # TODO(@cangtianhuang): implemente me
         return []
 
-    def serialize_special_type(self, item: Any) -> Optional[Dict]:
-        if isinstance(item, torch.Tensor):
-            return {
-                "type": "torch.Tensor",
-                "shape": list(item.shape),
-                "dtype": str(item.dtype),
-                "device": str(item.device),
-            }
-        if isinstance(item, torch.dtype):
-            return {"type": "torch.dtype", "value": str(item)}
-        if isinstance(item, torch.device):
-            return {"type": "torch.device", "value": str(item)}
-        if isinstance(item, torch.memory_format):
-            return {"type": "torch.memory_format", "value": str(item)}
+    _special_type_handlers = {
+        torch.Tensor: lambda item: {
+            "type": "torch.Tensor",
+            "shape": list(item.shape),
+            "dtype": str(item.dtype),
+            "device": str(item.device),
+        },
+        torch.dtype: lambda item: {"type": "torch.dtype", "value": str(item)},
+        torch.device: lambda item: {"type": "torch.device", "value": str(item)},
+        torch.memory_format: lambda item: {
+            "type": "torch.memory_format",
+            "value": str(item),
+        },
+        torch.layout: lambda item: {"type": "torch.layout", "value": str(item)},
         # TODO(@cangtianhuang): add more serialization logic here
-        return None
+    }
+
+    _format_handlers = {
+        "torch.Tensor": lambda item: f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")',
+        "torch.dtype": lambda item: f'"{item["value"].replace("torch.", "")}"',
+        "torch.device": lambda item: f'"{item["value"]}"',
+        "torch.memory_format": lambda item: f'"{item["value"]}"',
+        "torch.layout": lambda item: f'"{item["value"].replace("torch.", "")}"',
+        # TODO(@cangtianhuang): add more formatting logic here
+    }
+
+    def serialize_special_type(self, item: Any) -> Optional[Dict]:
+        handler = self._special_type_handlers.get(type(item))
+        return handler(item) if handler else None
 
     def format_special_type(self, item: Dict) -> Optional[str]:
-        if item["type"] == "torch.Tensor":
-            return f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")'
-        if item["type"] == "torch.dtype":
-            return f'"{item["value"].replace("torch.", "")}"'
-        if item["type"] == "torch.device":
-            return f'"{item["value"]}"'
-        if item["type"] == "torch.memory_format":
-            return f'"{item["value"]}"'
-        # TODO(@cangtianhuang): add more formatting logic here
-        return None
+        handler = self._format_handlers.get(item.get("type", ""))
+        return handler(item) if handler else None
 
     def get_hooks(self, serializer, level) -> List[TracingHook]:
         if level == 0:

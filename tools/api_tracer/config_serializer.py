@@ -1,6 +1,7 @@
 import time
 from collections import deque
 from threading import Event, Thread
+from types import EllipsisType
 from typing import Any, Dict, List
 
 import yaml
@@ -9,6 +10,8 @@ from framework_dialect import FrameworkDialect
 
 class ConfigSerializer:
     """将API调用信息序列化并写入"""
+
+    _serialize_handlers = {}
 
     def __init__(self, dialect: FrameworkDialect, output_path: str):
         self.dialect = dialect
@@ -23,6 +26,21 @@ class ConfigSerializer:
         self._stop_event = Event()
         self.writer_thread = Thread(target=self._writer_loop)
         self.total_calls_processed = 0
+
+        self._serialize_handlers = {
+            type(None): lambda x: x,
+            bool: lambda x: x,
+            int: lambda x: x,
+            float: lambda x: x,
+            str: lambda x: x,
+            list: self._serialize_list,
+            tuple: self._serialize_tuple,
+            set: self._serialize_set,
+            dict: self._serialize_dict,
+            type: self._serialize_type,
+            slice: self._serialize_slice,
+            EllipsisType: self._serialize_ellipsis,
+        }
 
     def open(self):
         self.file_handler_yaml = open(
@@ -113,47 +131,51 @@ class ConfigSerializer:
         except Exception as e:
             print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")
 
+    def _serialize_list(self, item: list) -> Dict:
+        return {
+            "type": "list",
+            "value": [self._serialize_item(sub_item) for sub_item in item],
+        }
+
+    def _serialize_tuple(self, item: tuple) -> Dict:
+        return {
+            "type": "tuple",
+            "value": [self._serialize_item(sub_item) for sub_item in item],
+        }
+
+    def _serialize_set(self, item: set) -> Dict:
+        return {
+            "type": "set",
+            "value": [self._serialize_item(sub_item) for sub_item in sorted(item)],
+        }
+
+    def _serialize_dict(self, item: dict) -> Dict:
+        return {
+            "type": "dict",
+            "value": {str(k): self._serialize_item(v) for k, v in item.items()},
+        }
+
+    def _serialize_type(self, item: type) -> Dict:
+        return {"type": "type", "value": f"{item.__module__}.{item.__name__}"}
+
+    def _serialize_slice(self, item: slice) -> Dict:
+        return {
+            "type": "slice",
+            "value": {"start": item.start, "stop": item.stop, "step": item.step},
+        }
+
+    def _serialize_ellipsis(self, item: Any) -> Dict:
+        return {"type": "ellipsis", "value": "..."}
+
     def _serialize_item(self, item: Any) -> Any:
         """递归序列化对象"""
-        if item is None or isinstance(item, (bool, int, float, str)):
-            return item
+        handler = self._serialize_handlers.get(type(item))
+        if handler:
+            return handler(item)
 
         special_serialization = self.dialect.serialize_special_type(item)
         if special_serialization is not None:
             return special_serialization
-
-        if isinstance(item, list):
-            return {
-                "type": "list",
-                "value": [self._serialize_item(sub_item) for sub_item in item],
-            }
-            # return [self._serialize_item(sub_item) for sub_item in item]
-        if isinstance(item, tuple):
-            return {
-                "type": "tuple",
-                "value": [self._serialize_item(sub_item) for sub_item in item],
-            }
-        if isinstance(item, set):
-            return {
-                "type": "set",
-                "value": [
-                    self._serialize_item(sub_item) for sub_item in sorted(list(item))
-                ],
-            }
-        if isinstance(item, dict):
-            return {
-                "type": "dict",
-                "value": {str(k): self._serialize_item(v) for k, v in item.items()},
-            }
-        if isinstance(item, type):
-            return {"type": "type", "value": f"{item.__module__}.{item.__name__}"}
-        if isinstance(item, slice):
-            return {
-                "type": "slice",
-                "value": {"start": item.start, "stop": item.stop, "step": item.step},
-            }
-        if item is ...:
-            return {"type": "ellipsis", "value": "..."}
 
         try:
             return f"<Unserializable: {type(item).__name__}>"
@@ -169,34 +191,26 @@ class ConfigSerializer:
             if isinstance(arg, str):
                 return f'"{arg}"'
 
+            if isinstance(arg, dict) and "type" in arg:
+                type_handlers = {
+                    "list": lambda x: f"list[{', '.join(format_arg(item) for item in x['value'])}]",
+                    "tuple": lambda x: f"tuple({', '.join(format_arg(item) for item in x['value'])})",
+                    "set": lambda x: f"set({', '.join(format_arg(item) for item in x['value'])})",
+                    "dict": lambda x: f"dict({', '.join(f'{k}={format_arg(v)}' for k, v in x['value'].items())})",
+                    "type": lambda x: x["value"],
+                    "slice": lambda x: f"slice({x['value']['start']}, {x['value']['stop']}, {x['value']['step']})",
+                    "ellipsis": lambda x: "ellipsis(...)",
+                }
+                handler = type_handlers.get(arg["type"])
+                if handler:
+                    return handler(arg)
+
             special_format = self.dialect.format_special_type(arg)
             if special_format is not None:
                 return special_format
 
-            if isinstance(arg, dict) and "type" in arg:
-                if arg["type"] == "list":
-                    return (
-                        f"list[{', '.join(format_arg(item) for item in arg['value'])}]"
-                    )
-                if arg["type"] == "tuple":
-                    return (
-                        f"tuple({', '.join(format_arg(item) for item in arg['value'])})"
-                    )
-                if arg["type"] == "set":
-                    return (
-                        f"set({', '.join(format_arg(item) for item in arg['value'])})"
-                    )
-                if arg["type"] == "dict":
-                    return f"dict({', '.join(f'{k}={format_arg(v)}' for k, v in arg['value'].items())})"
-                if arg["type"] == "type":
-                    return arg["value"]
-                if arg["type"] == "slice":
-                    return f"slice({arg['value']['start']}, {arg['value']['stop']}, {arg['value']['step']})"
-                if arg["type"] == "ellipsis":
-                    return "ellipsis(...)"
             return str(arg)
 
         args_str = ", ".join(format_arg(arg) for arg in args)
         kwargs_str = ", ".join(f"{k}={format_arg(v)}" for k, v in kwargs.items())
-        all_args = args_str + (", " + kwargs_str if kwargs_str else "")
-        return f"{api_name}({all_args})"
+        return f"{api_name}({args_str + (', ' + kwargs_str if kwargs_str else '')})"
