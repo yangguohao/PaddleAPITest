@@ -4681,6 +4681,7 @@
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rxor__(other=y)"
     },
     "paddle.Tensor.__setitem__": {
+        "Rule": "SetitemRule",
         "torch_api": "torch.Tensor.__setitem__"
     },
     "paddle.Tensor.__sub__": {

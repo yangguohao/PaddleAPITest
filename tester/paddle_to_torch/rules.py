@@ -2218,8 +2218,6 @@ def fused_rotary_position_embedding(
             cos_tensor[..., 0::2] = torch.cos(sinusoid_inp)
             cos_tensor[..., 1::2] = torch.cos(sinusoid_inp)
 
-        sin_tensor = sin_tensor.reshape([1, seq_len, 1, head_dim])
-        cos_tensor = cos_tensor.reshape([1, seq_len, 1, head_dim])
         return sin_tensor, cos_tensor
 
     init_q, init_k, init_v = q, k, v
@@ -3481,7 +3479,7 @@ if 'bias' in locals() and bias is not None and bias.dtype == torch.bfloat16:
     bias = bias.to(torch.float32)
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        code = Code(preprocess= pre.splitlines() + map_code, core=[core])
+        code = Code(preprocess=pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -4993,6 +4991,19 @@ result = torchaudio.functional.rnnt_loss(
 
 
 # s
+class SetitemRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+arr, item, value = args
+if isinstance(value, torch.Tensor) and arr.dtype == torch.float32 and value.dtype == torch.bfloat16:
+    value = value.to(torch.float32)
+"""
+        core = "x.__setitem__(item, value)"
+        post = "result = x"
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=[post])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class SampleNeighborsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
