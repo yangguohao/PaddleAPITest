@@ -14,16 +14,21 @@ class ConfigSerializer:
         self.file_handler_yaml = None
         self.file_handler_txt = None
         self.buffer: List[Dict] = []
+        self.buffer_limit = 1000
 
     def open(self):
         self.file_handler_yaml = open(
-            self.output_path + "/api_trace.yaml", "w", encoding="utf-8"
+            self.output_path + "/api_trace.yaml", "a", encoding="utf-8"
         )
         self.file_handler_txt = open(
-            self.output_path + "/api_trace.txt", "w", encoding="utf-8"
+            self.output_path + "/api_trace.txt", "a", encoding="utf-8"
         )
 
-    def close(self):
+    def flush_buffer(self):
+        """将buffer内容写入文件并清空buffer"""
+        if not self.buffer:
+            return
+
         if self.file_handler_yaml:
             try:
                 yaml.dump(
@@ -34,16 +39,13 @@ class ConfigSerializer:
                     default_flow_style=False,
                     indent=2,
                 )
+                self.file_handler_yaml.flush()
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing YAML file: {e}")
                 traceback.print_exc()
-            finally:
-                self.file_handler_yaml.close()
-                self.file_handler_yaml = None
 
         if self.file_handler_txt:
             try:
-                # Write all buffered calls to TXT file
                 for call_record in self.buffer:
                     txt_line = self._format_txt_line(
                         call_record["api"], call_record["args"], call_record["kwargs"]
@@ -53,13 +55,32 @@ class ConfigSerializer:
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing TXT file: {e}")
                 traceback.print_exc()
-            finally:
-                self.file_handler_txt.close()
-                self.file_handler_txt = None
 
         print(
-            f"[ConfigSerializer] API trace with {len(self.buffer)} calls saved to {self.output_path}"
+            f"[ConfigSerializer] Flushed {len(self.buffer)} calls to {self.output_path}"
         )
+        self.buffer.clear()
+
+    def close(self):
+        self.flush_buffer()
+
+        if self.file_handler_yaml:
+            try:
+                self.file_handler_yaml.close()
+            except Exception as e:
+                print(f"[ConfigSerializer] Error closing YAML file: {e}")
+            finally:
+                self.file_handler_yaml = None
+
+        if self.file_handler_txt:
+            try:
+                self.file_handler_txt.close()
+            except Exception as e:
+                print(f"[ConfigSerializer] Error closing TXT file: {e}")
+            finally:
+                self.file_handler_txt = None
+
+        print(f"[ConfigSerializer] Files closed, final save to {self.output_path}")
 
     def dump_call(self, api_name: str, args: tuple, kwargs: dict, output: Any):
         """记录一次API调用"""
@@ -73,6 +94,9 @@ class ConfigSerializer:
                 # "output_summary": self._serialize_item(output)
             }
             self.buffer.append(call_record)
+
+            if len(self.buffer) >= self.buffer_limit:
+                self.flush_buffer()
         except Exception as e:
             print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")
 
