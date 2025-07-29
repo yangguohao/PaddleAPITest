@@ -1,6 +1,8 @@
-log.log
-__pycache__
-tester/api_config/**/test_log*
-.vscode
+.ipynb_checkpoints
 .mypy_cache
+.vscode
+__pycache__
+log.log
 run.sh
+tester/api_config/**/test_log*
+tools/api_tracer/.huggingface

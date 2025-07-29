@@ -1036,9 +1036,9 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.randint(0,2, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name == 'paddle.nn.functional.upsample':
-                if self.get_arg(api_config, 1, 'size'):
+                if self.check_arg(api_config, 1, 'size'):
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
-                if self.get_arg(api_config, 2, 'scale_factor'):
+                if self.check_arg(api_config, 2, 'scale_factor'):
                     self.numpy_tensor = numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
             
             elif api_config.api_name == 'paddle.nn.functional.binary_cross_entropy':
