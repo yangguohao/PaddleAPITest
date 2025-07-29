@@ -1,4 +1,5 @@
-from queue import Empty, Queue
+import time
+from collections import deque
 from threading import Event, Thread
 from typing import Any, Dict, List
 
@@ -18,7 +19,7 @@ class ConfigSerializer:
         self.buffer_limit = 20000
 
         # asyncio
-        self.log_queue = Queue()
+        self.log_queue = deque()
         self._stop_event = Event()
         self.writer_thread = Thread(target=self._writer_loop)
         self.total_calls_processed = 0
@@ -48,31 +49,15 @@ class ConfigSerializer:
 
     def _writer_loop(self):
         """线程的工作循环，从队列获取数据并处理"""
-        while not self._stop_event.is_set() or not self.log_queue.empty():
+        while not self._stop_event.is_set() or len(self.log_queue) > 0:
             try:
-                api_name, args, kwargs, output = self.log_queue.get(timeout=0.1)
-
-                try:
-                    call_record = {
-                        "api": api_name,
-                        "args": [self._serialize_item(arg) for arg in args],
-                        "kwargs": {
-                            key: self._serialize_item(value)
-                            for key, value in kwargs.items()
-                        },
-                    }
-                    self.buffer.append(call_record)
-                except Exception as e:
-                    print(
-                        f"[ConfigSerializer] Error serializing call for '{api_name}': {e}"
-                    )
+                call_record = self.log_queue.popleft()
+                self.buffer.append(call_record)
 
                 if len(self.buffer) >= self.buffer_limit:
                     self._flush_buffer()
-
-                self.log_queue.task_done()
-            except Empty:
-                pass
+            except IndexError:
+                time.sleep(0.01)
             except Exception as e:
                 print(f"[ConfigSerializer] Error in writer thread: {e}")
 
@@ -113,9 +98,20 @@ class ConfigSerializer:
         )
         self.buffer.clear()
 
-    def dump_call(self, api_name: str, args: tuple, kwargs: dict, output: Any):
+    def dump_call(self, api_name: str, args: tuple, kwargs: dict, output: Any = None):
         """记录一次API调用"""
-        self.log_queue.put((api_name, args, kwargs, output))
+        try:
+            call_record = {
+                "api": api_name,
+                "args": [self._serialize_item(arg) for arg in args],
+                "kwargs": {
+                    key: self._serialize_item(value) for key, value in kwargs.items()
+                },
+                # "output_summary": self._serialize_item(output)
+            }
+            self.log_queue.append(call_record)
+        except Exception as e:
+            print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")
 
     def _serialize_item(self, item: Any) -> Any:
         """递归序列化对象"""

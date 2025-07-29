@@ -63,7 +63,7 @@ class SetattrHook(TracingHook):
         @functools.wraps(original_api)
         def wrapper(*args, **kwargs):
             output = original_api(*args, **kwargs)
-            self.serializer.dump_call(api_name, args, kwargs, output)
+            self.serializer.dump_call(api_name, args, kwargs)
             return output
 
         return wrapper
@@ -170,7 +170,7 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
                 api_name = f"unknown.{func.__name__}"
                 print(f"Unknown func: {func}, type: {type(func)}")
 
-        self.serializer.dump_call(api_name, args, kwargs, output)
+        self.serializer.dump_call(api_name, args, kwargs)
         return output
 
 
@@ -198,7 +198,7 @@ class TorchDispatchModeTracer(TorchDispatchMode):
 
         output = func(*args, **kwargs)
         api_name = func.name()
-        self.serializer.dump_call(api_name, args, kwargs, output)
+        self.serializer.dump_call(api_name, args, kwargs)
         return output
 
 
