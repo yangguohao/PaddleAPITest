@@ -161,14 +161,14 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
         output = func(*args, **kwargs)
 
         api_name = torch.overrides.resolve_name(func)
-        # if not api_name:
-        #     if hasattr(func, "__module__"):
-        #         api_name = f"{func.__module__}.{func.__name__}"
-        #     elif hasattr(func, "__objclass__"):
-        #         api_name = f"{func.__objclass__.__module__}.{func.__objclass__.__name__}.{func.__name__}"
-        #     else:
-        #         api_name = f"unknown.{func.__name__}"
-        #         print(f"Unknown func: {func}, type: {type(func)}")
+        if not api_name:
+            if hasattr(func, "__module__"):
+                api_name = f"{func.__module__}.{func.__name__}"
+            elif hasattr(func, "__objclass__"):
+                api_name = f"{func.__objclass__.__module__}.{func.__objclass__.__name__}.{func.__name__}"
+            else:
+                api_name = f"unknown.{func.__name__}"
+                print(f"Unknown func: {func}, type: {type(func)}")
 
         self.serializer.dump_call(api_name, args, kwargs, output)
         return output

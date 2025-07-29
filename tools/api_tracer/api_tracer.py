@@ -1,4 +1,6 @@
 import os
+import signal
+import sys
 from typing import List, Union
 
 from config_serializer import ConfigSerializer
@@ -13,6 +15,14 @@ class APITracer:
         self.serializer = ConfigSerializer(self.dialect, output_path)
         self.hooks: List[TracingHook] = self.dialect.get_hooks(self.serializer, level)
         self._is_tracing = False
+        
+        signal.signal(signal.SIGINT, self._signal_handler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
+
+    def _signal_handler(self, signum, frame):
+        print(f"[APITracer] Received signal {signum}, stopping trace...")
+        self.stop()
+        sys.exit(1)
 
     def start(self):
         """启动抓取"""
