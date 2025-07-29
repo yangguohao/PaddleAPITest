@@ -3601,10 +3601,10 @@ class LstsqRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-# if driver isn't gels, it only can run in cpu mode.
-if driver != 'gels':
-    x = x.cpu()
-    y = y.cpu()
+# if decvice is GPU then only use gels.
+current_device = x.device
+if(current_device.type == 'cuda'):
+    driver = "gels"
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
