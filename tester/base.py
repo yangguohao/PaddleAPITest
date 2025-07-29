@@ -932,3 +932,6 @@ class APITestBase:
         elif isinstance(dismiss_errors, (list, tuple)):
             return any(error in error_msg for error in dismiss_errors)
         return False
+    
+    def should_check_dtype(self):
+        return self.api_config.api_name not in not_check_dtype

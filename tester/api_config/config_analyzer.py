@@ -845,6 +845,10 @@ class TensorConfig:
                         else:
                             A_T = numpy.conj(A).swapaxes(-2, -1) if is_complex else A.swapaxes(-2, -1)
                         self.numpy_tensor = (A + A_T) / 2
+                elif api_config.api_name.endswith("corrcoef"):
+                    if self.dtype == 'float16':
+                        # 1e-3 to avoid inf
+                        self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype) * 1e-3
             elif api_config.api_name == "paddle.linspace":
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
