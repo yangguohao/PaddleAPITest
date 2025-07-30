@@ -24,10 +24,10 @@ paddle_error_dismiss:
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
   # API: [atol, rtol]
-  paddle.cumsum: [1.0, 1.0]
-  paddle.Tensor.cumsum: [1.0, 1.0]
-  paddle.logcumsumexp: [1.0, 1.0]
-  paddle.Tensor.logcumsumexp: [1.0, 1.0]
+  paddle.cumsum: [2.0, 0.01]
+  paddle.Tensor.cumsum: [2.0, 0.01]
+  paddle.logcumsumexp: [2.0, 0.01]
+  paddle.Tensor.logcumsumexp: [2.0, 0.01]
   paddle.tensordot: [1.0, 1.0]
   paddle.incubate.nn.functional.fused_bias_act: [1, 0.01]
   paddle.incubate.nn.functional.fused_rms_norm : [3, 0.5]
