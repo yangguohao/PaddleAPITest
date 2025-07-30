@@ -214,3 +214,27 @@ class ConfigSerializer:
         args_str = ", ".join(format_arg(arg) for arg in args)
         kwargs_str = ", ".join(f"{k}={format_arg(v)}" for k, v in kwargs.items())
         return f"{api_name}({args_str + (', ' + kwargs_str if kwargs_str else '')})"
+
+    def get_apis_and_configs(self):
+        api_apis = set()
+        api_configs = set()
+        line_count = 0
+        with open(self.output_path + "/api_trace.txt", "r") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    api_configs.add(line)
+                    api_api = line.split("(", 1)[0]
+                    api_apis.add(api_api)
+                    line_count += 1
+        print(f"[ConfigSerializer] Read {line_count} traces from api_trace.txt")
+
+        with open(self.output_path + "/api_apis.txt", "a", encoding="utf-8") as f:
+            for api in sorted(api_apis):
+                f.write(api + "\n")
+        print(f"[ConfigSerializer] Write {len(api_apis)} apis to apis.txt")
+
+        with open(self.output_path + "/api_configs.txt", "a", encoding="utf-8") as f:
+            for config in sorted(api_configs):
+                f.write(config + "\n")
+        print(f"[ConfigSerializer] Write {len(api_configs)} configs to api_configs.txt")

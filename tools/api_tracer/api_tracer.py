@@ -49,6 +49,7 @@ class APITracer:
         self.serializer.close()
         self._is_tracing = False
         print("[APITracer] Tracing stopped and all APIs have been restored.")
+        self.serializer.get_apis_and_configs()
 
     def __enter__(self):
         """进入上下文管理器"""
