@@ -1,5 +1,4 @@
 paddle.Tensor.__getitem__
-paddle.Tensor.__matmul__
 paddle.Tensor.__mul__
 paddle.Tensor.__setitem__
 paddle.Tensor.argsort
@@ -11,7 +10,6 @@ paddle.Tensor.fill_diagonal_
 paddle.Tensor.logit
 paddle.Tensor.median
 paddle.Tensor.put_along_axis
-paddle.Tensor.set_
 paddle.Tensor.sum
 paddle.Tensor.topk
 paddle.add_n
@@ -22,13 +20,11 @@ paddle.bitwise_right_shift
 paddle.broadcast_to
 paddle.cast
 paddle.clip
-paddle.concat
 paddle.count_nonzero
 paddle.cumprod
 paddle.cumsum
 paddle.cumulative_trapezoid
 paddle.diag
-paddle.einsum
 paddle.expand
 paddle.geometric.send_ue_recv
 paddle.heaviside
@@ -48,15 +44,12 @@ paddle.max
 paddle.maximum
 paddle.minimum
 paddle.nextafter
-paddle.nn.functional.conv1d
 paddle.nn.functional.conv2d_transpose
 paddle.nn.functional.cosine_similarity
 paddle.nn.functional.embedding
 paddle.nn.functional.grid_sample
-paddle.nn.functional.gumbel_softmax
 paddle.nn.functional.hardsigmoid
 paddle.nn.functional.interpolate
-paddle.nn.functional.linear
 paddle.nn.functional.rnnt_loss
 paddle.nn.functional.rrelu
 paddle.prod
@@ -73,4 +66,3 @@ paddle.unique
 paddle.unique_consecutive
 paddle.vander
 paddle.var
-paddle.vision.ops.deform_conv2d

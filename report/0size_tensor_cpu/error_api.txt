@@ -26,7 +26,6 @@ paddle.Tensor.prod
 paddle.Tensor.put_along_axis
 paddle.Tensor.real
 paddle.Tensor.reshape
-paddle.Tensor.set_
 paddle.Tensor.split
 paddle.Tensor.std
 paddle.Tensor.sum
