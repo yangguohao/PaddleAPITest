@@ -1926,4 +1926,5 @@ paddle.nn.functional.margin_ranking_loss(Tensor([429496730, 10],"float16"), Tens
 paddle.linalg.multi_dot(list[Tensor([4],"float16"),Tensor([4, 1073741825],"float16"),Tensor([1073741825, 2],"float16"),Tensor([2],"float16"),], )
 paddle.nn.functional.margin_cross_entropy(Tensor([1073741825, 2],"float16"), label=Tensor([1073741825],"int64"), margin1=1.0, margin2=0.5, margin3=0.0, scale=64.0, group=None, return_softmax=False, reduction="mean", )
 paddle.nn.functional.margin_cross_entropy(Tensor([1073741825, 2],"float16"), label=Tensor([1073741825],"int64"), margin1=1.0, margin2=0.7, margin3=0.2, scale=32.0, group=None, return_softmax=False, reduction="mean", )
+paddle.Tensor.cumsum(Tensor([4294967297],"float16"), -1, )
 
