@@ -31,7 +31,6 @@ def run_training_test(model_name: str):
             model_name, torch_dtype=torch.bfloat16, device_map="auto"
         )
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
@@ -78,7 +77,7 @@ def run_training_test(model_name: str):
             save_steps=50,
             bf16=True,
             report_to="none",
-            max_steps=100,
+            max_steps=50,
         )
         data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 

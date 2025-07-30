@@ -13,9 +13,9 @@ from torch.profiler import ProfilerActivity, profile, record_function
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 MODELS = [
-    "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    # "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
     # "Qwen/Qwen3-0.6B",
-    # "Qwen/Qwen3-30B-A3B",
+    "Qwen/Qwen3-30B-A3B",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
 ]
@@ -29,11 +29,20 @@ def run_inference_test(model_name: str):
     try:
         tracer.start()
 
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+        model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+
+        print(f"Model Class: {model.__class__}")
+        print(f"Tokenizer Class: {tokenizer.__class__}")
+
+        with open(os.path.join(output_path, "model_info.txt"), "w") as f:
+            f.write(f"Model: {model.__class__}\n")
+            f.write(f"Tokenizer: {tokenizer.__class__}\n")
+
         prompt = "Hello! Can you tell me how to learn PyTorch?"
-        inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
         with torch.no_grad():
             outputs = model.generate(
