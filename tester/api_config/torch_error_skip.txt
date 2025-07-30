@@ -1924,4 +1924,4 @@ paddle.nn.functional.margin_ranking_loss(Tensor([429496730, 10],"float16"), Tens
 paddle.nn.functional.margin_ranking_loss(Tensor([429496730, 10],"float16"), Tensor([429496730, 10],"float16"), Tensor([429496730, 10],"float16"), 0.2, "sum", )
 paddle.nn.functional.margin_ranking_loss(Tensor([429496730, 10],"float16"), Tensor([429496730, 10],"float16"), Tensor([429496730, 10],"float16"), 0.2, "sum", None, )
 paddle.linalg.multi_dot(list[Tensor([4],"float16"),Tensor([4, 1073741825],"float16"),Tensor([1073741825, 2],"float16"),Tensor([2],"float16"),], )
-
+paddle.Tensor.cumsum(Tensor([4294967297],"float16"), -1, )
