@@ -1,0 +1,2 @@
+model: <class 'transformers.models.qwen3.modeling_qwen3.Qwen3ForCausalLM'>
+tokenizer: <class 'transformers.models.qwen2.tokenization_qwen2_fast.Qwen2TokenizerFast'>

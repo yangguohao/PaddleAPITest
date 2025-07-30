@@ -1,0 +1,472 @@
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.kaiming_uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: 2.23606797749979
+    mode: fan_in
+    nonlinearity: leaky_relu
+    generator: null
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 1
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 0
+  kwargs: {}
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.shape.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: -0.3333333333333333
+    b: 0.3333333333333333
+    generator: null
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.zero_
+  args:
+  - type: torch.Tensor
+    shape:
+    - 16
+    dtype: torch.float32
+    device: cpu
+  kwargs: {}
+- api: torch.Tensor.fill_
+  args:
+  - type: torch.Tensor
+    shape:
+    - 16
+    dtype: torch.float32
+    device: cpu
+  - 1
+  kwargs: {}
+- api: torch.Tensor.zero_
+  args:
+  - type: torch.Tensor
+    shape: []
+    dtype: torch.int64
+    device: cpu
+  kwargs: {}
+- api: torch._C._set_grad_enabled
+  args:
+  - false
+  kwargs: {}
+- api: torch.Tensor.fill_
+  args:
+  - '<Unserializable: Parameter>'
+  - 1.0
+  kwargs: {}
+- api: torch._C._set_grad_enabled
+  args:
+  - true
+  kwargs: {}
+- api: torch._C._set_grad_enabled
+  args:
+  - false
+  kwargs: {}
+- api: torch.Tensor.zero_
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch._C._set_grad_enabled
+  args:
+  - true
+  kwargs: {}
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.kaiming_uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: 2.23606797749979
+    mode: fan_in
+    nonlinearity: leaky_relu
+    generator: null
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 1
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 0
+  kwargs: {}
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.shape.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: -0.08333333333333333
+    b: 0.08333333333333333
+    generator: null
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.kaiming_uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: 2.23606797749979
+    mode: fan_in
+    nonlinearity: leaky_relu
+    generator: null
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 1
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 0
+  kwargs: {}
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: -0.025253813613805267
+    b: 0.025253813613805267
+    generator: null
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.grad_fn.__get__
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.kaiming_uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: 2.23606797749979
+    mode: fan_in
+    nonlinearity: leaky_relu
+    generator: null
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 1
+  kwargs: {}
+- api: torch.Tensor.size
+  args:
+  - '<Unserializable: Parameter>'
+  - 0
+  kwargs: {}
+- api: torch.Tensor.dim
+  args:
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.init.uniform_
+  args: []
+  kwargs:
+    tensor: '<Unserializable: Parameter>'
+    a: -0.08838834764831843
+    b: 0.08838834764831843
+    generator: null
+- api: torch.nn.functional.conv2d
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 1
+    - 28
+    - 28
+    dtype: torch.float32
+    device: cpu
+  - '<Unserializable: Parameter>'
+  - '<Unserializable: Parameter>'
+  - type: tuple
+    value:
+    - 1
+    - 1
+  - type: tuple
+    value:
+    - 1
+    - 1
+  - type: tuple
+    value:
+    - 1
+    - 1
+  - 1
+  kwargs: {}
+- api: torch.Tensor.dim
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 16
+    - 28
+    - 28
+    dtype: torch.float32
+    device: cpu
+  kwargs: {}
+- api: torch.Tensor.add_
+  args:
+  - type: torch.Tensor
+    shape: []
+    dtype: torch.int64
+    device: cpu
+  - 1
+  kwargs: {}
+- api: torch.nn.functional.batch_norm
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 16
+    - 28
+    - 28
+    dtype: torch.float32
+    device: cpu
+  - type: torch.Tensor
+    shape:
+    - 16
+    dtype: torch.float32
+    device: cpu
+  - type: torch.Tensor
+    shape:
+    - 16
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    weight: '<Unserializable: Parameter>'
+    bias: '<Unserializable: Parameter>'
+    training: true
+    momentum: 0.1
+    eps: 1.0e-05
+- api: torch.nn.functional.relu
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 16
+    - 28
+    - 28
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    inplace: false
+- api: torch.nn.functional.max_pool2d
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 16
+    - 28
+    - 28
+    dtype: torch.float32
+    device: cpu
+  - 2
+  kwargs:
+    stride: 2
+    padding: 0
+    dilation: 1
+    ceil_mode: false
+    return_indices: false
+- api: torch.nn.functional.conv2d
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 16
+    - 14
+    - 14
+    dtype: torch.float32
+    device: cpu
+  - '<Unserializable: Parameter>'
+  - '<Unserializable: Parameter>'
+  - type: tuple
+    value:
+    - 1
+    - 1
+  - type: tuple
+    value:
+    - 1
+    - 1
+  - type: tuple
+    value:
+    - 1
+    - 1
+  - 1
+  kwargs: {}
+- api: torch.nn.functional.relu
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 32
+    - 14
+    - 14
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    inplace: false
+- api: torch.nn.functional.max_pool2d
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 32
+    - 14
+    - 14
+    dtype: torch.float32
+    device: cpu
+  - 2
+  kwargs:
+    stride: 2
+    padding: 0
+    dilation: 1
+    ceil_mode: false
+    return_indices: false
+- api: torch.Tensor.view
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 32
+    - 7
+    - 7
+    dtype: torch.float32
+    device: cpu
+  - -1
+  - 1568
+  kwargs: {}
+- api: torch.nn.functional.linear
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 1568
+    dtype: torch.float32
+    device: cpu
+  - '<Unserializable: Parameter>'
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.functional.relu
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 128
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    inplace: false
+- api: torch.nn.functional.dropout
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 128
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    p: 0.5
+    training: true
+    inplace: false
+- api: torch.nn.functional.linear
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 128
+    dtype: torch.float32
+    device: cpu
+  - '<Unserializable: Parameter>'
+  - '<Unserializable: Parameter>'
+  kwargs: {}
+- api: torch.nn.functional.softmax
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 10
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    dim: 1
+    _stacklevel: 3
+    dtype: null
+- api: torch.Tensor.shape.__get__
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 10
+    dtype: torch.float32
+    device: cpu
+  kwargs: {}
+- api: torch.Tensor.__repr__
+  args:
+  - type: torch.Tensor
+    shape:
+    - 4
+    - 10
+    dtype: torch.float32
+    device: cpu
+  kwargs:
+    tensor_contents: null
