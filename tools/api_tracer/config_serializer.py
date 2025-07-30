@@ -218,6 +218,7 @@ class ConfigSerializer:
     def get_apis_and_configs(self):
         api_apis = set()
         api_configs = set()
+        api_counts = {}
         line_count = 0
         with open(self.output_path + "/api_trace.txt", "r") as f:
             for line in f:
@@ -226,15 +227,29 @@ class ConfigSerializer:
                     api_configs.add(line)
                     api_api = line.split("(", 1)[0]
                     api_apis.add(api_api)
+                    api_counts[api_api] = api_counts.get(api_api, 0) + 1
                     line_count += 1
         print(f"[ConfigSerializer] Read {line_count} traces from api_trace.txt")
 
         with open(self.output_path + "/api_apis.txt", "w", encoding="utf-8") as f:
             for api in sorted(api_apis):
                 f.write(api + "\n")
-        print(f"[ConfigSerializer] Write {len(api_apis)} apis to apis.txt")
+        print(f"[ConfigSerializer] Write {len(api_apis)} apis to api_apis.txt")
 
         with open(self.output_path + "/api_configs.txt", "w", encoding="utf-8") as f:
             for config in sorted(api_configs):
                 f.write(config + "\n")
         print(f"[ConfigSerializer] Write {len(api_configs)} configs to api_configs.txt")
+
+        total_calls = sum(api_counts.values())
+        api_percentages = {
+            api: (count / total_calls) * 100 for api, count in api_counts.items()
+        }
+        sorted_api_counts = sorted(api_counts.items(), key=lambda x: x[1], reverse=True)
+
+        with open(self.output_path + "/api_statistics.txt", "w", encoding="utf-8") as f:
+            f.write(f"Total APIs: {len(api_apis)}\n")
+            f.write(f"Total API calls: {total_calls}\n\n")
+            for api, count in sorted_api_counts:
+                f.write(f"{api}: {count} calls ({api_percentages[api]:.2f}%)\n")
+            print(f"[ConfigSerializer] Write detailed statistics to api_statistics.txt")
