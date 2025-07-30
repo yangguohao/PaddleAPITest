@@ -13,12 +13,17 @@ from tools.api_tracer import APITracer
 tracer = APITracer("torch", output_path="tools/api_tracer/test_train_trace_output")
 tracer.start()
 
-model_name = "Qwen/Qwen3-0.6B"
+# model_name = "Qwen/Qwen3-0.6B"
+# model_name = "Qwen/Qwen3-30B-A3B"
+model_name = "baidu/ERNIE-4.5-0.3B-PT"
 
 model = AutoModelForCausalLM.from_pretrained(
     model_name, torch_dtype=torch.bfloat16, device_map="auto"
 )
+print("model:", model.__class__)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
+print("tokenizer:", tokenizer.__class__)
+
 
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
