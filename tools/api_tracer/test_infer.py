@@ -12,55 +12,53 @@ import torch
 from torch.profiler import ProfilerActivity, profile, record_function
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-MODEL_CONFIGS = {
-    "tinyllama": {
-        "name": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-        "params": {"max_length": 100, "temperature": 0.7, "do_sample": True},
-    },
-    # "qwen3": {
-    #     "name": "Qwen/Qwen3-0.6B",
-    #     "params": {"max_length": 100, "temperature": 0.7, "do_sample": True},
-    # },
-    # "deepseek-r1": {
-    #     "name": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
-    #     "params": {"max_length": 100, "temperature": 0.7, "do_sample": True},
-    # },
-    # "ernie-4.5": {
-    #     "name": "baidu/ERNIE-4.5-0.3B-PT",
-    #     "params": {"max_length": 100, "temperature": 0.7, "do_sample": True},
-    # },
-}
+MODELS = [
+    "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    # "Qwen/Qwen3-0.6B",
+    # "Qwen/Qwen3-30B-A3B",
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+    # "baidu/ERNIE-4.5-0.3B-PT",
+]
 
 
-def main():
-    prompt = "你好！请告诉我如何学习 PyTorch?"
+def run_inference_test(model_name: str):
+    print(f"🚀 Running inference test for: {model_name}")
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
+    tracer = APITracer("torch", output_path=output_path)
 
-    for model_key, config in MODEL_CONFIGS.items():
-        print(f"Running {model_key}...")
-        tokenizer = AutoTokenizer.from_pretrained(config["name"])
-        model = AutoModelForCausalLM.from_pretrained(config["name"])
+    try:
+        tracer.start()
 
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        model = model.to(device)
+        model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        prompt = "Hello! Can you tell me how to learn PyTorch?"
         inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
-        params = config["params"]
-        with APITracer(
-            "torch", f"tools/api_tracer/test_infer_trace_output/{model_key}"
-        ) as tracer:
+        with torch.no_grad():
             outputs = model.generate(
                 inputs["input_ids"],
-                max_length=params["max_length"],
                 num_return_sequences=1,
-                temperature=params["temperature"],
-                do_sample=params["do_sample"],
+                max_length=100,
+                temperature=0.7,
+                do_sample=True,
             )
 
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        print("Generated Response:", response)
+        print("\n--- Generated Response ---")
+        print(response)
+        print("--------------------------\n")
 
-        del model, tokenizer
-        torch.cuda.empty_cache()
+    except Exception as e:
+        print(f"An error occurred during inference for {model_name}: {e}")
+    finally:
+        tracer.stop()
+        print(f"✅ Test for {model_name} finished.")
+
+
+def main():
+    for model_name in MODELS:
+        run_inference_test(model_name)
 
 
 # api_calls = []

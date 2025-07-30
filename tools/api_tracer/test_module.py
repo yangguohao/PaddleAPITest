@@ -28,10 +28,8 @@ class SimpleCNN(nn.Module):
 
 
 if __name__ == "__main__":
-
-    with APITracer(
-        dialect="torch", output_path="tools/api_tracer/test_module_trace_output"
-    ) as tracer:
+    output_path = "tools/api_tracer/trace_output_test_module"
+    with APITracer(dialect="torch", output_path=output_path) as tracer:
         model = SimpleCNN(num_classes=10)
         sample_input = torch.randn(4, 1, 28, 28)
         output = model(sample_input)
