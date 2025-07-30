@@ -44,10 +44,10 @@ class ConfigSerializer:
 
     def open(self):
         self.file_handler_yaml = open(
-            self.output_path + "/api_trace.yaml", "a", encoding="utf-8"
+            self.output_path + "/api_trace.yaml", "w", encoding="utf-8"
         )
         self.file_handler_txt = open(
-            self.output_path + "/api_trace.txt", "a", encoding="utf-8"
+            self.output_path + "/api_trace.txt", "w", encoding="utf-8"
         )
         self.writer_thread.start()
 
@@ -229,12 +229,12 @@ class ConfigSerializer:
                     line_count += 1
         print(f"[ConfigSerializer] Read {line_count} traces from api_trace.txt")
 
-        with open(self.output_path + "/api_apis.txt", "a", encoding="utf-8") as f:
+        with open(self.output_path + "/api_apis.txt", "w", encoding="utf-8") as f:
             for api in sorted(api_apis):
                 f.write(api + "\n")
         print(f"[ConfigSerializer] Write {len(api_apis)} apis to apis.txt")
 
-        with open(self.output_path + "/api_configs.txt", "a", encoding="utf-8") as f:
+        with open(self.output_path + "/api_configs.txt", "w", encoding="utf-8") as f:
             for config in sorted(api_configs):
                 f.write(config + "\n")
         print(f"[ConfigSerializer] Write {len(api_configs)} configs to api_configs.txt")
