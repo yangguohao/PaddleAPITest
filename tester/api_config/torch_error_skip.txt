@@ -1926,7 +1926,6 @@ paddle.nn.functional.margin_ranking_loss(Tensor([429496730, 10],"float16"), Tens
 paddle.linalg.lstsq(Tensor([253522376, 9],"float32"), Tensor([253522376, 5],"float32"), rcond=1e-15, driver="gels", )
 paddle.Tensor.lu(Tensor([760567127, 3],"float32"), )
 paddle.linalg.multi_dot(list[Tensor([4],"float16"),Tensor([4, 1073741825],"float16"),Tensor([1073741825, 2],"float16"),Tensor([2],"float16"),], )
-<<<<<<< HEAD
 paddle.roll(Tensor([1, 10376, 56, 77, 96],"float16"), shifts=tuple(4,3,3,), axis=tuple(1,2,3,), )
 paddle.roll(Tensor([1, 114131, 7, 7, 768],"float16"), shifts=tuple(-4,0,0,), axis=tuple(1,2,3,), )
 paddle.roll(Tensor([1, 114131, 7, 7, 768],"float16"), shifts=tuple(4,0,0,), axis=tuple(1,2,3,), )
