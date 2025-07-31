@@ -230,6 +230,7 @@ class APITestAccuracy(APITestBase):
             "paddle.Tensor.mode",
             "paddle.incubate.nn.functional.fused_layer_norm",
             "paddle.kthvalue",
+            "paddle.Tensor.kthvalue",
         }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
