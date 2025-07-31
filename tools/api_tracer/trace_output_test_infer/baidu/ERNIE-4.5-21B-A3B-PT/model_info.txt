@@ -1,0 +1,2 @@
+Model: <class 'transformers.models.ernie4_5_moe.modeling_ernie4_5_moe.Ernie4_5_MoeForCausalLM'>
+Tokenizer: <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
