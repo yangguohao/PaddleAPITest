@@ -26,6 +26,8 @@ torch.Tensor.div
 torch.Tensor.dtype.__get__
 torch.Tensor.element_size
 torch.Tensor.expand
+torch.Tensor.fill_
+torch.Tensor.flatten
 torch.Tensor.float
 torch.Tensor.grad.__get__
 torch.Tensor.grad.__set__
@@ -52,6 +54,7 @@ torch.Tensor.numel
 torch.Tensor.pin_memory
 torch.Tensor.pow
 torch.Tensor.random_
+torch.Tensor.repeat_interleave
 torch.Tensor.requires_grad.__get__
 torch.Tensor.reshape
 torch.Tensor.shape.__get__

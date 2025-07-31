@@ -251,5 +251,5 @@ class ConfigSerializer:
             f.write(f"Total APIs: {len(api_apis)}\n")
             f.write(f"Total API calls: {total_calls}\n\n")
             for api, count in sorted_api_counts:
-                f.write(f"{api}: {count} calls ({api_percentages[api]:.2f}%)\n")
+                f.write(f"{api}: {count} ({api_percentages[api]:.2f}%)\n")
             print(f"[ConfigSerializer] Write detailed statistics to api_statistics.txt")

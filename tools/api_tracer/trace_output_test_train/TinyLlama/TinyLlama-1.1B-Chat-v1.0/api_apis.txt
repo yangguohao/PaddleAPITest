@@ -17,7 +17,6 @@ torch.Tensor.backward
 torch.Tensor.clone
 torch.Tensor.contiguous
 torch.Tensor.cos
-torch.Tensor.data.__set__
 torch.Tensor.data_ptr
 torch.Tensor.detach
 torch.Tensor.device.__get__
@@ -65,7 +64,6 @@ torch.Tensor.transpose
 torch.Tensor.unsqueeze
 torch.Tensor.untyped_storage
 torch.Tensor.view
-torch._C._nn._parse_to
 torch._C._set_grad_enabled
 torch._foreach_add_
 torch._foreach_addcdiv_
@@ -75,7 +73,6 @@ torch._foreach_lerp_
 torch._foreach_mul_
 torch._foreach_norm
 torch._foreach_sqrt
-torch._has_compatible_shallow_copy_type
 torch.cat
 torch.clamp
 torch.is_complex
