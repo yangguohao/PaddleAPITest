@@ -379,8 +379,10 @@ class APITestBase:
             use_softmax = get_arg(self.api_config, 8, "use_softmax", True)
             if not use_softmax:
                 axis = get_arg(self.api_config, 7, "axis", -1)
-                self.paddle_args[0] = paddle.exp(self.paddle_args[0])
-                self.paddle_args[0] = self.paddle_args[0] / self.paddle_args[0].sum(axis=axis, keepdim=True)
+                if len(self.paddle_args) > 0:
+                    self.paddle_args[0] = paddle.nn.functional.softmax(self.paddle_args[0], axis=axis)
+                else:
+                    self.paddle_kwargs["input"] = paddle.nn.functional.softmax(self.paddle_kwargs["input"], axis=axis)
 
         if self.need_check_grad():
             if (self.api_config.api_name[-1] == "_" and self.api_config.api_name[-2:] != "__") or self.api_config.api_name == "paddle.Tensor.__setitem__":
