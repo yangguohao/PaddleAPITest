@@ -230,6 +230,7 @@ class APITestAccuracy(APITestBase):
             "paddle.Tensor.mode",
             "paddle.incubate.nn.functional.fused_layer_norm",
             "paddle.kthvalue",
+            "paddle.Tensor.kthvalue",
         }:
             paddle_output = paddle_output[0]
             torch_output = torch_output[0]
@@ -263,6 +264,10 @@ class APITestAccuracy(APITestBase):
         self.is_backward = False
         def compare_paddle_and_torch(paddle_tensor, torch_tensor) -> bool:
             try:
+                # if paddle_tensor.dtype == paddle.bfloat16:
+                #     paddle_tensor = paddle.cast(paddle_tensor, dtype="float32")
+                # if torch_tensor.dtype == torch.bfloat16:
+                #     torch_tensor = torch_tensor.to(dtype=torch.float32)
                 # self.np_assert_accuracy(paddle_tensor.numpy(), torch_tensor.numpy(), atol=self.atol, rtol=self.rtol)
                 self.torch_assert_accuracy(paddle_tensor, torch_tensor, atol=self.atol, rtol=self.rtol)
             except Exception as err:
@@ -397,6 +402,10 @@ class APITestAccuracy(APITestBase):
             }:
                 paddle_out_grads = []
                 torch_out_grads = []
+            elif self.api_config.api_name == "paddle.linalg.cholesky_solve":
+                from .base import get_arg
+                is_upper = get_arg(self.api_config, 2, 'upper', default=False)
+                torch_out_grads[1] = torch.triu(torch_out_grads[1]) if is_upper else torch.tril(torch_out_grads[1])
 
             if isinstance(paddle_out_grads, paddle.Tensor):
                 if isinstance(torch_out_grads, torch.Tensor):
