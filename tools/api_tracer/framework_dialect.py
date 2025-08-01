@@ -163,13 +163,21 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
         self.serializer = serializer
         self.level = level
 
+        # skip these for duplicate property access of paddle.Tensor in SetattrHook
+        # (SetattrHook and TorchFunctionHook are installed at the same time)
+        self.ignored_apis = {
+            "torch.Tensor.shape.__get__",
+            "torch.Tensor.dtype.__get__",
+            "torch.Tensor.device.__get__",
+        }
+
         # disable this may result in recursion error, but this will ignore factory APIs (e.g. paddle.randn)
-        # self.ignored_functions = torch.overrides.get_ignored_functions()
+        self.ignored_functions = torch.overrides.get_ignored_functions()
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
-        # if func in self.ignored_functions:
-        #     return func(*args, **kwargs)
+        if func in self.ignored_functions:
+            return func(*args, **kwargs)
 
         output = func(*args, **kwargs)
 
@@ -183,7 +191,8 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
                 api_name = f"unknown.{func.__name__}"
                 print(f"Unknown func: {func}, type: {type(func)}")
 
-        self.serializer.dump_call(api_name, args, kwargs, level=self.level)
+        if api_name not in self.ignored_apis:
+            self.serializer.dump_call(api_name, args, kwargs, level=self.level)
         return output
 
 
@@ -310,6 +319,9 @@ class PyTorchDialect(FrameworkDialect):
         "torch._ops",
         "torch._tensor",
         "torch._tensor_str",
+        "torch.distributed._shard.checkpoint",
+        "torch.distributed._sharded_tensor",
+        "torch.distributed._sharding_spec",
         "torch.overrides",
         "torch.utils._python_dispatch",
         # modules below here are optional
@@ -390,11 +402,13 @@ class PyTorchDialect(FrameworkDialect):
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
         "torch.autograd.Function",
+        "torch.TypedStorage",
         # methods
         "torch.autograd.function._is_setup_context_defined",
         "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
         "torch.nn.functional.handle_torch_function",
         "torch.nn.functional.has_torch_function_unary",
+        "torch.distributed.reduce_op",
     }
 
     def get_framework_name(self) -> str:
@@ -514,6 +528,10 @@ class PyTorchDialect(FrameworkDialect):
             "value": str(item),
         },
         torch.layout: lambda item: {"type": "torch.layout", "value": str(item)},
+        torch.Size: lambda item: {  # Added handler for torch.Size
+            "type": "torch.Size",
+            "value": list(item),
+        },
         # TODO(@cangtianhuang): add more serialization logic here
     }
 
@@ -527,6 +545,7 @@ class PyTorchDialect(FrameworkDialect):
         "torch.device": lambda item: f'"{item["value"]}"',
         "torch.memory_format": lambda item: f'"{item["value"]}"',
         "torch.layout": lambda item: f'"{item["value"].replace("torch.", "")}"',
+        "torch.Size": lambda item: f'list{item["value"]}',
         # TODO(@cangtianhuang): add more formatting logic here
     }
 

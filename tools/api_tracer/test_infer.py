@@ -45,9 +45,7 @@ def run_inference_test(model_name: str):
         prompt = "Hello! Can you tell me how to learn PyTorch?"
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
-        tracer.start()
-
-        with torch.no_grad():
+        with torch.no_grad() and tracer:
             outputs = model.generate(
                 inputs["input_ids"],
                 num_return_sequences=1,
@@ -55,8 +53,6 @@ def run_inference_test(model_name: str):
                 temperature=0.7,
                 do_sample=True,
             )
-
-        tracer.stop()
 
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
         print("\n--- Generated Response ---")

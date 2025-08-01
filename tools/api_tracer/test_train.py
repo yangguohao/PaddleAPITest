@@ -31,8 +31,6 @@ def run_training_test(model_name: str):
     tracer = APITracer("torch", output_path=output_path, levels=[0, 1])
 
     try:
-        tracer.start()
-
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
@@ -97,7 +95,9 @@ def run_training_test(model_name: str):
             train_dataset=tokenized_dataset,
             data_collator=data_collator,
         )
-        trainer.train()
+
+        with tracer:
+            trainer.train()
 
         final_model_path = f"{output_path}/finetuned-final"
         trainer.save_model(final_model_path)
@@ -105,7 +105,6 @@ def run_training_test(model_name: str):
     except Exception as e:
         print(f"An error occurred during training for {model_name}: {e}")
     finally:
-        tracer.stop()
         print(f"✅ Test for {model_name} finished.")
 
 
