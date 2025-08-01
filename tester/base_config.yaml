@@ -27,6 +27,7 @@ paddle_error_dismiss:
   paddle.linalg.solve: "(PreconditionNotMet) Input tensor 'A' or 'B' has too many elements (> INT_MAX)."
   paddle.nn.functional.group_norm: "(Unimplemented) GroupNorm kernel launch failed"
   paddle.einsum: "(Unimplemented) cublas GEMM does not support N >"
+  paddle.nn.functional.cross_entropy: "(PreconditionNotMet) The num of the classes should be <= INT_MAX(2147483647)"
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
