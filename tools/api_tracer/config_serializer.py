@@ -185,7 +185,7 @@ class ConfigSerializer:
     def _serialize_set(self, item: set) -> Dict:
         return {
             "type": "set",
-            "value": [self._serialize_item(sub_item) for sub_item in sorted(item)],
+            "value": [self._serialize_item(sub_item) for sub_item in item],
         }
 
     def _serialize_dict(self, item: dict) -> Dict:

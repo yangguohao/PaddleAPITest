@@ -515,6 +515,10 @@ class PyTorchDialect(FrameworkDialect):
         # TODO(@cangtianhuang): add more serialization logic here
     }
 
+    def serialize_special_type(self, item: Any) -> Optional[Dict]:
+        handler = self._special_type_handlers.get(type(item))
+        return handler(item) if handler else None
+
     _format_handlers = {
         "torch.Tensor": lambda item: f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")',
         "torch.dtype": lambda item: f'"{item["value"].replace("torch.", "")}"',
@@ -523,10 +527,6 @@ class PyTorchDialect(FrameworkDialect):
         "torch.layout": lambda item: f'"{item["value"].replace("torch.", "")}"',
         # TODO(@cangtianhuang): add more formatting logic here
     }
-
-    def serialize_special_type(self, item: Any) -> Optional[Dict]:
-        handler = self._special_type_handlers.get(type(item))
-        return handler(item) if handler else None
 
     def format_special_type(self, item: Dict) -> Optional[str]:
         handler = self._format_handlers.get(item.get("type", ""))
