@@ -14,21 +14,22 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 MODELS = [
     # "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    # "Qwen/Qwen2-0.5B",
     # "Qwen/Qwen3-0.6B",
-    "Qwen/Qwen3-30B-A3B",
+    # "Qwen/Qwen3-30B-A3B",
+    # "deepseek-ai/DeepSeek-V2-Lite",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
+    # "baidu/ERNIE-4.5-21B-A3B-PT",
 ]
 
 
 def run_inference_test(model_name: str):
     print(f"🚀 Running inference test for: {model_name}")
     output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
-    tracer = APITracer("torch", output_path=output_path)
+    tracer = APITracer("torch", output_path=output_path, levels=[0, 1])
 
     try:
-        tracer.start()
-
         model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         if tokenizer.pad_token is None:
@@ -44,6 +45,8 @@ def run_inference_test(model_name: str):
         prompt = "Hello! Can you tell me how to learn PyTorch?"
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
+        tracer.start()
+
         with torch.no_grad():
             outputs = model.generate(
                 inputs["input_ids"],
@@ -53,6 +56,8 @@ def run_inference_test(model_name: str):
                 do_sample=True,
             )
 
+        tracer.stop()
+
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
         print("\n--- Generated Response ---")
         print(response)
@@ -61,7 +66,6 @@ def run_inference_test(model_name: str):
     except Exception as e:
         print(f"An error occurred during inference for {model_name}: {e}")
     finally:
-        tracer.stop()
         print(f"✅ Test for {model_name} finished.")
 
 
