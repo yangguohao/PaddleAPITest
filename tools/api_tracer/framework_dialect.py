@@ -162,12 +162,14 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
     def __init__(self, serializer: "ConfigSerializer", level: int):
         self.serializer = serializer
         self.level = level
-        self.ignored_functions = torch.overrides.get_ignored_functions()
+
+        # disable this may result in recursion error, but this will ignore factory APIs (e.g. paddle.randn)
+        # self.ignored_functions = torch.overrides.get_ignored_functions()
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
-        if func in self.ignored_functions:
-            return func(*args, **kwargs)
+        # if func in self.ignored_functions:
+        #     return func(*args, **kwargs)
 
         output = func(*args, **kwargs)
 
@@ -535,7 +537,7 @@ class PyTorchDialect(FrameworkDialect):
     def get_hooks(self, serializer, levels: List[int], **kwargs) -> List[TracingHook]:
         self.target_apis = []
         self.disable_torch_api_list = kwargs.get("disable_torch_api_list", False)
-        if not self.disable_torch_api_list:
+        if not self.disable_torch_api_list and 0 in levels:
             yaml_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 "api_list",
