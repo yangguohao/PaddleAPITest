@@ -4,13 +4,13 @@ import importlib
 import inspect
 import os
 import pkgutil
-import threading
 import traceback
 from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 
 import torch
 import yaml
+from torch.utils._python_dispatch import TorchDispatchMode
 
 if TYPE_CHECKING:
     from config_serializer import ConfigSerializer
@@ -18,6 +18,10 @@ if TYPE_CHECKING:
 
 class TracingHook(abc.ABC):
     """钩子的抽象基类"""
+
+    def __init__(self, serializer: "ConfigSerializer", level: int):
+        self.serializer = serializer
+        self.level = level
 
     @abc.abstractmethod
     def install(self):
@@ -28,11 +32,16 @@ class TracingHook(abc.ABC):
         pass
 
 
-# UNUSED for torch
+# SetattrHook can not hook torch C API
 class SetattrHook(TracingHook):
-    def __init__(self, dialect: "FrameworkDialect", serializer: "ConfigSerializer"):
+    def __init__(
+        self,
+        serializer: "ConfigSerializer",
+        level: int,
+        dialect: "FrameworkDialect",
+    ):
+        super().__init__(serializer, level)
         self.dialect = dialect
-        self.serializer = serializer
         self._original_apis: Dict[str, Any] = {}
         self._module_cache: Dict[str, Any] = {}
 
@@ -60,12 +69,17 @@ class SetattrHook(TracingHook):
                 continue
         return None, None
 
-    def _create_wrapper(self, api_name: str, original_api: Any):
-
+    @staticmethod
+    def _create_wrapper(
+        api_name: str,
+        original_api: Any,
+        serializer: "ConfigSerializer",
+        level: int,
+    ):
         @functools.wraps(original_api)
         def wrapper(*args, **kwargs):
             output = original_api(*args, **kwargs)
-            self.serializer.dump_call(api_name, args, kwargs, output)
+            serializer.dump_call(api_name, args, kwargs, level=level)
             return output
 
         return wrapper
@@ -95,7 +109,10 @@ class SetattrHook(TracingHook):
                 if isinstance(original_api, property):
                     if original_api.fget and original_api.fset:
                         wrapped_getter = self._create_wrapper(
-                            f"{api_name}.fget", original_api.fget
+                            f"{api_name}.fget",
+                            original_api.fget,
+                            self.serializer,
+                            self.level,
                         )
                         wrapper = property(
                             wrapped_getter,
@@ -105,10 +122,14 @@ class SetattrHook(TracingHook):
                         )
                 elif isinstance(original_api, (classmethod, staticmethod)):
                     original_func = original_api.__func__
-                    wrapped_func = self._create_wrapper(api_name, original_func)
+                    wrapped_func = self._create_wrapper(
+                        api_name, original_func, self.serializer, self.level
+                    )
                     wrapper = type(original_api)(wrapped_func)
                 elif callable(original_api):
-                    wrapper = self._create_wrapper(api_name, original_api)
+                    wrapper = self._create_wrapper(
+                        api_name, original_api, self.serializer, self.level
+                    )
 
                 if wrapper:
                     setattr(parent_obj, func_name, wrapper)
@@ -149,14 +170,27 @@ class SetattrHook(TracingHook):
         print("[SetattrHook] Restoration complete.")
 
 
-# SetattrHook can not hook torch C API
-class TensorTracerMode(torch.overrides.TorchFunctionMode):
-    def __init__(self, serializer: "ConfigSerializer"):
-        super().__init__()
+class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
+    def __init__(self, serializer: "ConfigSerializer", level: int):
         self.serializer = serializer
+        self.level = level
+
+        # skip these for duplicate property access of paddle.Tensor in SetattrHook
+        # (SetattrHook and TorchFunctionHook are installed at the same time)
+        self.ignored_apis = {
+            "torch.Tensor.shape.__get__",
+            "torch.Tensor.dtype.__get__",
+            "torch.Tensor.device.__get__",
+        }
+
+        # disable this may result in recursion error, but this will ignore factory APIs (e.g. paddle.randn)
+        self.ignored_functions = torch.overrides.get_ignored_functions()
 
     def __torch_function__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
+        if func in self.ignored_functions:
+            return func(*args, **kwargs)
+
         output = func(*args, **kwargs)
 
         api_name = torch.overrides.resolve_name(func)
@@ -169,13 +203,15 @@ class TensorTracerMode(torch.overrides.TorchFunctionMode):
                 api_name = f"unknown.{func.__name__}"
                 print(f"Unknown func: {func}, type: {type(func)}")
 
-        self.serializer.dump_call(api_name, args, kwargs, output)
+        if api_name not in self.ignored_apis:
+            self.serializer.dump_call(api_name, args, kwargs, level=self.level)
         return output
 
 
 class TorchFunctionHook(TracingHook):
-    def __init__(self, serializer: "ConfigSerializer"):
-        self.tracing_mode = TensorTracerMode(serializer)
+    def __init__(self, serializer: "ConfigSerializer", level: int):
+        super().__init__(serializer, level)
+        self.tracing_mode = TorchFunctionModeTracer(serializer, level)
 
     def install(self):
         print(f"[TorchFunctionHook] Enabling __torch_function__ tracing mode...")
@@ -186,6 +222,37 @@ class TorchFunctionHook(TracingHook):
         print("[TorchFunctionHook] Disabling __torch_function__ tracing mode...")
         self.tracing_mode.__exit__(None, None, None)
         print("[TorchFunctionHook] Mode disabled.")
+
+
+class TorchDispatchModeTracer(TorchDispatchMode):
+    def __init__(self, serializer: "ConfigSerializer", level: int):
+        self.serializer = serializer
+        self.level = level
+
+    def __torch_dispatch__(self, func, types, args=(), kwargs=None):
+        kwargs = kwargs or {}
+
+        output = func(*args, **kwargs)
+
+        api_name = func.name()
+        self.serializer.dump_call(api_name, args, kwargs, level=self.level)
+        return output
+
+
+class TorchDispatchHook(TracingHook):
+    def __init__(self, serializer: "ConfigSerializer", level: int):
+        super().__init__(serializer, level)
+        self.tracing_mode = TorchDispatchModeTracer(serializer, level)
+
+    def install(self):
+        print(f"[TorchDispatchHook] Enabling __torch_dispatch__ tracing mode...")
+        self.tracing_mode.__enter__()
+        print("[TorchDispatchHook] Mode enabled.")
+
+    def uninstall(self):
+        print("[TorchDispatchHook] Disabling __torch_dispatch__ tracing mode...")
+        self.tracing_mode.__exit__(None, None, None)
+        print("[TorchDispatchHook] Mode disabled.")
 
 
 class FrameworkDialect(abc.ABC):
@@ -215,7 +282,9 @@ class FrameworkDialect(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_hooks(self, serializer: "ConfigSerializer") -> List[TracingHook]:
+    def get_hooks(
+        self, serializer: "ConfigSerializer", level: Union[int, List[int]]
+    ) -> List[TracingHook]:
         """获取跟踪钩子, 用于在API调用时进行记录"""
         raise NotImplementedError
 
@@ -231,25 +300,75 @@ class FrameworkDialect(abc.ABC):
 class PyTorchDialect(FrameworkDialect):
     """PyTorch方言实现"""
 
+    # Only takes effect in SetattrHook
     MODULE_BLACKLIST = {
+        "torch._dynamo.config",
+        "torch._dynamo.test_case",
+        "torch._dynamo.test_minifier_common",
+        "torch._functorch.config",
+        "torch._inductor.config",
+        "torch._inductor.test_case",
+        "torch.ao.pruning._experimental.data_sparsifier.lightning.callbacks.data_sparsity",
+        "torch.backends._coreml.preprocess",
+        "torch.compiler.config",
+        "torch.contrib._tensorboard_vis",
+        "torch.distributed._tools.sac_ilp",
+        "torch.fx.experimental._config",
+        "torch.onnx._internal.exporter",  # multi modules
+        "torch.onnx._internal.fx",  # multi modules
+        "torch.testing._internal",  # multi modules
+        "torch.utils._cxx_pytree",
+        "torch.utils.model_dump",
+        "torch.utils.serialization.config",
+        "torch.utils.tensorboard",
+        # modules above here will cause some errors
+        "torch._C",
         "torch._decomp",
         "torch._dynamo",
         "torch._functorch",
         "torch._inductor",
+        "torch._jit_internal",
         "torch._ops",
-        "torch.ao",
-        "torch.backends",
-        "torch.compiler",
-        "torch.contrib",
-        "torch.distributed",
-        "torch.fx",
-        "torch.jit",
-        "torch.onnx",
-        "torch.testing",
-        "torch.utils",
+        "torch._tensor",
+        "torch._tensor_str",
+        "torch.distributed._shard.checkpoint",
+        "torch.distributed._sharded_tensor",
+        "torch.distributed._sharding_spec",
+        "torch.overrides",
+        "torch.utils._python_dispatch",
+        # modules below here are optional
+        # "torch._export",
+        # "torch._guards",
+        # "torch._guards",
+        # "torch._higher_order_ops",
+        # "torch._jit_internal",
+        # "torch._library",
+        # "torch._linalg_utils",
+        # "torch._lobpcg",
+        # "torch._lowrank",
+        # "torch._meta_registrations",
+        # "torch._prims",
+        # "torch._refs",
+        # "torch._subclasses",
+        # "torch._vmap_internals",
+        # "torch.compiler._cache",
+        # "torch.distributed._shard",
+        # "torch.distributed._tools",
+        # "torch.export._trace",
+        # "torch.fx._graph_pickler",
+        # "torch.jit._decomposition_utils",
+        # "torch.jit._decompositions",
+        # "torch.jit._recursive",
+        # "torch.jit._script",
+        # "torch.jit._trace",
+        # "torch.masked._ops",
+        # "torch.nested._internal",
+        # "torch.utils._foreach_utils",
     }
 
+    # Only takes effect in SetattrHook
     IGNORE_ATTRIBUTES = {
+        # should skip
         "__bytes__",
         "__class__",
         "__delattr__",
@@ -257,8 +376,8 @@ class PyTorchDialect(FrameworkDialect):
         "__dict__",
         "__dir__",
         "__doc__",
-        "__format__",
         "__get__",
+        "__getattr__",
         "__getattribute__",
         "__hash__",
         "__init__",
@@ -266,27 +385,47 @@ class PyTorchDialect(FrameworkDialect):
         "__module__",
         "__new__",
         "__prepare__",
-        "__repr__",
         "__set__",
         "__setattr__",
         "__sizeof__",
         "__slots__",
-        "__str__",
         "__weakref__",
+        "xreplace",
+        # recommended to skip
+        "__call__",
+        "__format__",
+        "__instancecheck__",
+        "__iter__",
+        "__repr__",
+        "__str__",
+        "__subclasscheck__",
+        "__subclasshook__",
+        # optional to skip
+        "__enter__",
+        "__exit__",
     }
 
-    IGNORE_CLASSES = {
+    # Only takes effect in SetattrHook
+    IGNORE_CLASSES_OR_METHODS = {
+        # classes
         "torch._utils.CallbackRegistry",
         "torch.cuda._gpu_trace.CallbackRegistry",
         "torch.cuda._sanitizer.StreamSynchronizations",
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
+        "torch.TypedStorage",
+        # methods
+        "torch.autograd.function._is_setup_context_defined",
+        "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
+        "torch.nn.functional.handle_torch_function",
+        "torch.nn.functional.has_torch_function_unary",
+        "torch.distributed.reduce_op",
     }
 
     def get_framework_name(self) -> str:
         return "torch"
 
-    # UNUSED in TensorTracerMode
+    # Only takes effect in SetattrHook
     def discover_apis(self) -> List[str]:
         """使用pkgutil遍历torch包"""
         print(
@@ -334,11 +473,19 @@ class PyTorchDialect(FrameworkDialect):
                         or not obj.__module__.startswith("torch")
                     ):
                         continue
-                    if full_name in self.IGNORE_CLASSES:
+                    if (
+                        not self.disable_torch_api_list
+                        and full_name not in self.target_apis
+                    ):
+                        continue
+                    if full_name in self.IGNORE_CLASSES_OR_METHODS:
                         continue
                     if callable(obj) and not inspect.isclass(obj):
                         api_set.add(full_name)
                     elif inspect.isclass(obj):
+                        # custom op class should be skip
+                        if issubclass(obj, torch.autograd.Function):
+                            continue
                         for cls_member_name, cls_member in inspect.getmembers(obj):
                             if cls_member_name in self.IGNORE_ATTRIBUTES:
                                 continue
@@ -373,42 +520,74 @@ class PyTorchDialect(FrameworkDialect):
         print(f"[{self.__class__.__name__}] Discovered {len(api_list)} native APIs.")
         return api_list
 
-    # UNUSED in TensorTracerMode
+    # Only takes effect in SetattrHook
     def discover_custom_ops(self) -> List[str]:
         # TODO(@cangtianhuang): implemente me
         return []
 
-    def serialize_special_type(self, item: Any) -> Optional[Dict]:
-        if isinstance(item, torch.Tensor):
-            return {
-                "type": "torch.Tensor",
-                "shape": list(item.shape),
-                "dtype": str(item.dtype),
-                "device": str(item.device),
-            }
-        if isinstance(item, torch.dtype):
-            return {"type": "torch.dtype", "value": str(item)}
-        if isinstance(item, torch.device):
-            return {"type": "torch.device", "value": str(item)}
-        if isinstance(item, torch.memory_format):
-            return {"type": "torch.memory_format", "value": str(item)}
+    _special_type_handlers = {
+        torch.Tensor: lambda item: {
+            "type": "torch.Tensor",
+            "shape": list(item.shape),
+            "dtype": str(item.dtype),
+            "device": str(item.device),
+        },
+        torch.dtype: lambda item: {"type": "torch.dtype", "value": str(item)},
+        torch.device: lambda item: {"type": "torch.device", "value": str(item)},
+        torch.memory_format: lambda item: {
+            "type": "torch.memory_format",
+            "value": str(item),
+        },
+        torch.layout: lambda item: {"type": "torch.layout", "value": str(item)},
+        torch.Size: lambda item: {  # Added handler for torch.Size
+            "type": "torch.Size",
+            "value": list(item),
+        },
         # TODO(@cangtianhuang): add more serialization logic here
-        return None
+    }
+
+    def serialize_special_type(self, item: Any) -> Optional[Dict]:
+        handler = self._special_type_handlers.get(type(item))
+        return handler(item) if handler else None
+
+    _format_handlers = {
+        "torch.Tensor": lambda item: f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")',
+        "torch.dtype": lambda item: f'"{item["value"].replace("torch.", "")}"',
+        "torch.device": lambda item: f'"{item["value"]}"',
+        "torch.memory_format": lambda item: f'"{item["value"]}"',
+        "torch.layout": lambda item: f'"{item["value"].replace("torch.", "")}"',
+        "torch.Size": lambda item: f'list{item["value"]}',
+        # TODO(@cangtianhuang): add more formatting logic here
+    }
 
     def format_special_type(self, item: Dict) -> Optional[str]:
-        if item["type"] == "torch.Tensor":
-            return f'Tensor({item["shape"]}, "{item["dtype"].replace("torch.", "")}")'
-        if item["type"] == "torch.dtype":
-            return f'"{item["value"].replace("torch.", "")}"'
-        if item["type"] == "torch.device":
-            return f'"{item["value"]}"'
-        if item["type"] == "torch.memory_format":
-            return f'"{item["value"]}"'
-        # TODO(@cangtianhuang): add more formatting logic here
-        return None
+        handler = self._format_handlers.get(item.get("type", ""))
+        return handler(item) if handler else None
 
-    def get_hooks(self, serializer) -> List[TracingHook]:
-        return [
-            # SetattrHook(self, serializer),  # kept but not used
-            TorchFunctionHook(serializer),
-        ]
+    def get_hooks(self, serializer, levels: List[int], **kwargs) -> List[TracingHook]:
+        self.target_apis = []
+        self.disable_torch_api_list = kwargs.get("disable_torch_api_list", False)
+        if not self.disable_torch_api_list and 0 in levels:
+            yaml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "api_list",
+                "torch_api_list.yaml",
+            )
+            with open(yaml_path, "r", encoding="utf-8") as f:
+                self.target_apis = yaml.safe_load(f)
+            print(
+                f"[{self.__class__.__name__}] Loaded {len(self.target_apis)} target APIs."
+            )
+
+        hooks = []
+        hook_map = {0: SetattrHook, 1: TorchFunctionHook, 2: TorchDispatchHook}
+        for level in levels:
+            hook_class = hook_map.get(level)
+            if hook_class:
+                if level == 0:
+                    hooks.append(hook_class(serializer, level, self))
+                else:
+                    hooks.append(hook_class(serializer, level))
+            else:
+                raise ValueError(f"Invalid level: {level}")
+        return hooks
