@@ -27,9 +27,9 @@ paddle_error_dismiss:
   paddle.linalg.solve: "(PreconditionNotMet) Input tensor 'A' or 'B' has too many elements (> INT_MAX)."
   paddle.nn.functional.group_norm: "(Unimplemented) GroupNorm kernel launch failed"
   paddle.einsum: "(Unimplemented) cublas GEMM does not support N >"
-  paddle.nn.functional.class_center_sample: 
+  paddle.nn.functional.class_center_sample:
     - "(InvalidArgument) The total number of elements for 'label' should be less than"
-    - "(InvalidArgument) Illegal memory allocation, total allocated spacemust be greater than 0"
+    - "(InvalidArgument) Illegal memory allocation, total allocated space must be greater than 0"
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
