@@ -2,12 +2,14 @@ import abc
 import functools
 import importlib
 import inspect
+import os
 import pkgutil
 import traceback
 from functools import partial
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 
 import torch
+import yaml
 from torch.utils._python_dispatch import TorchDispatchMode
 
 if TYPE_CHECKING:
@@ -385,9 +387,12 @@ class PyTorchDialect(FrameworkDialect):
         "torch.cuda._sanitizer.StreamSynchronizations",
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
+        "torch.autograd.Function",
         # methods
         "torch.autograd.function._is_setup_context_defined",
         "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
+        "torch.nn.functional.handle_torch_function",
+        "torch.nn.functional.has_torch_function_unary",
     }
 
     def get_framework_name(self) -> str:
@@ -441,11 +446,19 @@ class PyTorchDialect(FrameworkDialect):
                         or not obj.__module__.startswith("torch")
                     ):
                         continue
+                    if (
+                        not self.disable_torch_api_list
+                        and full_name not in self.target_apis
+                    ):
+                        continue
                     if full_name in self.IGNORE_CLASSES_OR_METHODS:
                         continue
                     if callable(obj) and not inspect.isclass(obj):
                         api_set.add(full_name)
                     elif inspect.isclass(obj):
+                        # custom op class should be skip
+                        if issubclass(obj, torch.autograd.Function):
+                            continue
                         for cls_member_name, cls_member in inspect.getmembers(obj):
                             if cls_member_name in self.IGNORE_ATTRIBUTES:
                                 continue
@@ -519,7 +532,21 @@ class PyTorchDialect(FrameworkDialect):
         handler = self._format_handlers.get(item.get("type", ""))
         return handler(item) if handler else None
 
-    def get_hooks(self, serializer, levels: List[int]) -> List[TracingHook]:
+    def get_hooks(self, serializer, levels: List[int], **kwargs) -> List[TracingHook]:
+        self.target_apis = []
+        self.disable_torch_api_list = kwargs.get("disable_torch_api_list", False)
+        if not self.disable_torch_api_list:
+            yaml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "api_list",
+                "torch_api_list.yaml",
+            )
+            with open(yaml_path, "r", encoding="utf-8") as f:
+                self.target_apis = yaml.safe_load(f)
+            print(
+                f"[{self.__class__.__name__}] Loaded {len(self.target_apis)} target APIs."
+            )
+
         hooks = []
         hook_map = {0: SetattrHook, 1: TorchFunctionHook, 2: TorchDispatchHook}
         for level in levels:
