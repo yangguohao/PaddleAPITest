@@ -9,13 +9,24 @@ from framework_dialect import FrameworkDialect, TracingHook
 
 class APITracer:
 
-    def __init__(self, dialect: str, output_path: str = "trace_output", level: Union[int, List] = 0):
+    def __init__(
+        self,
+        dialect: str,
+        output_path: str = "trace_output",
+        levels: Union[int, List] = 0,
+        merge_output: bool = False,
+    ):
         os.makedirs(output_path, exist_ok=True)
+
+        levels = levels if isinstance(levels, list) else [levels]
+
         self.dialect = FrameworkDialect.get_dialect(dialect)
-        self.serializer = ConfigSerializer(self.dialect, output_path)
-        self.hooks: List[TracingHook] = self.dialect.get_hooks(self.serializer, level)
+        self.serializer = ConfigSerializer(
+            self.dialect, output_path, levels, merge_output
+        )
+        self.hooks: List[TracingHook] = self.dialect.get_hooks(self.serializer, levels)
         self._is_tracing = False
-        
+
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 

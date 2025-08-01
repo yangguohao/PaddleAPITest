@@ -1,8 +1,9 @@
+import os
 import time
-from collections import deque
+from collections import defaultdict, deque
 from threading import Event, Thread
 from types import EllipsisType
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TextIO
 
 import yaml
 from framework_dialect import FrameworkDialect
@@ -13,13 +14,22 @@ class ConfigSerializer:
 
     _serialize_handlers = {}
 
-    def __init__(self, dialect: FrameworkDialect, output_path: str):
+    def __init__(
+        self,
+        dialect: FrameworkDialect,
+        output_path: str,
+        levels: List[int],
+        merge_output: bool,
+    ):
         self.dialect = dialect
         self.output_path = output_path
-        self.file_handler_yaml = None
-        self.file_handler_txt = None
-        self.buffer: List[Dict] = []
+        self.levels = levels
+        self.merge_output = merge_output
+
+        self.file_handlers: Dict[int, Dict[str, TextIO]] = {}
+
         self.buffer_limit = 20000
+        self.buffers: Dict[int, List[Dict]] = defaultdict(list)
 
         # asyncio
         self.log_queue = deque()
@@ -43,26 +53,42 @@ class ConfigSerializer:
         }
 
     def open(self):
-        self.file_handler_yaml = open(
-            self.output_path + "/api_trace.yaml", "w", encoding="utf-8"
-        )
-        self.file_handler_txt = open(
-            self.output_path + "/api_trace.txt", "w", encoding="utf-8"
-        )
+        if self.merge_output:
+            self.file_handlers[0] = {
+                "yaml": open(
+                    f"{self.output_path}/api_trace.yaml", "w", encoding="utf-8"
+                ),
+                "txt": open(f"{self.output_path}/api_trace.txt", "w", encoding="utf-8"),
+            }
+        else:
+            for level in self.levels:
+                self.file_handlers[level] = {
+                    "yaml": open(
+                        f"{self.output_path}/api_trace_level_{level}.yaml",
+                        "w",
+                        encoding="utf-8",
+                    ),
+                    "txt": open(
+                        f"{self.output_path}/api_trace_level_{level}.txt",
+                        "w",
+                        encoding="utf-8",
+                    ),
+                }
         self.writer_thread.start()
 
     def close(self):
         self._stop_event.set()
         self.writer_thread.join()
-        self._flush_buffer()
+        for level in self.buffers:
+            self._flush_buffer(level)
 
-        if self.file_handler_yaml:
-            self.file_handler_yaml.close()
-            self.file_handler_yaml = None
-        if self.file_handler_txt:
-            self.file_handler_txt.close()
-            self.file_handler_txt = None
+        for level_handlers in self.file_handlers.values():
+            if level_handlers["yaml"]:
+                level_handlers["yaml"].close()
+            if level_handlers["txt"]:
+                level_handlers["txt"].close()
 
+        self.file_handlers.clear()
         print(f"[ConfigSerializer] Files closed, final save to {self.output_path}")
 
     def _writer_loop(self):
@@ -70,56 +96,69 @@ class ConfigSerializer:
         while not self._stop_event.is_set() or len(self.log_queue) > 0:
             try:
                 call_record = self.log_queue.popleft()
-                self.buffer.append(call_record)
+                level = call_record.pop("level")
 
-                if len(self.buffer) >= self.buffer_limit:
-                    self._flush_buffer()
+                buffer_key = 0 if self.merge_output else level
+                self.buffers[buffer_key].append(call_record)
+
+                if len(self.buffers[buffer_key]) >= self.buffer_limit:
+                    self._flush_buffer(buffer_key)
             except IndexError:
                 time.sleep(0.01)
             except Exception as e:
                 print(f"[ConfigSerializer] Error in writer thread: {e}")
 
-    def _flush_buffer(self):
+    def _flush_buffer(self, buffer_key: int):
         """将buffer内容写入文件并清空buffer"""
-        if not self.buffer:
+        buffer = self.buffers[buffer_key]
+        if not buffer:
             return
 
-        self.total_calls_processed += len(self.buffer)
+        self.total_calls_processed += len(buffer)
+        handlers = self.file_handlers[buffer_key]
 
-        if self.file_handler_yaml:
+        if handlers["yaml"]:
             try:
                 yaml.dump(
-                    self.buffer,
-                    self.file_handler_yaml,
+                    buffer,
+                    handlers["yaml"],
                     allow_unicode=True,
                     sort_keys=False,
                     default_flow_style=False,
                     indent=2,
                 )
-                self.file_handler_yaml.flush()
+                handlers["yaml"].flush()
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing YAML file: {e}")
 
-        if self.file_handler_txt:
+        if handlers["txt"]:
             try:
-                for call_record in self.buffer:
+                for call_record in buffer:
                     txt_line = self._format_txt_line(
                         call_record["api"], call_record["args"], call_record["kwargs"]
                     )
-                    self.file_handler_txt.write(txt_line + "\n")
-                self.file_handler_txt.flush()
+                    handlers["txt"].write(txt_line + "\n")
+                handlers["txt"].flush()
             except Exception as e:
                 print(f"[ConfigSerializer] Error writing TXT file: {e}")
 
         print(
-            f"[ConfigSerializer] Flushed {len(self.buffer)} calls, total processed: {self.total_calls_processed}"
+            f"[ConfigSerializer] Flushed {len(buffer)} calls for level key {buffer_key}, total processed: {self.total_calls_processed}"
         )
-        self.buffer.clear()
+        buffer.clear()
 
-    def dump_call(self, api_name: str, args: tuple, kwargs: dict, output: Any = None):
+    def dump_call(
+        self,
+        api_name: str,
+        args: tuple,
+        kwargs: dict,
+        output: Any = None,
+        level: int = 0,
+    ):
         """记录一次API调用"""
         try:
             call_record = {
+                "level": level,
                 "api": api_name,
                 "args": [self._serialize_item(arg) for arg in args],
                 "kwargs": {
@@ -216,40 +255,82 @@ class ConfigSerializer:
         return f"{api_name}({args_str + (', ' + kwargs_str if kwargs_str else '')})"
 
     def get_apis_and_configs(self):
-        api_apis = set()
-        api_configs = set()
-        api_counts = {}
-        line_count = 0
-        with open(self.output_path + "/api_trace.txt", "r") as f:
+        if self.merge_output:
+            self._process_trace_file("api_trace.txt", "")
+        else:
+            for level in self.levels:
+                suffix = f"_level_{level}"
+                self._process_trace_file(f"api_trace{suffix}.txt", suffix)
+
+    def _process_trace_file(self, input_filename: str, output_suffix: str):
+        input_path = os.path.join(self.output_path, input_filename)
+        if not os.path.exists(input_path):
+            print(
+                f"[ConfigSerializer] Trace file not found, skipping stats: {input_path}"
+            )
+            return
+
+        api_apis, api_configs = set(), set()
+        api_counts = defaultdict(int)
+
+        with open(input_path, "r", encoding="utf-8") as f:
+            current = ""
             for line in f:
                 line = line.strip()
-                if line:
+                if not line:
+                    continue
+                if current:
+                    current += " " + line
+                    if line.endswith(")"):
+                        api_configs.add(current)
+                        current = ""
+                    continue
+                api_api = line.split("(", 1)[0]
+                api_apis.add(api_api)
+                api_counts[api_api] += 1
+                if line.endswith(")"):
                     api_configs.add(line)
-                    api_api = line.split("(", 1)[0]
-                    api_apis.add(api_api)
-                    api_counts[api_api] = api_counts.get(api_api, 0) + 1
-                    line_count += 1
-        print(f"[ConfigSerializer] Read {line_count} traces from api_trace.txt")
+                else:
+                    current = line
 
-        with open(self.output_path + "/api_apis.txt", "w", encoding="utf-8") as f:
+        trace_count = sum(api_counts.values())
+        print(f"[ConfigSerializer] Read {trace_count} traces from {input_filename}")
+
+        with open(
+            f"{self.output_path}/api_apis{output_suffix}.txt", "w", encoding="utf-8"
+        ) as f:
             for api in sorted(api_apis):
                 f.write(api + "\n")
-        print(f"[ConfigSerializer] Write {len(api_apis)} apis to api_apis.txt")
+        print(
+            f"[ConfigSerializer] Wrote {len(api_apis)} apis to api_apis{output_suffix}.txt"
+        )
 
-        with open(self.output_path + "/api_configs.txt", "w", encoding="utf-8") as f:
+        with open(
+            f"{self.output_path}/api_configs{output_suffix}.txt", "w", encoding="utf-8"
+        ) as f:
             for config in sorted(api_configs):
                 f.write(config + "\n")
-        print(f"[ConfigSerializer] Write {len(api_configs)} configs to api_configs.txt")
+        print(
+            f"[ConfigSerializer] Wrote {len(api_configs)} configs to api_configs{output_suffix}.txt"
+        )
 
         total_calls = sum(api_counts.values())
+        if total_calls == 0:
+            return
         api_percentages = {
             api: (count / total_calls) * 100 for api, count in api_counts.items()
         }
         sorted_api_counts = sorted(api_counts.items(), key=lambda x: x[1], reverse=True)
 
-        with open(self.output_path + "/api_statistics.txt", "w", encoding="utf-8") as f:
+        with open(
+            f"{self.output_path}/api_statistics{output_suffix}.txt",
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(f"Total APIs: {len(api_apis)}\n")
             f.write(f"Total API calls: {total_calls}\n\n")
             for api, count in sorted_api_counts:
                 f.write(f"{api}: {count} ({api_percentages[api]:.2f}%)\n")
-            print(f"[ConfigSerializer] Write detailed statistics to api_statistics.txt")
+        print(
+            f"[ConfigSerializer] Write detailed statistics to api_statistics{output_suffix}.txt"
+        )
