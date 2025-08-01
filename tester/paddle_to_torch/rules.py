@@ -3763,25 +3763,28 @@ mode = locals().get('mode', 'avg')
 if axis is None:
     x_flat = x.flatten()
     length = x_flat.numel()
-    sorted_x = torch.sort(x_flat, stable=True).values
-    mid = length // 2
     if length % 2 == 0 and mode == 'avg':
+        sorted_x = torch.sort(x_flat, stable=True).values
+        mid = length // 2
         median = (sorted_x[mid - 1] + sorted_x[mid]) / 2
     else:
-        median = sorted_x[mid]
+        median = torch.median(x_flat)
     if keepdim:
         median = median.reshape([1] * x.ndim)
 else:
-    length = x.shape[axis] if x.ndim > 0 else 1
-    sorted_x = torch.sort(x, dim=axis, stable=True).values
-    mid = length // 2
-    if length % 2 == 0 and mode == 'avg':
-        median = (sorted_x.index_select(axis, torch.tensor([mid - 1])) + 
+    if mode == 'avg':
+        length = x.shape[axis] if x.ndim > 0 else 1
+        if length % 2 == 0:
+            sorted_x = torch.sort(x, dim=axis, stable=True).values
+            mid = length // 2
+            median = (sorted_x.index_select(axis, torch.tensor([mid - 1])) + 
                       sorted_x.index_select(axis, torch.tensor([mid]))) / 2
+            if not keepdim:
+                median = median.squeeze(axis)
+        else:
+            median = torch.median(x, dim=axis, keepdim=keepdim).values
     else:
-        median = sorted_x.index_select(axis, torch.tensor([mid]))
-    if not keepdim:
-        median = median.squeeze(axis)
+        median = torch.median(x, dim=axis, keepdim=keepdim)
 if mode == 'avg' and x.dtype != torch.float64:
     median = median.to(torch.float32)
 result = median
