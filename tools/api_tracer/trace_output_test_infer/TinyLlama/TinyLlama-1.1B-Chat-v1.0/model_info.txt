@@ -1,2 +1,0 @@
-Model: <class 'transformers.models.llama.modeling_llama.LlamaForCausalLM'>
-Tokenizer: <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>

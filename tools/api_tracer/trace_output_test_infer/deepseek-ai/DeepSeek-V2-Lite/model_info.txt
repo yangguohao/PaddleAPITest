@@ -1,2 +1,0 @@
-Model: <class 'transformers.models.deepseek_v2.modeling_deepseek_v2.DeepseekV2ForCausalLM'>
-Tokenizer: <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
