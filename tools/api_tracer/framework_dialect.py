@@ -69,12 +69,17 @@ class SetattrHook(TracingHook):
                 continue
         return None, None
 
-    def _create_wrapper(self, api_name: str, original_api: Any):
-
+    @staticmethod
+    def _create_wrapper(
+        api_name: str,
+        original_api: Any,
+        serializer: "ConfigSerializer",
+        level: int,
+    ):
         @functools.wraps(original_api)
         def wrapper(*args, **kwargs):
             output = original_api(*args, **kwargs)
-            self.serializer.dump_call(api_name, args, kwargs, level=self.level)
+            serializer.dump_call(api_name, args, kwargs, level=level)
             return output
 
         return wrapper
@@ -104,7 +109,10 @@ class SetattrHook(TracingHook):
                 if isinstance(original_api, property):
                     if original_api.fget and original_api.fset:
                         wrapped_getter = self._create_wrapper(
-                            f"{api_name}.fget", original_api.fget
+                            f"{api_name}.fget",
+                            original_api.fget,
+                            self.serializer,
+                            self.level,
                         )
                         wrapper = property(
                             wrapped_getter,
@@ -114,10 +122,14 @@ class SetattrHook(TracingHook):
                         )
                 elif isinstance(original_api, (classmethod, staticmethod)):
                     original_func = original_api.__func__
-                    wrapped_func = self._create_wrapper(api_name, original_func)
+                    wrapped_func = self._create_wrapper(
+                        api_name, original_func, self.serializer, self.level
+                    )
                     wrapper = type(original_api)(wrapped_func)
                 elif callable(original_api):
-                    wrapper = self._create_wrapper(api_name, original_api)
+                    wrapper = self._create_wrapper(
+                        api_name, original_api, self.serializer, self.level
+                    )
 
                 if wrapper:
                     setattr(parent_obj, func_name, wrapper)
@@ -401,7 +413,6 @@ class PyTorchDialect(FrameworkDialect):
         "torch.cuda._sanitizer.StreamSynchronizations",
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
-        "torch.autograd.Function",
         "torch.TypedStorage",
         # methods
         "torch.autograd.function._is_setup_context_defined",
