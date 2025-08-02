@@ -30,7 +30,7 @@ MODELS = [
 def run_training_test(model_name: str):
     print(f"🚀 Running training test for: {model_name})")
     output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
-    tracer = APITracer("torch", output_path=output_path, levels=[0])
+    tracer = APITracer("torch", output_path=output_path, levels=[0, 1])
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -74,14 +74,12 @@ def run_training_test(model_name: str):
             remove_columns=next(iter(dataset)).keys(),
         )
 
-        save_model_path = f"{output_path}/finetuned-arena"
         training_args = TrainingArguments(
-            output_dir=save_model_path,
             per_device_train_batch_size=1,
             gradient_accumulation_steps=16,
             learning_rate=2e-5,
             logging_steps=20,
-            save_steps=5,
+            save_strategy="no",
             bf16=True,
             report_to="none",
             max_steps=5,
@@ -194,14 +192,12 @@ def run_training_test_vision(model_name: str):
             batch_size=4,
         )
 
-        save_model_path = f"{output_path}/finetuned-turingeye"
         training_args = TrainingArguments(
-            output_dir=save_model_path,
             per_device_train_batch_size=1,
             gradient_accumulation_steps=4,
             learning_rate=1e-5,
             logging_steps=5,
-            save_steps=20,
+            save_strategy="no",
             bf16=True,
             report_to="none",
             max_steps=20,
