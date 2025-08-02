@@ -5,7 +5,7 @@ import inspect
 import os
 import pkgutil
 import traceback
-from functools import partial
+import types
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 
 import torch
@@ -114,29 +114,40 @@ class SetattrHook(TracingHook):
                 original_api = getattr(parent_obj, func_name)
                 wrapper = None
 
-                if isinstance(original_api, property):
-                    if original_api.fget and original_api.fset:
-                        wrapped_getter = self._create_wrapper(
-                            f"{api_name}.fget",
-                            original_api.fget,
-                            self.serializer,
-                            self.level,
-                        )
-                        wrapper = property(
-                            wrapped_getter,
-                            original_api.fset,
-                            original_api.fdel,
-                            original_api.__doc__,
-                        )
+                if isinstance(
+                    original_api,
+                    (
+                        types.FunctionType,
+                        types.BuiltinFunctionType,
+                        types.MethodType,
+                        types.BuiltinMethodType,
+                    ),
+                ):
+                    wrapped_func = self._create_wrapper(
+                        api_name, original_api, self.serializer, self.level
+                    )
                 elif isinstance(original_api, (classmethod, staticmethod)):
                     original_func = original_api.__func__
                     wrapped_func = self._create_wrapper(
                         api_name, original_func, self.serializer, self.level
                     )
                     wrapper = type(original_api)(wrapped_func)
-                elif callable(original_api):
-                    wrapper = self._create_wrapper(
-                        api_name, original_api, self.serializer, self.level
+                elif (
+                    isinstance(original_api, property)
+                    and original_api.fget
+                    and original_api.fset
+                ):
+                    wrapped_getter = self._create_wrapper(
+                        f"{api_name}.fget",
+                        original_api.fget,
+                        self.serializer,
+                        self.level,
+                    )
+                    wrapper = property(
+                        wrapped_getter,
+                        original_api.fset,
+                        original_api.fdel,
+                        original_api.__doc__,
                     )
 
                 if wrapper:
@@ -185,8 +196,8 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
     ):
         self.serializer = serializer
         self.level = level
-        self.disable_torch_api_list = dialect.disable_torch_api_list
-        self.target_apis = dialect.target_apis
+        self.disable_torch_api_list = getattr(dialect, "disable_torch_api_list", False)
+        self.target_apis = getattr(dialect, "target_apis", [])
 
         # skip these for duplicate property access of paddle.Tensor in SetattrHook
         # (SetattrHook and TorchFunctionHook are installed at the same time)
@@ -245,8 +256,8 @@ class TorchDispatchModeTracer(TorchDispatchMode):
     ):
         self.serializer = serializer
         self.level = level
-        self.disable_torch_api_list = dialect.disable_torch_api_list
-        self.target_apis = dialect.target_apis
+        self.disable_torch_api_list = getattr(dialect, "disable_torch_api_list", False)
+        self.target_apis = getattr(dialect, "target_apis", [])
 
     def __torch_dispatch__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
@@ -436,13 +447,13 @@ class PyTorchDialect(FrameworkDialect):
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
         "torch.TypedStorage",
-        # "torch.optim.Optimizer",
         # methods
         "torch.autograd.function._is_setup_context_defined",
         "torch.distributed.reduce_op",
         "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
         "torch.nn.functional.handle_torch_function",
         "torch.nn.functional.has_torch_function_unary",
+        "torch.optim.Optimizer.profile_hook_step",
     }
 
     def get_framework_name(self) -> str:
@@ -503,7 +514,17 @@ class PyTorchDialect(FrameworkDialect):
                         continue
                     if full_name in self.IGNORE_CLASSES_OR_METHODS:
                         continue
-                    if callable(obj) and not inspect.isclass(obj):
+                    if isinstance(
+                        obj,
+                        (
+                            types.FunctionType,
+                            types.BuiltinFunctionType,
+                            types.MethodType,
+                            types.BuiltinMethodType,
+                            staticmethod,
+                            classmethod,
+                        ),
+                    ):
                         api_set.add(full_name)
                     elif inspect.isclass(obj):
                         # custom op class should be skip
@@ -513,23 +534,22 @@ class PyTorchDialect(FrameworkDialect):
                             if cls_member_name in self.IGNORE_ATTRIBUTES:
                                 continue
                             full_cls_name = f"{full_name}.{cls_member_name}"
-                            if inspect.ismethod(cls_member) or inspect.isfunction(
-                                cls_member
+                            if isinstance(
+                                cls_member,
+                                (
+                                    types.FunctionType,
+                                    types.BuiltinFunctionType,
+                                    types.MethodType,
+                                    types.BuiltinMethodType,
+                                    staticmethod,
+                                    classmethod,
+                                ),
                             ):
                                 api_set.add(full_cls_name)
-                            elif isinstance(cls_member, (staticmethod, classmethod)):
-                                api_set.add(full_cls_name)
-                            elif isinstance(cls_member, property):
-                                if cls_member.fget and cls_member.fset:
-                                    api_set.add(full_cls_name)
-                            elif isinstance(cls_member, partial):
-                                if hasattr(
-                                    cls_member.func, "__module__"
-                                ) and cls_member.func.__module__.startswith("torch"):
-                                    api_set.add(full_cls_name)
                             elif (
-                                hasattr(cls_member, "__isabstractmethod__")
-                                and cls_member.__isabstractmethod__
+                                isinstance(cls_member, property)
+                                and cls_member.fget
+                                and cls_member.fset
                             ):
                                 api_set.add(full_cls_name)
                 except Exception as e:
