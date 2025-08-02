@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import traceback
 
 import yaml
 
@@ -58,11 +59,10 @@ def run_inference_test(model_name: str):
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
-
-    except Exception as e:
-        print(f"An error occurred during inference for {model_name}: {e}")
-    finally:
         print(f"✅ Test for {model_name} finished.")
+    except Exception as e:
+        traceback.print_exc()
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
 
 
 def main():
