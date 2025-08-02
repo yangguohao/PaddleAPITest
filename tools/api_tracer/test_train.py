@@ -1,4 +1,6 @@
 import os
+import time
+import traceback
 
 os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
@@ -28,7 +30,7 @@ MODELS = [
 def run_training_test(model_name: str):
     print(f"🚀 Running training test for: {model_name})")
     output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
-    tracer = APITracer("torch", output_path=output_path, levels=[0, 1])
+    tracer = APITracer("torch", output_path=output_path, levels=[0])
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -48,10 +50,7 @@ def run_training_test(model_name: str):
             f.write(f"Model: {model.__class__}\n")
             f.write(f"Tokenizer: {tokenizer.__class__}\n")
 
-        dataset = load_dataset(
-            "lmsys/chatbot_arena_conversations", split="train", streaming=True
-        )
-        dataset_sample = dataset.take(500)
+        dataset = load_dataset("lmsys/chatbot_arena_conversations", split="train[:500]")
 
         def preprocess_function(examples):
             all_texts = []
@@ -68,10 +67,11 @@ def run_training_test(model_name: str):
                 all_texts.append(text_b)
             return tokenizer(all_texts, truncation=True, max_length=512)
 
-        tokenized_dataset = dataset_sample.map(
+        tokenized_dataset = dataset.map(
             preprocess_function,
             batched=True,
-            remove_columns=next(iter(dataset_sample)).keys(),
+            batch_size=100,
+            remove_columns=next(iter(dataset)).keys(),
         )
 
         save_model_path = f"{output_path}/finetuned-arena"
@@ -87,6 +87,7 @@ def run_training_test(model_name: str):
             max_steps=5,
             gradient_checkpointing=True,
         )
+
         data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
         trainer = Trainer(
@@ -99,13 +100,10 @@ def run_training_test(model_name: str):
         with tracer:
             trainer.train()
 
-        final_model_path = f"{output_path}/finetuned-final"
-        trainer.save_model(final_model_path)
-        tokenizer.save_pretrained(final_model_path)
-    except Exception as e:
-        print(f"An error occurred during training for {model_name}: {e}")
-    finally:
         print(f"✅ Test for {model_name} finished.")
+    except Exception as e:
+        traceback.print_exc()
+        print(f"❌ An error occurred during training for {model_name}: {e}")
 
 
 def run_training_test_vision(model_name: str):
@@ -114,8 +112,6 @@ def run_training_test_vision(model_name: str):
     tracer = APITracer("torch", output_path=output_path)
 
     try:
-        tracer.start()
-
         model = AutoModelForImageTextToText.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
@@ -222,17 +218,13 @@ def run_training_test_vision(model_name: str):
             train_dataset=tokenized_dataset,
             data_collator=data_collator,
         )
-        trainer.train()
 
-        final_model_path = f"{output_path}/finetuned-final"
-        trainer.save_model(final_model_path)
-        processor.save_pretrained(final_model_path)
+        with tracer:
+            trainer.train()
 
-    except Exception as e:
-        print(f"An error occurred during training for {model_name}: {e}")
-    finally:
-        tracer.stop()
         print(f"✅ Test for {model_name} finished.")
+    except Exception as e:
+        print(f"❌ An error occurred during training for {model_name}: {e}")
 
 
 def main():

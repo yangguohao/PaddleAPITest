@@ -19,9 +19,15 @@ if TYPE_CHECKING:
 class TracingHook(abc.ABC):
     """钩子的抽象基类"""
 
-    def __init__(self, serializer: "ConfigSerializer", level: int):
+    def __init__(
+        self,
+        serializer: "ConfigSerializer",
+        level: int,
+        dialect: Optional["FrameworkDialect"] = None,
+    ):
         self.serializer = serializer
         self.level = level
+        self.dialect = dialect
 
     @abc.abstractmethod
     def install(self):
@@ -40,8 +46,7 @@ class SetattrHook(TracingHook):
         level: int,
         dialect: "FrameworkDialect",
     ):
-        super().__init__(serializer, level)
-        self.dialect = dialect
+        super().__init__(serializer, level, dialect)
         self._original_apis: Dict[str, Any] = {}
         self._module_cache: Dict[str, Any] = {}
 
@@ -85,9 +90,12 @@ class SetattrHook(TracingHook):
         return wrapper
 
     def install(self):
+        if self.dialect is None:
+            return
         api_list = self.dialect.discover_apis() + self.dialect.discover_custom_ops()
 
-        # with open(os.path.join(os.path.dirname(__file__), "trace_output", "api_list.yaml"), "w") as f:
+        # api_path = os.path.join(os.path.dirname(__file__), "trace_output/api_list.yaml")
+        # with open(api_path, "w") as f:
         #     yaml.dump(api_list, f)
 
         print(f"[SetattrHook] Attempting to patch {len(api_list)} APIs...")
@@ -153,7 +161,8 @@ class SetattrHook(TracingHook):
             f"[SetattrHook] Patched {patched_count} APIs. Skipped {skipped_count} non-writable APIs."
         )
 
-        # with open(os.path.join(os.path.dirname(__file__), "trace_output", "api_list_wrap.yaml"), "w") as f:
+        # api_path = os.path.join(os.path.dirname(__file__), "trace_output/api_list_wrap.yaml")
+        # with open(api_path, "w") as f:
         #     yaml.dump(list(self._original_apis.keys()), f)
 
     def uninstall(self):
@@ -171,9 +180,13 @@ class SetattrHook(TracingHook):
 
 
 class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
-    def __init__(self, serializer: "ConfigSerializer", level: int):
+    def __init__(
+        self, serializer: "ConfigSerializer", level: int, dialect: "FrameworkDialect"
+    ):
         self.serializer = serializer
         self.level = level
+        self.disable_torch_api_list = dialect.disable_torch_api_list
+        self.target_apis = dialect.target_apis
 
         # skip these for duplicate property access of paddle.Tensor in SetattrHook
         # (SetattrHook and TorchFunctionHook are installed at the same time)
@@ -209,9 +222,11 @@ class TorchFunctionModeTracer(torch.overrides.TorchFunctionMode):
 
 
 class TorchFunctionHook(TracingHook):
-    def __init__(self, serializer: "ConfigSerializer", level: int):
-        super().__init__(serializer, level)
-        self.tracing_mode = TorchFunctionModeTracer(serializer, level)
+    def __init__(
+        self, serializer: "ConfigSerializer", level: int, dialect: "FrameworkDialect"
+    ):
+        super().__init__(serializer, level, dialect)
+        self.tracing_mode = TorchFunctionModeTracer(serializer, level, dialect)
 
     def install(self):
         print(f"[TorchFunctionHook] Enabling __torch_function__ tracing mode...")
@@ -225,9 +240,13 @@ class TorchFunctionHook(TracingHook):
 
 
 class TorchDispatchModeTracer(TorchDispatchMode):
-    def __init__(self, serializer: "ConfigSerializer", level: int):
+    def __init__(
+        self, serializer: "ConfigSerializer", level: int, dialect: "FrameworkDialect"
+    ):
         self.serializer = serializer
         self.level = level
+        self.disable_torch_api_list = dialect.disable_torch_api_list
+        self.target_apis = dialect.target_apis
 
     def __torch_dispatch__(self, func, types, args=(), kwargs=None):
         kwargs = kwargs or {}
@@ -240,9 +259,11 @@ class TorchDispatchModeTracer(TorchDispatchMode):
 
 
 class TorchDispatchHook(TracingHook):
-    def __init__(self, serializer: "ConfigSerializer", level: int):
-        super().__init__(serializer, level)
-        self.tracing_mode = TorchDispatchModeTracer(serializer, level)
+    def __init__(
+        self, serializer: "ConfigSerializer", level: int, dialect: "FrameworkDialect"
+    ):
+        super().__init__(serializer, level, dialect)
+        self.tracing_mode = TorchDispatchModeTracer(serializer, level, dialect)
 
     def install(self):
         print(f"[TorchDispatchHook] Enabling __torch_dispatch__ tracing mode...")
@@ -394,13 +415,14 @@ class PyTorchDialect(FrameworkDialect):
         # recommended to skip
         "__call__",
         "__format__",
-        "__instancecheck__",
         "__iter__",
         "__repr__",
         "__str__",
+        "__instancecheck__",
         "__subclasscheck__",
         "__subclasshook__",
-        # optional to skip
+        "__getstate__",
+        "__setstate__",
         "__enter__",
         "__exit__",
     }
@@ -414,12 +436,13 @@ class PyTorchDialect(FrameworkDialect):
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
         "torch.TypedStorage",
+        # "torch.optim.Optimizer",
         # methods
         "torch.autograd.function._is_setup_context_defined",
+        "torch.distributed.reduce_op",
         "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
         "torch.nn.functional.handle_torch_function",
         "torch.nn.functional.has_torch_function_unary",
-        "torch.distributed.reduce_op",
     }
 
     def get_framework_name(self) -> str:
@@ -584,10 +607,7 @@ class PyTorchDialect(FrameworkDialect):
         for level in levels:
             hook_class = hook_map.get(level)
             if hook_class:
-                if level == 0:
-                    hooks.append(hook_class(serializer, level, self))
-                else:
-                    hooks.append(hook_class(serializer, level))
+                hooks.append(hook_class(serializer, level, self))
             else:
                 raise ValueError(f"Invalid level: {level}")
         return hooks
