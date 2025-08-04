@@ -123,7 +123,7 @@ class SetattrHook(TracingHook):
                         types.BuiltinMethodType,
                     ),
                 ):
-                    wrapped_func = self._create_wrapper(
+                    wrapper = self._create_wrapper(
                         api_name, original_api, self.serializer, self.level
                     )
                 elif isinstance(original_api, (classmethod, staticmethod)):
@@ -154,6 +154,8 @@ class SetattrHook(TracingHook):
                     setattr(parent_obj, func_name, wrapper)
                     self._original_apis[api_name] = original_api
                     patched_count += 1
+                else:
+                    skipped_count += 1
             except (TypeError, AttributeError) as e:
                 error_msg = str(e).lower()
                 if (
@@ -453,7 +455,7 @@ class PyTorchDialect(FrameworkDialect):
         "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
         "torch.nn.functional.handle_torch_function",
         "torch.nn.functional.has_torch_function_unary",
-        "torch.optim.Optimizer.profile_hook_step",
+        "torch.optim.Optimizer.profile_hook_step",  # it will be overridden by subclass of Optimizer
     }
 
     def get_framework_name(self) -> str:
@@ -534,6 +536,11 @@ class PyTorchDialect(FrameworkDialect):
                             if cls_member_name in self.IGNORE_ATTRIBUTES:
                                 continue
                             full_cls_name = f"{full_name}.{cls_member_name}"
+                            if full_cls_name in self.IGNORE_CLASSES_OR_METHODS:
+                                continue
+                            # it will be overridden by subclass of Optimizer
+                            if cls_member_name == "profile_hook_step":
+                                continue
                             if isinstance(
                                 cls_member,
                                 (

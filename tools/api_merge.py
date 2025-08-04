@@ -1,21 +1,31 @@
-EB45 = ["paddle.add_n","paddle.all","paddle.assign","paddle.broadcast_to","paddle.cast","paddle.clip","paddle.concat","paddle.divide","paddle.empty","paddle.empty_like","paddle.full","paddle.incubate.nn.functional.fused_linear","paddle.incubate.nn.functional.fused_rotary_position_embedding","paddle.incubate.nn.functional.swiglu","paddle.is_complex","paddle.maximum","paddle.nn.functional.cross_entropy","paddle.nn.functional.embedding","paddle.nn.functional.linear","paddle.nn.functional.softmax","paddle.ones","paddle.ones_like","paddle.reshape","paddle.sign","paddle.split","paddle.sqrt","paddle.stack","paddle.sum","paddle.take_along_axis","paddle.Tensor.__add__","paddle.Tensor.__eq__","paddle.Tensor.__getitem__","paddle.Tensor.__gt__","paddle.Tensor.__lt__","paddle.Tensor.__mul__","paddle.Tensor.__ne__","paddle.Tensor.__nonzero__","paddle.Tensor.__radd__","paddle.Tensor.__rmul__","paddle.Tensor.__setitem__","paddle.Tensor.__sub__","paddle.Tensor.__truediv__","paddle.Tensor.all","paddle.Tensor.astype","paddle.Tensor.cast","paddle.Tensor.clone","paddle.Tensor.detach","paddle.Tensor.dim","paddle.Tensor.item","paddle.Tensor.max","paddle.Tensor.mean","paddle.Tensor.norm","paddle.Tensor.put_along_axis","paddle.Tensor.reshape","paddle.Tensor.scale","paddle.Tensor.squeeze","paddle.Tensor.sum","paddle.Tensor.tolist","paddle.Tensor.unsqueeze","paddle.Tensor.zero_","paddle.topk","paddle.transpose","paddle.zeros","paddle.zeros_like"]
-EB5 = ["paddle.Tensor.__add__","paddle.Tensor.__and__","paddle.Tensor.__eq__","paddle.Tensor.__ge__","paddle.Tensor.__getitem__","paddle.Tensor.__gt__","paddle.Tensor.__le__","paddle.Tensor.__lt__","paddle.Tensor.__mul__","paddle.Tensor.__ne__","paddle.Tensor.__neg__","paddle.Tensor.__nonzero__","paddle.Tensor.__or__","paddle.Tensor.__radd__","paddle.Tensor.__rmul__","paddle.Tensor.__rpow__","paddle.Tensor.__rsub__","paddle.Tensor.__rtruediv__","paddle.Tensor.__setitem__","paddle.Tensor.__sub__","paddle.Tensor.__truediv__","paddle.Tensor.all","paddle.Tensor.any","paddle.Tensor.astype","paddle.Tensor.cast","paddle.Tensor.clone","paddle.Tensor.detach","paddle.Tensor.dim","paddle.Tensor.expand","paddle.Tensor.item","paddle.Tensor.mean","paddle.Tensor.norm","paddle.Tensor.put_along_axis","paddle.Tensor.scale","paddle.Tensor.split","paddle.Tensor.square","paddle.Tensor.squeeze","paddle.Tensor.sum","paddle.Tensor.topk","paddle.Tensor.transpose","paddle.Tensor.unsqueeze","paddle.Tensor.zero_","paddle.add","paddle.add_n","paddle.amax","paddle.amin","paddle.any","paddle.arange","paddle.as_complex","paddle.as_real","paddle.assign","paddle.broadcast_shape","paddle.broadcast_to","paddle.cast","paddle.chunk","paddle.clip","paddle.complex","paddle.concat","paddle.cos","paddle.divide","paddle.empty","paddle.empty_like","paddle.expand","paddle.flatten","paddle.full","paddle.full_like","paddle.gather_nd","paddle.incubate.nn.functional.fused_dropout_add","paddle.incubate.nn.functional.fused_linear","paddle.incubate.nn.functional.swiglu","paddle.index_select","paddle.is_complex","paddle.isfinite","paddle.isinf","paddle.isnan","paddle.logical_not","paddle.logsumexp","paddle.maximum","paddle.mean","paddle.median","paddle.multiply","paddle.nn.functional.cross_entropy","paddle.nn.functional.dropout","paddle.nn.functional.embedding","paddle.nn.functional.linear","paddle.nn.functional.pad","paddle.nn.functional.sigmoid","paddle.nonzero","paddle.numel","paddle.ones","paddle.ones_like","paddle.polar","paddle.pow","paddle.repeat_interleave","paddle.reshape","paddle.scatter_nd_add","paddle.shape","paddle.sign","paddle.sin","paddle.slice","paddle.split","paddle.sqrt","paddle.stack","paddle.sum","paddle.take_along_axis","paddle.topk","paddle.transpose","paddle.unsqueeze","paddle.var","paddle.where","paddle.zeros","paddle.zeros_like"]
-deepseek_v3 = ["paddle.arange","paddle.assign","paddle.broadcast_shape","paddle.broadcast_to","paddle.cast","paddle.clip","paddle.concat","paddle.divide","paddle.empty","paddle.empty_like","paddle.full","paddle.incubate.nn.functional.swiglu","paddle.logsumexp","paddle.matmul","paddle.maximum","paddle.mean","paddle.nn.functional.cross_entropy","paddle.nn.functional.embedding","paddle.nn.functional.sigmoid","paddle.ones","paddle.ones_like","paddle.outer","paddle.reshape","paddle.split","paddle.sqrt","paddle.stack","paddle.sum","paddle.Tensor.__add__","paddle.Tensor.__eq__","paddle.Tensor.__getitem__","paddle.Tensor.__gt__","paddle.Tensor.__len__","paddle.Tensor.__mul__","paddle.Tensor.__ne__","paddle.Tensor.__nonzero__","paddle.Tensor.__radd__","paddle.Tensor.__rmul__","paddle.Tensor.__rpow__","paddle.Tensor.__rsub__","paddle.Tensor.__rtruediv__","paddle.Tensor.__sub__","paddle.Tensor.__truediv__","paddle.Tensor.astype","paddle.Tensor.cast","paddle.Tensor.cos","paddle.Tensor.detach","paddle.Tensor.dim","paddle.Tensor.expand","paddle.Tensor.item","paddle.Tensor.mean","paddle.Tensor.put_along_axis","paddle.Tensor.reshape","paddle.Tensor.sin","paddle.Tensor.square","paddle.Tensor.sum","paddle.Tensor.topk","paddle.Tensor.transpose","paddle.Tensor.unsqueeze","paddle.Tensor.view","paddle.Tensor.zero_","paddle.topk","paddle.transpose","paddle.where","paddle.zeros","paddle.zeros_like"]
+from pathlib import Path
 
-all = list(set(EB45) | set(EB5) | set(deepseek_v3))
+apis = {}
+folder_path = Path("tools/api_tracer/trace_output")
+for dir_path in folder_path.glob("*/"):
+    dir_name = dir_path.name
+    print(dir_name)
+    file = dir_path / "apis.txt"
+    if file.exists():
+        apis[dir_name] = set(file.read_text().splitlines())
 
+all = set()
+for api_set in apis.values():
+    all.update(api_set)
+
+result = "API\t"
+for name in apis.keys():
+    result += name + "\t"
+result += "\n"
 for api in all:
-    result = api + "\t"
-    if api in EB45:
-        result += "是\t"
-    else:
-        result += "否\t"
-    if api in EB5:
-        result += "是\t"
-    else:
-        result += "否\t"
-    if api in deepseek_v3:
-        result += "是\t"
-    else:
-        result += "否\t"
-    print(result)
+    result += api + "\t"
+    for name in apis.keys():
+        if api in apis[name]:
+            result += "是\t"
+        else:
+            result += "否\t"
+    result += "\n"
+print(result)
+
+with open("tools/api_tracer/trace_output/apis.txt", "w") as f:
+    f.writelines(result)
