@@ -123,7 +123,7 @@ class SetattrHook(TracingHook):
                         types.BuiltinMethodType,
                     ),
                 ):
-                    wrapped_func = self._create_wrapper(
+                    wrapper = self._create_wrapper(
                         api_name, original_api, self.serializer, self.level
                     )
                 elif isinstance(original_api, (classmethod, staticmethod)):
@@ -154,6 +154,8 @@ class SetattrHook(TracingHook):
                     setattr(parent_obj, func_name, wrapper)
                     self._original_apis[api_name] = original_api
                     patched_count += 1
+                else:
+                    skipped_count += 1
             except (TypeError, AttributeError) as e:
                 error_msg = str(e).lower()
                 if (

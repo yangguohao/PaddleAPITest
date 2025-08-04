@@ -20,21 +20,30 @@ def process_file(input_path, target_apis):
     output_name = input_name[4:]
     output_path = input_path.parent / output_name
 
+    output_excluded_name = output_name.replace(".txt", "_excluded.txt")
+    output_excluded_path = input_path.parent / output_excluded_name
+
     apis = set()
     with input_path.open("r") as f:
         apis = set([line.strip() for line in f if line.strip()])
     print(f"Read {len(apis)} apis from {input_path}", flush=True)
 
     alias_apis = set()
+    excluded_apis = set()
     for api in apis:
         alias_api = api
         if alias_api not in target_apis:
+            excluded_apis.add(api)
             continue
         alias_apis.add(parse_api(api))
 
     with output_path.open("w") as f:
         f.writelines(f"{line}\n" for line in sorted(alias_apis))
     print(f"Write {len(alias_apis)} alias apis to {output_path}", flush=True)
+
+    with output_excluded_path.open("w") as f:
+        f.writelines(f"{line}\n" for line in sorted(excluded_apis))
+    print(f"Write {len(excluded_apis)} excluded apis to {output_excluded_path}", flush=True)
 
 
 def main():
