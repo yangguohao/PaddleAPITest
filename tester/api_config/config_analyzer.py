@@ -1738,7 +1738,7 @@ class TensorConfig:
                     elif self.dtype == "float16":
                         self.numpy_tensor = generate_unique_array(x_numel, self.dtype).reshape(self.shape)
                     elif self.dtype in {"int32", "int64"}:
-                        self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
                     else:
                         raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk / paddle.Tensor.topk")
                 elif self.check_arg(api_config, 1, "k"):
