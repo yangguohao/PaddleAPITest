@@ -2365,3 +2365,5 @@ paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor
 paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), -math.inf, 1e-06, True, None, )
 paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), math.inf, 1e-06, False, None, )
 paddle.nn.functional.pairwise_distance(Tensor([42949673, 100],"float16"), Tensor([42949673, 100],"float16"), math.inf, 1e-06, True, None, )
+
+
