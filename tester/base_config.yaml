@@ -575,3 +575,4 @@ forward_only_apis:
   - yolo_box_xpu
   - zeros
   - zeros_like
+  - median
