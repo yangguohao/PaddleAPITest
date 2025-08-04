@@ -10,8 +10,9 @@ INPUT_DIR = Path("tools/api_tracer/trace_output_tmp")
 def parse_api(api):
     if ".Tensor." in api:
         return api
-    if re.search(r"\.[A-Z][a-zA-Z0-9]*\.", api):
-        return api.rsplit(".", 1)[0]
+    parts = api.rsplit(".", 1)
+    if len(parts) == 2 and re.match(r"_?[a-zA-Z][a-zA-Z0-9_]*", parts[1]):
+        return parts[0]
     return api
 
 
@@ -43,7 +44,10 @@ def process_file(input_path, target_apis):
 
     with output_excluded_path.open("w") as f:
         f.writelines(f"{line}\n" for line in sorted(excluded_apis))
-    print(f"Write {len(excluded_apis)} excluded apis to {output_excluded_path}", flush=True)
+    print(
+        f"Write {len(excluded_apis)} excluded apis to {output_excluded_path}",
+        flush=True,
+    )
 
 
 def main():
