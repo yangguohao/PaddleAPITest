@@ -1,6 +1,6 @@
 # 整理 stable*.csv 精度统计数据，产出：stable_full.csv、stable_stat.csv、stable_stat_api.csv
 # @author: cangtianhuang
-# @date: 2025-07-26
+# @date: 2025-07-30
 
 import glob
 from collections import defaultdict
@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-TEST_LOG_PATH = Path("tester/api_config/stable_csv")
+TEST_LOG_PATH = Path("tester/api_config/test_log")
 OUTPUT_PATH = TEST_LOG_PATH
 OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -50,6 +50,10 @@ def process_chunk(chunk):
         comp = row["comp"]
         max_abs_diff = row["max_abs_diff"]
         max_rel_diff = row["max_rel_diff"]
+
+        if np.isinf(max_rel_diff):
+            max_rel_diff = max_abs_diff
+
         stats[(api, dtype, comp)]["abs_diffs"].append(max_abs_diff)
         stats[(api, dtype, comp)]["rel_diffs"].append(max_rel_diff)
         api_stats[api][dtype][comp] += 1
@@ -137,6 +141,18 @@ for api, dtype, comp in sorted(stats.keys()):
     abs_diffs = np.array(stats[(api, dtype, comp)]["abs_diffs"], dtype=np.float64)
     rel_diffs = np.array(stats[(api, dtype, comp)]["rel_diffs"], dtype=np.float64)
 
+    count = len(abs_diffs)
+
+    if not np.any(np.isnan(abs_diffs)):
+        abs_quantile = np.quantile(abs_diffs, 0.99)
+        filtered_abs = abs_diffs[abs_diffs <= abs_quantile]
+        abs_diffs = filtered_abs if len(filtered_abs) > 0 else abs_diffs
+
+    if not np.any(np.isnan(rel_diffs)):
+        rel_quantile = np.quantile(rel_diffs, 0.99)
+        filtered_rel = rel_diffs[rel_diffs <= rel_quantile]
+        rel_diffs = filtered_rel if len(filtered_rel) > 0 else rel_diffs
+
     stats_data.append(
         {
             "API": api,
@@ -148,7 +164,7 @@ for api, dtype, comp in sorted(stats.keys()):
             "rel_min": f"{np.min(rel_diffs):.6e}",
             "rel_max": f"{np.max(rel_diffs):.6e}",
             "rel_mean": f"{np.mean(rel_diffs):.6e}",
-            "count": len(abs_diffs),
+            "count": count,
         }
     )
 
