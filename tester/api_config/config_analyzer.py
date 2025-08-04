@@ -741,7 +741,7 @@ class TensorConfig:
                             tensor = numpy.einsum('...ij,...kj->...ik', A, A)
                         else:
                             tensor = numpy.dot(A, A.T)
-                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 10000
                         print("cholesky tensor", tensor)
                         self.numpy_tensor = tensor
                 elif api_config.api_name.endswith("cov"):
