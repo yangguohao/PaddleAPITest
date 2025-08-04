@@ -4,14 +4,15 @@ from pathlib import Path
 
 import yaml
 
-INPUT_DIR = Path("tools/api_tracer/trace_output_tmp")
+INPUT_DIR = Path("tools/api_tracer/trace_output_test_train/Qwen/Qwen3-0.6B")
 
 
 def parse_api(api):
     if ".Tensor." in api:
         return api
-    if re.search(r"\.[A-Z][a-zA-Z0-9]*\.", api):
-        return api.rsplit(".", 1)[0]
+    parts = api.rsplit(".", 1)
+    if len(parts) == 2 and re.match(r".*\.[A-Z][a-zA-Z0-9]*$", parts[0]):
+        return parts[0]
     return api
 
 
@@ -31,11 +32,16 @@ def process_file(input_path, target_apis):
     alias_apis = set()
     excluded_apis = set()
     for api in apis:
-        alias_api = api
-        if alias_api not in target_apis:
-            excluded_apis.add(api)
+        if not api.startswith("torch."):
             continue
-        alias_apis.add(parse_api(api))
+        if api.startswith("torch.Tensor.__"):
+            alias_apis.add(api)
+            continue
+        alias_api = parse_api(api)
+        if alias_api not in target_apis:
+            excluded_apis.add(alias_api)
+            continue
+        alias_apis.add(alias_api)
 
     with output_path.open("w") as f:
         f.writelines(f"{line}\n" for line in sorted(alias_apis))
@@ -43,7 +49,10 @@ def process_file(input_path, target_apis):
 
     with output_excluded_path.open("w") as f:
         f.writelines(f"{line}\n" for line in sorted(excluded_apis))
-    print(f"Write {len(excluded_apis)} excluded apis to {output_excluded_path}", flush=True)
+    print(
+        f"Write {len(excluded_apis)} excluded apis to {output_excluded_path}",
+        flush=True,
+    )
 
 
 def main():
