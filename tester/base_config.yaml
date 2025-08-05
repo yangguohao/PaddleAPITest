@@ -50,6 +50,7 @@ special_accuracy_atol_rtol:
   paddle.nn.functional.softmax: [1, 0.01]
   paddle.matmul: [2.0, 0.05]
   paddle.nn.functional.bilinear: [2.0, 0.08]
+  paddle.nn.functional.interpolate: [1.5, 0.01]
 
 # All configs that report dtype diff when not in not_check_dtype list should be
 # copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
