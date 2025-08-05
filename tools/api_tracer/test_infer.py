@@ -14,7 +14,6 @@ from torch.profiler import ProfilerActivity, profile, record_function
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 MODELS = [
-    # "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
     # "Qwen/Qwen2-0.5B",
     # "Qwen/Qwen3-0.6B",
     # "Qwen/Qwen3-30B-A3B",
@@ -27,8 +26,11 @@ MODELS = [
 
 def run_inference_test(model_name: str):
     print(f"🚀 Running inference test for: {model_name}")
-    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
-    tracer = APITracer("torch", output_path=output_path, levels=[0, 1])
+    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
+    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
 
     try:
         model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
@@ -59,10 +61,10 @@ def run_inference_test(model_name: str):
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
-        print(f"✅ Test for {model_name} finished.")
+        print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {model_name}: {e}")
+        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
 
 
 def main():
