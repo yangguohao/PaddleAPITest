@@ -1,5 +1,4 @@
 import os
-import time
 import traceback
 
 os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
@@ -17,9 +16,9 @@ from transformers.training_args import TrainingArguments
 from tools.api_tracer import APITracer
 
 MODELS = [
-    # "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
     # "Qwen/Qwen2-0.5B",
     # "Qwen/Qwen3-0.6B",
+    # "Qwen/Qwen3-30B-A3B",
     # "Qwen/Qwen2.5-VL-3B-Instruct",
     # "deepseek-ai/DeepSeek-V2-Lite",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
@@ -29,8 +28,11 @@ MODELS = [
 
 def run_training_test(model_name: str):
     print(f"🚀 Running training test for: {model_name})")
-    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
-    tracer = APITracer("torch", output_path=output_path, levels=[0, 1])
+    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
+    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -38,10 +40,28 @@ def run_training_test(model_name: str):
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
+            use_cache=False,
         )
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
+
+        if "Llama" in true_model_name:
+            llama_chat_template = (
+                "{% for message in messages %}"
+                "{% if message['role'] == 'system' %}"
+                "{{'<|start_header_id|>system<|end_header_id|>\n\n' + message['content'] + '<|eot_id|>'}}"
+                "{% elif message['role'] == 'user' %}"
+                "{{'<|start_header_id|>user<|end_header_id|>\n\n' + message['content'] + '<|eot_id|>'}}"
+                "{% elif message['role'] == 'assistant' %}"
+                "{{'<|start_header_id|>assistant<|end_header_id|>\n\n' + message['content'] + '<|eot_id|>'}}"
+                "{% endif %}"
+                "{% endfor %}"
+                "{% if add_generation_prompt %}"
+                "{{'<|start_header_id|>assistant<|end_header_id|>\n\n'}}"
+                "{% endif %}"
+            )
+            tokenizer.chat_template = llama_chat_template
 
         print(f"Model Class: {model.__class__}")
         print(f"Tokenizer Class: {tokenizer.__class__}")
@@ -82,7 +102,7 @@ def run_training_test(model_name: str):
             save_strategy="no",
             bf16=True,
             report_to="none",
-            max_steps=5,
+            max_steps=1,
             gradient_checkpointing=True,
         )
 
@@ -98,10 +118,10 @@ def run_training_test(model_name: str):
         with tracer:
             trainer.train()
 
-        print(f"✅ Test for {model_name} finished.")
+        print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {model_name}: {e}")
+        print(f"❌ An error occurred during training for {true_model_name}: {e}")
 
 
 def run_training_test_vision(model_name: str):

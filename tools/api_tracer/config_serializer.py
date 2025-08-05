@@ -2,7 +2,6 @@ import os
 import time
 from collections import defaultdict, deque
 from threading import Event, Thread
-from types import EllipsisType
 from typing import Any, Dict, List, TextIO
 
 import yaml
@@ -27,9 +26,13 @@ class ConfigSerializer:
         self.merge_output = merge_output
 
         self.file_handlers: Dict[int, Dict[str, TextIO]] = {}
-
         self.buffer_limit = 20000
         self.buffers: Dict[int, List[Dict]] = defaultdict(list)
+
+        self.max_args_count = 100
+        self.max_item_count = 100
+        self.max_line_length = 1024
+        self.max_nest_depth = 5
 
         # asyncio
         self.log_queue = deque()
@@ -38,18 +41,18 @@ class ConfigSerializer:
         self.total_calls_processed = 0
 
         self._serialize_handlers = {
-            type(None): lambda x: x,
-            bool: lambda x: x,
-            int: lambda x: x,
-            float: lambda x: x,
-            str: lambda x: x,
+            type(None): lambda x, depth: x,
+            bool: lambda x, depth: x,
+            int: lambda x, depth: x,
+            float: lambda x, depth: x,
+            str: lambda x, depth: x,
             list: self._serialize_list,
             tuple: self._serialize_tuple,
             set: self._serialize_set,
             dict: self._serialize_dict,
             type: self._serialize_type,
             slice: self._serialize_slice,
-            EllipsisType: self._serialize_ellipsis,
+            type(Ellipsis): self._serialize_ellipsis,
         }
 
     def open(self):
@@ -157,60 +160,86 @@ class ConfigSerializer:
     ):
         """记录一次API调用"""
         try:
+            total_args = len(args) + len(kwargs)
+            if total_args > self.max_args_count:
+                if len(args) < self.max_args_count:
+                    kwargs = dict(
+                        list(kwargs.items())[: self.max_args_count - len(args) - 1]
+                    )
+                    kwargs["__truncated__"] = "<Truncated: max args exceeded>"
+                else:
+                    args = tuple(
+                        list(args)[: self.max_args_count - 1]
+                        + ["<Truncated: max args exceeded>"]
+                    )
+                    kwargs = {}
             call_record = {
                 "level": level,
                 "api": api_name,
-                "args": [self._serialize_item(arg) for arg in args],
+                "args": [self._serialize_item(arg, depth=0) for arg in args],
                 "kwargs": {
-                    key: self._serialize_item(value) for key, value in kwargs.items()
+                    key: self._serialize_item(value, depth=0)
+                    for key, value in kwargs.items()
                 },
-                # "output_summary": self._serialize_item(output)
+                # "output_summary": self._serialize_item(output, depth=0)
             }
             self.log_queue.append(call_record)
         except Exception as e:
             print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")
 
-    def _serialize_list(self, item: list) -> Dict:
+    def _serialize_list(self, item: list, depth: int) -> Dict:
+        if len(item) > self.max_item_count:
+            item = item[: self.max_item_count - 1] + ["<Truncated: max item count>"]
         return {
             "type": "list",
-            "value": [self._serialize_item(sub_item) for sub_item in item],
+            "value": [self._serialize_item(sub_item, depth) for sub_item in item],
         }
 
-    def _serialize_tuple(self, item: tuple) -> Dict:
+    def _serialize_tuple(self, item: tuple, depth: int) -> Dict:
+        if len(item) > self.max_item_count:
+            item = item[: self.max_item_count - 1] + ("<Truncated: max item count>",)
         return {
             "type": "tuple",
-            "value": [self._serialize_item(sub_item) for sub_item in item],
+            "value": [self._serialize_item(sub_item, depth) for sub_item in item],
         }
 
-    def _serialize_set(self, item: set) -> Dict:
+    def _serialize_set(self, item: set, depth: int) -> Dict:
+        if len(item) > self.max_item_count:
+            item = set(list(item)[: self.max_item_count - 1])
         return {
             "type": "set",
-            "value": [self._serialize_item(sub_item) for sub_item in item],
+            "value": [self._serialize_item(sub_item, depth) for sub_item in item],
         }
 
-    def _serialize_dict(self, item: dict) -> Dict:
+    def _serialize_dict(self, item: dict, depth: int) -> Dict:
+        if len(item) > self.max_item_count:
+            item = dict(list(item.keys())[: self.max_item_count - 1])
+            item["__truncated__"] = "<Truncated: max item count>"
         return {
             "type": "dict",
-            "value": {str(k): self._serialize_item(v) for k, v in item.items()},
+            "value": {str(k): self._serialize_item(v, depth) for k, v in item.items()},
         }
 
-    def _serialize_type(self, item: type) -> Dict:
+    def _serialize_type(self, item: type, depth: int) -> Dict:
         return {"type": "type", "value": f"{item.__module__}.{item.__name__}"}
 
-    def _serialize_slice(self, item: slice) -> Dict:
+    def _serialize_slice(self, item: slice, depth: int) -> Dict:
         return {
             "type": "slice",
             "value": {"start": item.start, "stop": item.stop, "step": item.step},
         }
 
-    def _serialize_ellipsis(self, item: Any) -> Dict:
+    def _serialize_ellipsis(self, item: Any, depth: int) -> Dict:
         return {"type": "ellipsis", "value": "..."}
 
-    def _serialize_item(self, item: Any) -> Any:
+    def _serialize_item(self, item: Any, depth=0) -> Any:
         """递归序列化对象"""
+        if depth > self.max_nest_depth:
+            return "<Truncated: max depth exceeded>"
+
         handler = self._serialize_handlers.get(type(item))
         if handler:
-            return handler(item)
+            return handler(item, depth=depth + 1)
 
         special_serialization = self.dialect.serialize_special_type(item)
         if special_serialization is not None:
@@ -228,6 +257,8 @@ class ConfigSerializer:
             if arg is None or isinstance(arg, (bool, int, float)):
                 return str(arg)
             if isinstance(arg, str):
+                if len(arg) > 100:
+                    return f'"{arg[:97]}..."'
                 return f'"{arg}"'
 
             if isinstance(arg, dict) and "type" in arg:
@@ -252,7 +283,11 @@ class ConfigSerializer:
 
         args_str = ", ".join(format_arg(arg) for arg in args)
         kwargs_str = ", ".join(f"{k}={format_arg(v)}" for k, v in kwargs.items())
-        return f"{api_name}({args_str + (', ' + kwargs_str if kwargs_str else '')})"
+        result = f"{api_name}({args_str + (', ' + kwargs_str if kwargs_str else '')})"
+
+        if len(result) > self.max_line_length:
+            result = result[: self.max_line_length - 4] + "...)"
+        return result
 
     def get_apis_and_configs(self):
         if self.merge_output:
