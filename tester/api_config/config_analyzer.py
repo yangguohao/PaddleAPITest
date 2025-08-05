@@ -741,7 +741,7 @@ class TensorConfig:
                             tensor = numpy.einsum('...ij,...kj->...ik', A, A)
                         else:
                             tensor = numpy.dot(A, A.T)
-                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 10000
                         print("cholesky tensor", tensor)
                         self.numpy_tensor = tensor
                 elif api_config.api_name.endswith("cov"):
@@ -845,6 +845,10 @@ class TensorConfig:
                         else:
                             A_T = numpy.conj(A).swapaxes(-2, -1) if is_complex else A.swapaxes(-2, -1)
                         self.numpy_tensor = (A + A_T) / 2
+                elif api_config.api_name.endswith("corrcoef"):
+                    if self.dtype == 'float16':
+                        # 1e-3 to avoid inf
+                        self.numpy_tensor = numpy.random.randn(*self.shape).astype(self.dtype) * 1e-3
             elif api_config.api_name == "paddle.linspace":
                 if "int" in self.dtype:
                     self.numpy_tensor = (numpy.random.randint(0, 65535, size=self.shape)).astype(self.dtype)
@@ -1032,9 +1036,9 @@ class TensorConfig:
                     self.numpy_tensor = numpy.random.randint(0,2, size=self.shape).astype(self.dtype)
 
             elif api_config.api_name == 'paddle.nn.functional.upsample':
-                if self.get_arg(api_config, 1, 'size'):
+                if self.check_arg(api_config, 1, 'size'):
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
-                if self.get_arg(api_config, 2, 'scale_factor'):
+                if self.check_arg(api_config, 2, 'scale_factor'):
                     self.numpy_tensor = numpy.ones(self.shape).astype(self.dtype)+numpy.abs(numpy.random.random(self.shape)).astype(self.dtype)
             
             elif api_config.api_name == 'paddle.nn.functional.binary_cross_entropy':
@@ -1734,7 +1738,7 @@ class TensorConfig:
                     elif self.dtype == "float16":
                         self.numpy_tensor = generate_unique_array(x_numel, self.dtype).reshape(self.shape)
                     elif self.dtype in {"int32", "int64"}:
-                        self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
                     else:
                         raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk / paddle.Tensor.topk")
                 elif self.check_arg(api_config, 1, "k"):
@@ -1834,14 +1838,29 @@ class TensorConfig:
                     # padding value should not be too large 
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=10)
                     
-            elif api_config.api_name in {"paddle.Tensor.__getitem__","paddle.Tensor.__setitem__"} and (len(api_config.args) > 1 and str(api_config.args[1]) == str(self) or str(api_config.args[0]) != str(self)):
-                arr = self.get_arg(api_config, 0, "arr")
-                min_dim = min(arr.shape)
-                indices = (numpy.random.randint(0, min_dim, size=self.numel())).astype("int64")
-                if self.dtype == 'bool':
-                    ind = numpy.random.choice(self.numel(), self.get_arg(api_config, 2, "value").shape[0], replace=False)
-                    indices[ind] = 1
-                self.numpy_tensor = indices.reshape(self.shape)
+            elif api_config.api_name == "paddle.Tensor.__getitem__":
+                if self.check_arg(api_config, 1, "item"):
+                    arr = self.get_arg(api_config, 0, "arr")
+                    min_dim = min(arr.shape)
+                    if self.dtype == "bool":
+                        indices = numpy.random.choice([0, 1], size=self.numel())
+                    else:
+                        indices = numpy.random.randint(0, min_dim, size=self.numel())
+                    self.numpy_tensor = indices.reshape(self.shape).astype(self.dtype)
+
+            elif api_config.api_name == "paddle.Tensor.__setitem__":
+                if self.check_arg(api_config, 1, "item"):
+                    arr = self.get_arg(api_config, 0, "arr")
+                    value = self.get_arg(api_config, 2, "value")
+                    min_dim = min(arr.shape)
+                    if value is not None and hasattr(value, "shape"):
+                        indices = numpy.zeros(self.numel(), dtype="int64")
+                        num_true = min(value.shape[0], self.numel())
+                        true_indices = numpy.random.choice(self.numel(), size=num_true, replace=False)
+                        indices[true_indices] = 1
+                    else:
+                        indices = numpy.random.choice([0, 1], size=self.numel())
+                    self.numpy_tensor = indices.reshape(self.shape).astype(self.dtype)
             
             elif api_config.api_name == "paddle.poisson":
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)

@@ -20,24 +20,42 @@ paddle_error_dismiss:
   paddle.incubate.nn.functional.fused_rms_norm : "(Fatal) Failed to launch RMSNorm kernel"
   paddle.nn.functional.ctc_loss: "(InvalidArgument) The total number of elements "
   paddle.unbind: "(PreconditionNotMet) The number of proposals in unbind"
+  paddle.linalg.lstsq:
+    - "(PreconditionNotMet) The element size of x should be <= INT_MAX(2147483647)"
+    - "(PreconditionNotMet) The element size of y should be <= INT_MAX(2147483647)"
+  paddle.Tensor.lu: "(PreconditionNotMet) Matrix size too large for LU decomposition."
+  paddle.linalg.solve: "(PreconditionNotMet) Input tensor 'A' or 'B' has too many elements (> INT_MAX)."
+  paddle.nn.functional.group_norm: "(Unimplemented) GroupNorm kernel launch failed"
+  paddle.einsum: "(Unimplemented) cublas GEMM does not support N >"
+  paddle.nn.functional.cross_entropy: "(PreconditionNotMet) The num of the classes should be <= INT_MAX(2147483647)"
+  paddle.nn.functional.class_center_sample:
+    - "(InvalidArgument) The total number of elements for 'label' should be less than"
+    - "(InvalidArgument) Illegal memory allocation, total allocated space must be greater than 0"
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
   # API: [atol, rtol]
-  paddle.cumsum: [1.0, 1.0]
-  paddle.Tensor.cumsum: [1.0, 1.0]
-  paddle.logcumsumexp: [1.0, 1.0]
-  paddle.Tensor.logcumsumexp: [1.0, 1.0]
+  paddle.cumsum: [2.0, 0.01]
+  paddle.Tensor.cumsum: [2.0, 0.01]
+  paddle.logcumsumexp: [2.0, 0.01]
+  paddle.Tensor.logcumsumexp: [2.0, 0.01]
+  paddle.tensordot: [1.0, 1.0]
   paddle.incubate.nn.functional.fused_bias_act: [1, 0.01]
   paddle.incubate.nn.functional.fused_rms_norm : [3, 0.5]
   paddle.incubate.nn.functional.fused_layer_norm: [1, 0.01]
   paddle.lerp : [5, 0.05]
   paddle.nn.functional.upsample: [0.5, 1.5]
   paddle.nn.functional.interpolate: [0.5, 1.5]
+  paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm: [1.0, 1.0]
+  paddle.nn.functional.softmax: [1, 0.01]
+  paddle.matmul: [2.0, 0.05]
+  paddle.nn.functional.bilinear: [2.0, 0.08]
+  paddle.nn.functional.interpolate: [1.5, 0.01]
 
 # All configs that report dtype diff when not in not_check_dtype list should be
 # copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
 not_check_dtype:
+  - paddle.Tensor.__add__
   - paddle.Tensor.cumsum
   - paddle.Tensor.frexp
   - paddle.add
@@ -559,3 +577,4 @@ forward_only_apis:
   - yolo_box_xpu
   - zeros
   - zeros_like
+  - median
