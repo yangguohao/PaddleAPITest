@@ -31,6 +31,7 @@ paddle_error_dismiss:
   paddle.nn.functional.class_center_sample:
     - "(InvalidArgument) The total number of elements for 'label' should be less than"
     - "(InvalidArgument) Illegal memory allocation, total allocated space must be greater than 0"
+  paddle.linalg.matrix_rank: "(PreconditionNotMet) The element size of x should be <= INT_MAX(2147483647)"
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
