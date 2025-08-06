@@ -24,7 +24,7 @@ MODELS = [
 ]
 
 
-def run_inference_test(model_name: str):
+def run_inference_test(model_name: str, apply_template: bool = False):
     print(f"🚀 Running inference test for: {model_name}")
     true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
     output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
@@ -33,10 +33,13 @@ def run_inference_test(model_name: str):
     )
 
     try:
-        model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name, device_map="auto", trust_remote_code=True
+        )
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
+            tokenizer.pad_token_id = tokenizer.eos_token_id
 
         print(f"Model Class: {model.__class__}")
         print(f"Tokenizer Class: {tokenizer.__class__}")
@@ -46,15 +49,26 @@ def run_inference_test(model_name: str):
             f.write(f"Tokenizer: {tokenizer.__class__}\n")
 
         prompt = "Hello! Can you tell me how to learn PyTorch?"
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+        if apply_template:
+            messages = [{"role": "user", "content": prompt}]
+            text = tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
+            inputs = tokenizer([text], return_tensors="pt").to(model.device)
+        else:
+            inputs = tokenizer(
+                prompt, return_tensors="pt", padding=True, return_attention_mask=True
+            ).to(model.device)
 
         with torch.no_grad() and tracer:
             outputs = model.generate(
                 inputs["input_ids"],
                 num_return_sequences=1,
-                max_length=100,
+                max_new_tokens=100,
                 temperature=0.7,
                 do_sample=True,
+                attention_mask=inputs["attention_mask"],
+                pad_token_id=tokenizer.pad_token_id,
             )
 
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -69,7 +83,10 @@ def run_inference_test(model_name: str):
 
 def main():
     for model_name in MODELS:
-        run_inference_test(model_name)
+        if "RWKV" in model_name:
+            run_inference_test(model_name, apply_template=True)
+        else:
+            run_inference_test(model_name)
 
 
 # api_calls = []

@@ -1,13 +1,13 @@
 import os
 import traceback
 
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 import torch
 from datasets import load_dataset
-from transformers import (AutoModelForCausalLM, AutoModelForImageTextToText,
-                          AutoProcessor, AutoTokenizer)
+from transformers import AutoModelForCausalLM, AutoProcessor, AutoTokenizer
 from transformers.data.data_collator import (DataCollatorForLanguageModeling,
                                              DataCollatorForSeq2Seq)
 from transformers.trainer import Trainer
@@ -23,6 +23,7 @@ MODELS = [
     # "deepseek-ai/DeepSeek-V2-Lite",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
+    # "baidu/ERNIE-4.5-21B-A3B-PT",
 ]
 
 
@@ -42,7 +43,7 @@ def run_training_test(model_name: str):
             trust_remote_code=True,
             use_cache=False,
         )
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
@@ -94,7 +95,9 @@ def run_training_test(model_name: str):
             remove_columns=next(iter(dataset)).keys(),
         )
 
+        output_dir = output_path + "/train_output"
         training_args = TrainingArguments(
+            output_dir=output_dir,
             per_device_train_batch_size=1,
             gradient_accumulation_steps=16,
             learning_rate=2e-5,
@@ -212,7 +215,9 @@ def run_training_test_vision(model_name: str):
             batch_size=4,
         )
 
+        output_dir = output_path + "/train_output"
         training_args = TrainingArguments(
+            output_dir=output_dir,
             per_device_train_batch_size=1,
             gradient_accumulation_steps=4,
             learning_rate=1e-5,
