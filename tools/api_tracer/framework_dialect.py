@@ -81,6 +81,7 @@ class SetattrHook(TracingHook):
         serializer: "ConfigSerializer",
         level: int,
     ):
+        @torch.compiler.disable
         @functools.wraps(original_api)
         def wrapper(*args, **kwargs):
             output = original_api(*args, **kwargs)
@@ -155,6 +156,7 @@ class SetattrHook(TracingHook):
                     self._original_apis[api_name] = original_api
                     patched_count += 1
                 else:
+                    print(f"[SetattrHook] Could not patch {api_name}")
                     skipped_count += 1
             except (TypeError, AttributeError) as e:
                 error_msg = str(e).lower()
@@ -163,7 +165,7 @@ class SetattrHook(TracingHook):
                     or "can't set attribute" in error_msg
                     or "read-only" in error_msg
                 ):
-                    # print(f"[SetattrHook] Skip non-writable API '{api_name}'.")
+                    print(f"[SetattrHook] Skip non-writable API '{api_name}'.")
                     skipped_count += 1
                 else:
                     print(f"[SetattrHook] Could not patch {api_name}: {e}")
@@ -365,11 +367,11 @@ class PyTorchDialect(FrameworkDialect):
         "torch._ops",
         "torch._tensor",
         "torch._tensor_str",
-        "torch.distributed._shard.checkpoint",
-        "torch.distributed._sharded_tensor",
-        "torch.distributed._sharding_spec",
         "torch.overrides",
         "torch.utils._python_dispatch",
+        "torch.distributed._shard.checkpoint",
+        "torch.distributed._shard.sharding_spec",
+        "torch.distributed._sharding_spec",
         # modules below here are optional
         # "torch._export",
         # "torch._guards",
@@ -448,11 +450,14 @@ class PyTorchDialect(FrameworkDialect):
         "torch.cuda._sanitizer.StreamSynchronizations",
         "torch.cuda._sanitizer._TensorsAccessed",
         "torch.xpu._gpu_trace.CallbackRegistry",
-        "torch.TypedStorage",
         # methods
+        "torch.Event.from_ipc_handle",
+        "torch.Size.__class_getitem__",
         "torch.autograd.function._is_setup_context_defined",
         "torch.distributed.reduce_op",
+        "torch.fx.Node._pretty_print_target",
         "torch.fx.experimental.unification.multipledispatch.dispatcher.str_signature",
+        "torch.mtia.Event.from_ipc_handle",
         "torch.nn.functional.handle_torch_function",
         "torch.nn.functional.has_torch_function_unary",
         "torch.optim.Optimizer.profile_hook_step",  # it will be overridden by subclass of Optimizer
@@ -485,7 +490,6 @@ class PyTorchDialect(FrameworkDialect):
                     # )
                     continue
                 try:
-
                     sub_module = importlib.import_module(module_info.name)
                     modules.add(sub_module)
                 except Exception as e:

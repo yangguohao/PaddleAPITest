@@ -93,6 +93,13 @@ with tracer:
 **可选参数**
 - `disable_torch_api_list` (bool): 是否禁用 `torch_api_list` ，仅影响 `PyTorchDialect` 的 `SetattrHook` 钩子。设置为 `True` 时将抓取所有遍历到并被 `setattr` 钩住的 API ，除非在 `PyTorchDialect` 中被排除。默认为 `False` 。
 
+> [!CAUTION]
+> 目前已知 `SetattrHook` 与 `torch.compile` 或 `@functools.wraps` 等复杂场景交互时，部分 `staticmethod` 方法会产生绑定错误。例如：
+> ```bash
+> TypeError: Node._pretty_print_target() takes 1 positional argument but 2 were given
+> ```
+> 最佳的处理方式是将相关 API 添加至 `framework_dialect.py / IGNORE_CLASSES_OR_METHODS` 列表中，单纯跳过；若修改 `_create_wrapper` 方法，采用 `inspect.signature` 可能会增加绑定负担，也可能会有更多问题 ：）
+
 ### 输出文件
 
 执行上述代码后，你将在 `trace_output` 目录下找到五个文件：
