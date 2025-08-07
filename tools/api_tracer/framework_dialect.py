@@ -13,7 +13,7 @@ import yaml
 from torch.utils._python_dispatch import TorchDispatchMode
 
 if TYPE_CHECKING:
-    from config_serializer import ConfigSerializer
+    from .config_serializer import ConfigSerializer
 
 
 class TracingHook(abc.ABC):
@@ -81,7 +81,7 @@ class SetattrHook(TracingHook):
         serializer: "ConfigSerializer",
         level: int,
     ):
-        @torch.compiler.disable
+        @torch.compiler.disable  # disable this in low version of torch
         @functools.wraps(original_api)
         def wrapper(*args, **kwargs):
             output = original_api(*args, **kwargs)
