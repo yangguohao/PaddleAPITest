@@ -4,10 +4,11 @@ apis = {}
 folder_path = Path("tools/api_tracer/trace_output")
 for dir_path in folder_path.glob("*/"):
     dir_name = dir_path.name
-    print(dir_name)
-    file = dir_path / "apis.txt"
-    if file.exists():
-        apis[dir_name] = set(file.read_text().splitlines())
+    files = dir_path.glob("*")
+    for file in files:
+        model_name = f"{dir_name}/{file.name}"
+        print("Reading ", model_name)
+        apis[model_name] = set(file.read_text().splitlines())
 
 all = set()
 for api_set in apis.values():
@@ -25,7 +26,6 @@ for api in all:
         else:
             result += "否\t"
     result += "\n"
-print(result)
 
 with open("tools/api_tracer/trace_output/apis.txt", "w") as f:
     f.writelines(result)
