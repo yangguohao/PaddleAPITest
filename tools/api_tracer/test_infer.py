@@ -1,25 +1,22 @@
-import json
 import os
-import sys
+
+os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 import traceback
 
 import numpy as np
-import yaml
-from PIL import Image
-
-from tools.api_tracer import APITracer
-
-os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
-
 import torch
 from decord import VideoReader, cpu
 from diffusers.pipelines.auto_pipeline import (AutoPipelineForImage2Image,
                                                AutoPipelineForText2Image)
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
-from torch.profiler import ProfilerActivity, profile, record_function
+from PIL import Image
 from transformers import (AutoModel, AutoModelForCausalLM,
                           AutoModelForImageTextToText, AutoProcessor,
                           AutoTokenizer)
+
+from tools.api_tracer import APITracer
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",

@@ -1,22 +1,16 @@
 import os
-import traceback
 
-# os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+import traceback
+
 import torch
 from datasets import load_dataset
-from transformers import (
-    AutoModelForCausalLM,
-    AutoModelForImageTextToText,
-    AutoProcessor,
-    AutoTokenizer,
-)
-from transformers.data.data_collator import (
-    DataCollatorForLanguageModeling,
-    DataCollatorForSeq2Seq,
-)
+from transformers import (AutoModelForCausalLM, AutoModelForImageTextToText,
+                          AutoProcessor, AutoTokenizer)
+from transformers.data.data_collator import (DataCollatorForLanguageModeling,
+                                             DataCollatorForSeq2Seq)
 from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
 
