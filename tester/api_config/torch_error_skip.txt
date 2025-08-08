@@ -3061,3 +3061,4 @@ paddle.nn.functional.layer_norm(Tensor([20069, 209, 1024],"float32"), 1024, weig
 paddle.nn.functional.layer_norm(Tensor([25421, 165, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
 paddle.nn.functional.layer_norm(Tensor([20361, 206, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
 paddle.nn.functional.layer_norm(Tensor([7, 599187, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
+paddle.argsort(Tensor([1, 1073741823],"float16"), descending=True, stable=True)
