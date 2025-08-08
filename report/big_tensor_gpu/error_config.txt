@@ -1713,7 +1713,6 @@ paddle.argmin(x=Tensor([357913942, 3, 2, 1],"float64"), axis=-1, dtype="int64", 
 paddle.argmin(x=Tensor([357913942, 3, 4],"float16"), axis=1, keepdim=False, )
 paddle.argmin(x=Tensor([715827883, 3, 2, 1],"float16"), axis=-1, dtype="int64", )
 paddle.argmin(x=Tensor([760567127, 3],"int64"), dtype="int32", )
-paddle.argsort(Tensor([2, 1140850690],"float32"), descending=True, stable=True)
 paddle.argsort(Tensor([1, 1073741823],"float16"), descending=True, stable=True)
 paddle.argsort(Tensor([1, 1073741825],"float16"), descending=True, stable=True)
 paddle.argsort(Tensor([2, 2147483649],"float16"), descending=True, stable=True)
