@@ -3,8 +3,8 @@ import signal
 import sys
 from typing import List, Set, Union
 
-from config_serializer import ConfigSerializer
-from framework_dialect import FrameworkDialect, TracingHook
+from .config_serializer import ConfigSerializer
+from .framework_dialect import FrameworkDialect, TracingHook
 
 
 class APITracer:
@@ -39,7 +39,8 @@ class APITracer:
         signal.signal(signal.SIGTERM, self._signal_handler)
 
         print(
-            f"[APITracer] API tracer initialized for '{self.dialect.get_framework_name()}' in levels {levels}. Output path: {output_path}."
+            f"[APITracer] API tracer initialized for '{self.dialect.get_framework_name()}' "
+            f"in {'merged ' if merge_output else ''}levels {levels}. Output path: {output_path}."
         )
 
     def _signal_handler(self, signum, frame):
