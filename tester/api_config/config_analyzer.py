@@ -768,7 +768,7 @@ class TensorConfig:
                             self.numpy_tensor = numpy.random.uniform(0.1, 1.0, size=(n_observations,)).astype(self.dtype)
                         else:
                             self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
-                elif api_config.api_name.endswith("eigh"):
+                elif api_config.api_name.endswith("eigh") or api_config.api_name.endswith("eigvalsh"):
                     if self.check_arg(api_config, 0, "x"):
                         if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
                             raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
