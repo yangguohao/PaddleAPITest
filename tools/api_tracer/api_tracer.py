@@ -46,7 +46,7 @@ class APITracer:
             stack_format = kwargs.get("stack_format")
             if self.record_stack and stack_format not in ["full", "short", "api"]:
                 raise ValueError(
-                    f"Invalid stack_format: {stack_format}. It should be one of ['full', 'short', 'api']"
+                    f"Invalid stack_format: {stack_format}, it should be one of ['full', 'short', 'api']"
                 )
 
         os.makedirs(output_path, exist_ok=True)
@@ -104,7 +104,7 @@ class APITracer:
         print("[APITracer] Tracing stopped and all APIs have been restored.")
         self.serializer.get_apis_and_configs()
         if self.record_stack:
-            self.serializer.get_api_stack()
+            self.serializer.get_api_stacks()
 
     def __enter__(self):
         """进入上下文管理器"""
