@@ -1,6 +1,6 @@
+import inspect
 import os
 import time
-import traceback
 from collections import defaultdict, deque
 from threading import Event, Lock, Thread
 from typing import Any, Dict, List, TextIO
@@ -156,6 +156,34 @@ class ConfigSerializer:
         )
         buffer.clear()
 
+    def _format_frame_to_api(self, frame_info: inspect.FrameInfo) -> str:
+        """将 inspect.FrameInfo 对象格式化为 API 名称"""
+        module = inspect.getmodule(frame_info.frame)
+        func_name = frame_info.function
+
+        if module:
+            if module.__name__ == "__main__":
+                return f"__main__.{os.path.basename(frame_info.filename)}.{func_name}"
+            if "self" in frame_info.frame.f_locals:
+                class_name = frame_info.frame.f_locals["self"].__class__.__name__
+                return f"{module.__name__}.{class_name}.{func_name}"
+            if "cls" in frame_info.frame.f_locals:
+                class_name = frame_info.frame.f_locals["cls"].__name__
+                return f"{module.__name__}.{class_name}.{func_name}"
+            return f"{module.__name__}.{func_name}"
+        else:
+            return (
+                f"<UnknownModule>.{os.path.basename(frame_info.filename)}.{func_name}"
+            )
+
+    def _format_frame_to_traceback(self, frame_info: inspect.FrameInfo) -> str:
+        """将 inspect.FrameInfo 对象格式化为 traceback 字符串"""
+        file_info = f'  File "{frame_info.filename}", line {frame_info.lineno}, in {frame_info.function}'
+        source_code = ""
+        if frame_info.code_context:
+            source_code = f"\n    {frame_info.code_context[0].strip()}"
+        return file_info + source_code
+
     def dump_call(
         self,
         api_name: str,
@@ -197,20 +225,28 @@ class ConfigSerializer:
                     self._call_counter += 1
                 call_record["id"] = call_id
 
+                stack_frames = inspect.stack()[1:]
                 frames = [
                     f
-                    for f in traceback.extract_stack()[:-2]
+                    for f in stack_frames
                     if not f.filename.endswith("framework_dialect.py")
                 ]
-                if self.stack_format == "api":
-                    stack_to_record = [f.name for f in reversed(frames)]
-                elif self.stack_format == "short":
-                    stack_to_record = [
-                        f"{os.path.basename(f.filename)}:{f.lineno} in {f.name}"
-                        for f in reversed(frames)
-                    ]
-                else:  # "full" format
-                    stack_to_record = traceback.format_list(frames)
+                try:
+                    if self.stack_format == "api":
+                        stack_to_record = [self._format_frame_to_api(f) for f in frames]
+                    elif self.stack_format == "full":
+                        stack_to_record = [
+                            self._format_frame_to_traceback(f) for f in frames
+                        ]
+                    else:  # "short" format
+                        stack_to_record = [
+                            f"{os.path.basename(f.filename)}:{f.lineno} in {f.function}"
+                            for f in frames
+                        ]
+                finally:
+                    del frames
+                    del stack_frames
+
                 call_record["stack"] = stack_to_record
 
             self.log_queue.append(call_record)
@@ -321,13 +357,13 @@ class ConfigSerializer:
 
     def get_apis_and_configs(self):
         if self.merge_output:
-            self._process_trace_file("api_trace.txt", "")
+            self._process_trace_config("api_trace.txt", "")
         else:
             for level in self.levels:
                 suffix = f"_level_{level}"
-                self._process_trace_file(f"api_trace{suffix}.txt", suffix)
+                self._process_trace_config(f"api_trace{suffix}.txt", suffix)
 
-    def _process_trace_file(self, input_filename: str, output_suffix: str):
+    def _process_trace_config(self, input_filename: str, output_suffix: str):
         input_path = os.path.join(self.output_path, input_filename)
         if not os.path.exists(input_path):
             print(
@@ -367,7 +403,7 @@ class ConfigSerializer:
             for api in sorted(api_apis):
                 f.write(api + "\n")
         print(
-            f"[ConfigSerializer] Wrote {len(api_apis)} apis to api_apis{output_suffix}.txt"
+            f"[ConfigSerializer] Write {len(api_apis)} apis to api_apis{output_suffix}.txt"
         )
 
         with open(
@@ -376,7 +412,7 @@ class ConfigSerializer:
             for config in sorted(api_configs):
                 f.write(config + "\n")
         print(
-            f"[ConfigSerializer] Wrote {len(api_configs)} configs to api_configs{output_suffix}.txt"
+            f"[ConfigSerializer] Write {len(api_configs)} configs to api_configs{output_suffix}.txt"
         )
 
         total_calls = sum(api_counts.values())
@@ -398,4 +434,42 @@ class ConfigSerializer:
                 f.write(f"{api}: {count} ({api_percentages[api]:.2f}%)\n")
         print(
             f"[ConfigSerializer] Write detailed statistics to api_statistics{output_suffix}.txt"
+        )
+
+    def get_api_stack(self):
+        if self.merge_output:
+            self._process_trace_stack("api_trace.yaml", "")
+        else:
+            for level in self.levels:
+                suffix = f"_level_{level}"
+                self._process_trace_stack(f"api_trace{suffix}.yaml", suffix)
+
+    def _process_trace_stack(self, input_filename: str, output_suffix: str):
+        input_path = os.path.join(self.output_path, input_filename)
+        if not os.path.exists(input_path):
+            print(
+                f"[ConfigSerializer] Trace file not found, skipping stats: {input_path}"
+            )
+            return
+
+        api_stack = {}
+        with open(input_path, "r") as f:
+            for item in yaml.safe_load(f):
+                api = item.get("api", "")
+                if api in api_stack:
+                    continue
+
+                stack = item.get("stack", [])
+                stack_str = " <- ".join(str(frame) for frame in stack)
+                api_stack[api] = stack_str
+
+        print(f"[ConfigSerializer] Read {len(api_stack)} unique traces from {input_filename}")
+
+        with open(
+            f"{self.output_path}/api_stacks{output_suffix}.txt", "w", encoding="utf-8"
+        ) as f:
+            for api, stack in sorted(api_stack.items()):
+                f.write(f"{api}: {stack}\n")
+        print(
+            f"[ConfigSerializer] Write {len(api_stack)} api stacks to api_stack{output_suffix}.txt"
         )
