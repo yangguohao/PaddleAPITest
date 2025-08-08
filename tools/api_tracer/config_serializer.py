@@ -1,11 +1,12 @@
 import os
 import time
+import traceback
 from collections import defaultdict, deque
-from threading import Event, Thread
+from threading import Event, Lock, Thread
 from typing import Any, Dict, List, TextIO
 
 import yaml
-from .framework_dialect import FrameworkDialect
+from framework_dialect import FrameworkDialect
 
 
 class ConfigSerializer:
@@ -18,12 +19,14 @@ class ConfigSerializer:
         dialect: FrameworkDialect,
         output_path: str,
         levels: List[int],
-        merge_output: bool,
+        **kwargs: Any,
     ):
         self.dialect = dialect
         self.output_path = output_path
         self.levels = levels
-        self.merge_output = merge_output
+        self.merge_output = kwargs.get("merge_output", False)
+        self.record_stack = kwargs.get("record_stack", False)
+        self.stack_format = kwargs.get("stack_format", "short")
 
         self.file_handlers: Dict[int, Dict[str, TextIO]] = {}
         self.buffer_limit = 20000
@@ -33,6 +36,9 @@ class ConfigSerializer:
         self.max_item_count = 100
         self.max_line_length = 1024
         self.max_nest_depth = 5
+
+        self._call_counter = 0
+        self._counter_lock = Lock()
 
         # asyncio
         self.log_queue = deque()
@@ -173,6 +179,7 @@ class ConfigSerializer:
                         + ["<Truncated: max args exceeded>"]
                     )
                     kwargs = {}
+
             call_record = {
                 "level": level,
                 "api": api_name,
@@ -183,6 +190,29 @@ class ConfigSerializer:
                 },
                 # "output_summary": self._serialize_item(output, depth=0)
             }
+
+            if self.record_stack:
+                with self._counter_lock:
+                    call_id = self._call_counter
+                    self._call_counter += 1
+                call_record["id"] = call_id
+
+                frames = [
+                    f
+                    for f in traceback.extract_stack()[:-2]
+                    if not f.filename.endswith("framework_dialect.py")
+                ]
+                if self.stack_format == "api":
+                    stack_to_record = [f.name for f in reversed(frames)]
+                elif self.stack_format == "short":
+                    stack_to_record = [
+                        f"{os.path.basename(f.filename)}:{f.lineno} in {f.name}"
+                        for f in reversed(frames)
+                    ]
+                else:  # "full" format
+                    stack_to_record = traceback.format_list(frames)
+                call_record["stack"] = stack_to_record
+
             self.log_queue.append(call_record)
         except Exception as e:
             print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")

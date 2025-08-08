@@ -1,35 +1,57 @@
 import os
 import signal
 import sys
-from typing import List, Set, Union
+from typing import Any, List, Set, Union
 
-from .config_serializer import ConfigSerializer
-from .framework_dialect import FrameworkDialect, TracingHook
+from config_serializer import ConfigSerializer
+from framework_dialect import FrameworkDialect, TracingHook
 
 
 class APITracer:
 
-    _valid_kwargs: Set[str] = {"disable_torch_api_list"}
+    _valid_kwargs: Set[str] = {
+        "merge_output",
+        "record_stack",
+        "stack_format",
+        "disable_torch_api_list",
+    }
 
     def __init__(
         self,
         dialect: str,
         output_path: str = "trace_output",
         levels: Union[int, List] = 0,
-        merge_output: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ):
-        os.makedirs(output_path, exist_ok=True)
+        """
+        初始化 API 追踪器
 
+        Args:
+        - dialect (str): 指定抓取的框架方言, 例如 "torch"
+        - output_path (str, optional): 输出文件的路径, 默认为 "trace_output"
+        - levels (Union[int, List], optional): 抓取配置的粒度, 可以是单个整数或整数列表, 默认为 0
+
+        Kwargs:
+        - merge_output (bool, optional): 是否合并输出, 默认为 False
+        - record_stack (bool, optional): 是否记录堆栈信息, 默认为 False
+        - stack_format (str, optional): 堆栈信息的格式, 默认为 "short"
+        - disable_torch_api_list (bool, optional): 是否禁用 Torch API 列表, 默认为 False
+        """
         if invalid := set(kwargs) - self._valid_kwargs:
             raise ValueError(f"Invalid keyword arguments: {sorted(invalid)}")
+        if "stack_format" in kwargs:
+            record_stack = kwargs.get("record_stack", False)
+            stack_format = kwargs.get("stack_format", "short")
+            if record_stack and stack_format not in ["full", "short", "api"]:
+                raise ValueError(
+                    f"Invalid stack_format: {stack_format}. It should be one of ['full', 'short', 'api']"
+                )
 
+        os.makedirs(output_path, exist_ok=True)
         levels = levels if isinstance(levels, list) else [levels]
 
         self.dialect = FrameworkDialect.get_dialect(dialect)
-        self.serializer = ConfigSerializer(
-            self.dialect, output_path, levels, merge_output
-        )
+        self.serializer = ConfigSerializer(self.dialect, output_path, levels, **kwargs)
         self.hooks: List[TracingHook] = self.dialect.get_hooks(
             self.serializer, levels, **kwargs
         )
@@ -40,8 +62,9 @@ class APITracer:
 
         print(
             f"[APITracer] API tracer initialized for '{self.dialect.get_framework_name()}' "
-            f"in {'merged ' if merge_output else ''}levels {levels}. Output path: {output_path}."
+            f"in levels {levels}, output path: {output_path}"
         )
+        print(f"[APITracer] Kwargs: {kwargs}")
 
     def _signal_handler(self, signum, frame):
         print(f"[APITracer] Received signal {signum}, stopping trace...")
