@@ -741,7 +741,7 @@ class TensorConfig:
                             tensor = numpy.einsum('...ij,...kj->...ik', A, A)
                         else:
                             tensor = numpy.dot(A, A.T)
-                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 1e-6
+                        tensor += numpy.eye(matrix_dim, dtype=self.dtype) * 10000
                         print("cholesky tensor", tensor)
                         self.numpy_tensor = tensor
                 elif api_config.api_name.endswith("cov"):
@@ -768,7 +768,7 @@ class TensorConfig:
                             self.numpy_tensor = numpy.random.uniform(0.1, 1.0, size=(n_observations,)).astype(self.dtype)
                         else:
                             self.numpy_tensor = numpy.random.randint(1, 11, size=(n_observations,)).astype(self.dtype)
-                elif api_config.api_name.endswith("eigh"):
+                elif api_config.api_name.endswith("eigh") or api_config.api_name.endswith("eigvalsh"):
                     if self.check_arg(api_config, 0, "x"):
                         if len(self.shape) < 2 or self.shape[-1] != self.shape[-2]:
                             raise ValueError("Shape must have at least 2 dimensions and last two dimensions must be equal")
@@ -1738,7 +1738,7 @@ class TensorConfig:
                     elif self.dtype == "float16":
                         self.numpy_tensor = generate_unique_array(x_numel, self.dtype).reshape(self.shape)
                     elif self.dtype in {"int32", "int64"}:
-                        self.numpy_tensor = numpy.random.choice(numpy.arange(-x_numel, x_numel), size=self.shape, replace=False).astype(self.dtype)
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
                     else:
                         raise ValueError(f"Unsupported dtype {self.dtype} for paddle.topk / paddle.Tensor.topk")
                 elif self.check_arg(api_config, 1, "k"):

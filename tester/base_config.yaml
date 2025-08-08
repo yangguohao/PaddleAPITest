@@ -27,6 +27,12 @@ paddle_error_dismiss:
   paddle.linalg.solve: "(PreconditionNotMet) Input tensor 'A' or 'B' has too many elements (> INT_MAX)."
   paddle.nn.functional.group_norm: "(Unimplemented) GroupNorm kernel launch failed"
   paddle.einsum: "(Unimplemented) cublas GEMM does not support N >"
+  paddle.nn.functional.cross_entropy: "(PreconditionNotMet) The num of the classes should be <= INT_MAX(2147483647)"
+  paddle.nn.functional.class_center_sample:
+    - "(InvalidArgument) The total number of elements for 'label' should be less than"
+    - "(InvalidArgument) Illegal memory allocation, total allocated space must be greater than 0"
+  paddle.linalg.matrix_rank: "(PreconditionNotMet) The element size of x should be <= INT_MAX(2147483647)"
+  paddle.argsort: "(PreconditionNotMet) The dimension being sorted should be less than 2^31"
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
@@ -40,11 +46,15 @@ special_accuracy_atol_rtol:
   paddle.incubate.nn.functional.fused_rms_norm : [3, 0.5]
   paddle.incubate.nn.functional.fused_layer_norm: [1, 0.01]
   paddle.lerp : [5, 0.05]
+  paddle.nn.functional.layer_norm : [5, 0.05]
   paddle.nn.functional.upsample: [0.5, 1.5]
   paddle.nn.functional.interpolate: [0.5, 1.5]
   paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm: [1.0, 1.0]
   paddle.nn.functional.softmax: [1, 0.01]
-
+  paddle.matmul: [2.0, 0.05]
+  paddle.nn.functional.bilinear: [2.0, 0.08]
+  paddle.nn.functional.interpolate: [1.5, 0.01]
+  paddle.nn.functional.normalize: [0.2, 0.01]
 
 # All configs that report dtype diff when not in not_check_dtype list should be
 # copied to tester/api_config/5_accuracy/accuracy_gpu_error_dtype_diff.txt
@@ -307,6 +317,7 @@ forward_only_apis:
   - edit_distance
   - eigh
   - eigvals
+  - eigvalsh
   - embedding_grad_dense
   - embedding_with_eltwise_add_xpu
   - embedding_with_eltwise_add_xpu
@@ -571,3 +582,4 @@ forward_only_apis:
   - yolo_box_xpu
   - zeros
   - zeros_like
+  - median

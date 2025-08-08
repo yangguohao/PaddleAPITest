@@ -35,18 +35,20 @@
 
 ### 多功能钩子策略
 
-- `TorchFunctionHook`:
-    通过重写 PyTorch 官方的 `torch.overrides.TorchFunctionMode` 类实现。经过测试，这是追踪 PyTorch API 的首选方法，能够高效、准确地捕获所有进入 PyTorch C++ 后端的函数调用（Torch C API），覆盖范围广、对用户代码无侵入。
-
 - `SetattrHook`:
-    通过 Python 的 `setattr` 机制，在运行时动态遍历并替换模块中的函数对象。它可以挂钩任意 Python 库的 API。可用于扫描全库并产出 api_list，追踪纯 Python 函数的调用。
+    通过 Python 的 `setattr` 机制，在运行时动态遍历并替换模块中的函数对象。它可以挂钩任意 Python 库的 API。可用于扫描全库并产出 `api_list/torch_api_list_full.yaml` ，追踪纯 Python 函数的调用。
     
-    但由于 PyTorch 的大量核心功能由 C++ 实现，`SetattrHook` 无法覆盖到底层算子，表现不尽人意。因此对于 PyTorch 不再启用，留作备用/辅助策略，当前默认仅使用 `TorchFunctionHook` 对 PyTorch 进行追踪。
+    由于 PyTorch 的大量核心功能由 C++ 实现，`SetattrHook` 钩子无法覆盖到底层算子，但可以抓取如 `nn.Linear` 等类级别 API。覆盖范围默认是 `api_list/torch_api_list.yaml` 的子集，由参数 `disable_torch_api_list` 控制。
 
-### PyTorch 追踪相关实现
+- `TorchFunctionHook`:
+    通过重写 PyTorch 官方的 `torch.overrides.TorchFunctionMode` 类实现。该方法可以捕获所有支持 `__torch_function__` 协议的 API 调用，即进入 PyTorch C++ 后端的函数调用。经过测试，这是追踪 PyTorch API 的首选方法（目前采用 `SetattrHook`` + `TorchFunctionHook`` 结合的方式），能够高效、准确地捕获所有 Torch C API 调用，覆盖范围广、对用户代码无侵入。
 
-- `TorchFunctionHook` 启用全局的 `TorchFunctionMode`，所有支持该协议的 PyTorch API 调用都会被重载的 `__torch_function__` 方法捕获
-- `FrameworkDialect` 抽象类实现 `PyTorchDialect`，其方法 `serialize_special_type`, `format_special_type` 实现了针对 `torch.Tensor`, `torch.dtype`, `torch.device` 等 PyTorch 特有类型的序列化逻辑
+- `TorchDispatchHook`:
+    通过重写 PyTorch 官方的 `torch.utils._python_dispatch` 库的 `TorchDispatchMode` 类实现。该方法可以捕获所有通过 `torch.dispatch` 调用的函数，包括自定义的 `Tensor` 操作。 `torch.dispatch` 是 PyTorch 内部使用的调度机制，可以捕获到所有底层算子的调用（如 `aten::`），是抓取 PyTorch 底层算子的首选方法。
+
+### PyTorch 其他定制实现
+
+- `PyTorchDialect` 实现了 `FrameworkDialect` 抽象类 ，其方法 `serialize_special_type` 、 `format_special_type` 实现了针对 `torch.Tensor` 、 `torch.dtype` 、 `torch.device` 等 PyTorch 特有类型的序列化逻辑
 
 ## 如何使用
 
@@ -58,13 +60,15 @@
 import torch
 from api_tracer import APITracer
 
-# 初始化 Tracer，指定框架方言（当前为 'torch'）和输出路径
-tracer = APITracer(dialect="torch", output_path="trace_output")
+# 初始化 Tracer，指定框架方言为 'torch'
+tracer = APITracer(
+    dialect="torch", output_path="trace_output", levels=1, merge_output=True
+)
 
 # 使用 with 语句来自动启动和停止追踪
 with tracer:
     # 执行 PyTorch 模型或代码
-    tensor1 = torch.randn(2, 3, device='cpu')
+    tensor1 = torch.randn(2, 3, device="cpu")
     tensor2 = torch.ones(2, 3)
     result = torch.add(tensor1, tensor2, alpha=10)
     final_sum = result.sum()
@@ -73,13 +77,34 @@ with tracer:
 # tracer.start()
 # 执行 PyTorch 模型或代码
 # tracer.stop()
+
 ```
+
+**参数说明**
+
+- `dialect` (str): 支持的框架方言，目前仅支持 `torch`
+- `output_path` (str): 抓取结果的保存目录路径
+- `levels` (int|List[int]): 控制钩子的粒度，可同时启用多个钩子，默认为 `0` 。映射如下:
+  - `0`: `SetattrHook`
+  - `1`: `TorchFunctionHook`
+  - `2`: `TorchDispatchHook`
+- `merge_output` (bool): 输出时是否将不同 level 的结果合并，默认为 `False` 。
+
+**可选参数**
+- `disable_torch_api_list` (bool): 是否禁用 `torch_api_list` ，仅影响 `PyTorchDialect` 的 `SetattrHook` 钩子。设置为 `True` 时将抓取所有遍历到并被 `setattr` 钩住的 API ，除非在 `PyTorchDialect` 中被排除。默认为 `False` 。
+
+> [!CAUTION]
+> 目前已知 `SetattrHook` 与 `torch.compile` 或 `@functools.wraps` 等复杂场景交互时，部分 `staticmethod` 方法会产生绑定错误。例如：
+> ```bash
+> TypeError: Node._pretty_print_target() takes 1 positional argument but 2 were given
+> ```
+> 最佳的处理方式是将相关 API 添加至 `framework_dialect.py / IGNORE_CLASSES_OR_METHODS` 列表中，单纯跳过；若修改 `_create_wrapper` 方法，采用 `inspect.signature` 可能会增加绑定负担，也可能会有更多问题 ：）
 
 ### 输出文件
 
-执行上述代码后，你将在 `trace_output` 目录下找到两个文件：
+执行上述代码后，你将在 `trace_output` 目录下找到五个文件：
 
-1.  **`api_trace.yaml`**: 结构化的 API 调用记录
+1. **`api_trace.yaml`**: 结构化的 API 调用记录
 
     ```yaml
     - api: torch.randn
@@ -120,11 +145,40 @@ with tracer:
       kwargs: {}
     ```
 
-2.  **`api_trace.txt`**: 更易读的格式
+2. **`api_trace.txt`**: 更易读的格式
 
     ```text
     torch.randn(2, 3, device="cpu")
     torch.ones(2, 3)
     torch.add(Tensor([2, 3], "float32"), Tensor([2, 3], "float32"), alpha=10)
     torch.Tensor.sum(Tensor([2, 3], "float32"))
+    ```
+3. **`api_apis.txt`**: API 集合
+
+    ```text
+    torch.Tensor.sum
+    torch.add
+    torch.ones
+    torch.randn
+    ```
+
+4. **`api_configs.yaml`**: API 配置集合（去重排序 `api_trace.txt` ）
+
+    ```text
+    torch.Tensor.sum(Tensor([2, 3], "float32"))
+    torch.add(Tensor([2, 3], "float32"), Tensor([2, 3], "float32"), alpha=10)
+    torch.ones(2, 3)
+    torch.randn(2, 3, device="cpu")
+    ```
+
+5. **`api_statistics.yaml`**: API 统计信息
+
+    ```text
+    Total APIs: 4
+    Total API calls: 4
+
+    torch.randn: 1 (25.00%)
+    torch.ones: 1 (25.00%)
+    torch.add: 1 (25.00%)
+    torch.Tensor.sum: 1 (25.00%)
     ```
