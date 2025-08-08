@@ -3057,4 +3057,8 @@ paddle.nn.functional.normalize(x=Tensor([4, 25565282, 6, 7],"float16"), p=4, axi
 paddle.nn.functional.normalize(x=Tensor([4, 5, 30678338, 7],"float16"), p=4, axis=3, )
 paddle.nn.functional.normalize(x=Tensor([4, 5, 6, 35791395],"float16"), p=4, )
 paddle.dist(x=Tensor([10],"float16"), y=Tensor([429496730, 10],"float16"), p=4, )
+paddle.nn.functional.layer_norm(Tensor([20069, 209, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
+paddle.nn.functional.layer_norm(Tensor([25421, 165, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
+paddle.nn.functional.layer_norm(Tensor([20361, 206, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
+paddle.nn.functional.layer_norm(Tensor([7, 599187, 1024],"float32"), 1024, weight=Tensor([1024],"float32"), bias=Tensor([1024],"float32"), epsilon=1e-05, )
 paddle.argsort(Tensor([1, 1073741823],"float16"), descending=True, stable=True)
