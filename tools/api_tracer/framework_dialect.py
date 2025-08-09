@@ -349,6 +349,7 @@ class PyTorchDialect(FrameworkDialect):
         "torch.compiler.config",
         "torch.contrib._tensorboard_vis",
         "torch.distributed._tools.sac_ilp",
+        "torch.distributed.elastic.rendezvous"  # multi modules
         "torch.fx.experimental._config",
         "torch.onnx._internal.exporter",  # multi modules
         "torch.onnx._internal.fx",  # multi modules

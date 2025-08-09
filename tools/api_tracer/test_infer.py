@@ -7,6 +7,7 @@ import traceback
 
 import numpy as np
 import torch
+from api_tracer import APITracer
 from decord import VideoReader, cpu
 from diffusers.pipelines.auto_pipeline import (AutoPipelineForImage2Image,
                                                AutoPipelineForText2Image)
@@ -15,8 +16,6 @@ from PIL import Image
 from transformers import (AutoModel, AutoModelForCausalLM,
                           AutoModelForImageTextToText, AutoProcessor,
                           AutoTokenizer)
-
-from tools.api_tracer import APITracer
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
