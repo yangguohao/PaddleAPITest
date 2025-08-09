@@ -32,6 +32,7 @@ paddle_error_dismiss:
     - "(InvalidArgument) The total number of elements for 'label' should be less than"
     - "(InvalidArgument) Illegal memory allocation, total allocated space must be greater than 0"
   paddle.linalg.matrix_rank: "(PreconditionNotMet) The element size of x should be <= INT_MAX(2147483647)"
+  paddle.argsort: "(PreconditionNotMet) The dimension being sorted should be less than 2^31"
 
 # some accuracy error can be considered tolerable
 special_accuracy_atol_rtol:
@@ -45,7 +46,7 @@ special_accuracy_atol_rtol:
   paddle.incubate.nn.functional.fused_rms_norm : [3, 0.5]
   paddle.incubate.nn.functional.fused_layer_norm: [1, 0.01]
   paddle.lerp : [5, 0.05]
-  paddle.nn.functional.layer_norm : [5, 0.05]
+  paddle.nn.functional.layer_norm : [0.2, 0.02]
   paddle.nn.functional.upsample: [0.5, 1.5]
   paddle.nn.functional.interpolate: [0.5, 1.5]
   paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm: [1.0, 1.0]
