@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from tools.api_tracer import APITracer
+from api_tracer import APITracer
 
 
 class SimpleCNN(nn.Module):

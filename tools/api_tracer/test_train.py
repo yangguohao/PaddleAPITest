@@ -6,6 +6,7 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import traceback
 
 import torch
+from api_tracer import APITracer
 from datasets import load_dataset
 from transformers import (AutoModelForCausalLM, AutoModelForImageTextToText,
                           AutoProcessor, AutoTokenizer)
@@ -13,8 +14,6 @@ from transformers.data.data_collator import (DataCollatorForLanguageModeling,
                                              DataCollatorForSeq2Seq)
 from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
-
-from tools.api_tracer import APITracer
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
