@@ -13,7 +13,7 @@ import yaml
 from torch.utils._python_dispatch import TorchDispatchMode
 
 if TYPE_CHECKING:
-    from .config_serializer import ConfigSerializer
+    from config_serializer import ConfigSerializer
 
 
 class TracingHook(abc.ABC):
@@ -319,7 +319,7 @@ class FrameworkDialect(abc.ABC):
 
     @abc.abstractmethod
     def get_hooks(
-        self, serializer: "ConfigSerializer", level: Union[int, List[int]]
+        self, serializer: "ConfigSerializer", level: Union[int, List[int]], **kwargs
     ) -> List[TracingHook]:
         """获取跟踪钩子, 用于在API调用时进行记录"""
         raise NotImplementedError

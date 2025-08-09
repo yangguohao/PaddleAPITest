@@ -1,29 +1,32 @@
+import itertools
+import linecache
 import os
-import time
-from collections import defaultdict, deque
+import queue
+import sys
+from collections import defaultdict
 from threading import Event, Thread
 from typing import Any, Dict, List, TextIO
 
 import yaml
-from .framework_dialect import FrameworkDialect
+from framework_dialect import FrameworkDialect
 
 
 class ConfigSerializer:
     """将API调用信息序列化并写入"""
-
-    _serialize_handlers = {}
 
     def __init__(
         self,
         dialect: FrameworkDialect,
         output_path: str,
         levels: List[int],
-        merge_output: bool,
+        **kwargs: Any,
     ):
         self.dialect = dialect
         self.output_path = output_path
         self.levels = levels
-        self.merge_output = merge_output
+        self.merge_output = kwargs.get("merge_output", False)
+        self.record_stack = kwargs.get("record_stack", False)
+        self.stack_format = kwargs.get("stack_format", "short")
 
         self.file_handlers: Dict[int, Dict[str, TextIO]] = {}
         self.buffer_limit = 20000
@@ -34,8 +37,15 @@ class ConfigSerializer:
         self.max_line_length = 1024
         self.max_nest_depth = 5
 
+        self._call_counter = itertools.count()
+        self._excluded_record_files = (
+            "framework_dialect.py",
+            "eval_frame.py",
+            "module.py",
+        )
+
         # asyncio
-        self.log_queue = deque()
+        self.log_queue = queue.Queue()
         self._stop_event = Event()
         self.writer_thread = Thread(target=self._writer_loop)
         self.total_calls_processed = 0
@@ -96,18 +106,32 @@ class ConfigSerializer:
 
     def _writer_loop(self):
         """线程的工作循环，从队列获取数据并处理"""
-        while not self._stop_event.is_set() or len(self.log_queue) > 0:
+        while not self._stop_event.is_set():
             try:
-                call_record = self.log_queue.popleft()
-                level = call_record.pop("level")
+                call_record = self.log_queue.get(timeout=0.1)
 
+                if self.record_stack:
+                    frames_data = call_record.pop("frames_data")
+                    if self.stack_format == "api":
+                        api_stack = [self._format_frame_to_api(f) for f in frames_data]
+                    elif self.stack_format == "full":
+                        api_stack = [
+                            self._format_frame_to_traceback(f) for f in frames_data
+                        ]
+                    else:  # "short" format
+                        api_stack = [
+                            self._format_frame_to_short(f) for f in frames_data
+                        ]
+                    call_record["stack"] = api_stack
+
+                level = call_record.pop("level")
                 buffer_key = 0 if self.merge_output else level
                 self.buffers[buffer_key].append(call_record)
 
                 if len(self.buffers[buffer_key]) >= self.buffer_limit:
                     self._flush_buffer(buffer_key)
-            except IndexError:
-                time.sleep(0.01)
+            except queue.Empty:
+                continue
             except Exception as e:
                 print(f"[ConfigSerializer] Error in writer thread: {e}")
 
@@ -122,9 +146,10 @@ class ConfigSerializer:
 
         if handlers["yaml"]:
             try:
-                yaml.dump(
+                yaml.dump_all(
                     buffer,
                     handlers["yaml"],
+                    Dumper=yaml.CDumper,
                     allow_unicode=True,
                     sort_keys=False,
                     default_flow_style=False,
@@ -150,6 +175,46 @@ class ConfigSerializer:
         )
         buffer.clear()
 
+    def _format_frame_to_api(self, frame_info: dict) -> str:
+        """将帧信息格式化为 API 名称"""
+        filename = frame_info["filename"]
+        module_name = frame_info["module_name"]
+        class_name = frame_info["class_name"]
+        func_name = frame_info["func_name"]
+
+        if module_name:
+            if module_name == "__main__":
+                api_path = f"__main__.{os.path.basename(filename)}"
+            else:
+                api_path = module_name
+            if class_name:
+                api_path = f"{api_path}.{class_name}"
+            return f"{api_path}.{func_name}"
+        else:
+            return f"<UnknownModule>.{os.path.basename(filename)}.{func_name}"
+
+    def _format_frame_to_short(self, frame_info: dict) -> str:
+        """将帧信息格式化为短字符串"""
+        filename = frame_info["filename"]
+        lineno = frame_info["lineno"]
+        func_name = frame_info["func_name"]
+        return f"{os.path.basename(filename)}:{lineno} in {func_name}"
+
+    def _format_frame_to_traceback(self, frame_info: dict) -> str:
+        """将帧信息格式化为 traceback 字符串"""
+        filename = frame_info["filename"]
+        lineno = frame_info["lineno"]
+        func_name = frame_info["func_name"]
+
+        file_info = f'  File "{filename}", line {lineno}, in {func_name}'
+        try:
+            source_code = linecache.getline(filename, lineno).strip()
+        except Exception:
+            source_code = ""
+        if source_code:
+            return f"{file_info}\n    {source_code}"
+        return file_info
+
     def dump_call(
         self,
         api_name: str,
@@ -173,6 +238,7 @@ class ConfigSerializer:
                         + ["<Truncated: max args exceeded>"]
                     )
                     kwargs = {}
+
             call_record = {
                 "level": level,
                 "api": api_name,
@@ -183,7 +249,37 @@ class ConfigSerializer:
                 },
                 # "output_summary": self._serialize_item(output, depth=0)
             }
-            self.log_queue.append(call_record)
+
+            if self.record_stack:
+                call_id = next(self._call_counter)
+                call_record["id"] = call_id
+
+                frames_data = []
+                frame = sys._getframe(1)
+                while frame:
+                    if not frame.f_code.co_filename.endswith(
+                        self._excluded_record_files
+                    ):
+                        f_locals = frame.f_locals
+                        class_name = None
+                        if "self" in f_locals:
+                            class_name = f_locals["self"].__class__.__name__
+                        elif "cls" in f_locals:
+                            class_name = f_locals["cls"].__name__
+
+                        frames_data.append(
+                            {
+                                "filename": frame.f_code.co_filename,
+                                "lineno": frame.f_lineno,
+                                "func_name": frame.f_code.co_name,
+                                "module_name": frame.f_globals.get("__name__"),
+                                "class_name": class_name,
+                            }
+                        )
+                    frame = frame.f_back
+                call_record["frames_data"] = frames_data
+
+            self.log_queue.put_nowait(call_record)
         except Exception as e:
             print(f"[ConfigSerializer] Error serializing call for '{api_name}': {e}")
 
@@ -290,14 +386,15 @@ class ConfigSerializer:
         return result
 
     def get_apis_and_configs(self):
+        print("[ConfigSerializer] Start to get apis and configs...")
         if self.merge_output:
-            self._process_trace_file("api_trace.txt", "")
+            self._process_trace_config("api_trace.txt", "")
         else:
             for level in self.levels:
                 suffix = f"_level_{level}"
-                self._process_trace_file(f"api_trace{suffix}.txt", suffix)
+                self._process_trace_config(f"api_trace{suffix}.txt", suffix)
 
-    def _process_trace_file(self, input_filename: str, output_suffix: str):
+    def _process_trace_config(self, input_filename: str, output_suffix: str):
         input_path = os.path.join(self.output_path, input_filename)
         if not os.path.exists(input_path):
             print(
@@ -337,7 +434,7 @@ class ConfigSerializer:
             for api in sorted(api_apis):
                 f.write(api + "\n")
         print(
-            f"[ConfigSerializer] Wrote {len(api_apis)} apis to api_apis{output_suffix}.txt"
+            f"[ConfigSerializer] Write {len(api_apis)} apis to api_apis{output_suffix}.txt"
         )
 
         with open(
@@ -346,7 +443,7 @@ class ConfigSerializer:
             for config in sorted(api_configs):
                 f.write(config + "\n")
         print(
-            f"[ConfigSerializer] Wrote {len(api_configs)} configs to api_configs{output_suffix}.txt"
+            f"[ConfigSerializer] Write {len(api_configs)} configs to api_configs{output_suffix}.txt"
         )
 
         total_calls = sum(api_counts.values())
@@ -368,4 +465,60 @@ class ConfigSerializer:
                 f.write(f"{api}: {count} ({api_percentages[api]:.2f}%)\n")
         print(
             f"[ConfigSerializer] Write detailed statistics to api_statistics{output_suffix}.txt"
+        )
+
+    def get_api_stacks(self):
+        print("[ConfigSerializer] Start to get api stacks...")
+        if self.merge_output:
+            self._process_trace_stack("api_trace.yaml", "")
+        else:
+            for level in self.levels:
+                suffix = f"_level_{level}"
+                self._process_trace_stack(f"api_trace{suffix}.yaml", suffix)
+
+    def _process_trace_stack(self, input_filename: str, output_suffix: str):
+        input_path = os.path.join(self.output_path, input_filename)
+        if not os.path.exists(input_path):
+            print(
+                f"[ConfigSerializer] Trace file not found, skipping stats: {input_path}"
+            )
+            return
+
+        api_stack = {}
+        completed_apis = set()
+
+        with open(input_path, "r", encoding="utf-8") as f:
+            for call in yaml.load_all(f, Loader=yaml.CLoader):
+                api_name = call.get("api", "UnknownAPI")
+                if api_name in completed_apis:
+                    continue
+
+                if api_name not in api_stack:
+                    api_stack[api_name] = {"3stacks": []}
+
+                stacks_list = api_stack[api_name]["3stacks"]
+                if len(stacks_list) < 3:
+                    stack_info = call.get("stack", [])
+                    stacks_list.append(stack_info)
+                    if len(stacks_list) == 3:
+                        completed_apis.add(api_name)
+
+        print(
+            f"[ConfigSerializer] Read {len(api_stack)} unique traces from {input_filename}"
+        )
+
+        with open(
+            f"{self.output_path}/api_stacks{output_suffix}.yaml", "w", encoding="utf-8"
+        ) as f:
+            yaml.dump(
+                api_stack,
+                f,
+                Dumper=yaml.CDumper,
+                allow_unicode=True,
+                sort_keys=True,
+                default_flow_style=False,
+                indent=2,
+            )
+        print(
+            f"[ConfigSerializer] Write {len(api_stack)} api stacks to api_stack{output_suffix}.yaml"
         )
