@@ -149,6 +149,7 @@ class ConfigSerializer:
                 yaml.dump_all(
                     buffer,
                     handlers["yaml"],
+                    Dumper=yaml.CDumper,
                     allow_unicode=True,
                     sort_keys=False,
                     default_flow_style=False,
@@ -484,25 +485,40 @@ class ConfigSerializer:
             return
 
         api_stack = {}
+        completed_apis = set()
+
         with open(input_path, "r", encoding="utf-8") as f:
-            for call in yaml.safe_load_all(f):
-                api = call.get("api", "UnknownAPI")
-                if api in api_stack:
+            for call in yaml.load_all(f, Loader=yaml.CLoader):
+                api_name = call.get("api", "UnknownAPI")
+                if api_name in completed_apis:
                     continue
 
-                stack = call.get("stack", [])
-                stack_str = " <- ".join(str(frame) for frame in stack)
-                api_stack[api] = stack_str
+                if api_name not in api_stack:
+                    api_stack[api_name] = {"3stacks": []}
+
+                stacks_list = api_stack[api_name]["3stacks"]
+                if len(stacks_list) < 3:
+                    stack_info = call.get("stack", [])
+                    stacks_list.append(stack_info)
+                    if len(stacks_list) == 3:
+                        completed_apis.add(api_name)
 
         print(
             f"[ConfigSerializer] Read {len(api_stack)} unique traces from {input_filename}"
         )
 
         with open(
-            f"{self.output_path}/api_stacks{output_suffix}.txt", "w", encoding="utf-8"
+            f"{self.output_path}/api_stacks{output_suffix}.yaml", "w", encoding="utf-8"
         ) as f:
-            for api, stack in sorted(api_stack.items()):
-                f.write(f"{api}: {stack}\n")
+            yaml.dump(
+                api_stack,
+                f,
+                Dumper=yaml.CDumper,
+                allow_unicode=True,
+                sort_keys=True,
+                default_flow_style=False,
+                indent=2,
+            )
         print(
-            f"[ConfigSerializer] Write {len(api_stack)} api stacks to api_stack{output_suffix}.txt"
+            f"[ConfigSerializer] Write {len(api_stack)} api stacks to api_stack{output_suffix}.yaml"
         )
