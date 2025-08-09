@@ -88,10 +88,12 @@ with tracer:
   - `0`: `SetattrHook`
   - `1`: `TorchFunctionHook`
   - `2`: `TorchDispatchHook`
-- `merge_output` (bool): 输出时是否将不同 level 的结果合并，默认为 `False` 。
 
 **可选参数**
-- `disable_torch_api_list` (bool): 是否禁用 `torch_api_list` ，仅影响 `PyTorchDialect` 的 `SetattrHook` 钩子。设置为 `True` 时将抓取所有遍历到并被 `setattr` 钩住的 API ，除非在 `PyTorchDialect` 中被排除。默认为 `False` 。
+- `merge_output` (bool): 输出时是否将不同 level 的结果合并，默认为 `False`
+- `record_stack` (bool): 是否记录调用栈信息，默认为 `False`
+- `stack_format` (str): 指定调用栈信息的格式， `full` 为 traceback 样式， `short` 为简化的 traceback， `api` 为模块式的 API 样式。默认为 `short`
+- `disable_torch_api_list` (bool): 是否禁用 `torch_api_list` ，仅影响 `PyTorchDialect` 的 `SetattrHook` 钩子。设置为 `True` 时将抓取所有遍历到并被 `setattr` 钩住的 API ，除非在 `PyTorchDialect` 中被排除。默认为 `False`
 
 > [!CAUTION]
 > 目前已知 `SetattrHook` 与 `torch.compile` 或 `@functools.wraps` 等复杂场景交互时，部分 `staticmethod` 方法会产生绑定错误。例如：
@@ -99,10 +101,12 @@ with tracer:
 > TypeError: Node._pretty_print_target() takes 1 positional argument but 2 were given
 > ```
 > 最佳的处理方式是将相关 API 添加至 `framework_dialect.py / IGNORE_CLASSES_OR_METHODS` 列表中，单纯跳过；若修改 `_create_wrapper` 方法，采用 `inspect.signature` 可能会增加绑定负担，也可能会有更多问题 ：）
+>
+> 此外，`TorchFunctionHook` 钩子已默认跳过 `torch.overrides.get_ignored_functions()` 列表的函数，这意味着大多数工厂函数 (如 `torch.randn` ) 会被跳过以避免无法预知的错误 (尽管注释后通常不会引起错误)，跳过的 API 可以由 `SetattrHook` 捕获
 
 ### 输出文件
 
-执行上述代码后，你将在 `trace_output` 目录下找到五个文件：
+执行上述代码后，你将在 `trace_output` 目录下找到五个文件（若开启 `record_stack` 则有六个）：
 
 1. **`api_trace.yaml`**: 结构化的 API 调用记录
 
@@ -182,3 +186,20 @@ with tracer:
     torch.add: 1 (25.00%)
     torch.Tensor.sum: 1 (25.00%)
     ```
+
+6. **`api_stacks.yaml`** (仅开启 `record_stack` ): API 调用栈信息
+
+    ```yaml
+    torch.Tensor.sum:
+      3stacks:
+      - - test.py:19 in <module>
+    torch.add:
+      3stacks:
+      - - test.py:18 in <module>
+    torch.ones:
+      3stacks:
+      - - test.py:17 in <module>
+    torch.randn:
+      3stacks:
+      - - test.py:16 in <module>
+      ```
