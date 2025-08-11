@@ -5,9 +5,15 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 import traceback
 
+import numpy as np
 import torch
 from api_tracer import APITracer
 from datasets import load_dataset
+from decord import VideoReader, cpu
+from diffusers.pipelines.auto_pipeline import (AutoPipelineForImage2Image,
+                                               AutoPipelineForText2Image)
+from diffusers.pipelines.pipeline_utils import DiffusionPipeline
+from PIL import Image
 from transformers import (AutoModelForCausalLM, AutoModelForImageTextToText,
                           AutoProcessor, AutoTokenizer)
 from transformers.data.data_collator import (DataCollatorForLanguageModeling,
@@ -48,6 +54,7 @@ ImageTexttoTextModels = [
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
+    # "echo840/MonkeyOCR",
 ]
 
 VideoTexttoTextModels = [
@@ -55,9 +62,8 @@ VideoTexttoTextModels = [
 ]
 
 TexttoImageModels = [
-    # "stabilityai/stable-diffusion-3-medium",
+    # "stabilityai/stable-diffusion-3-medium-diffusers",
     # "black-forest-labs/FLUX.1-dev",
-    # "echo840/MonkeyOCR",
     # "jieliu/SD3.5M-FlowGRPO-GenEval",
 ]
 
@@ -80,7 +86,12 @@ def run_training_test_tg(model_name: str):
     true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
     output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
     tracer = APITracer(
-        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+        "torch",
+        output_path=output_path,
+        levels=[0, 1],
+        merge_output=True,
+        record_stack=True,
+        stack_format="full",
     )
 
     try:
@@ -143,6 +154,8 @@ def run_training_test_tg(model_name: str):
             remove_columns=next(iter(dataset)).keys(),
         )
 
+        gradient_checkpointing = False if "RWKV" in true_model_name else True
+
         output_dir = output_path + "/train_output"
         training_args = TrainingArguments(
             output_dir=output_dir,
@@ -154,7 +167,7 @@ def run_training_test_tg(model_name: str):
             bf16=True,
             report_to="none",
             max_steps=1,
-            gradient_checkpointing=True,
+            gradient_checkpointing=gradient_checkpointing,  # disable this when Unexpected keyword arguments: num_items_in_batch
         )
 
         data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
@@ -367,8 +380,438 @@ def run_training_test_i2t(model_name: str):
             data_collator=data_collator,
         )
 
-        # with tracer:
-        trainer.train()
+        with tracer:
+            trainer.train()
+
+        print(f"✅ Test for {true_model_name} finished.")
+    except Exception as e:
+        traceback.print_exc()
+        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+
+
+def sample_frames_from_video(video_path, num_frames=8):
+    vr = VideoReader(video_path, ctx=cpu(0))
+    total_frames = len(vr)
+    indices = np.linspace(0, total_frames - 1, num_frames, dtype=int)
+    frames = vr.get_batch(indices).asnumpy()
+    return [Image.fromarray(frame) for frame in frames]
+
+
+def run_training_test_v2t(model_name: str):
+    print(f"🚀 Running Video-Text-to-Text Training Test for: {model_name})")
+    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
+    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
+
+    try:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        if processor.tokenizer.pad_token is None:
+            processor.tokenizer.pad_token = processor.tokenizer.eos_token
+        model.config.pad_token_id = processor.tokenizer.pad_token_id
+
+        print(f"Model Class: {model.__class__}")
+        print(f"Processor Class: {processor.__class__}")
+
+        with open(os.path.join(output_path, "model_info.txt"), "w") as f:
+            f.write(f"Model: {model.__class__}\n")
+            f.write(f"Processor: {processor.__class__}\n")
+
+        dataset = load_dataset("microsoft/msr_vtt", split="train")
+        dataset_sample = dataset.select(range(50))
+
+        def preprocess_function(examples):
+            num_frames_for_model = 8
+            model_inputs = {"input_ids": [], "labels": [], "pixel_values": []}
+
+            for i in range(len(examples["text"])):
+                video_path = examples["video"][i]["path"]
+                caption = examples["text"][i]
+                frames = sample_frames_from_video(
+                    video_path, num_frames=num_frames_for_model
+                )
+                if frames is None:
+                    continue
+
+                prompt = f"User: Describe the following video.\nAssistant: {caption}"
+
+                inputs = processor(
+                    text=prompt,
+                    images=frames,
+                    return_tensors="pt",
+                    padding=False,
+                    truncation=True,
+                    max_length=1024,
+                )
+                input_ids = inputs["input_ids"][0]
+                labels = input_ids.clone()
+
+                prompt_without_answer = (
+                    "User: Describe the following video.\nAssistant:"
+                )
+                prompt_only_inputs = processor(
+                    text=prompt_without_answer, images=frames, return_tensors="pt"
+                )
+                prompt_ids_len = len(prompt_only_inputs["input_ids"][0])
+                labels[:prompt_ids_len] = -100
+
+                model_inputs["input_ids"].append(input_ids)
+                model_inputs["labels"].append(labels)
+                model_inputs["pixel_values"].append(inputs["pixel_values"][0])
+
+            return model_inputs
+
+        tokenized_dataset = dataset_sample.map(
+            preprocess_function,
+            batched=True,
+            remove_columns=dataset_sample.column_names,
+            batch_size=2,
+        )
+
+        output_dir = output_path + "/train_output"
+        training_args = TrainingArguments(
+            output_dir=output_dir,
+            per_device_train_batch_size=1,
+            gradient_accumulation_steps=4,
+            learning_rate=1e-5,
+            save_strategy="no",
+            bf16=True,
+            report_to="none",
+            max_steps=1,
+            remove_unused_columns=False,
+        )
+
+        data_collator = DataCollatorForSeq2Seq(
+            tokenizer=processor.tokenizer,
+            model=model,
+            label_pad_token_id=-100,
+            pad_to_multiple_of=8,
+        )
+
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=tokenized_dataset,
+            data_collator=data_collator,
+        )
+
+        with tracer:
+            trainer.train()
+
+        print(f"✅ Test for {true_model_name} finished.")
+    except Exception as e:
+        traceback.print_exc()
+        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+
+
+def run_training_test_t2i(model_name: str):
+    print(f"🚀 Running Text-to-Image Training Test for: {model_name})")
+    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
+    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
+
+    try:
+        pipeline = AutoPipelineForText2Image.from_pretrained(
+            model_name, torch_dtype=torch.bfloat16, trust_remote_code=True
+        )
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        pipeline.to(device)
+
+        unet = pipeline.unet
+        text_encoder = pipeline.text_encoder
+        vae = pipeline.vae
+        tokenizer = pipeline.tokenizer
+        image_processor = pipeline.image_processor
+        noise_scheduler = pipeline.scheduler
+
+        print(f"Unet Class: {unet.__class__}")
+        print(f"Text Encoder Class: {text_encoder.__class__}")
+
+        with open(os.path.join(output_path, "model_info.txt"), "w") as f:
+            f.write(f"Pipeline: {pipeline.__class__}\n")
+            f.write(f"Unet: {unet.__class__}\n")
+            f.write(f"Text Encoder: {text_encoder.__class__}\n")
+
+        dataset = load_dataset("lambdalabs/pokemon-blip-captions", split="train[:100]")
+
+        optimizer = torch.optim.AdamW(
+            unet.parameters(), lr=1e-5
+        )
+
+        max_train_steps = 1
+        gradient_accumulation_steps = 4
+        global_step = 0
+
+        unet.train()
+        vae.eval()
+        text_encoder.eval()
+
+        with tracer:
+            for step, batch in enumerate(dataset):
+                if global_step >= max_train_steps:
+                    break
+
+                text_input = tokenizer(
+                    batch["text"],
+                    padding="max_length",
+                    max_length=tokenizer.model_max_length,
+                    truncation=True,
+                    return_tensors="pt",
+                )
+                pixel_values = image_processor.preprocess(
+                    batch["image"].convert("RGB"), return_tensors="pt"
+                )["pixel_values"]
+                pixel_values = pixel_values.to(device, dtype=torch.bfloat16)
+
+                with torch.no_grad():
+                    latents = vae.encode(pixel_values).latent_dist.sample()
+                    latents = latents * vae.config.scaling_factor
+
+                with torch.no_grad():
+                    prompt_embeds = pipeline.encode_prompt(
+                        prompt=batch["text"],
+                        device=device,
+                        num_images_per_prompt=1,
+                        do_classifier_free_guidance=False,
+                    )[0]
+
+                noise = torch.randn_like(latents)
+                timesteps = torch.randint(
+                    0, noise_scheduler.config.num_train_timesteps, (1,), device=device
+                ).long()
+                noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
+
+                model_pred = unet(noisy_latents, timesteps, prompt_embeds).sample
+
+                loss = F.mse_loss(model_pred.float(), noise.float(), reduction="mean")
+                loss = loss / gradient_accumulation_steps
+                loss.backward()
+
+                if (step + 1) % gradient_accumulation_steps == 0:
+                    optimizer.step()
+                    optimizer.zero_grad()
+                    global_step += 1
+                    print(
+                        f"Step: {global_step}, Loss: {loss.item() * gradient_accumulation_steps}"
+                    )
+
+        print(f"✅ Test for {true_model_name} finished.")
+    except Exception as e:
+        traceback.print_exc()
+        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+
+
+def run_training_test_t2v(model_name: str):
+    print(f"🚀 Running Text-to-Video Training Test for: {model_name})")
+    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
+    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
+
+    try:
+        pipeline = AnimateDiffPipeline.from_pretrained(
+            model_name, torch_dtype=torch.bfloat16, trust_remote_code=True
+        )
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        pipeline.to(device)
+
+        unet = pipeline.unet
+        text_encoder = pipeline.text_encoder
+        vae = pipeline.vae
+        tokenizer = pipeline.tokenizer
+        noise_scheduler = pipeline.scheduler
+
+        print(f"Unet Class: {unet.__class__}")
+        print(f"Text Encoder Class: {text_encoder.__class__}")
+        with open(os.path.join(output_path, "model_info.txt"), "w") as f:
+            f.write(f"Pipeline: {pipeline.__class__}\n")
+            f.write(f"Unet: {unet.__class__}\n")
+
+        dataset = load_dataset("microsoft/msr_vtt", split="train[:50]")
+
+        optimizer = torch.optim.AdamW(unet.parameters(), lr=1e-5)
+        max_train_steps = 1
+        global_step = 0
+
+        unet.train()
+        vae.eval()
+        text_encoder.eval()
+
+        with tracer:
+            for batch in dataset:
+                if global_step >= max_train_steps:
+                    break
+
+                frames = sample_frames_from_video(batch["video"]["path"], num_frames=16)
+                if frames is None:
+                    continue
+
+                # Preprocess inputs
+                prompt = batch["text"]
+                prompt_ids = tokenizer(
+                    prompt,
+                    return_tensors="pt",
+                    padding="max_length",
+                    max_length=tokenizer.model_max_length,
+                    truncation=True,
+                ).input_ids.to(device)
+
+                video_tensor = torch.stack(
+                    [
+                        torch.from_numpy(np.array(frame)).permute(2, 0, 1) / 127.5 - 1.0
+                        for frame in frames
+                    ]
+                ).to(device, dtype=torch.bfloat16)
+
+                with torch.no_grad():
+                    prompt_embeds = text_encoder(prompt_ids)[0]
+                    video_latents = (
+                        vae.encode(video_tensor).latent_dist.sample()
+                        * vae.config.scaling_factor
+                    )
+
+                noise = torch.randn_like(video_latents)
+                timesteps = torch.randint(
+                    0, noise_scheduler.config.num_train_timesteps, (1,), device=device
+                ).long()
+                noisy_latents = noise_scheduler.add_noise(
+                    video_latents, noise, timesteps
+                )
+
+                model_pred = unet(
+                    noisy_latents, timesteps, encoder_hidden_states=prompt_embeds
+                ).sample
+                loss = F.mse_loss(model_pred.float(), noise.float(), reduction="mean")
+                loss.backward()
+                optimizer.step()
+                optimizer.zero_grad()
+                global_step += 1
+                print(f"Step: {global_step}, Loss: {loss.item()}")
+
+        print(f"✅ Test for {true_model_name} finished.")
+    except Exception as e:
+        traceback.print_exc()
+        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+
+
+def run_training_test_i2d3(model_name: str):
+    print(f"🔶 Skipping Image-to-3D Training Test for: {model_name}")
+    print(
+        "Reason: Image-to-3D models like TripoSR/HunyuanWorld-1 are typically released as inference-only pipelines "
+        "and do not have a straightforward training/fine-tuning setup without access to the original training scripts."
+    )
+
+
+def run_training_test_a2a(model_name: str):
+    print(f"🚀 Running Any-to-Any Training Test for: {model_name})")
+    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
+    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
+
+    try:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
+        )
+        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        if processor.tokenizer.pad_token is None:
+            processor.tokenizer.pad_token = processor.tokenizer.eos_token
+        model.config.pad_token_id = processor.tokenizer.pad_token_id
+
+        print(f"Model Class: {model.__class__}")
+        print(f"Processor Class: {processor.__class__}")
+
+        with open(os.path.join(output_path, "model_info.txt"), "w") as f:
+            f.write(f"Model: {model.__class__}\n")
+            f.write(f"Processor: {processor.__class__}\n")
+
+        dataset = load_dataset("HongchengGao/TuringEyeTest", split="full")
+        dataset_sample = dataset.select(range(100))
+
+        def preprocess_function(examples):
+            model_inputs = {"input_ids": [], "labels": [], "pixel_values": []}
+
+            for i in range(len(examples["Question"])):
+                question = examples["Question"][i]
+                groundtruth = examples["Groundtruth"][i]
+                image = examples["Image"][i].convert("RGB")
+
+                prompt = [
+                    {"type": "image", "content": image},
+                    {"type": "text", "content": f"\nQuestion: {question}\nAnswer: "},
+                ]
+                full_conversation = prompt + [{"type": "text", "content": groundtruth}]
+
+                inputs = processor(
+                    full_conversation,
+                    return_tensors="pt",
+                    truncation=True,
+                    max_length=1024,
+                )
+
+                prompt_len_inputs = processor(prompt, return_tensors="pt")
+                prompt_ids_len = len(prompt_len_inputs["input_ids"][0])
+
+                input_ids = inputs["input_ids"][0]
+                labels = input_ids.clone()
+                labels[:prompt_ids_len] = -100
+
+                model_inputs["input_ids"].append(input_ids)
+                model_inputs["labels"].append(labels)
+                model_inputs["pixel_values"].append(inputs["pixel_values"][0])
+
+            return model_inputs
+
+        tokenized_dataset = dataset_sample.map(
+            preprocess_function,
+            batched=True,
+            remove_columns=dataset_sample.column_names,
+            batch_size=4,
+        )
+
+        output_dir = output_path + "/train_output"
+        training_args = TrainingArguments(
+            output_dir=output_dir,
+            per_device_train_batch_size=1,
+            gradient_accumulation_steps=4,
+            learning_rate=1e-5,
+            save_strategy="no",
+            bf16=True,
+            report_to="none",
+            max_steps=1,
+            remove_unused_columns=False,
+        )
+
+        data_collator = DataCollatorForSeq2Seq(
+            tokenizer=processor.tokenizer,
+            model=model,
+            label_pad_token_id=-100,
+            pad_to_multiple_of=8,
+        )
+
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=tokenized_dataset,
+            data_collator=data_collator,
+        )
+
+        with tracer:
+            trainer.train()
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
@@ -382,6 +825,21 @@ def main():
 
     for model_name in ImageTexttoTextModels:
         run_training_test_i2t(model_name)
+
+    for model_name in VideoTexttoTextModels:
+        run_training_test_v2t(model_name)
+
+    for model_name in TexttoImageModels:
+        run_training_test_t2i(model_name)
+
+    for model_name in TexttoVideoModels:
+        run_training_test_t2v(model_name)
+
+    for model_name in Imageto3DModels:
+        run_training_test_i2d3(model_name)
+
+    for model_name in AnytoAnyModels:
+        run_training_test_a2a(model_name)
 
 
 if __name__ == "__main__":
