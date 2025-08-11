@@ -35,7 +35,7 @@ TextGenerationMODELS = [
     # "mistralai/Magistral-Small-2507",
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
-    # "RWKV/RWKV7-Goose-World3-2.9B-HF",
+    # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world
 ]
 
 ImageTexttoTextModels = [
@@ -82,12 +82,20 @@ def run_inference_test_tg(model_name: str, apply_template: bool = False):
     true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
     output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
     tracer = APITracer(
-        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+        "torch",
+        output_path=output_path,
+        levels=[0, 1],
+        merge_output=True,
+        record_stack=True,
+        stack_format="full",
     )
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
-            model_name, device_map="auto", trust_remote_code=True
+            model_name,
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            trust_remote_code=True,
         )
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         if tokenizer.pad_token is None:

@@ -462,6 +462,7 @@ class PyTorchDialect(FrameworkDialect):
         "torch.nn.functional.handle_torch_function",
         "torch.nn.functional.has_torch_function_unary",
         "torch.optim.Optimizer.profile_hook_step",  # it will be overridden by subclass of Optimizer
+        "torch.nn.parallel.DistributedDataParallel._get_active_ddp_module",  # it will stuck RWKV
     }
 
     def get_framework_name(self) -> str:
