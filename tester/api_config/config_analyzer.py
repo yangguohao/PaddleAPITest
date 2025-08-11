@@ -1715,6 +1715,25 @@ class TensorConfig:
                     inputs=self.get_arg(api_config, 0, "x")
                     self.numpy_tensor = numpy.random.randint(0,inputs.shape[axis], size=self.shape).astype(self.dtype)
 
+            elif api_config.api_name in {"paddle.Tensor.index_put", "paddle.index_put"}:
+                if self.check_arg(api_config,1,'indices') and not self.get_arg(api_config, 3, "accumulate"):
+                    # NOTE(zrr1999): If accumulate is False, the behavior is undefined if indices contain duplicate elements in torch.
+                    
+                    inputs=self.get_arg(api_config, 0, "x")
+                    value=self.get_arg(api_config, 2, "value")
+                    inputs_numel = inputs.numel()
+                    value_numel = value.numel()
+                    if inputs_numel < value_numel:
+                        raise ValueError(
+                            f"Invalid input for paddle.index_put: inputs.numel() < value.numel() when accumulate=False. "
+                        )
+                    inputs_shape = inputs.shape
+                    value_shape = value.shape
+                    
+                    flat_indices = numpy.random.choice(inputs_numel, size=value_numel, replace=False)
+                    indices = [index.reshape(value_shape) for index in numpy.unravel_index(flat_indices, inputs_shape)]
+                    self.numpy_tensor = indices.astype(self.dtype)
+
             elif api_config.api_name == "paddle.Tensor.tile":
                 if index==1 or key=='repeat_times':
                     self.numpy_tensor = numpy.random.randint(1,128, size=self.shape).astype(self.dtype)
