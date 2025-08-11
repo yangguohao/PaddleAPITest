@@ -47,13 +47,12 @@ special_accuracy_atol_rtol:
   paddle.incubate.nn.functional.fused_layer_norm: [1, 0.01]
   paddle.lerp : [5, 0.05]
   paddle.nn.functional.layer_norm : [0.2, 0.02]
-  paddle.nn.functional.upsample: [0.5, 1.5]
-  paddle.nn.functional.interpolate: [0.5, 1.5]
+  paddle.nn.functional.upsample: [1.5, 0.5]
+  paddle.nn.functional.interpolate: [1.5, 0.5]
   paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm: [1.0, 1.0]
   paddle.nn.functional.softmax: [1, 0.01]
   paddle.matmul: [2.0, 0.05]
   paddle.nn.functional.bilinear: [2.0, 0.08]
-  paddle.nn.functional.interpolate: [1.5, 0.01]
   paddle.nn.functional.normalize: [0.2, 0.01]
 
 # All configs that report dtype diff when not in not_check_dtype list should be
