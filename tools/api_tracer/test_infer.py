@@ -50,6 +50,7 @@ ImageTexttoTextModels = [
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
+    # "echo840/MonkeyOCR",
 ]
 
 VideoTexttoTextModels = [
@@ -57,9 +58,8 @@ VideoTexttoTextModels = [
 ]
 
 TexttoImageModels = [
-    # "stabilityai/stable-diffusion-3-medium",
+    # "stabilityai/stable-diffusion-3-medium-diffusers",
     # "black-forest-labs/FLUX.1-dev",
-    # "echo840/MonkeyOCR",
     # "jieliu/SD3.5M-FlowGRPO-GenEval",
 ]
 
@@ -258,18 +258,28 @@ def run_inference_test_t2i(model_name: str):
     )
 
     try:
+        lora_ckpt_path = model_name
+        if "SD3.5M-FlowGRPO-GenEval" in model_name:
+            model_name = "stabilityai/stable-diffusion-3.5-medium"
+
+        load_kwargs = {"torch_dtype": torch.float16, "trust_remote_code": True, "device_map": "balanced"}
+        if "FLUX.1-dev" not in model_name:
+            load_kwargs["variant"] = "fp16"
         pipe = AutoPipelineForText2Image.from_pretrained(
             model_name,
-            torch_dtype=torch.float16,
-            variant="fp16",
-            trust_remote_code=True,
-        ).to("cuda")
+            **load_kwargs
+        )
 
+        if "SD3.5M-FlowGRPO-GenEval" in lora_ckpt_path:
+            from peft import PeftModel
+            pipe.transformer = PeftModel.from_pretrained(pipe.transformer, lora_ckpt_path)
+            pipe.transformer = pipe.transformer.merge_and_unload()
+        
         print(f"Pipeline Class: {pipe.__class__}")
 
         prompt = "A majestic lion jumping from a big rock, high quality, cinematic"
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad(), torch.inference_mode(), tracer:
             image = pipe(prompt=prompt, num_inference_steps=25).images[0]
 
         print(f"✅ Test for {true_model_name} finished.")
