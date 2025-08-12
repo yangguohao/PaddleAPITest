@@ -64,7 +64,7 @@ TexttoImageModels = [
 ]
 
 TexttoVideoModels = [
-    # "Wan-AI/Wan2.1-T2V-14B",
+    # "Wan-AI/Wan2.1-T2V-14B-Diffusers",
 ]
 
 Imageto3DModels = [
@@ -72,7 +72,7 @@ Imageto3DModels = [
 ]
 
 AnytoAnyModels = [
-    # "deepseek-ai/Janus-Pro-1B",
+     "/root/paddlejob/workspace/env_run/models/deepseek-ai/Janus-Pro-1B",
     # "ByteDance-Seed/BAGEL-7B-MoT",
 ]
 
@@ -307,14 +307,14 @@ def run_inference_test_t2v(model_name: str):
 
     try:
         pipe = DiffusionPipeline.from_pretrained(
-            model_name, torch_dtype=torch.float16
-        ).to("cuda")
+            model_name, torch_dtype=torch.float16, device_map="balanced"
+        )
 
         print(f"Pipeline Class: {pipe.__class__}")
 
         prompt = "A panda eating bamboo on a rock."
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad(), torch.inference_mode(), tracer:
             video_frames = pipe(prompt, num_inference_steps=25, num_frames=20).frames
 
         print(f"✅ Test for {true_model_name} finished.")
