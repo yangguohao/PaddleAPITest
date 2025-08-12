@@ -463,6 +463,8 @@ class PyTorchDialect(FrameworkDialect):
         "torch.nn.functional.has_torch_function_unary",
         "torch.optim.Optimizer.profile_hook_step",  # it will be overridden by subclass of Optimizer
         "torch.nn.parallel.DistributedDataParallel._get_active_ddp_module",  # it will stuck RWKV
+        "torch.nn.Module.get_extra_state",  # it will cause RuntimeError, and be overridden by subclass of Module
+        "torch.nn.Module.set_extra_state",  # it will cause RuntimeError, and be overridden by subclass of Module
     }
 
     def get_framework_name(self) -> str:
@@ -545,7 +547,11 @@ class PyTorchDialect(FrameworkDialect):
                             if full_cls_name in self.IGNORE_CLASSES_OR_METHODS:
                                 continue
                             # it will be overridden by subclass of Optimizer
-                            if cls_member_name == "profile_hook_step":
+                            if cls_member_name in {
+                                "profile_hook_step",
+                                "get_extra_state",
+                                "set_extra_state",
+                            }:
                                 continue
                             if isinstance(
                                 cls_member,

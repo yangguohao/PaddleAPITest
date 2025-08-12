@@ -50,7 +50,7 @@ ImageTexttoTextModels = [
     # "ByteDance/Dolphin",
     # "Salesforce/blip2-opt-2.7b",
     # "OpenGVLab/InternVL3-1B",
-    # "moonshotai/Kimi-VL-A3B-Instruct",
+    # "moonshotai/Kimi-VL-A3B-Instruct",  # need transformers<4.50
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
     # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
@@ -161,7 +161,7 @@ def run_inference_test_i2t(model_name: str):
                 device_map="auto",
                 trust_remote_code=True,
             )
-        elif "baidu" in true_model_name:
+        elif "baidu" in true_model_name or "moonshotai" in true_model_name:
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 torch_dtype=torch.bfloat16,
@@ -175,7 +175,7 @@ def run_inference_test_i2t(model_name: str):
                 device_map="cuda:0",
                 trust_remote_code=True,
             )
-            # maybe use Blip2ForConditionalGeneration Blip2Processor
+            # maybe use Blip2ForConditionalGeneration / Blip2Processor
         else:
             model = AutoModelForImageTextToText.from_pretrained(
                 model_name,
