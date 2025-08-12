@@ -7,12 +7,12 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 pip install transformers
 pip install huggingface_hub
 
-# RWKV
-pip install flash-linear-attention
-
 # image video
 pip install diffusers
 pip install decord
+
+# RWKV
+pip install flash-linear-attention
 
 # baidu
 pip install sentencepiece moviepy
@@ -20,7 +20,10 @@ pip install sentencepiece moviepy
 # OpenGVLab
 pip install timm
 
-# OCR
+# MonkeyOCR
 # refer to https://github.com/Yuliang-Liu/MonkeyOCR/blob/main/docs/install_cuda_pp.md#install-with-cuda-support
+
+# Wan-AI
+pip install ftfy
 
 ```
