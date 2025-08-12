@@ -10,9 +10,7 @@ import torch
 from api_tracer import APITracer
 from datasets import load_dataset
 from decord import VideoReader, cpu
-from diffusers.pipelines.auto_pipeline import (AutoPipelineForImage2Image,
-                                               AutoPipelineForText2Image)
-from diffusers.pipelines.pipeline_utils import DiffusionPipeline
+from diffusers.pipelines.auto_pipeline import AutoPipelineForText2Image
 from PIL import Image
 from transformers import (AutoModelForCausalLM, AutoModelForImageTextToText,
                           AutoProcessor, AutoTokenizer)
@@ -86,13 +84,9 @@ def run_training_test_tg(model_name: str):
     true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
     output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
     tracer = APITracer(
-        "torch",
-        output_path=output_path,
-        levels=[0, 1],
-        merge_output=True,
-        record_stack=True,
-        stack_format="full",
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -179,13 +173,14 @@ def run_training_test_tg(model_name: str):
             data_collator=data_collator,
         )
 
-        with tracer:
-            trainer.train()
+        trainer.train()
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 class DolphinTrainer(Trainer):
@@ -202,7 +197,8 @@ def run_training_test_i2t(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
-
+    tracer.start()
+    
     try:
         model = AutoModelForImageTextToText.from_pretrained(
             model_name,
@@ -380,13 +376,14 @@ def run_training_test_i2t(model_name: str):
             data_collator=data_collator,
         )
 
-        with tracer:
-            trainer.train()
+        trainer.train()
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def sample_frames_from_video(video_path, num_frames=8):
@@ -404,6 +401,7 @@ def run_training_test_v2t(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -502,13 +500,14 @@ def run_training_test_v2t(model_name: str):
             data_collator=data_collator,
         )
 
-        with tracer:
-            trainer.train()
+        trainer.train()
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_training_test_t2i(model_name: str):
@@ -518,6 +517,7 @@ def run_training_test_t2i(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         pipeline = AutoPipelineForText2Image.from_pretrained(
@@ -543,9 +543,7 @@ def run_training_test_t2i(model_name: str):
 
         dataset = load_dataset("lambdalabs/pokemon-blip-captions", split="train[:100]")
 
-        optimizer = torch.optim.AdamW(
-            unet.parameters(), lr=1e-5
-        )
+        optimizer = torch.optim.AdamW(unet.parameters(), lr=1e-5)
 
         max_train_steps = 1
         gradient_accumulation_steps = 4
@@ -555,59 +553,60 @@ def run_training_test_t2i(model_name: str):
         vae.eval()
         text_encoder.eval()
 
-        with tracer:
-            for step, batch in enumerate(dataset):
-                if global_step >= max_train_steps:
-                    break
+        for step, batch in enumerate(dataset):
+            if global_step >= max_train_steps:
+                break
 
-                text_input = tokenizer(
-                    batch["text"],
-                    padding="max_length",
-                    max_length=tokenizer.model_max_length,
-                    truncation=True,
-                    return_tensors="pt",
+            text_input = tokenizer(
+                batch["text"],
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            )
+            pixel_values = image_processor.preprocess(
+                batch["image"].convert("RGB"), return_tensors="pt"
+            )["pixel_values"]
+            pixel_values = pixel_values.to(device, dtype=torch.bfloat16)
+
+            with torch.no_grad():
+                latents = vae.encode(pixel_values).latent_dist.sample()
+                latents = latents * vae.config.scaling_factor
+
+            with torch.no_grad():
+                prompt_embeds = pipeline.encode_prompt(
+                    prompt=batch["text"],
+                    device=device,
+                    num_images_per_prompt=1,
+                    do_classifier_free_guidance=False,
+                )[0]
+
+            noise = torch.randn_like(latents)
+            timesteps = torch.randint(
+                0, noise_scheduler.config.num_train_timesteps, (1,), device=device
+            ).long()
+            noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
+
+            model_pred = unet(noisy_latents, timesteps, prompt_embeds).sample
+
+            loss = F.mse_loss(model_pred.float(), noise.float(), reduction="mean")
+            loss = loss / gradient_accumulation_steps
+            loss.backward()
+
+            if (step + 1) % gradient_accumulation_steps == 0:
+                optimizer.step()
+                optimizer.zero_grad()
+                global_step += 1
+                print(
+                    f"Step: {global_step}, Loss: {loss.item() * gradient_accumulation_steps}"
                 )
-                pixel_values = image_processor.preprocess(
-                    batch["image"].convert("RGB"), return_tensors="pt"
-                )["pixel_values"]
-                pixel_values = pixel_values.to(device, dtype=torch.bfloat16)
-
-                with torch.no_grad():
-                    latents = vae.encode(pixel_values).latent_dist.sample()
-                    latents = latents * vae.config.scaling_factor
-
-                with torch.no_grad():
-                    prompt_embeds = pipeline.encode_prompt(
-                        prompt=batch["text"],
-                        device=device,
-                        num_images_per_prompt=1,
-                        do_classifier_free_guidance=False,
-                    )[0]
-
-                noise = torch.randn_like(latents)
-                timesteps = torch.randint(
-                    0, noise_scheduler.config.num_train_timesteps, (1,), device=device
-                ).long()
-                noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
-
-                model_pred = unet(noisy_latents, timesteps, prompt_embeds).sample
-
-                loss = F.mse_loss(model_pred.float(), noise.float(), reduction="mean")
-                loss = loss / gradient_accumulation_steps
-                loss.backward()
-
-                if (step + 1) % gradient_accumulation_steps == 0:
-                    optimizer.step()
-                    optimizer.zero_grad()
-                    global_step += 1
-                    print(
-                        f"Step: {global_step}, Loss: {loss.item() * gradient_accumulation_steps}"
-                    )
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_training_test_t2v(model_name: str):
@@ -617,6 +616,7 @@ def run_training_test_t2v(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         pipeline = AnimateDiffPipeline.from_pretrained(
@@ -647,61 +647,62 @@ def run_training_test_t2v(model_name: str):
         vae.eval()
         text_encoder.eval()
 
-        with tracer:
-            for batch in dataset:
-                if global_step >= max_train_steps:
-                    break
+        for batch in dataset:
+            if global_step >= max_train_steps:
+                break
 
-                frames = sample_frames_from_video(batch["video"]["path"], num_frames=16)
-                if frames is None:
-                    continue
+            frames = sample_frames_from_video(batch["video"]["path"], num_frames=16)
+            if frames is None:
+                continue
 
-                # Preprocess inputs
-                prompt = batch["text"]
-                prompt_ids = tokenizer(
-                    prompt,
-                    return_tensors="pt",
-                    padding="max_length",
-                    max_length=tokenizer.model_max_length,
-                    truncation=True,
-                ).input_ids.to(device)
+            # Preprocess inputs
+            prompt = batch["text"]
+            prompt_ids = tokenizer(
+                prompt,
+                return_tensors="pt",
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+            ).input_ids.to(device)
 
-                video_tensor = torch.stack(
-                    [
-                        torch.from_numpy(np.array(frame)).permute(2, 0, 1) / 127.5 - 1.0
-                        for frame in frames
-                    ]
-                ).to(device, dtype=torch.bfloat16)
+            video_tensor = torch.stack(
+                [
+                    torch.from_numpy(np.array(frame)).permute(2, 0, 1) / 127.5 - 1.0
+                    for frame in frames
+                ]
+            ).to(device, dtype=torch.bfloat16)
 
-                with torch.no_grad():
-                    prompt_embeds = text_encoder(prompt_ids)[0]
-                    video_latents = (
-                        vae.encode(video_tensor).latent_dist.sample()
-                        * vae.config.scaling_factor
-                    )
-
-                noise = torch.randn_like(video_latents)
-                timesteps = torch.randint(
-                    0, noise_scheduler.config.num_train_timesteps, (1,), device=device
-                ).long()
-                noisy_latents = noise_scheduler.add_noise(
-                    video_latents, noise, timesteps
+            with torch.no_grad():
+                prompt_embeds = text_encoder(prompt_ids)[0]
+                video_latents = (
+                    vae.encode(video_tensor).latent_dist.sample()
+                    * vae.config.scaling_factor
                 )
 
-                model_pred = unet(
-                    noisy_latents, timesteps, encoder_hidden_states=prompt_embeds
-                ).sample
-                loss = F.mse_loss(model_pred.float(), noise.float(), reduction="mean")
-                loss.backward()
-                optimizer.step()
-                optimizer.zero_grad()
-                global_step += 1
-                print(f"Step: {global_step}, Loss: {loss.item()}")
+            noise = torch.randn_like(video_latents)
+            timesteps = torch.randint(
+                0, noise_scheduler.config.num_train_timesteps, (1,), device=device
+            ).long()
+            noisy_latents = noise_scheduler.add_noise(
+                video_latents, noise, timesteps
+            )
+
+            model_pred = unet(
+                noisy_latents, timesteps, encoder_hidden_states=prompt_embeds
+            ).sample
+            loss = F.mse_loss(model_pred.float(), noise.float(), reduction="mean")
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            global_step += 1
+            print(f"Step: {global_step}, Loss: {loss.item()}")
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_training_test_i2d3(model_name: str):
@@ -719,6 +720,7 @@ def run_training_test_a2a(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -810,13 +812,14 @@ def run_training_test_a2a(model_name: str):
             data_collator=data_collator,
         )
 
-        with tracer:
-            trainer.train()
+        trainer.train()
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def main():

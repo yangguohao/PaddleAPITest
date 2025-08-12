@@ -27,4 +27,6 @@ pip install timm
 # Wan-AI
 pip install ftfy
 
+# Keye
+pip install "keye-vl-utils[decord]==1.0.0"
 ```
