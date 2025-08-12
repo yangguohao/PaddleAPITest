@@ -5,11 +5,9 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 import traceback
 
-import numpy as np
 import torch
 import torchvision.transforms as T
 from api_tracer import APITracer
-from decord import VideoReader, cpu
 from diffusers.pipelines.auto_pipeline import (AutoPipelineForImage2Image,
                                                AutoPipelineForText2Image)
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
@@ -79,18 +77,14 @@ AnytoAnyModels = [
 ]
 
 
-def run_inference_test_tg(model_name: str, apply_template: bool = False):
+def run_inference_test_tg(model_name: str):
     print(f"🚀 Running Text Generation Inference Test for: {model_name}")
     true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
     output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
     tracer = APITracer(
-        "torch",
-        output_path=output_path,
-        levels=[0, 1],
-        merge_output=True,
-        record_stack=True,
-        stack_format="full",
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -112,7 +106,7 @@ def run_inference_test_tg(model_name: str, apply_template: bool = False):
             f.write(f"Tokenizer: {tokenizer.__class__}\n")
 
         prompt = "Hello! Can you tell me how to learn PyTorch?"
-        if apply_template:
+        if "RWKV" in true_model_name:
             messages = [{"role": "user", "content": prompt}]
             text = tokenizer.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
@@ -123,7 +117,7 @@ def run_inference_test_tg(model_name: str, apply_template: bool = False):
                 prompt, return_tensors="pt", padding=True, return_attention_mask=True
             ).to("cuda")
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad():
             outputs = model.generate(
                 inputs["input_ids"],
                 num_return_sequences=1,
@@ -142,6 +136,8 @@ def run_inference_test_tg(model_name: str, apply_template: bool = False):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_inference_test_i2t(model_name: str):
@@ -152,6 +148,7 @@ def run_inference_test_i2t(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         if "OpenGVLab" in true_model_name:
@@ -262,15 +259,14 @@ def run_inference_test_i2t(model_name: str):
 
         if "OpenGVLab" in true_model_name:
             generation_config = dict(max_new_tokens=1024, do_sample=False)
-            with tracer:
-                outputs = model.chat(
-                    tokenizer,
-                    pixel_values,
-                    prompt,
-                    generation_config,
-                )
+            outputs = model.chat(
+                tokenizer,
+                pixel_values,
+                prompt,
+                generation_config,
+            )
         else:
-            with torch.no_grad() and tracer:
+            with torch.no_grad():
                 outputs = model.generate(
                     **inputs,
                     max_new_tokens=100,
@@ -289,6 +285,8 @@ def run_inference_test_i2t(model_name: str):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_inference_test_v2t(model_name: str):
@@ -299,38 +297,57 @@ def run_inference_test_v2t(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     video_path = "tools/api_tracer/sample_video.mp4"
     try:
         model = AutoModel.from_pretrained(
             model_name, trust_remote_code=True, torch_dtype=torch.bfloat16
         ).to("cuda")
-        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
 
         print(f"Model Class: {model.__class__}")
-        print(f"Tokenizer Class: {tokenizer.__class__}")
+        print(f"Processor Class: {processor.__class__}")
 
-        vr = VideoReader(video_path, ctx=cpu(0))
-        frame_indices = np.linspace(0, len(vr) - 1, 8, dtype=int)
-        video_frames = vr.get_batch(frame_indices).asnumpy()
-
-        prompt = "describe the video in detail"
         messages = [
-            {"role": "user", "content": f"Received a video. <vi_soi>{prompt}<vi_eoi>"}
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "video",
+                        "video": "tools/api_tracer/sample_video.mp4",
+                        "max_pixels": 1280 * 720,
+                        "fps": 1.0,
+                    },
+                    {"type": "text", "text": "Describe this video."},
+                ],
+            }
         ]
-        text = tokenizer.apply_chat_template(
+        text = processor.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
 
-        with torch.no_grad() and tracer:
+        from keye_vl_utils import process_vision_info
+
+        image_inputs, video_inputs, video_kwargs = process_vision_info(
+            messages, return_video_kwargs=True
+        )
+        inputs = processor(
+            text=[text],
+            images=image_inputs,
+            videos=video_inputs,
+            padding=True,
+            return_tensors="pt",
+        ).to("cuda")
+
+        with torch.no_grad():
             outputs = model.generate(
-                text=text,
-                video=torch.tensor(video_frames, dtype=torch.bfloat16).to("cuda"),
+                **inputs,
                 do_sample=False,
                 max_new_tokens=100,
             )
 
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        response = processor.decode(outputs[0], skip_special_tokens=True)
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
@@ -338,6 +355,8 @@ def run_inference_test_v2t(model_name: str):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_inference_test_t2i(model_name: str):
@@ -348,36 +367,43 @@ def run_inference_test_t2i(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         lora_ckpt_path = model_name
         if "SD3.5M-FlowGRPO-GenEval" in model_name:
             model_name = "stabilityai/stable-diffusion-3.5-medium"
 
-        load_kwargs = {"torch_dtype": torch.float16, "trust_remote_code": True, "device_map": "balanced"}
+        load_kwargs = {
+            "torch_dtype": torch.float16,
+            "trust_remote_code": True,
+            "device_map": "balanced",
+        }
         if "FLUX.1-dev" not in model_name:
             load_kwargs["variant"] = "fp16"
-        pipe = AutoPipelineForText2Image.from_pretrained(
-            model_name,
-            **load_kwargs
-        )
+        pipe = AutoPipelineForText2Image.from_pretrained(model_name, **load_kwargs)
 
         if "SD3.5M-FlowGRPO-GenEval" in lora_ckpt_path:
             from peft import PeftModel
-            pipe.transformer = PeftModel.from_pretrained(pipe.transformer, lora_ckpt_path)
+
+            pipe.transformer = PeftModel.from_pretrained(
+                pipe.transformer, lora_ckpt_path
+            )
             pipe.transformer = pipe.transformer.merge_and_unload()
-        
+
         print(f"Pipeline Class: {pipe.__class__}")
 
         prompt = "A majestic lion jumping from a big rock, high quality, cinematic"
 
-        with torch.no_grad(), torch.inference_mode(), tracer:
+        with torch.no_grad(), torch.inference_mode():
             image = pipe(prompt=prompt, num_inference_steps=25).images[0]
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_inference_test_t2v(model_name: str):
@@ -388,6 +414,7 @@ def run_inference_test_t2v(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         pipe = DiffusionPipeline.from_pretrained(
@@ -398,13 +425,15 @@ def run_inference_test_t2v(model_name: str):
 
         prompt = "A panda eating bamboo on a rock."
 
-        with torch.no_grad(), torch.inference_mode(), tracer:
+        with torch.no_grad(), torch.inference_mode():
             video_frames = pipe(prompt, num_inference_steps=25, num_frames=20).frames
 
         print(f"✅ Test for {true_model_name} finished.")
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_inference_test_i2d(model_name: str):
@@ -415,6 +444,7 @@ def run_inference_test_i2d(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     image_path = "tools/api_tracer/sample_image.jpg"
     if not os.path.exists(image_path):
@@ -430,7 +460,7 @@ def run_inference_test_i2d(model_name: str):
 
         input_image = Image.open(image_path).convert("RGB").resize((256, 256))
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad():
             images = pipe(
                 input_image, num_inference_steps=64, frame_size=256, output_type="pil"
             ).images
@@ -439,6 +469,8 @@ def run_inference_test_i2d(model_name: str):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def run_inference_test_a2a(model_name: str):
@@ -449,6 +481,7 @@ def run_inference_test_a2a(model_name: str):
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
+    tracer.start()
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -482,7 +515,7 @@ def run_inference_test_a2a(model_name: str):
             "cuda", dtype=torch.bfloat16
         )
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad():
             outputs = model.generate(**inputs, max_new_tokens=100)
 
         response = processor.batch_decode(outputs, skip_special_tokens=True)[0].strip()
@@ -494,14 +527,13 @@ def run_inference_test_a2a(model_name: str):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+    finally:
+        tracer.stop()
 
 
 def main():
     for model_name in TextGenerationMODELS:
-        if "RWKV" in model_name:
-            run_inference_test_tg(model_name, apply_template=True)
-        else:
-            run_inference_test_tg(model_name)
+        run_inference_test_tg(model_name)
 
     for model_name in ImageTexttoTextModels:
         run_inference_test_i2t(model_name)
