@@ -4,6 +4,7 @@ os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 import traceback
+from pathlib import Path
 
 import torch
 import torchvision.transforms as T
@@ -16,6 +17,8 @@ from torchvision.transforms.functional import InterpolationMode
 from transformers import (AutoModel, AutoModelForCausalLM,
                           AutoModelForImageTextToText, AutoProcessor,
                           AutoTokenizer)
+
+MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
@@ -49,7 +52,7 @@ ImageTexttoTextModels = [
     # "Salesforce/blip2-opt-2.7b",
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",  # need transformers<4.50
-    # "XiaomiMiMo/MiMo-VL-7B-SFT",
+    "XiaomiMiMo/MiMo-VL-7B-SFT",
     # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
 
@@ -79,8 +82,8 @@ AnytoAnyModels = [
 
 def run_inference_test_tg(model_name: str):
     print(f"🚀 Running Text Generation Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
@@ -88,12 +91,12 @@ def run_inference_test_tg(model_name: str):
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
-            model_name,
+            model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
         )
-        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
             tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -106,7 +109,7 @@ def run_inference_test_tg(model_name: str):
             f.write(f"Tokenizer: {tokenizer.__class__}\n")
 
         prompt = "Hello! Can you tell me how to learn PyTorch?"
-        if "RWKV" in true_model_name:
+        if "RWKV" in model_name:
             messages = [{"role": "user", "content": prompt}]
             text = tokenizer.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
@@ -132,18 +135,18 @@ def run_inference_test_tg(model_name: str):
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_inference_test_i2t(model_name: str):
     print(f"🚀 Running Image2Text Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     os.makedirs(output_path, exist_ok=True)
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
@@ -151,23 +154,23 @@ def run_inference_test_i2t(model_name: str):
     tracer.start()
 
     try:
-        if "OpenGVLab" in true_model_name:
+        if "OpenGVLab" in model_name:
             model = AutoModel.from_pretrained(
-                model_name,
+                model_path,
                 torch_dtype=torch.bfloat16,
                 device_map="auto",
                 trust_remote_code=True,
             )
-        elif "baidu" in true_model_name or "moonshotai" in true_model_name:
+        elif "baidu" in model_name or "moonshotai" in model_name:
             model = AutoModelForCausalLM.from_pretrained(
-                model_name,
+                model_path,
                 torch_dtype=torch.bfloat16,
                 device_map="auto",
                 trust_remote_code=True,
             )
-        elif "Salesforce" in true_model_name:
+        elif "Salesforce" in model_name:
             model = AutoModelForImageTextToText.from_pretrained(
-                model_name,
+                model_path,
                 torch_dtype=torch.bfloat16,
                 device_map="cuda:0",
                 trust_remote_code=True,
@@ -175,12 +178,12 @@ def run_inference_test_i2t(model_name: str):
             # maybe use Blip2ForConditionalGeneration / Blip2Processor
         else:
             model = AutoModelForImageTextToText.from_pretrained(
-                model_name,
+                model_path,
                 torch_dtype=torch.bfloat16,
                 device_map="auto",
                 trust_remote_code=True,
             )
-        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
 
         print(f"Model Class: {model.__class__}")
         print(f"Processor Class: {processor.__class__}")
@@ -191,7 +194,7 @@ def run_inference_test_i2t(model_name: str):
 
         question = "What is in this image?"
         image_path = "tools/api_tracer/sample_image.jpg"
-        if "OpenGVLab" in true_model_name:
+        if "OpenGVLab" in model_name:
             tokenizer = AutoTokenizer.from_pretrained(
                 model_name, trust_remote_code=True, use_fast=False
             )
@@ -205,7 +208,7 @@ def run_inference_test_i2t(model_name: str):
                 ]
             )
             pixel_values = transform(image).unsqueeze(0).to("cuda", torch.bfloat16)
-        elif "baidu" in true_model_name:
+        elif "baidu" in model_name:
             model.add_image_preprocess(processor)
             conversation = [
                 {
@@ -257,7 +260,7 @@ def run_inference_test_i2t(model_name: str):
                 "cuda", torch.bfloat16
             )
 
-        if "OpenGVLab" in true_model_name:
+        if "OpenGVLab" in model_name:
             generation_config = dict(max_new_tokens=1024, do_sample=False)
             outputs = model.chat(
                 tokenizer,
@@ -273,7 +276,7 @@ def run_inference_test_i2t(model_name: str):
                     do_sample=False,
                 )
 
-        if "OpenGVLab" in true_model_name:
+        if "OpenGVLab" in model_name:
             response = outputs
         else:
             response = processor.decode(outputs[0], skip_special_tokens=True)
@@ -281,18 +284,18 @@ def run_inference_test_i2t(model_name: str):
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_inference_test_v2t(model_name: str):
     print(f"🚀 Running Video2Text Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     os.makedirs(output_path, exist_ok=True)
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
@@ -302,9 +305,9 @@ def run_inference_test_v2t(model_name: str):
     video_path = "tools/api_tracer/sample_video.mp4"
     try:
         model = AutoModel.from_pretrained(
-            model_name, trust_remote_code=True, torch_dtype=torch.bfloat16
+            model_path, trust_remote_code=True, torch_dtype=torch.bfloat16
         ).to("cuda")
-        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
 
         print(f"Model Class: {model.__class__}")
         print(f"Processor Class: {processor.__class__}")
@@ -315,7 +318,7 @@ def run_inference_test_v2t(model_name: str):
                 "content": [
                     {
                         "type": "video",
-                        "video": "tools/api_tracer/sample_video.mp4",
+                        "video": video_path,
                         "max_pixels": 1280 * 720,
                         "fps": 1.0,
                     },
@@ -351,18 +354,18 @@ def run_inference_test_v2t(model_name: str):
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_inference_test_t2i(model_name: str):
     print(f"🚀 Running Text2Image Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     os.makedirs(output_path, exist_ok=True)
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
@@ -381,7 +384,7 @@ def run_inference_test_t2i(model_name: str):
         }
         if "FLUX.1-dev" not in model_name:
             load_kwargs["variant"] = "fp16"
-        pipe = AutoPipelineForText2Image.from_pretrained(model_name, **load_kwargs)
+        pipe = AutoPipelineForText2Image.from_pretrained(model_path, **load_kwargs)
 
         if "SD3.5M-FlowGRPO-GenEval" in lora_ckpt_path:
             from peft import PeftModel
@@ -398,18 +401,18 @@ def run_inference_test_t2i(model_name: str):
         with torch.no_grad(), torch.inference_mode():
             image = pipe(prompt=prompt, num_inference_steps=25).images[0]
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_inference_test_t2v(model_name: str):
     print(f"🚀 Running Text2Video Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     os.makedirs(output_path, exist_ok=True)
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
@@ -418,7 +421,7 @@ def run_inference_test_t2v(model_name: str):
 
     try:
         pipe = DiffusionPipeline.from_pretrained(
-            model_name, torch_dtype=torch.float16, device_map="balanced"
+            model_path, torch_dtype=torch.float16, device_map="balanced"
         )
 
         print(f"Pipeline Class: {pipe.__class__}")
@@ -428,18 +431,18 @@ def run_inference_test_t2v(model_name: str):
         with torch.no_grad(), torch.inference_mode():
             video_frames = pipe(prompt, num_inference_steps=25, num_frames=20).frames
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_inference_test_i2d(model_name: str):
     print(f"🚀 Running Image23D Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     os.makedirs(output_path, exist_ok=True)
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
@@ -453,7 +456,7 @@ def run_inference_test_i2d(model_name: str):
 
     try:
         pipe = AutoPipelineForImage2Image.from_pretrained(
-            model_name, torch_dtype=torch.float16, trust_remote_code=True
+            model_path, torch_dtype=torch.float16, trust_remote_code=True
         ).to("cuda")
 
         print(f"Pipeline Class: {pipe.__class__}")
@@ -465,18 +468,18 @@ def run_inference_test_i2d(model_name: str):
                 input_image, num_inference_steps=64, frame_size=256, output_type="pil"
             ).images
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_inference_test_a2a(model_name: str):
     print(f"🚀 Running Any2Any Inference Test for: {model_name}")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_infer/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_infer/{model_name}"
     os.makedirs(output_path, exist_ok=True)
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
@@ -485,12 +488,12 @@ def run_inference_test_a2a(model_name: str):
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
-            model_name,
+            model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
         ).eval()
-        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
 
         print(f"Model Class: {model.__class__}")
         print(f"Processor Class: {processor.__class__}")
@@ -523,10 +526,10 @@ def run_inference_test_a2a(model_name: str):
         print("\n--- Generated Response ---")
         print(response)
         print("--------------------------\n")
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during inference for {true_model_name}: {e}")
+        print(f"❌ An error occurred during inference for {model_name}: {e}")
     finally:
         tracer.stop()
 
