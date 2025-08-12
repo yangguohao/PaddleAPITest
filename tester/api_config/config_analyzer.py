@@ -1869,12 +1869,32 @@ class TensorConfig:
                     self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-5, max=5)
 
             elif api_config.api_name == "paddle.Tensor.__rpow__":
+                dtype = self.dtype
+                def get_max(value, dtype_max, default_max = 5):
+                    value_max = default_max
+                    if isinstance(other, (int, float, bool, complex, numpy.number)):
+                        assert value > 0, "other should be > 0 for paddle.Tensor.__rpow__"
+                        if value < 1:
+                            # value**(-max) < MAX => (1/value)**max < MAX
+                            value = 1/value 
+                        ln_value = math.log(value)
+                        # dy/dx = y*ln(value) < MAX, y < MAX => y*max(ln(value), 1) < MAX
+                        output_max = dtype_max/max(1, ln_value)
+                        value_max = math.log(output_max)/ln_value
+                        if isinstance(value, int):
+                            value_max = math.floor(value_max)
+                    return value_max
+                
                 # paddle.Tensor.__rpow__(a, b) => b ^ a, where a is self and b is other
                 if self.check_arg(api_config, 0, "self"):
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-5, max=5)
+                    other = self.get_arg(api_config, 1, "other")
+                    value_max = get_max(other, numpy.finfo(self.dtype).max)
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
                 else:
                     # self.check_arg(api_config, 1, "other"):
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
+                    self = self.get_arg(api_config, 0, "self")
+                    value_max = get_max(other, numpy.finfo(self.dtype).max, 10)
+                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
 
             elif api_config.api_name == "paddle.nn.functional.sigmoid_focal_loss":
                 if self.check_arg(api_config, 1, "label"):
