@@ -74,7 +74,7 @@ Imageto3DModels = [
 ]
 
 AnytoAnyModels = [
-     "/root/paddlejob/workspace/env_run/models/deepseek-ai/Janus-Pro-1B",
+    # "deepseek-ai/Janus-Pro-1B",
     # "ByteDance-Seed/BAGEL-7B-MoT",
 ]
 
