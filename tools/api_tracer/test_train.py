@@ -4,6 +4,7 @@ os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 import traceback
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -18,6 +19,8 @@ from transformers.data.data_collator import (DataCollatorForLanguageModeling,
                                              DataCollatorForSeq2Seq)
 from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
+
+MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
@@ -81,8 +84,8 @@ AnytoAnyModels = [
 
 def run_training_test_tg(model_name: str):
     print(f"🚀 Running Text Generation Training Test for: {model_name})")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
@@ -90,17 +93,17 @@ def run_training_test_tg(model_name: str):
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
-            model_name,
+            model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
             use_cache=False,
         )
-        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
 
-        if "Llama" in true_model_name:
+        if "Llama" in model_name:
             llama_chat_template = (
                 "{% for message in messages %}"
                 "{% if message['role'] == 'system' %}"
@@ -148,7 +151,7 @@ def run_training_test_tg(model_name: str):
             remove_columns=next(iter(dataset)).keys(),
         )
 
-        gradient_checkpointing = False if "RWKV" in true_model_name else True
+        gradient_checkpointing = False if "RWKV" in model_name else True
 
         output_dir = output_path + "/train_output"
         training_args = TrainingArguments(
@@ -175,10 +178,10 @@ def run_training_test_tg(model_name: str):
 
         trainer.train()
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+        print(f"❌ An error occurred during training for {model_name}: {e}")
     finally:
         tracer.stop()
 
@@ -192,22 +195,22 @@ class DolphinTrainer(Trainer):
 
 def run_training_test_i2t(model_name: str):
     print(f"🚀 Running Image2Text Training Test for: {model_name})")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
     tracer.start()
-    
+
     try:
         model = AutoModelForImageTextToText.from_pretrained(
-            model_name,
+            model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
         )
         processor = AutoProcessor.from_pretrained(
-            model_name,
+            model_path,
             trust_remote_code=True,
             # use_fast=False,  # this will cause error in GLM-4.1V
         )
@@ -216,7 +219,7 @@ def run_training_test_i2t(model_name: str):
 
         model.config.pad_token_id = processor.tokenizer.pad_token_id
 
-        if "Dolphin" in true_model_name:
+        if "Dolphin" in model_name:
             model.config.decoder.pad_token_id = model.config.pad_token_id
             if processor.tokenizer.bos_token_id is not None:
                 model.config.decoder_start_token_id = processor.tokenizer.bos_token_id
@@ -367,7 +370,7 @@ def run_training_test_i2t(model_name: str):
             pad_to_multiple_of=8,
         )
 
-        TrainerClass = DolphinTrainer if "Dolphin" in true_model_name else Trainer
+        TrainerClass = DolphinTrainer if "Dolphin" in model_name else Trainer
 
         trainer = TrainerClass(
             model=model,
@@ -378,10 +381,10 @@ def run_training_test_i2t(model_name: str):
 
         trainer.train()
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+        print(f"❌ An error occurred during training for {model_name}: {e}")
     finally:
         tracer.stop()
 
@@ -396,8 +399,8 @@ def sample_frames_from_video(video_path, num_frames=8):
 
 def run_training_test_v2t(model_name: str):
     print(f"🚀 Running Video-Text-to-Text Training Test for: {model_name})")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
@@ -405,12 +408,12 @@ def run_training_test_v2t(model_name: str):
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
-            model_name,
+            model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
         )
-        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
         if processor.tokenizer.pad_token is None:
             processor.tokenizer.pad_token = processor.tokenizer.eos_token
         model.config.pad_token_id = processor.tokenizer.pad_token_id
@@ -502,18 +505,18 @@ def run_training_test_v2t(model_name: str):
 
         trainer.train()
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+        print(f"❌ An error occurred during training for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_training_test_t2i(model_name: str):
     print(f"🚀 Running Text-to-Image Training Test for: {model_name})")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
@@ -521,7 +524,7 @@ def run_training_test_t2i(model_name: str):
 
     try:
         pipeline = AutoPipelineForText2Image.from_pretrained(
-            model_name, torch_dtype=torch.bfloat16, trust_remote_code=True
+            model_path, torch_dtype=torch.bfloat16, trust_remote_code=True
         )
         device = "cuda" if torch.cuda.is_available() else "cpu"
         pipeline.to(device)
@@ -601,18 +604,18 @@ def run_training_test_t2i(model_name: str):
                     f"Step: {global_step}, Loss: {loss.item() * gradient_accumulation_steps}"
                 )
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+        print(f"❌ An error occurred during training for {model_name}: {e}")
     finally:
         tracer.stop()
 
 
 def run_training_test_t2v(model_name: str):
     print(f"🚀 Running Text-to-Video Training Test for: {model_name})")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
@@ -620,7 +623,7 @@ def run_training_test_t2v(model_name: str):
 
     try:
         pipeline = AnimateDiffPipeline.from_pretrained(
-            model_name, torch_dtype=torch.bfloat16, trust_remote_code=True
+            model_path, torch_dtype=torch.bfloat16, trust_remote_code=True
         )
         device = "cuda" if torch.cuda.is_available() else "cpu"
         pipeline.to(device)
@@ -683,9 +686,7 @@ def run_training_test_t2v(model_name: str):
             timesteps = torch.randint(
                 0, noise_scheduler.config.num_train_timesteps, (1,), device=device
             ).long()
-            noisy_latents = noise_scheduler.add_noise(
-                video_latents, noise, timesteps
-            )
+            noisy_latents = noise_scheduler.add_noise(video_latents, noise, timesteps)
 
             model_pred = unet(
                 noisy_latents, timesteps, encoder_hidden_states=prompt_embeds
@@ -697,10 +698,10 @@ def run_training_test_t2v(model_name: str):
             global_step += 1
             print(f"Step: {global_step}, Loss: {loss.item()}")
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+        print(f"❌ An error occurred during training for {model_name}: {e}")
     finally:
         tracer.stop()
 
@@ -715,8 +716,8 @@ def run_training_test_i2d3(model_name: str):
 
 def run_training_test_a2a(model_name: str):
     print(f"🚀 Running Any-to-Any Training Test for: {model_name})")
-    true_model_name = "/".join(model_name.rsplit("/", 2)[-2:])
-    output_path = f"tools/api_tracer/trace_output_test_train/{true_model_name}"
+    model_path = MODELS_DIR / model_name
+    output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
     tracer = APITracer(
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
@@ -724,12 +725,12 @@ def run_training_test_a2a(model_name: str):
 
     try:
         model = AutoModelForCausalLM.from_pretrained(
-            model_name,
+            model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
             trust_remote_code=True,
         )
-        processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
         if processor.tokenizer.pad_token is None:
             processor.tokenizer.pad_token = processor.tokenizer.eos_token
         model.config.pad_token_id = processor.tokenizer.pad_token_id
@@ -814,10 +815,10 @@ def run_training_test_a2a(model_name: str):
 
         trainer.train()
 
-        print(f"✅ Test for {true_model_name} finished.")
+        print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
-        print(f"❌ An error occurred during training for {true_model_name}: {e}")
+        print(f"❌ An error occurred during training for {model_name}: {e}")
     finally:
         tracer.stop()
 
