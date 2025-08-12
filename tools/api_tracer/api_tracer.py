@@ -2,7 +2,12 @@ import os
 import signal
 import sys
 import warnings
-from typing import List, Literal, TypedDict, Union, Unpack
+from typing import List, Literal, TypedDict, Union
+
+try:
+    from typing import Unpack
+except ImportError:
+    from typing_extensions import Unpack
 
 from config_serializer import ConfigSerializer
 from framework_dialect import FrameworkDialect, TracingHook

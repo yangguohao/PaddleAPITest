@@ -7,12 +7,14 @@ import traceback
 
 import numpy as np
 import torch
+import torchvision.transforms as T
 from api_tracer import APITracer
 from decord import VideoReader, cpu
 from diffusers.pipelines.auto_pipeline import (AutoPipelineForImage2Image,
                                                AutoPipelineForText2Image)
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from PIL import Image
+from torchvision.transforms.functional import InterpolationMode
 from transformers import (AutoModel, AutoModelForCausalLM,
                           AutoModelForImageTextToText, AutoProcessor,
                           AutoTokenizer)
@@ -35,7 +37,7 @@ TextGenerationMODELS = [
     # "mistralai/Magistral-Small-2507",
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
-    # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world
+    # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world, need transformers<4.50
 ]
 
 ImageTexttoTextModels = [
@@ -50,7 +52,7 @@ ImageTexttoTextModels = [
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
-    # "echo840/MonkeyOCR",
+    # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
 
 VideoTexttoTextModels = [
@@ -72,7 +74,7 @@ Imageto3DModels = [
 ]
 
 AnytoAnyModels = [
-     "/root/paddlejob/workspace/env_run/models/deepseek-ai/Janus-Pro-1B",
+    # "deepseek-ai/Janus-Pro-1B",
     # "ByteDance-Seed/BAGEL-7B-MoT",
 ]
 
@@ -115,11 +117,11 @@ def run_inference_test_tg(model_name: str, apply_template: bool = False):
             text = tokenizer.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
             )
-            inputs = tokenizer([text], return_tensors="pt").to(model.device)
+            inputs = tokenizer([text], return_tensors="pt").to("cuda")
         else:
             inputs = tokenizer(
                 prompt, return_tensors="pt", padding=True, return_attention_mask=True
-            ).to(model.device)
+            ).to("cuda")
 
         with torch.no_grad() and tracer:
             outputs = model.generate(
@@ -152,12 +154,35 @@ def run_inference_test_i2t(model_name: str):
     )
 
     try:
-        model = AutoModelForImageTextToText.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16,
-            device_map="auto",
-            trust_remote_code=True,
-        ).eval()
+        if "OpenGVLab" in true_model_name:
+            model = AutoModel.from_pretrained(
+                model_name,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
+        elif "baidu" in true_model_name:
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
+        elif "Salesforce" in true_model_name:
+            model = AutoModelForImageTextToText.from_pretrained(
+                model_name,
+                torch_dtype=torch.bfloat16,
+                device_map="cuda:0",
+                trust_remote_code=True,
+            )
+            # maybe use Blip2ForConditionalGeneration Blip2Processor
+        else:
+            model = AutoModelForImageTextToText.from_pretrained(
+                model_name,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
         processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
 
         print(f"Model Class: {model.__class__}")
@@ -168,35 +193,94 @@ def run_inference_test_i2t(model_name: str):
             f.write(f"Processor: {processor.__class__}\n")
 
         question = "What is in this image?"
-        conversation = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": question},
-                    {"type": "image"},
-                ],
-            }
-        ]
-        if hasattr(processor, "chat_template") and processor.chat_template is not None:
-            prompt = processor.apply_chat_template(
-                conversation, add_generation_prompt=True
+        image_path = "tools/api_tracer/sample_image.jpg"
+        if "OpenGVLab" in true_model_name:
+            tokenizer = AutoTokenizer.from_pretrained(
+                model_name, trust_remote_code=True, use_fast=False
             )
+            prompt = f"<image>\n{question}"
+            image = Image.open(image_path).convert("RGB")
+            transform = T.Compose(
+                [
+                    T.Resize((448, 448), interpolation=InterpolationMode.BICUBIC),
+                    T.ToTensor(),
+                    T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+                ]
+            )
+            pixel_values = transform(image).unsqueeze(0).to("cuda", torch.bfloat16)
+        elif "baidu" in true_model_name:
+            model.add_image_preprocess(processor)
+            conversation = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": question},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": image_path},
+                        },
+                    ],
+                }
+            ]
+            text = processor.apply_chat_template(
+                conversation,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=False,
+            )
+            image_inputs, video_inputs = processor.process_vision_info(conversation)
+            inputs = processor(
+                text=[text],
+                images=image_inputs,
+                videos=video_inputs,
+                padding=True,
+                return_tensors="pt",
+            ).to("cuda", torch.bfloat16)
         else:
-            prompt = f"<|im_start|>user\n<image>\n{question}<|im_end|>\n<|im_start|>assistant\n"
-
-        image = Image.open("tools/api_tracer/baidu.jpg")
-        inputs = processor(images=image, text=prompt, return_tensors="pt").to(
-            model.device, torch.float16
-        )
-
-        with torch.no_grad() and tracer:
-            outputs = model.generate(
-                **inputs,
-                max_new_tokens=100,
-                do_sample=False,
+            conversation = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": question},
+                        {"type": "image"},
+                    ],
+                }
+            ]
+            if (
+                hasattr(processor, "chat_template")
+                and processor.chat_template is not None
+            ):
+                prompt = processor.apply_chat_template(
+                    conversation, add_generation_prompt=True
+                )
+            else:
+                prompt = f"<|im_start|>user\n<image>\n{question}<|im_end|>\n<|im_start|>assistant\n"
+            image = Image.open(image_path).convert("RGB")
+            inputs = processor(images=[image], text=prompt, return_tensors="pt").to(
+                "cuda", torch.bfloat16
             )
 
-        response = processor.decode(outputs[0], skip_special_tokens=True)
+        if "OpenGVLab" in true_model_name:
+            generation_config = dict(max_new_tokens=1024, do_sample=False)
+            with tracer:
+                outputs = model.chat(
+                    tokenizer,
+                    pixel_values,
+                    prompt,
+                    generation_config,
+                )
+        else:
+            with torch.no_grad() and tracer:
+                outputs = model.generate(
+                    **inputs,
+                    max_new_tokens=100,
+                    do_sample=False,
+                )
+
+        if "OpenGVLab" in true_model_name:
+            response = outputs
+        else:
+            response = processor.decode(outputs[0], skip_special_tokens=True)
 
         print("\n--- Generated Response ---")
         print(response)
@@ -332,7 +416,7 @@ def run_inference_test_i2d(model_name: str):
         "torch", output_path=output_path, levels=[0, 1], merge_output=True
     )
 
-    image_path = "tools/api_tracer/baidu.jpg"
+    image_path = "tools/api_tracer/sample_image.jpg"
     if not os.path.exists(image_path):
         print(f"❌ Image file not found at {image_path}.")
         return
@@ -383,7 +467,7 @@ def run_inference_test_a2a(model_name: str):
             f.write(f"Processor: {processor.__class__}\n")
 
         prompt = "Describe the object in the image."
-        image = Image.open("tools/api_tracer/baidu.jpg")
+        image = Image.open("tools/api_tracer/sample_image.jpg")
 
         messages = [
             {
@@ -395,7 +479,7 @@ def run_inference_test_a2a(model_name: str):
             messages, tokenize=False, add_generation_prompt=True
         )
         inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(
-            model.device, dtype=torch.bfloat16
+            "cuda", dtype=torch.bfloat16
         )
 
         with torch.no_grad() and tracer:
@@ -418,8 +502,6 @@ def main():
             run_inference_test_tg(model_name, apply_template=True)
         else:
             run_inference_test_tg(model_name)
-    for model_name in ImageTexttoTextModels:
-        run_inference_test_i2t(model_name)
 
     for model_name in ImageTexttoTextModels:
         run_inference_test_i2t(model_name)

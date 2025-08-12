@@ -203,12 +203,3 @@ with tracer:
       3stacks:
       - - test.py:16 in <module>
       ```
-
-
-## 测试说明
-
-### 环境依赖
-```bash
-# Wan-AI/Wan2.1-T2V-14B-Diffusers
-pip install ftfy
-```

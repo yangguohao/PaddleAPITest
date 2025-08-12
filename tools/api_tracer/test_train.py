@@ -39,7 +39,7 @@ TextGenerationMODELS = [
     # "mistralai/Magistral-Small-2507",
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
-    # "RWKV/RWKV7-Goose-World3-2.9B-HF",
+    # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world, need transformers<4.50
 ]
 
 ImageTexttoTextModels = [
@@ -54,7 +54,7 @@ ImageTexttoTextModels = [
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
-    # "echo840/MonkeyOCR",
+    # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
 
 VideoTexttoTextModels = [
