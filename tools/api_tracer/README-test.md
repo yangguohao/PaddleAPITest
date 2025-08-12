@@ -4,12 +4,13 @@
 
 ```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install transformers
-pip install huggingface_hub
+pip install transformers huggingface_hub
 
 # image video
-pip install diffusers
-pip install decord
+pip install diffusers decord
+
+# moonshotai
+pip install tiktoken blobfile
 
 # RWKV
 pip install flash-linear-attention
