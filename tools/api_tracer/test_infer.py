@@ -66,7 +66,7 @@ TexttoImageModels = [
 ]
 
 TexttoVideoModels = [
-    # "Wan-AI/Wan2.1-T2V-14B",
+    # "Wan-AI/Wan2.1-T2V-14B-Diffusers",
 ]
 
 Imageto3DModels = [
@@ -74,7 +74,7 @@ Imageto3DModels = [
 ]
 
 AnytoAnyModels = [
-    # "deepseek-ai/Janus-Pro-1B",
+     "/root/paddlejob/workspace/env_run/models/deepseek-ai/Janus-Pro-1B",
     # "ByteDance-Seed/BAGEL-7B-MoT",
 ]
 
@@ -350,18 +350,28 @@ def run_inference_test_t2i(model_name: str):
     )
 
     try:
+        lora_ckpt_path = model_name
+        if "SD3.5M-FlowGRPO-GenEval" in model_name:
+            model_name = "stabilityai/stable-diffusion-3.5-medium"
+
+        load_kwargs = {"torch_dtype": torch.float16, "trust_remote_code": True, "device_map": "balanced"}
+        if "FLUX.1-dev" not in model_name:
+            load_kwargs["variant"] = "fp16"
         pipe = AutoPipelineForText2Image.from_pretrained(
             model_name,
-            torch_dtype=torch.float16,
-            variant="fp16",
-            trust_remote_code=True,
-        ).to("cuda")
+            **load_kwargs
+        )
 
+        if "SD3.5M-FlowGRPO-GenEval" in lora_ckpt_path:
+            from peft import PeftModel
+            pipe.transformer = PeftModel.from_pretrained(pipe.transformer, lora_ckpt_path)
+            pipe.transformer = pipe.transformer.merge_and_unload()
+        
         print(f"Pipeline Class: {pipe.__class__}")
 
         prompt = "A majestic lion jumping from a big rock, high quality, cinematic"
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad(), torch.inference_mode(), tracer:
             image = pipe(prompt=prompt, num_inference_steps=25).images[0]
 
         print(f"✅ Test for {true_model_name} finished.")
@@ -381,14 +391,14 @@ def run_inference_test_t2v(model_name: str):
 
     try:
         pipe = DiffusionPipeline.from_pretrained(
-            model_name, torch_dtype=torch.float16
-        ).to("cuda")
+            model_name, torch_dtype=torch.float16, device_map="balanced"
+        )
 
         print(f"Pipeline Class: {pipe.__class__}")
 
         prompt = "A panda eating bamboo on a rock."
 
-        with torch.no_grad() and tracer:
+        with torch.no_grad(), torch.inference_mode(), tracer:
             video_frames = pipe(prompt, num_inference_steps=25, num_frames=20).frames
 
         print(f"✅ Test for {true_model_name} finished.")
