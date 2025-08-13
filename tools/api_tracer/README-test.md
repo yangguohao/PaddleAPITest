@@ -35,6 +35,10 @@ pip install "keye-vl-utils[decord]==1.0.0"
 
 # deepseek-v2
 pip install flash_attn
+
+# mistral
+pip install mistral-common
+
 ```
 
 ## 项目调用

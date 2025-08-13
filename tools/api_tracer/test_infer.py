@@ -36,7 +36,7 @@ TextGenerationMODELS = [
     # "baidu/ERNIE-4.5-21B-A3B-PT",
     # "moonshotai/Kimi-K2-Instruct",
     # "zai-org/GLM-4.5",
-    # "mistralai/Magistral-Small-2507",
+    # "mistralai/Magistral-Small-2507",  # need install mistral-common
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
     # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world, need transformers<4.50
