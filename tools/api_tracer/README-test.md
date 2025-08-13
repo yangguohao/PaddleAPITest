@@ -29,4 +29,22 @@ pip install ftfy
 
 # Keye
 pip install "keye-vl-utils[decord]==1.0.0"
+
+# deepseek-vl2
+# refer to https://github.com/deepseek-ai/DeepSeek-VL2?tab=readme-ov-file#4-quick-start
+
+# deepseek-v2
+pip install flash_attn
+```
+
+## 项目调用
+
+```python
+    import sys
+    import os
+
+    sys.path.append(
+        os.path.join(os.path.dirname(__file__), "../PaddleAPITest/tools/api_tracer")
+    )
+    from api_tracer import APITracer
 ```

@@ -19,6 +19,7 @@ from transformers import (AutoModel, AutoModelForCausalLM,
                           AutoTokenizer)
 
 MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
+# MODELS_DIR = Path("/root/paddlejob/workspace/env_run/bos/huggingface")
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
@@ -28,7 +29,7 @@ TextGenerationMODELS = [
     # "Qwen/Qwen3-30B-A3B",
     # "meta-llama/Llama-2-7b-hf",
     # "meta-llama/Llama-3.1-8B"
-    # "deepseek-ai/DeepSeek-V2-Lite",
+    # "deepseek-ai/DeepSeek-V2-Lite",  # need transformers<4.49
     # "deepseek-ai/DeepSeek-V3",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
@@ -39,6 +40,7 @@ TextGenerationMODELS = [
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
     # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world, need transformers<4.50
+    # "fla-hub/rwkv7-2.9B-world",
 ]
 
 ImageTexttoTextModels = [
@@ -90,10 +92,14 @@ def run_inference_test_tg(model_name: str):
     tracer.start()
 
     try:
+        if ("Qwen" in model_name or "baidu" in model_name) and "A" not in model_name:
+            device_map = "cuda:0"
+        else:
+            device_map = "auto"
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             torch_dtype=torch.bfloat16,
-            device_map="auto",
+            device_map=device_map,
             trust_remote_code=True,
         )
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
@@ -161,7 +167,11 @@ def run_inference_test_i2t(model_name: str):
                 device_map="auto",
                 trust_remote_code=True,
             )
-        elif "baidu" in model_name or "moonshotai" in model_name:
+        elif (
+            "baidu" in model_name
+            or "moonshotai" in model_name
+            or "deepseek" in model_name
+        ):
             model = AutoModelForCausalLM.from_pretrained(
                 model_path,
                 torch_dtype=torch.bfloat16,

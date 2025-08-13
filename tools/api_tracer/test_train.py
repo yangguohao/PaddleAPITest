@@ -21,6 +21,7 @@ from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
 
 MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
+# MODELS_DIR = Path("/root/paddlejob/workspace/env_run/bos/huggingface")
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
@@ -30,7 +31,7 @@ TextGenerationMODELS = [
     # "Qwen/Qwen3-30B-A3B",
     # "meta-llama/Llama-2-7b-hf",
     # "meta-llama/Llama-3.1-8B"
-    # "deepseek-ai/DeepSeek-V2-Lite",
+    # "deepseek-ai/DeepSeek-V2-Lite",  # need transformers<4.49
     # "deepseek-ai/DeepSeek-V3",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
@@ -177,6 +178,9 @@ def run_training_test_tg(model_name: str):
         )
 
         trainer.train()
+
+        trainer.save_model()
+        tokenizer.save_pretrained(output_dir)
 
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
@@ -381,6 +385,9 @@ def run_training_test_i2t(model_name: str):
 
         trainer.train()
 
+        trainer.save_model()
+        processor.save_pretrained(output_dir)
+
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
@@ -505,6 +512,9 @@ def run_training_test_v2t(model_name: str):
 
         trainer.train()
 
+        trainer.save_model()
+        processor.save_pretrained(output_dir)
+
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
@@ -604,6 +614,8 @@ def run_training_test_t2i(model_name: str):
                     f"Step: {global_step}, Loss: {loss.item() * gradient_accumulation_steps}"
                 )
 
+        pipeline.save_pretrained(output_dir)
+
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
@@ -697,6 +709,8 @@ def run_training_test_t2v(model_name: str):
             optimizer.zero_grad()
             global_step += 1
             print(f"Step: {global_step}, Loss: {loss.item()}")
+
+        pipeline.save_pretrained(output_dir)
 
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
@@ -814,6 +828,9 @@ def run_training_test_a2a(model_name: str):
         )
 
         trainer.train()
+
+        trainer.save_model()
+        processor.save_pretrained(output_dir)
 
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:

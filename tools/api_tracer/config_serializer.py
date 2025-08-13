@@ -309,7 +309,7 @@ class ConfigSerializer:
 
     def _serialize_dict(self, item: dict, depth: int) -> Dict:
         if len(item) > self.max_item_count:
-            item = dict(list(item.keys())[: self.max_item_count - 1])
+            item = dict(list(item.items())[: self.max_item_count - 1])
             item["__truncated__"] = "<Truncated: max item count>"
         return {
             "type": "dict",
