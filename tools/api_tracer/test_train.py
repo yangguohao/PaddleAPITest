@@ -48,12 +48,12 @@ ImageTexttoTextModels = [
     # "deepseek-ai/deepseek-vl2-tiny",  # need to clone deepseek_vl2 project
     # "llava-hf/llava-1.5-7b-hf",
     # "meta-llama/Llama-4-Maverick-17B-128E",
-    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",
+    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",  # need transformers<4.54
     # "zai-org/GLM-4.1V-9B-Thinking",
     # "ByteDance/Dolphin",
-    # "Salesforce/blip2-opt-2.7b",
+    # "Salesforce/blip2-opt-2.7b",  # need transformers<4.50
     # "OpenGVLab/InternVL3-1B",
-    # "moonshotai/Kimi-VL-A3B-Instruct",
+    # "moonshotai/Kimi-VL-A3B-Instruct",  # need transformers<4.50
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
     # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
@@ -69,7 +69,7 @@ TexttoImageModels = [
 ]
 
 TexttoVideoModels = [
-    # "Wan-AI/Wan2.1-T2V-14B",
+    # "Wan-AI/Wan2.1-T2V-14B-Diffusers",
 ]
 
 Imageto3DModels = [

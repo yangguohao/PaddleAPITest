@@ -46,13 +46,13 @@ ImageTexttoTextModels = [
     # "deepseek-ai/deepseek-vl2-tiny",  # need to clone deepseek_vl2 project
     # "llava-hf/llava-1.5-7b-hf",
     # "meta-llama/Llama-4-Maverick-17B-128E",
-    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",
+    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",  # need transformers<4.54
     # "zai-org/GLM-4.1V-9B-Thinking",
     # "ByteDance/Dolphin",
-    # "Salesforce/blip2-opt-2.7b",
+    # "Salesforce/blip2-opt-2.7b",  # need transformers<4.50
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",  # need transformers<4.50
-    "XiaomiMiMo/MiMo-VL-7B-SFT",
+    # "XiaomiMiMo/MiMo-VL-7B-SFT",
     # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
 
@@ -175,7 +175,6 @@ def run_inference_test_i2t(model_name: str):
                 device_map="cuda:0",
                 trust_remote_code=True,
             )
-            # maybe use Blip2ForConditionalGeneration / Blip2Processor
         else:
             model = AutoModelForImageTextToText.from_pretrained(
                 model_path,
@@ -236,6 +235,11 @@ def run_inference_test_i2t(model_name: str):
                 padding=True,
                 return_tensors="pt",
             ).to("cuda", torch.bfloat16)
+        elif "Salesforce" in model_name:
+            image = Image.open(image_path).convert("RGB")
+            inputs = processor(images=[image], text=question, return_tensors="pt").to(
+                "cuda", torch.bfloat16
+            )
         else:
             conversation = [
                 {
@@ -262,12 +266,13 @@ def run_inference_test_i2t(model_name: str):
 
         if "OpenGVLab" in model_name:
             generation_config = dict(max_new_tokens=1024, do_sample=False)
-            outputs = model.chat(
-                tokenizer,
-                pixel_values,
-                prompt,
-                generation_config,
-            )
+            with torch.no_grad():
+                outputs = model.chat(
+                    tokenizer,
+                    pixel_values,
+                    prompt,
+                    generation_config,
+                )
         else:
             with torch.no_grad():
                 outputs = model.generate(

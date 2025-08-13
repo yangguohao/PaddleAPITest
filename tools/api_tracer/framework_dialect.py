@@ -465,6 +465,7 @@ class PyTorchDialect(FrameworkDialect):
         "torch.nn.parallel.DistributedDataParallel._get_active_ddp_module",  # it will stuck RWKV
         "torch.nn.Module.get_extra_state",  # it will cause RuntimeError, and be overridden by subclass of Module
         "torch.nn.Module.set_extra_state",  # it will cause RuntimeError, and be overridden by subclass of Module
+        "torch.fx.wrap",  # it will cause NotImplementedError
     }
 
     def get_framework_name(self) -> str:
