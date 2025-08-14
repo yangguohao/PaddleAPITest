@@ -107,7 +107,6 @@ def get_merged_model_apis(
         apis_per_model[model] = model_apis
     print(f"[APIMerge] Successfully read {len(models)} models and their APIs.")
 
-    api_to_first_group = {}
     if model_groups:
         all_grouped_models = {
             m for models_in_group in model_groups.values() for m in models_in_group
@@ -127,8 +126,13 @@ def get_merged_model_apis(
                 f"It will be displayed in the final table.",
             )
 
+    all_apis = set().union(*apis_per_model.values())
+    print(f"\n[APIMerge] Total API count: {len(all_apis)}")
+
+    api_to_first_group = {}
+    if model_groups:
         cumulative_apis = set()
-        print("\n--- APIs in each group ---")
+        print("--- APIs in each group ---")
         for group_name, group_models in model_groups.items():
             current_group_apis = set().union(
                 *(
@@ -146,10 +150,7 @@ def get_merged_model_apis(
             print(
                 f"'{group_name}' (and previous groups) API count : {len(cumulative_apis)}"
             )
-
-    all_apis = set().union(*apis_per_model.values())
-    print(f"\n[APIMerge] Total API count: {len(all_apis)}")
-    sorted_apis = sorted(list(all_apis))
+        print("'未分组' API count : ", len(all_apis) - len(cumulative_apis), "\n")
 
     ordered_model_names = []
     if model_groups:
@@ -161,26 +162,26 @@ def get_merged_model_apis(
     else:
         ordered_model_names = models
 
+    sorted_apis = sorted(list(all_apis))
     data = []
     for api in sorted_apis:
         row = [api]
         if api_to_first_group:
-            first_group = api_to_first_group.get(api, "Not Grouped")
+            first_group = api_to_first_group.get(api, "未分组")
             row.append(first_group)
-        for name, apis_set in named_apis_set.items():
+        for apis_set in named_apis_set.values():
             if api in apis_set:
                 row.append("是")
             else:
                 row.append("否")
         for model_name in ordered_model_names:
-            row.append("是" if api in apis_per_model.get(model_name, set()) else "否")
+            row.append("是" if api in apis_per_model[model_name] else "否")
         data.append(row)
 
     columns = ["API"]
     if model_groups:
         columns.append("首次出现分组")
-    for name in named_apis_set.keys():
-        columns.append(name)
+    columns.extend(named_apis_set.keys())
     columns.extend(ordered_model_names)
     result_df = pd.DataFrame(data, columns=columns)
 
