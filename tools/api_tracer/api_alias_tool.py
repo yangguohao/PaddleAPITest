@@ -17,7 +17,7 @@ def parse_api(api):
 
 
 @staticmethod
-def get_merged_apis(input_path: str, yaml_path: str):
+def get_alias_apis(input_path: str, yaml_path: str):
     """
     解析 api_apis.txt 文件, 生成 alias_api.txt 和 excluded_api.txt
 
@@ -69,7 +69,7 @@ def get_merged_apis(input_path: str, yaml_path: str):
 
 
 if __name__ == "__main__":
-    get_merged_apis(
+    get_alias_apis(
         input_path=INPUT_DIR,
         yaml_path="tools/api_tracer/api_list/torch_api_list.yaml",
     )

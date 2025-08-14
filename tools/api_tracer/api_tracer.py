@@ -143,6 +143,20 @@ class APITracer:
         ConfigSerializer.parse_trace_stacks(input_path, output_path, output_suffix)
 
     @staticmethod
+    def get_alias_apis(
+        input_path: str,
+        yaml_path: str,
+    ):
+        """
+        解析 api_apis.txt 文件, 生成 alias_api.txt 和 excluded_api.txt
+
+        等价于 api_alias.get_alias_apis
+        """
+        from api_alias_tool import get_alias_apis
+
+        get_alias_apis(input_path, yaml_path)
+
+    @staticmethod
     def get_merged_model_apis(
         input_path: str,
         output_path: str,
@@ -151,26 +165,35 @@ class APITracer:
         yaml_paths: Optional[Dict[str, str]] = None,
     ):
         """
-        将输入文件中的模型 API 合并到输出文件中
+        从 XLSX 或 CSV 文件中读取 API 数据, 合并并分析 API
 
         等价于 api_merge.merge_model_apis
         """
-        from api_merge import get_merged_model_apis
+        from api_merge_tool import get_merged_model_apis
 
         get_merged_model_apis(
             input_path, output_path, sheet_name, model_groups, yaml_paths
         )
 
     @staticmethod
-    def get_merged_apis(
-        input_path: str,
-        yaml_path: str,
+    def get_mapped_model_apis(
+        torch_static_path: str,
+        torch_dynamic_path: str,
+        paddle_dynamic_path: str,
+        mapping_table_path: str,
+        output_path: str,
     ):
         """
-        将输入文件中的 API 合并到输出文件中
+        根据给定的 API 列表和映射表文件, 生成详细的 API 映射报告
 
-        等价于 api_alias.get_merged_apis
+        等价于 api_map_tool.get_mapped_model_apis
         """
-        from api_alias import get_merged_apis
+        from api_map_tool import get_mapped_model_apis
 
-        get_merged_apis(input_path, yaml_path)
+        get_mapped_model_apis(
+            torch_static_path,
+            torch_dynamic_path,
+            paddle_dynamic_path,
+            mapping_table_path,
+            output_path,
+        )
