@@ -143,7 +143,7 @@ class APITracer:
         ConfigSerializer.parse_trace_stacks(input_path, output_path, output_suffix)
 
     @staticmethod
-    def merge_model_apis(
+    def get_merged_model_apis(
         input_path: str,
         output_path: str,
         sheet_name: Optional[str] = None,
@@ -155,6 +155,22 @@ class APITracer:
 
         等价于 api_merge.merge_model_apis
         """
-        from api_merge import merge_model_apis
+        from api_merge import get_merged_model_apis
 
-        merge_model_apis(input_path, output_path, sheet_name, model_groups, yaml_paths)
+        get_merged_model_apis(
+            input_path, output_path, sheet_name, model_groups, yaml_paths
+        )
+
+    @staticmethod
+    def get_merged_apis(
+        input_path: str,
+        yaml_path: str,
+    ):
+        """
+        将输入文件中的 API 合并到输出文件中
+
+        等价于 api_alias.get_merged_apis
+        """
+        from api_alias import get_merged_apis
+
+        get_merged_apis(input_path, yaml_path)

@@ -6,7 +6,7 @@ import yaml
 
 
 @staticmethod
-def merge_model_apis(
+def get_merged_model_apis(
     input_path: str,
     output_path: str,
     sheet_name: Optional[str] = None,
@@ -14,7 +14,7 @@ def merge_model_apis(
     yaml_paths: Optional[Dict[str, str]] = None,
 ):
     """
-    从 XLSX 或 CSV 文件中读取 API 数据，合并并分析 API
+    从 XLSX 或 CSV 文件中读取 API 数据, 合并并分析 API
 
     Args:
     - excel_path (str): 输入的 XLSX 或 CSV 文件路径
@@ -260,7 +260,7 @@ if __name__ == "__main__":
         "是否在静态采集中": "tools/api_tracer/api_list/torch_api_static.yaml",
     }
 
-    merge_model_apis(
+    get_merged_model_apis(
         input_path="tools/api_tracer/Torch核心API统计(动态扫描).xlsx",
         output_path="tools/api_tracer/torch_merge_apis.xlsx",
         sheet_name="各模型API",
