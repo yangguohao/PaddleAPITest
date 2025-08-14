@@ -211,10 +211,10 @@ def run_training_test_i2t(model_name: str):
     print(f"🚀 Running Image2Text Training Test for: {model_name})")
     model_path = MODELS_DIR / model_name
     output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
-    # tracer = APITracer(
-    #     "torch", output_path=output_path, levels=[0, 1], merge_output=True
-    # )
-    # tracer.start()
+    tracer = APITracer(
+        "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    )
+    tracer.start()
 
     try:
         if "baidu" in model_name:
@@ -426,8 +426,8 @@ def run_training_test_i2t(model_name: str):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {model_name}: {e}")
-    # finally:
-    #     tracer.stop()
+    finally:
+        tracer.stop()
 
 
 def sample_frames_from_video(video_path, num_frames=8):
