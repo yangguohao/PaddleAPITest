@@ -21,6 +21,7 @@ from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
 
 MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
+# MODELS_DIR = Path("/root/paddlejob/workspace/env_run/bos/huggingface")
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
@@ -30,14 +31,14 @@ TextGenerationMODELS = [
     # "Qwen/Qwen3-30B-A3B",
     # "meta-llama/Llama-2-7b-hf",
     # "meta-llama/Llama-3.1-8B"
-    # "deepseek-ai/DeepSeek-V2-Lite",
+    # "deepseek-ai/DeepSeek-V2-Lite",  # need transformers<4.49
     # "deepseek-ai/DeepSeek-V3",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
     # "baidu/ERNIE-4.5-21B-A3B-PT",
     # "moonshotai/Kimi-K2-Instruct",
     # "zai-org/GLM-4.5",
-    # "mistralai/Magistral-Small-2507",
+    # "mistralai/Magistral-Small-2507",  # need install mistral-common
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
     # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world, need transformers<4.50
@@ -48,12 +49,12 @@ ImageTexttoTextModels = [
     # "deepseek-ai/deepseek-vl2-tiny",  # need to clone deepseek_vl2 project
     # "llava-hf/llava-1.5-7b-hf",
     # "meta-llama/Llama-4-Maverick-17B-128E",
-    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",
+    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",  # need transformers<4.54
     # "zai-org/GLM-4.1V-9B-Thinking",
     # "ByteDance/Dolphin",
-    # "Salesforce/blip2-opt-2.7b",
+    # "Salesforce/blip2-opt-2.7b",  # need transformers<4.50
     # "OpenGVLab/InternVL3-1B",
-    # "moonshotai/Kimi-VL-A3B-Instruct",
+    # "moonshotai/Kimi-VL-A3B-Instruct",  # need transformers<4.50
     # "XiaomiMiMo/MiMo-VL-7B-SFT",
     # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
@@ -69,7 +70,7 @@ TexttoImageModels = [
 ]
 
 TexttoVideoModels = [
-    # "Wan-AI/Wan2.1-T2V-14B",
+    # "Wan-AI/Wan2.1-T2V-14B-Diffusers",
 ]
 
 Imageto3DModels = [
@@ -134,13 +135,23 @@ def run_training_test_tg(model_name: str):
             for conv_a, conv_b in zip(
                 examples["conversation_a"], examples["conversation_b"]
             ):
-                text_a = tokenizer.apply_chat_template(
-                    conv_a, tokenize=False, add_generation_prompt=False
-                )
+                if "mistralai" in model_name:
+                    text_a = tokenizer.apply_chat_template(
+                        conv_a, tokenize=False, continue_final_message=True
+                    )
+                    text_a += tokenizer.eos_token
+                    text_b = tokenizer.apply_chat_template(
+                        conv_b, tokenize=False, continue_final_message=True
+                    )
+                    text_b += tokenizer.eos_token
+                else:
+                    text_a = tokenizer.apply_chat_template(
+                        conv_a, tokenize=False, add_generation_prompt=False
+                    )
+                    text_b = tokenizer.apply_chat_template(
+                        conv_b, tokenize=False, add_generation_prompt=False
+                    )
                 all_texts.append(text_a)
-                text_b = tokenizer.apply_chat_template(
-                    conv_b, tokenize=False, add_generation_prompt=False
-                )
                 all_texts.append(text_b)
             return tokenizer(all_texts, truncation=True, max_length=512)
 
@@ -178,6 +189,9 @@ def run_training_test_tg(model_name: str):
 
         trainer.train()
 
+        trainer.save_model()
+        tokenizer.save_pretrained(output_dir)
+
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
@@ -203,17 +217,27 @@ def run_training_test_i2t(model_name: str):
     tracer.start()
 
     try:
-        model = AutoModelForImageTextToText.from_pretrained(
-            model_path,
-            torch_dtype=torch.bfloat16,
-            device_map="auto",
-            trust_remote_code=True,
-        )
+        if "baidu" in model_name:
+            model = AutoModelForCausalLM.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
+        else:
+            model = AutoModelForImageTextToText.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
         processor = AutoProcessor.from_pretrained(
             model_path,
             trust_remote_code=True,
             # use_fast=False,  # this will cause error in GLM-4.1V
         )
+        if "baidu" in model_name:
+            model.add_image_preprocess(processor)
         if processor.tokenizer.pad_token is None:
             processor.tokenizer.pad_token = processor.tokenizer.eos_token
 
@@ -243,7 +267,23 @@ def run_training_test_i2t(model_name: str):
                 "pixel_values": [],
                 "attention_mask": [],
                 "image_grid_thw": [],
+                "position_ids": [],
+                "images": [],
+                "grid_thw": [],
+                "token_type_ids": [],
+                "image_type_ids": [],
             }
+
+            optional_keys = [
+                "pixel_values",
+                "attention_mask",
+                "image_grid_thw",
+                "position_ids",
+                "images",
+                "grid_thw",
+                "token_type_ids",
+                "image_type_ids",
+            ]
 
             for i in range(len(examples["Question"])):
                 question = examples["Question"][i]
@@ -273,12 +313,16 @@ def run_training_test_i2t(model_name: str):
                     prompt_ids_len = len(
                         processor.tokenizer(prompt_only_text).input_ids
                     )
-
+                    full_prompt_text = processor.tokenizer.apply_chat_template(
+                        full_conversation_messages,
+                        tokenize=False,
+                        add_generation_prompt=False,
+                    )
                     inputs = processor(
-                        text=full_conversation_messages,
-                        images=image,
+                        text=[full_prompt_text],
+                        images=[image],
                         return_tensors="pt",
-                        padding=False,
+                        padding=True,
                         truncation=True,
                         max_length=1024,
                         add_generation_prompt=False,
@@ -314,9 +358,9 @@ def run_training_test_i2t(model_name: str):
 
                     inputs = processor(
                         text=[full_prompt_text],
-                        images=image,
+                        images=[image],
                         return_tensors="pt",
-                        padding=False,
+                        padding=True,
                         truncation=True,
                         max_length=1024,
                     )
@@ -327,20 +371,14 @@ def run_training_test_i2t(model_name: str):
 
                 model_inputs["input_ids"].append(input_ids)
                 model_inputs["labels"].append(labels)
-                model_inputs["pixel_values"].append(inputs["pixel_values"][0])
 
-                if "attention_mask" in inputs:
-                    model_inputs["attention_mask"].append(inputs["attention_mask"][0])
+                for key in optional_keys:
+                    if key in inputs:
+                        model_inputs[key].append(inputs[key][0])
 
-                if "image_grid_thw" in inputs:
-                    model_inputs["image_grid_thw"].append(inputs["image_grid_thw"][0])
-
-            if not model_inputs["attention_mask"]:
-                del model_inputs["attention_mask"]
-
-            if not model_inputs["image_grid_thw"]:
-                del model_inputs["image_grid_thw"]
-
+            for key in optional_keys:
+                if not model_inputs[key]:
+                    del model_inputs[key]
             return model_inputs
 
         tokenized_dataset = dataset_sample.map(
@@ -380,6 +418,9 @@ def run_training_test_i2t(model_name: str):
         )
 
         trainer.train()
+
+        trainer.save_model()
+        processor.save_pretrained(output_dir)
 
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
@@ -505,6 +546,9 @@ def run_training_test_v2t(model_name: str):
 
         trainer.train()
 
+        trainer.save_model()
+        processor.save_pretrained(output_dir)
+
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
@@ -604,6 +648,8 @@ def run_training_test_t2i(model_name: str):
                     f"Step: {global_step}, Loss: {loss.item() * gradient_accumulation_steps}"
                 )
 
+        pipeline.save_pretrained(output_dir)
+
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
         traceback.print_exc()
@@ -697,6 +743,8 @@ def run_training_test_t2v(model_name: str):
             optimizer.zero_grad()
             global_step += 1
             print(f"Step: {global_step}, Loss: {loss.item()}")
+
+        pipeline.save_pretrained(output_dir)
 
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:
@@ -814,6 +862,9 @@ def run_training_test_a2a(model_name: str):
         )
 
         trainer.train()
+
+        trainer.save_model()
+        processor.save_pretrained(output_dir)
 
         print(f"✅ Test for {model_name} finished.")
     except Exception as e:

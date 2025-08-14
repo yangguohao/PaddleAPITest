@@ -19,6 +19,7 @@ from transformers import (AutoModel, AutoModelForCausalLM,
                           AutoTokenizer)
 
 MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
+# MODELS_DIR = Path("/root/paddlejob/workspace/env_run/bos/huggingface")
 
 TextGenerationMODELS = [
     # "Qwen/Qwen2-0.5B",
@@ -28,17 +29,18 @@ TextGenerationMODELS = [
     # "Qwen/Qwen3-30B-A3B",
     # "meta-llama/Llama-2-7b-hf",
     # "meta-llama/Llama-3.1-8B"
-    # "deepseek-ai/DeepSeek-V2-Lite",
+    # "deepseek-ai/DeepSeek-V2-Lite",  # need transformers<4.49
     # "deepseek-ai/DeepSeek-V3",
     # "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
     # "baidu/ERNIE-4.5-0.3B-PT",
     # "baidu/ERNIE-4.5-21B-A3B-PT",
     # "moonshotai/Kimi-K2-Instruct",
     # "zai-org/GLM-4.5",
-    # "mistralai/Magistral-Small-2507",
+    # "mistralai/Magistral-Small-2507",  # need install mistral-common
     # "MiniMaxAI/MiniMax-M1-40k",
     # "state-spaces/mamba2-2.7b",
     # "RWKV/RWKV7-Goose-World3-2.9B-HF",  #  maybe fail, change to fla-hub/rwkv7-2.9B-world, need transformers<4.50
+    # "fla-hub/rwkv7-2.9B-world",
 ]
 
 ImageTexttoTextModels = [
@@ -46,13 +48,13 @@ ImageTexttoTextModels = [
     # "deepseek-ai/deepseek-vl2-tiny",  # need to clone deepseek_vl2 project
     # "llava-hf/llava-1.5-7b-hf",
     # "meta-llama/Llama-4-Maverick-17B-128E",
-    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",
+    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",  # need transformers<4.54
     # "zai-org/GLM-4.1V-9B-Thinking",
     # "ByteDance/Dolphin",
-    # "Salesforce/blip2-opt-2.7b",
+    # "Salesforce/blip2-opt-2.7b",  # need transformers<4.50
     # "OpenGVLab/InternVL3-1B",
     # "moonshotai/Kimi-VL-A3B-Instruct",  # need transformers<4.50
-    "XiaomiMiMo/MiMo-VL-7B-SFT",
+    # "XiaomiMiMo/MiMo-VL-7B-SFT",
     # "echo840/MonkeyOCR",  # need to clone MonkeyOCR project
 ]
 
@@ -90,10 +92,14 @@ def run_inference_test_tg(model_name: str):
     tracer.start()
 
     try:
+        if ("Qwen" in model_name or "baidu" in model_name) and "A" not in model_name:
+            device_map = "cuda:0"
+        else:
+            device_map = "auto"
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             torch_dtype=torch.bfloat16,
-            device_map="auto",
+            device_map=device_map,
             trust_remote_code=True,
         )
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
@@ -161,7 +167,11 @@ def run_inference_test_i2t(model_name: str):
                 device_map="auto",
                 trust_remote_code=True,
             )
-        elif "baidu" in model_name or "moonshotai" in model_name:
+        elif (
+            "baidu" in model_name
+            or "moonshotai" in model_name
+            or "deepseek" in model_name
+        ):
             model = AutoModelForCausalLM.from_pretrained(
                 model_path,
                 torch_dtype=torch.bfloat16,
@@ -175,7 +185,6 @@ def run_inference_test_i2t(model_name: str):
                 device_map="cuda:0",
                 trust_remote_code=True,
             )
-            # maybe use Blip2ForConditionalGeneration / Blip2Processor
         else:
             model = AutoModelForImageTextToText.from_pretrained(
                 model_path,
@@ -236,6 +245,11 @@ def run_inference_test_i2t(model_name: str):
                 padding=True,
                 return_tensors="pt",
             ).to("cuda", torch.bfloat16)
+        elif "Salesforce" in model_name:
+            image = Image.open(image_path).convert("RGB")
+            inputs = processor(images=[image], text=question, return_tensors="pt").to(
+                "cuda", torch.bfloat16
+            )
         else:
             conversation = [
                 {
@@ -262,12 +276,13 @@ def run_inference_test_i2t(model_name: str):
 
         if "OpenGVLab" in model_name:
             generation_config = dict(max_new_tokens=1024, do_sample=False)
-            outputs = model.chat(
-                tokenizer,
-                pixel_values,
-                prompt,
-                generation_config,
-            )
+            with torch.no_grad():
+                outputs = model.chat(
+                    tokenizer,
+                    pixel_values,
+                    prompt,
+                    generation_config,
+                )
         else:
             with torch.no_grad():
                 outputs = model.generate(
