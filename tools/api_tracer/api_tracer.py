@@ -2,7 +2,7 @@ import os
 import signal
 import sys
 import warnings
-from typing import List, Literal, TypedDict, Union
+from typing import Dict, List, Literal, Optional, TypedDict, Union
 
 try:
     from typing import Unpack
@@ -141,3 +141,20 @@ class APITracer:
         等价于 ConfigSerializer.parse_trace_stacks
         """
         ConfigSerializer.parse_trace_stacks(input_path, output_path, output_suffix)
+
+    @staticmethod
+    def merge_model_apis(
+        input_path: str,
+        output_path: str,
+        sheet_name: Optional[str] = None,
+        model_groups: Optional[Dict[str, List[str]]] = None,
+        yaml_paths: Optional[Dict[str, str]] = None,
+    ):
+        """
+        将输入文件中的模型 API 合并到输出文件中
+
+        等价于 api_merge.merge_model_apis
+        """
+        from api_merge import merge_model_apis
+
+        merge_model_apis(input_path, output_path, sheet_name, model_groups, yaml_paths)
