@@ -119,3 +119,25 @@ class APITracer:
     def __exit__(self, exc_type, exc_value, traceback):
         """退出上下文管理器"""
         self.stop()
+
+    @staticmethod
+    def parse_configs_from_trace(
+        input_path: str, output_path: str, output_suffix: str = ""
+    ):
+        """
+        从 api_trace.txt 文件中解析 API 配置和统计信息
+
+        等价于 ConfigSerializer.parse_trace_configs
+        """
+        ConfigSerializer.parse_trace_configs(input_path, output_path, output_suffix)
+
+    @staticmethod
+    def parse_stacks_from_trace(
+        input_path: str, output_path: str, output_suffix: str = ""
+    ):
+        """
+        从 api_trace.yaml 文件中解析每个 API 的前 3 个调用堆栈
+
+        等价于 ConfigSerializer.parse_trace_stacks
+        """
+        ConfigSerializer.parse_trace_stacks(input_path, output_path, output_suffix)

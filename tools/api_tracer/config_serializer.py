@@ -386,19 +386,41 @@ class ConfigSerializer:
         return result
 
     def get_apis_and_configs(self):
-        print("[ConfigSerializer] Start to get apis and configs...")
         if self.merge_output:
-            self._process_trace_config("api_trace.txt", "")
+            input_path = os.path.join(self.output_path, "api_trace.txt")
+            ConfigSerializer.parse_trace_configs(input_path, self.output_path, "")
         else:
             for level in self.levels:
                 suffix = f"_level_{level}"
-                self._process_trace_config(f"api_trace{suffix}.txt", suffix)
+                input_path = os.path.join(self.output_path, f"api_trace{suffix}.txt")
+                ConfigSerializer.parse_trace_configs(
+                    input_path, self.output_path, suffix
+                )
 
-    def _process_trace_config(self, input_filename: str, output_suffix: str):
-        input_path = os.path.join(self.output_path, input_filename)
+    def get_api_stacks(self):
+        if self.merge_output:
+            input_path = os.path.join(self.output_path, "api_trace.yaml")
+            ConfigSerializer.parse_trace_stacks(input_path, self.output_path, "")
+        else:
+            for level in self.levels:
+                suffix = f"_level_{level}"
+                input_path = os.path.join(self.output_path, f"api_trace{suffix}.yaml")
+                ConfigSerializer.parse_trace_stacks(
+                    input_path, self.output_path, suffix
+                )
+
+    @staticmethod
+    def parse_trace_configs(input_path: str, output_path: str, output_suffix: str = ""):
+        print(f"[ConfigSerializer] Start to parse configs from: {input_path}")
+        os.makedirs(output_path, exist_ok=True)
+
         if not os.path.exists(input_path):
+            print(f"[ConfigSerializer] Trace file not found, skipping: {input_path}")
+            return
+
+        if not os.path.splitext(input_path)[1].lower() == ".txt":
             print(
-                f"[ConfigSerializer] Trace file not found, skipping stats: {input_path}"
+                f"[ConfigSerializer] Trace file is not a txt file, skipping: {input_path}"
             )
             return
 
@@ -426,10 +448,14 @@ class ConfigSerializer:
                     current = line
 
         trace_count = sum(api_counts.values())
-        print(f"[ConfigSerializer] Read {trace_count} traces from {input_filename}")
+        print(
+            f"[ConfigSerializer] Read {trace_count} traces from {os.path.basename(input_path)}"
+        )
 
         with open(
-            f"{self.output_path}/api_apis{output_suffix}.txt", "w", encoding="utf-8"
+            os.path.join(output_path, f"api_apis{output_suffix}.txt"),
+            "w",
+            encoding="utf-8",
         ) as f:
             for api in sorted(api_apis):
                 f.write(api + "\n")
@@ -438,7 +464,9 @@ class ConfigSerializer:
         )
 
         with open(
-            f"{self.output_path}/api_configs{output_suffix}.txt", "w", encoding="utf-8"
+            os.path.join(output_path, f"api_configs{output_suffix}.txt"),
+            "w",
+            encoding="utf-8",
         ) as f:
             for config in sorted(api_configs):
                 f.write(config + "\n")
@@ -455,7 +483,7 @@ class ConfigSerializer:
         sorted_api_counts = sorted(api_counts.items(), key=lambda x: x[1], reverse=True)
 
         with open(
-            f"{self.output_path}/api_statistics{output_suffix}.txt",
+            os.path.join(output_path, f"api_statistics{output_suffix}.txt"),
             "w",
             encoding="utf-8",
         ) as f:
@@ -467,58 +495,55 @@ class ConfigSerializer:
             f"[ConfigSerializer] Write detailed statistics to api_statistics{output_suffix}.txt"
         )
 
-    def get_api_stacks(self):
-        print("[ConfigSerializer] Start to get api stacks...")
-        if self.merge_output:
-            self._process_trace_stack("api_trace.yaml", "")
-        else:
-            for level in self.levels:
-                suffix = f"_level_{level}"
-                self._process_trace_stack(f"api_trace{suffix}.yaml", suffix)
+    @staticmethod
+    def parse_trace_stacks(input_path: str, output_path: str, output_suffix: str = ""):
+        print(f"[ConfigSerializer] Start to parse stacks from: {input_path}")
+        os.makedirs(output_path, exist_ok=True)
 
-    def _process_trace_stack(self, input_filename: str, output_suffix: str):
-        input_path = os.path.join(self.output_path, input_filename)
         if not os.path.exists(input_path):
+            print(f"[ConfigSerializer] Trace file not found, skipping: {input_path}")
+            return
+
+        if not os.path.splitext(input_path)[1].lower() == ".yaml":
             print(
-                f"[ConfigSerializer] Trace file not found, skipping stats: {input_path}"
+                f"[ConfigSerializer] Trace file is not a yaml file, skipping: {input_path}"
             )
             return
 
         api_stack = {}
         completed_apis = set()
+        Loader = yaml.CLoader if hasattr(yaml, "CLoader") else yaml.FullLoader
 
         with open(input_path, "r", encoding="utf-8") as f:
-            for call in yaml.load_all(f, Loader=yaml.CLoader):
+            for call in yaml.load_all(f, Loader=Loader):
                 api_name = call.get("api", "UnknownAPI")
                 if api_name in completed_apis:
                     continue
-
                 if api_name not in api_stack:
                     api_stack[api_name] = {"3stacks": []}
 
                 stacks_list = api_stack[api_name]["3stacks"]
                 if len(stacks_list) < 3:
-                    stack_info = call.get("stack", [])
-                    stacks_list.append(stack_info)
+                    stacks_list.append(call.get("stack", []))
                     if len(stacks_list) == 3:
                         completed_apis.add(api_name)
 
         print(
-            f"[ConfigSerializer] Read {len(api_stack)} unique traces from {input_filename}"
+            f"[ConfigSerializer] Read {len(api_stack)} unique traces from {os.path.basename(input_path)}"
         )
 
-        with open(
-            f"{self.output_path}/api_stacks{output_suffix}.yaml", "w", encoding="utf-8"
-        ) as f:
+        output_file = os.path.join(output_path, f"api_stacks{output_suffix}.yaml")
+        Dumper = yaml.CDumper if hasattr(yaml, "CDumper") else yaml.Dumper
+        with open(output_file, "w", encoding="utf-8") as f:
             yaml.dump(
                 api_stack,
                 f,
-                Dumper=yaml.CDumper,
+                Dumper=Dumper,
                 allow_unicode=True,
                 sort_keys=True,
                 default_flow_style=False,
                 indent=2,
             )
         print(
-            f"[ConfigSerializer] Write {len(api_stack)} api stacks to api_stack{output_suffix}.yaml"
+            f"[ConfigSerializer] Write {len(api_stack)} api stacks to {os.path.basename(output_file)}"
         )

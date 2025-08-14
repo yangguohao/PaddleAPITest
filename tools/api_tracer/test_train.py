@@ -135,13 +135,23 @@ def run_training_test_tg(model_name: str):
             for conv_a, conv_b in zip(
                 examples["conversation_a"], examples["conversation_b"]
             ):
-                text_a = tokenizer.apply_chat_template(
-                    conv_a, tokenize=False, add_generation_prompt=False
-                )
+                if "mistralai" in model_name:
+                    text_a = tokenizer.apply_chat_template(
+                        conv_a, tokenize=False, continue_final_message=True
+                    )
+                    text_a += tokenizer.eos_token
+                    text_b = tokenizer.apply_chat_template(
+                        conv_b, tokenize=False, continue_final_message=True
+                    )
+                    text_b += tokenizer.eos_token
+                else:
+                    text_a = tokenizer.apply_chat_template(
+                        conv_a, tokenize=False, add_generation_prompt=False
+                    )
+                    text_b = tokenizer.apply_chat_template(
+                        conv_b, tokenize=False, add_generation_prompt=False
+                    )
                 all_texts.append(text_a)
-                text_b = tokenizer.apply_chat_template(
-                    conv_b, tokenize=False, add_generation_prompt=False
-                )
                 all_texts.append(text_b)
             return tokenizer(all_texts, truncation=True, max_length=512)
 
@@ -201,23 +211,33 @@ def run_training_test_i2t(model_name: str):
     print(f"🚀 Running Image2Text Training Test for: {model_name})")
     model_path = MODELS_DIR / model_name
     output_path = f"tools/api_tracer/trace_output_test_train/{model_name}"
-    tracer = APITracer(
-        "torch", output_path=output_path, levels=[0, 1], merge_output=True
-    )
-    tracer.start()
+    # tracer = APITracer(
+    #     "torch", output_path=output_path, levels=[0, 1], merge_output=True
+    # )
+    # tracer.start()
 
     try:
-        model = AutoModelForImageTextToText.from_pretrained(
-            model_path,
-            torch_dtype=torch.bfloat16,
-            device_map="auto",
-            trust_remote_code=True,
-        )
+        if "baidu" in model_name:
+            model = AutoModelForCausalLM.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
+        else:
+            model = AutoModelForImageTextToText.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+                trust_remote_code=True,
+            )
         processor = AutoProcessor.from_pretrained(
             model_path,
             trust_remote_code=True,
             # use_fast=False,  # this will cause error in GLM-4.1V
         )
+        if "baidu" in model_name:
+            model.add_image_preprocess(processor)
         if processor.tokenizer.pad_token is None:
             processor.tokenizer.pad_token = processor.tokenizer.eos_token
 
@@ -247,7 +267,23 @@ def run_training_test_i2t(model_name: str):
                 "pixel_values": [],
                 "attention_mask": [],
                 "image_grid_thw": [],
+                "position_ids": [],
+                "images": [],
+                "grid_thw": [],
+                "token_type_ids": [],
+                "image_type_ids": [],
             }
+
+            optional_keys = [
+                "pixel_values",
+                "attention_mask",
+                "image_grid_thw",
+                "position_ids",
+                "images",
+                "grid_thw",
+                "token_type_ids",
+                "image_type_ids",
+            ]
 
             for i in range(len(examples["Question"])):
                 question = examples["Question"][i]
@@ -277,12 +313,16 @@ def run_training_test_i2t(model_name: str):
                     prompt_ids_len = len(
                         processor.tokenizer(prompt_only_text).input_ids
                     )
-
+                    full_prompt_text = processor.tokenizer.apply_chat_template(
+                        full_conversation_messages,
+                        tokenize=False,
+                        add_generation_prompt=False,
+                    )
                     inputs = processor(
-                        text=full_conversation_messages,
-                        images=image,
+                        text=[full_prompt_text],
+                        images=[image],
                         return_tensors="pt",
-                        padding=False,
+                        padding=True,
                         truncation=True,
                         max_length=1024,
                         add_generation_prompt=False,
@@ -318,9 +358,9 @@ def run_training_test_i2t(model_name: str):
 
                     inputs = processor(
                         text=[full_prompt_text],
-                        images=image,
+                        images=[image],
                         return_tensors="pt",
-                        padding=False,
+                        padding=True,
                         truncation=True,
                         max_length=1024,
                     )
@@ -331,20 +371,14 @@ def run_training_test_i2t(model_name: str):
 
                 model_inputs["input_ids"].append(input_ids)
                 model_inputs["labels"].append(labels)
-                model_inputs["pixel_values"].append(inputs["pixel_values"][0])
 
-                if "attention_mask" in inputs:
-                    model_inputs["attention_mask"].append(inputs["attention_mask"][0])
+                for key in optional_keys:
+                    if key in inputs:
+                        model_inputs[key].append(inputs[key][0])
 
-                if "image_grid_thw" in inputs:
-                    model_inputs["image_grid_thw"].append(inputs["image_grid_thw"][0])
-
-            if not model_inputs["attention_mask"]:
-                del model_inputs["attention_mask"]
-
-            if not model_inputs["image_grid_thw"]:
-                del model_inputs["image_grid_thw"]
-
+            for key in optional_keys:
+                if not model_inputs[key]:
+                    del model_inputs[key]
             return model_inputs
 
         tokenized_dataset = dataset_sample.map(
@@ -392,8 +426,8 @@ def run_training_test_i2t(model_name: str):
     except Exception as e:
         traceback.print_exc()
         print(f"❌ An error occurred during training for {model_name}: {e}")
-    finally:
-        tracer.stop()
+    # finally:
+    #     tracer.stop()
 
 
 def sample_frames_from_video(video_path, num_frames=8):
