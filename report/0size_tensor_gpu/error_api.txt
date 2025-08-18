@@ -45,7 +45,6 @@ paddle.Tensor.real
 paddle.Tensor.repeat_interleave
 paddle.Tensor.reshape
 paddle.Tensor.rot90
-paddle.Tensor.set_
 paddle.Tensor.std
 paddle.Tensor.sum
 paddle.Tensor.take_along_axis
@@ -135,7 +134,6 @@ paddle.isin
 paddle.kron
 paddle.lerp
 paddle.lgamma
-paddle.linalg.cholesky
 paddle.linalg.cholesky_solve
 paddle.linalg.cond
 paddle.linalg.cov

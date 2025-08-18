@@ -256,6 +256,24 @@ class ErrorRule(BaseRule):
 
 
 # a
+class AsComplexRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+dtype = x.dtype
+if dtype == torch.bfloat16:
+    x = x.to(torch.float32)
+"""
+        core = f"result = {self.torch_api}(input=x)"
+        pose = """
+if dtype == torch.bfloat16:
+    result = result.to(torch.bfloat16)        
+"""
+        code = Code(
+            preprocess=pre.splitlines(), core=[core], postprocess=pose.splitlines()
+        )
+        return ConvertResult.success(paddle_api, code)
+
+
 class AddNRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -555,8 +573,14 @@ x = convert_seq2tensor_wrap_scalar(x)
 # b
 class BlhaGetMaxLenRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        core = "result = (torch.max(seq_lens_encoder).unsqueeze(0), torch.max(seq_lens_decoder).unsqueeze(0))"
-        code = Code(core=[core])
+        core = """
+bsz = batch_size.shape[0]
+if bsz == 0:
+    result = (torch.zeros([1], dtype=seq_lens_encoder.dtype), torch.zeros([1], dtype=seq_lens_decoder.dtype))
+else:
+    result = (torch.max(seq_lens_encoder[:bsz]).unsqueeze(0), torch.max(seq_lens_decoder[:bsz]).unsqueeze(0))
+"""
+        code = Code(core=core.splitlines())
         return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
 
 
@@ -633,6 +657,9 @@ class CorrcoefRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
 rowvar = locals().get('rowvar',True)
+dtype = x.dtype
+if dtype == torch.float16:
+    x = x.to(torch.float)
 """
         core = """
 if rowvar:
@@ -641,7 +668,15 @@ else:
     x = x.t()
     result = torch.corrcoef(x).t()
 """
-        code = Code(preprocess=pre.splitlines(), core=core.splitlines())
+        postprocess = """
+if dtype == torch.float16:
+    result = result.to(torch.float16)
+"""
+        code = Code(
+            preprocess=pre.splitlines(),
+            core=core.splitlines(),
+            postprocess=postprocess.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -664,43 +699,48 @@ if input2.dim() == 1:
 
 class CrossEntropyRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
+        defaults_code, map_code = self.apply_generic()
         pre = """
-_kwargs = {}
-for paddle_param, torch_param in {
-    "input": "input",
-    "label": "target",
-    "weight": "weight",
-    "ignore_index": "ignore_index",
-    "reduction": "reduction",
-    "label_smoothing": "label_smoothing"
-}.items():
-    if paddle_param in locals() and locals()[paddle_param] is not None:
-        _kwargs[torch_param] = locals()[paddle_param]
-shp = _kwargs['target'].shape
-if len(_kwargs["input"].shape) > 2:
-    perm = [0] + [len(_kwargs["input"].shape)-1]+ [i for i in range(1,len(_kwargs["input"].shape)-1)]
-    _kwargs['input'] = _kwargs['input'].permute(*perm)
-soft_label = locals().get('soft_label',False)
+shp = label.shape
+if len(input.shape) > 2:
+    perm = [0] + [len(input.shape)-1]+ [i for i in range(1,len(input.shape)-1)]
+    input = input.permute(*perm)
 axis = locals().get('axis',-1)
-use_softmax = locals().get('use_softmax',True)
-_kwargs['target'] = _kwargs['target'].squeeze(-1)
-if "weight" in _kwargs:
-    _kwargs['weight'].requires_grad = False
-if _kwargs['target'].dtype == torch.int32:
-    _kwargs['target'] = _kwargs['target'].long()
+label = label.squeeze(-1)
+if weight is not None:
+    weight.requires_grad = False
+if label.dtype == torch.int32:
+    label = label.long()
+if soft_label and weight is not None and shp == input.shape:
+    reduction_original = reduction
+    weight_original = weight
+    reduction = "none"
+    weight = None
 """
-        core = """
-result = torch.nn.functional.cross_entropy(**_kwargs)
+        core = f"""
+result = {self.torch_api}(**_kwargs)
 """
         post = """
-if "reduction" in _kwargs and _kwargs['reduction'] == "none":
+if reduction_original is not None:
+    reduction = reduction_original
+    loss_weight = label@weight_original
+    sum_weight = loss_weight.sum()
+    result *= loss_weight
+else:
+    sum_weight = result.numel()
+    
+if reduction == "none":
     if soft_label:
         result = result.unsqueeze(-1)
     else:
         result = result.reshape(shp)
+elif reduction == "sum":
+    result = result.sum()
+else:
+    result = result.sum()/sum_weight
 """
         code = Code(
-            preprocess=pre.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
             core=core.splitlines(),
             postprocess=post.splitlines(),
         )
@@ -948,7 +988,7 @@ else:
     result = torch.clamp(**_kwargs)
 """
         elif paddle_api == "paddle.Tensor.clip":
-                core = """
+            core = """
 if min is None and max is None:
     result = x
 else:
@@ -958,7 +998,10 @@ else:
             return ConvertResult.error(
                 paddle_api, f"Unsupported clip api: {paddle_api}"
             )
-        code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=core.splitlines())
+        code = Code(
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=core.splitlines(),
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -1644,9 +1687,9 @@ elif isinstance(shape, (list, tuple)):
 """
         core = """
 if len(size_list) == 0:
-    result = torch.empty([])
+    result = torch.empty([], dtype=dtype)
 else:
-    result = torch.empty(*size_list)
+    result = torch.empty(*size_list, dtype=dtype)
 """
         code = Code(preprocess=pre.splitlines(), core=core.splitlines())
         return ConvertResult.success(paddle_api, code)
@@ -2102,6 +2145,7 @@ def fused_rms_norm(
         code = Code(preprocess=pre.splitlines(), core=[core])
         return ConvertResult.success(paddle_api, code)
 
+
 class FusedRotaryPositionEmbeddingRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         pre = """
@@ -2116,7 +2160,7 @@ def fused_rotary_position_embedding(
     position_ids: Optional[torch.Tensor] = None,
     use_neox_rotary_style: bool = True,
     time_major: bool = False,
-    rotary_emb_base: float = 10000.0
+    rotary_emb_base: float = 10000.0,
 ) -> tuple[torch.Tensor, Optional[torch.Tensor], Optional[torch.Tensor]]:
 
     from typing import Optional
@@ -2126,14 +2170,22 @@ def fused_rotary_position_embedding(
             return None
         return init_value.permute(0, 2, 1, 3)
 
-    def _mult_qkv_pytorch(value: Optional[torch.Tensor], cos_tensor: torch.Tensor, sin_tensor: torch.Tensor) -> Optional[torch.Tensor]:
+    def _mult_qkv_pytorch(
+        value: Optional[torch.Tensor],
+        cos_tensor: torch.Tensor,
+        sin_tensor: torch.Tensor,
+    ) -> Optional[torch.Tensor]:
         if value is None:
             return None
         rotate_half_q = torch.stack([-value[..., 1::2], value[..., 0::2]], dim=-1).reshape(value.shape)
         query = value * cos_tensor + rotate_half_q * sin_tensor
         return query
 
-    def _mult_qkv_rotate_half_pytorch(value: Optional[torch.Tensor], cos_tensor: torch.Tensor, sin_tensor: torch.Tensor) -> Optional[torch.Tensor]:
+    def _mult_qkv_rotate_half_pytorch(
+        value: Optional[torch.Tensor],
+        cos_tensor: torch.Tensor,
+        sin_tensor: torch.Tensor,
+    ) -> Optional[torch.Tensor]:
         if value is None:
             return None
         head_dim = value.shape[-1]
@@ -2142,37 +2194,32 @@ def fused_rotary_position_embedding(
         query = value * cos_tensor + rotate_half_q * sin_tensor
         return query
 
-    def _get_sin_cos_tensor_pytorch(seq_len: int, head_dim: int, sign: int = 1, rotate_half: bool = False):
+    def _get_sin_cos_tensor_pytorch(
+        seq_len: int, head_dim: int, sign: int = 1, rotate_half: bool = False
+    ):
         pos_seq = torch.arange(0, seq_len, 1, dtype=torch.float32)
         indices = torch.arange(0, head_dim, 2, dtype=torch.float32)
-        indices = 1 / 10000 ** (indices / head_dim)
+        indices = 1 / (rotary_emb_base ** (indices / head_dim))
         sinusoid_inp = pos_seq.unsqueeze(1) * indices.unsqueeze(0)
-        sin_sin = np.empty((seq_len * head_dim), dtype=np.float32)
-        cos_cos = np.empty((seq_len * head_dim), dtype=np.float32)
-        numpy_array = sinusoid_inp.numpy()
-        iter_array = np.nditer(numpy_array)
-        i = 0
+        sinusoid_inp = sinusoid_inp.unsqueeze(0).unsqueeze(2)
+
+        sin_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
+        cos_tensor = torch.zeros(1, seq_len, 1, head_dim, dtype=torch.float32)
+
         if rotate_half:
             stride = head_dim // 2
-            for value in iter_array:
-                sin_sin[i] = sign * np.sin(value)
-                cos_cos[i] = np.cos(value)
-                sin_sin[i + stride] = np.sin(value)
-                cos_cos[i + stride] = np.cos(value)
-                i += 1
-                if i % head_dim == stride:
-                    i += stride
+            sin_tensor[..., :stride] = sign * torch.sin(sinusoid_inp)
+            sin_tensor[..., stride:] = torch.sin(sinusoid_inp)
+            cos_tensor[..., :stride] = torch.cos(sinusoid_inp)
+            cos_tensor[..., stride:] = torch.cos(sinusoid_inp)
         else:
-            for value in iter_array:
-                sin_sin[i * 2] = sign * np.sin(value)
-                cos_cos[i * 2 + 0] = np.cos(value)
-                sin_sin[i * 2 + 1] = np.sin(value)
-                cos_cos[i * 2 + 1] = np.cos(value)
-                i += 1
-        tensor_sin = torch.from_numpy(sin_sin).reshape([1, seq_len, 1, head_dim])
-        tensor_cos = torch.from_numpy(cos_cos).reshape([1, seq_len, 1, head_dim])
-        return tensor_sin, tensor_cos
-    
+            sin_tensor[..., 0::2] = sign * torch.sin(sinusoid_inp)
+            sin_tensor[..., 1::2] = torch.sin(sinusoid_inp)
+            cos_tensor[..., 0::2] = torch.cos(sinusoid_inp)
+            cos_tensor[..., 1::2] = torch.cos(sinusoid_inp)
+
+        return sin_tensor, cos_tensor
+
     init_q, init_k, init_v = q, k, v
     if time_major:
         init_q = init_q.permute(1, 0, 2, 3)
@@ -2183,13 +2230,13 @@ def fused_rotary_position_embedding(
 
     head_dim = init_q.shape[3]
     seq_len = init_q.shape[1]
-    
+
     sin_tensor, cos_tensor = sin, cos
     if sin_tensor is None or cos_tensor is None:
         sin_tensor, cos_tensor = _get_sin_cos_tensor_pytorch(seq_len, head_dim, rotate_half=not use_neox_rotary_style)
-        sin_tensor = sin_tensor.to(q.device)
-        cos_tensor = cos_tensor.to(q.device)
-    
+        sin_tensor = sin_tensor.to(dtype=q.dtype, device=q.device)
+        cos_tensor = cos_tensor.to(dtype=q.dtype, device=q.device)
+
     q_rope = _deal_qkv_pytorch(init_q)
     k_rope = _deal_qkv_pytorch(init_k)
     v_rope = _deal_qkv_pytorch(init_v)
@@ -2198,10 +2245,9 @@ def fused_rotary_position_embedding(
         sin_tensor = sin_tensor.squeeze((0, 2))[position_ids].unsqueeze(2)
         cos_tensor = cos_tensor.squeeze((0, 2))[position_ids].unsqueeze(2)
 
-    perm = [0, 2, 1, 3]
-    sin_tensor = sin_tensor.permute(*perm)
-    cos_tensor = cos_tensor.permute(*perm)
-    
+    sin_tensor = sin_tensor.permute(0, 2, 1, 3)
+    cos_tensor = cos_tensor.permute(0, 2, 1, 3)
+
     if use_neox_rotary_style:
         query = _mult_qkv_pytorch(q_rope, cos_tensor, sin_tensor)
         value = _mult_qkv_pytorch(v_rope, cos_tensor, sin_tensor)
@@ -2221,7 +2267,7 @@ def fused_rotary_position_embedding(
             r_key = r_key.permute(1, 0, 2, 3)
         if r_value is not None:
             r_value = r_value.permute(1, 0, 2, 3)
-            
+
     return r_query, r_key, r_value
 """
         core = "result = fused_rotary_position_embedding(**kwargs)"
@@ -2455,8 +2501,8 @@ def fused_layer_norm(x, norm_weight, norm_bias, epsilon, residual_alpha=1.0, beg
         # using banker's rounding
         if quant_round_type == 0:
             x = torch.round(x)
-        else: #  Round to nearest if type != 0
-            x = torch.floor(x + 0.5)
+        else: # round half away from zero
+            x = torch.where(x >= 0, torch.floor(x + 0.5), torch.ceil(x - 0.5))
         x = torch.clamp(x, min=quant_min_bound, max=quant_max_bound).to(torch.int8)
             
     return (x, out_residual, out_mean, out_var)
@@ -3146,64 +3192,36 @@ result = loss
 # i
 class InterpolateRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
+        default_code, map_code = self.apply_generic()
         pre = """
-_kwargs = {}
-for paddle_param, torch_param in {
-    'x': 'input',
-    'size': 'size',
-    'scale_factor': 'scale_factor',
-    'mode': 'mode',
-    'align_corners': 'align_corners',
-    'recompute_scales': 'recompute_scales'
-}.items():
-    if paddle_param in locals() and not locals()[paddle_param] is None:
-        _kwargs[torch_param] = locals()[paddle_param]
-for k in list(_kwargs.keys()):
-    if _kwargs[k] is None:
-        del _kwargs[k]
-if 'size' in _kwargs and isinstance(_kwargs['size'],torch.Tensor):
-    size = []
-    for i in _kwargs['size']:
-        size.append(int(i.item()))
-    _kwargs['size'] = size
-if 'scale_factor' in _kwargs and isinstance(_kwargs['scale_factor'],torch.Tensor):
-    scale_factor = []
-    for i in _kwargs['scale_factor']:
-        scale_factor.append(i.item())
-    _kwargs['scale_factor'] = scale_factor
-align_mode = locals().get('align_mode', 0)
-data_format = locals().get('data_format', 'None')
+if isinstance(size, torch.Tensor):
+    size = size.tolist()
+elif size is None:
+    del size
+if isinstance(scale_factor, torch.Tensor):
+    scale_factor = scale_factor.tolist()
+elif scale_factor is None:
+    del scale_factor
+
 if data_format == "NHWC":
-    _kwargs['input'] = _kwargs['input'].permute(0,3,1,2)
+    x = x.permute(0, 3, 1, 2)
 elif data_format == "NDHWC":
-    _kwargs['input'] = _kwargs['input'].permute(0,4,1,2,3)
+    x = x.permute(0, 4, 1, 2, 3)
 elif data_format == "NWC":
-    _kwargs['input'] = _kwargs['input'].permute(0,2,1)
-if not 'mode' in _kwargs:
-    _kwargs['mode'] = 'nearest'
-if not 'align_corners' in _kwargs:
-    _kwargs['align_corners'] = False    
-if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
-    del _kwargs["align_corners"]
-elif align_mode == 1:
-    _kwargs['align_corners'] = True
-elif align_mode == 0:
-    _kwargs['align_corners'] = False
+    x = x.permute(0, 2, 1)
 """
-        core = """
-result = torch.nn.functional.interpolate(**_kwargs)
-"""
+        core = f"result = {self.torch_api}(**_kwargs)"
         post = """
 if data_format == "NHWC":
-    result = result.permute(0,2,3,1)
+    result = result.permute(0, 2, 3, 1)
 elif data_format == "NDHWC":
-    result = result.permute(0,2,3,4,1)
+    result = result.permute(0, 2, 3, 4, 1)
 elif data_format == "NWC":
-    result = result.permute(0,2,1)
+    result = result.permute(0, 2, 1)
 """
         code = Code(
-            preprocess=pre.splitlines(),
-            core=core.splitlines(),
+            preprocess=default_code + pre.splitlines() + map_code,
+            core=[core],
             postprocess=post.splitlines(),
         )
         return ConvertResult.success(paddle_api, code)
@@ -3452,22 +3470,16 @@ result = torch.abs(lcm)
 
 class LinearRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
-        defaults_code, map_code = self.apply_generic()
+        _, map_code = self.apply_generic()
         pre = """
-_kwargs["weight"] = _kwargs["weight"].T
+weight = weight.T
+if weight.dtype == torch.bfloat16:
+    weight = weight.to(torch.float32)
+if 'bias' in locals() and bias is not None and bias.dtype == torch.bfloat16:
+    bias = bias.to(torch.float32)
 """
-        core = """
-if isinstance(_kwargs['input'], tuple):
-    input = _kwargs['input']
-    del _kwargs['input']
-    result = []
-    for i in input:
-        result.append(torch.nn.functional.linear(input=i, **_kwargs))
-    result = torch.stack(result)
-else:
-    result = torch.nn.functional.linear(**_kwargs)
-"""
-        code = Code(preprocess=map_code + pre.splitlines(), core=core.splitlines())
+        core = f"result = {self.torch_api}(**_kwargs)"
+        code = Code(preprocess=pre.splitlines() + map_code, core=[core])
         return ConvertResult.success(paddle_api, code)
 
 
@@ -3584,7 +3596,10 @@ class LstsqRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-driver='gels'
+# if decvice is GPU then only use gels.
+current_device = x.device
+if(current_device.type == 'cuda'):
+    driver = "gels"
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         code = Code(preprocess=defaults_code + pre.splitlines() + map_code, core=[core])
@@ -4535,48 +4550,50 @@ def _get_same_padding_3d(input_size, kernel_size, stride):
     pad_w = (total_pad_w // 2, total_pad_w - total_pad_w // 2)
     return pad_d, pad_h, pad_w
 
-if not exclusive:
-    if isinstance(padding, str):
-        if padding == "VALID":
+if 'exclusive' in locals() and exclusive:
+    padding = 0
+
+if isinstance(padding, str):
+    if padding == "VALID":
+        padding = 0
+    elif padding == "SAME":
+        input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
+        pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
+        padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
+        if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
+            x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
             padding = 0
-        elif padding == "SAME":
-            input_size = (x.shape[2], x.shape[3], x.shape[4])  # (D, H, W)
-            pad_d, pad_h, pad_w = _get_same_padding_3d(input_size, kernel_size, stride)
-            padding = (pad_d[0], pad_h[0], pad_w[0]) # 对称填充
-            if pad_d[0] != pad_d[1] or pad_h[0] != pad_h[1] or pad_w[0] != pad_w[1]: # 非对称填充
-                x = torch.nn.functional.pad(x, (pad_w[0], pad_w[1], pad_h[0], pad_h[1], pad_d[0], pad_d[1]))
-                padding = 0
-    elif isinstance(padding, (list, tuple)):
-        if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
-            max_pad = []
-            for i in range(3):
-                max_pad.append(kernel_size[i] // 2)
-            exceeds_max = False
-            for p, m in zip(padding, max_pad):
-                if p > m:
-                    exceeds_max = True
-                    break
-            if exceeds_max:
-                pad_d, pad_h, pad_w = padding
-                x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
-                padding = 0
-            else:
-                padding = tuple(padding)
-        elif len(padding) == 6:  # [front, back, top, bottom, left, right]
-            pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
-            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+elif isinstance(padding, (list, tuple)):
+    if len(padding) == 3:  # [pad_depth, pad_height, pad_width]
+        max_pad = []
+        for i in range(3):
+            max_pad.append(kernel_size[i] // 2)
+        exceeds_max = False
+        for p, m in zip(padding, max_pad):
+            if p > m:
+                exceeds_max = True
+                break
+        if exceeds_max:
+            pad_d, pad_h, pad_w = padding
+            x = torch.nn.functional.pad(x, (pad_w, pad_w, pad_h, pad_h, pad_d, pad_d))
             padding = 0
-        elif len(padding) == 5: # Paddle 的 5D 填充格式
-            if data_format == "NCDHW":
-                pad_front, pad_back = padding[2]
-                pad_top, pad_bottom = padding[3]
-                pad_left, pad_right = padding[4]
-            else: # NDHWC
-                pad_front, pad_back = padding[1]
-                pad_top, pad_bottom = padding[2]
-                pad_left, pad_right = padding[3]
-            x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
-            padding = 0
+        else:
+            padding = tuple(padding)
+    elif len(padding) == 6:  # [front, back, top, bottom, left, right]
+        pad_front, pad_back, pad_top, pad_bottom, pad_left, pad_right = padding
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
+    elif len(padding) == 5: # Paddle 的 5D 填充格式
+        if data_format == "NCDHW":
+            pad_front, pad_back = padding[2]
+            pad_top, pad_bottom = padding[3]
+            pad_left, pad_right = padding[4]
+        else: # NDHWC
+            pad_front, pad_back = padding[1]
+            pad_top, pad_bottom = padding[2]
+            pad_left, pad_right = padding[3]
+        x = torch.nn.functional.pad(x, (pad_left, pad_right, pad_top, pad_bottom, pad_front, pad_back))
+        padding = 0
 """
         core = f"result = {self.torch_api}(**_kwargs)"
         post_1d = """
@@ -4974,6 +4991,19 @@ result = torchaudio.functional.rnnt_loss(
 
 
 # s
+class SetitemRule(BaseRule):
+    def apply(self, paddle_api: str) -> ConvertResult:
+        pre = """
+arr, item, value = args
+if isinstance(value, torch.Tensor) and arr.dtype == torch.float32 and value.dtype == torch.bfloat16:
+    value = value.to(torch.float32)
+"""
+        core = "arr.__setitem__(item, value)"
+        post = "result = arr"
+        code = Code(preprocess=pre.splitlines(), core=[core], postprocess=[post])
+        return ConvertResult.success(paddle_api, code, is_torch_corresponding=False)
+
+
 class SampleNeighborsRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         core = """
@@ -6154,10 +6184,6 @@ if not 'align_corners' in _kwargs:
     _kwargs['align_corners'] = False    
 if not _kwargs['mode'] in ['linear','bilinear','bicubic','trilinear']:
     del _kwargs["align_corners"]
-elif align_mode == 1:
-    _kwargs['align_corners'] = True
-elif align_mode == 0:
-    _kwargs['align_corners'] = False
 """
         core = """
 result = torch.nn.functional.upsample(**_kwargs)

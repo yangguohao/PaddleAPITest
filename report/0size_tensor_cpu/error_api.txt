@@ -26,7 +26,6 @@ paddle.Tensor.prod
 paddle.Tensor.put_along_axis
 paddle.Tensor.real
 paddle.Tensor.reshape
-paddle.Tensor.set_
 paddle.Tensor.split
 paddle.Tensor.std
 paddle.Tensor.sum
@@ -90,7 +89,6 @@ paddle.index_select
 paddle.inner
 paddle.kron
 paddle.lerp
-paddle.linalg.cholesky
 paddle.linalg.cholesky_solve
 paddle.linalg.cond
 paddle.linalg.cov

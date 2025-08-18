@@ -22,7 +22,7 @@
     ```bash
     pip install --pre paddlepaddle-gpu -i https://www.paddlepaddle.org.cn/packages/nightly/cu118/
     pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-    pip install pebble pynvml pandas
+    pip install func_timeout pandas pebble pynvml pyyaml
     ```
 2. 克隆 PaddleAPITest 仓库并进入项目目录
    ```bash
@@ -50,25 +50,29 @@
 
 ### 命令行参数
 
-| 参数                        | 类型  | 说明                                                                                   |
-| --------------------------- | ----- | -------------------------------------------------------------------------------------- |
-| `--api_config`              | str   | API 配置字符串（单条测试）                                                             |
-| `--api_config_file`         | str   | API 配置文件路径（如`tester/api_config/5_accuracy/accuracy_1.txt`）                    |
-| `--api_config_file_pattern` | str   | API 配置文件 glob 模式，以逗号分隔（如 `tester/api_config/5_accuracy/accuracy_*.txt`） |
-| `--paddle_only`             | bool  | 运行 Paddle 测试（默认 False）                                                         |
-| `--accuracy`                | bool  | 运行 Paddle vs Torch 精度测试（默认 False）                                            |
-| `--paddle_cinn`             | bool  | 运行 CINN vs Dygraph 对比测试（默认 False）                                            |
-| `--num_gpus`                | int   | 使用的 GPU 数量（默认 -1，-1 动态最大）                                                |
-| `--num_workers_per_gpu`     | int   | 每 GPU 的 worker 进程数（默认 1，-1 动态最大）                                         |
-| `--gpu_ids`                 | str   | 使用的 GPU 序号，以逗号分隔（默认 ""，"-1" 动态最大）                                  |
-| `--required_memory`         | float | 每 worker 进程预估使用显存 GB（默认 10.0）                                             |
-| `--test_amp`                | bool  | 启用自动混合精度测试（默认 False）                                                     |
-| `--test_cpu`                | bool  | 启用 Paddle CPU 模式测试（默认 False）                                                 |
-| `--use_cached_numpy`        | bool  | 启用 Numpy 缓存（默认 False）                                                          |
-| `--log_dir`                 | str   | 日志输出路径（默认 "tester/api_config/test_log"）                                      |
-| `--atol`                    | float | 精度测试的绝对误差容忍度（默认 1e-2）                                                  |
-| `--rtol`                    | float | 精度测试的相对误差容忍度（默认 1e-2）                                                  |
-| `--test_tol`                | bool  | 启用精度误差容忍度范围测试（默认 False）                                               |
+| 参数                             | 类型  | 说明                                                                                   |
+| -------------------------------- | ----- | -------------------------------------------------------------------------------------- |
+| `--api_config`                   | str   | API 配置字符串（单条测试）                                                             |
+| `--api_config_file`              | str   | API 配置文件路径（如`tester/api_config/5_accuracy/accuracy_1.txt`）                    |
+| `--api_config_file_pattern`      | str   | API 配置文件 glob 模式，以逗号分隔（如 `tester/api_config/5_accuracy/accuracy_*.txt`） |
+| `--paddle_only`                  | bool  | 运行 Paddle 测试（默认 False）                                                         |
+| `--accuracy`                     | bool  | 运行 Paddle vs Torch 精度测试（默认 False）                                            |
+| `--paddle_cinn`                  | bool  | 运行 CINN vs Dygraph 对比测试（默认 False）                                            |
+| `--paddle_gpu_performance`       | bool  | 运行 Paddle 性能测试（默认 False）                                                     |
+| `--torch_gpu_performance`        | bool  | 运行 Torch 性能测试（默认 False）                                                      |
+| `--paddle_torch_gpu_performance` | bool  | 运行 Paddle vs Torch 性能测试（默认 False）                                            |
+| `--accuracy_stable`              | bool  | 启用稳定性测试（默认 False）                                                           |
+| `--num_gpus`                     | int   | 使用的 GPU 数量（默认 -1，-1 动态最大）                                                |
+| `--num_workers_per_gpu`          | int   | 每 GPU 的 worker 进程数（默认 1，-1 动态最大）                                         |
+| `--gpu_ids`                      | str   | 使用的 GPU 序号，以逗号分隔（默认 ""，"-1" 动态最大）                                  |
+| `--required_memory`              | float | 每 worker 进程预估使用显存 GB（默认 10.0）                                             |
+| `--test_amp`                     | bool  | 启用自动混合精度测试（默认 False）                                                     |
+| `--test_cpu`                     | bool  | 启用 Paddle CPU 模式测试（默认 False）                                                 |
+| `--use_cached_numpy`             | bool  | 启用 Numpy 缓存（默认 False）                                                          |
+| `--log_dir`                      | str   | 日志输出路径（默认 "tester/api_config/test_log"）                                      |
+| `--atol`                         | float | 精度测试的绝对误差容忍度（默认 1e-2）                                                  |
+| `--rtol`                         | float | 精度测试的相对误差容忍度（默认 1e-2）                                                  |
+| `--test_tol`                     | bool  | 启用精度误差容忍度范围测试（默认 False）                                               |
 
 ### 示例命令
 

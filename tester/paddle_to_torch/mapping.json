@@ -210,6 +210,7 @@
         }
     },
     "paddle.as_complex": {
+        "Rule": "AsComplexRule",
         "torch_api": "torch.view_as_complex",
         "paddle_torch_args_map": {
             "x": "input"
@@ -2458,7 +2459,9 @@
         "Rule": "BatchNormRule",
         "torch_api": "torch.nn.functional.batch_norm",
         "set_defaults": {
-            "momentum": 0.9
+            "training": false,
+            "momentum": 0.9,
+            "use_global_stats": "None"
         },
         "paddle_torch_args_map": {
             "x": "input",
@@ -2680,7 +2683,23 @@
         }
     },
     "paddle.nn.functional.cross_entropy": {
-        "Rule": "CrossEntropyRule"
+        "Rule": "CrossEntropyRule",
+        "torch_api": "torch.nn.functional.cross_entropy",
+        "set_defaults": {
+            "weight": "None",
+            "reduction": "'mean'",
+            "soft_label": "False",
+            "label_smoothing": "0.0",
+            "reduction_original": "None"
+        },
+        "paddle_torch_args_map": {
+            "input": "input",
+            "label": "target",
+            "weight": "weight",
+            "reduction": "reduction",
+            "ignore_index": "ignore_index",
+            "label_smoothing": "label_smoothing"
+        }
     },
     "paddle.nn.functional.ctc_loss": {
         "Rule": "CtcLossRule"
@@ -2879,7 +2898,21 @@
         }
     },
     "paddle.nn.functional.interpolate": {
-        "Rule": "InterpolateRule"
+        "Rule": "InterpolateRule",
+        "torch_api": "torch.nn.functional.interpolate",
+        "set_defaults": {
+            "size": "None",
+            "scale_factor": "None",
+            "data_format": "'NCDHW'"
+        },
+        "paddle_torch_args_map": {
+            "x": "input",
+            "size": "size",
+            "scale_factor": "scale_factor",
+            "mode": "mode",
+            "align_corners": "align_corners",
+            "recompute_scale_factor": "recompute_scale_factor"
+        }
     },
     "paddle.nn.functional.kl_div": {
         "torch_api": "torch.nn.functional.kl_div",
@@ -4648,6 +4681,7 @@
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__rxor__(other=y)"
     },
     "paddle.Tensor.__setitem__": {
+        "Rule": "SetitemRule",
         "torch_api": "torch.Tensor.__setitem__"
     },
     "paddle.Tensor.__sub__": {

@@ -27,8 +27,9 @@ LOG_PREFIXES = {
     "oom": "api_config_oom",
 }
 
-is_engineV2 = False
+_is_engineV2 = False
 
+_process_file_handlers = {}
 
 # Command line arguments configuration
 # Used in engine.py
@@ -55,23 +56,31 @@ def set_test_log_path(log_dir):
 
 
 def set_engineV2():
-    global is_engineV2
-    is_engineV2 = True
+    global _is_engineV2
+    _is_engineV2 = True
     TMP_LOG_PATH.mkdir(exist_ok=True)
+
+
+def close_process_files():
+    """关闭本进程持有的所有文件句柄"""
+    global _process_file_handlers
+    for handler in _process_file_handlers.values():
+        try:
+            handler.close()
+        except Exception as err:
+            print(f"Error closing process file: {err}", flush=True)
+    _process_file_handlers = {}
 
 
 def get_log_file(log_type: str):
     """获取指定日志类型和PID对应的日志文件路径"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-
     prefix = LOG_PREFIXES[log_type]
-
-    if not is_engineV2:
+    if not _is_engineV2:
         cfg = get_cfg()
         filename = f"{prefix}{cfg.id}.txt" if cfg else f"{prefix}.txt"
         return TEST_LOG_PATH / filename
-
     pid = os.getpid()
     return TMP_LOG_PATH / f"{prefix}_{pid}.txt"
 
@@ -81,12 +90,12 @@ def write_to_log(log_type, line):
     line = line.strip()
     if not line:
         return
-
     file_path = get_log_file(log_type)
-
     try:
-        with file_path.open("a") as f:
-            f.write(line + "\n")
+        if file_path not in _process_file_handlers:
+            _process_file_handlers[file_path] = file_path.open("a", buffering=1)
+        handler = _process_file_handlers[file_path]
+        handler.write(line + "\n")
     except Exception as err:
         print(f"Error writing to {file_path}: {err}", flush=True)
 
@@ -95,12 +104,10 @@ def read_log(log_type):
     """读取文件所有行，返回集合"""
     if log_type not in LOG_PREFIXES:
         raise ValueError(f"Invalid log type: {log_type}")
-
     cfg = get_cfg()
     prefix = LOG_PREFIXES[log_type]
     filename = f"{prefix}{cfg.id}.txt" if cfg else f"{prefix}.txt"
     file_path = TEST_LOG_PATH / filename
-
     try:
         with file_path.open("r") as f:
             return set(line.strip() for line in f if line.strip())
@@ -155,19 +162,24 @@ def aggregate_logs(end=False):
     log_success = True
     log_file = TEST_LOG_PATH / f"log_inorder.log"
     tmp_log_files = sorted(TMP_LOG_PATH.glob(f"log_*.log"))
+    BUFFER_SIZE = 4 * 1024 * 1024
     try:
         with log_file.open("ab") as out_f:
             for file_path in tmp_log_files:
                 try:
                     with file_path.open("rb") as in_f:
-                        for line in in_f:
-                            if len(line) > 10000:  # 如果行长度超过10000字节，截断
-                                print(
-                                    f"Truncating long line ({len(line)} bytes) in {file_path.name}"
-                                )
-                                out_f.write(line[:10000] + b"\n")
-                            else:
-                                out_f.write(line)
+                        while True:
+                            lines = in_f.readlines(BUFFER_SIZE)
+                            if not lines:
+                                break
+                            for line in lines:
+                                if len(line) > 10000:  # 如果行长度超过10000字节，截断
+                                    print(
+                                        f"Truncating long line ({len(line)} bytes) in {file_path.name}"
+                                    )
+                                    out_f.write(line[:10000] + b"\n")
+                                else:
+                                    out_f.write(line)
                 except Exception as err:
                     print(f"Error reading {file_path}: {err}", flush=True)
                     log_success = False
@@ -227,20 +239,72 @@ def aggregate_logs(end=False):
             for file_path in tmp_tol_files:
                 file_path.unlink()
 
+    stable_success = True
+    stable_file = TEST_LOG_PATH / f"stable.csv"
+    tmp_stable_files = sorted(TMP_LOG_PATH.glob(f"stable_*.csv"))
+    if tmp_stable_files:
+        try:
+            with stable_file.open("a", newline="") as out_f:
+                writer = csv.writer(out_f)
+                if not stable_file.exists() or stable_file.stat().st_size == 0:
+                    writer.writerow(
+                        [
+                            "API",
+                            "config",
+                            "dtype",
+                            "comp",
+                            "max_abs_diff",
+                            "max_rel_diff",
+                        ]
+                    )
+                for file_path in tmp_stable_files:
+                    try:
+                        with file_path.open("r") as in_f:
+                            reader = csv.reader(in_f)
+                            next(reader, None)
+                            for row in reader:
+                                if row:  # 确保行不为空
+                                    writer.writerow(row)
+                    except Exception as err:
+                        print(f"Error reading {file_path}: {err}", flush=True)
+                        stable_success = False
+                        break
+        except Exception as err:
+            print(f"Error writing to {tol_file}: {err}", flush=True)
+            stable_success = False
+
+        if not stable_success:
+            stable_file.unlink(missing_ok=True)
+            all_success = False
+        else:
+            for file_path in tmp_stable_files:
+                file_path.unlink()
+
     if end:
-        if all_success:
-            shutil.rmtree(TMP_LOG_PATH, ignore_errors=True)
+        if all_success and not os.listdir(TMP_LOG_PATH):
+            shutil.rmtree(TMP_LOG_PATH)
 
         if tol_file.exists():
             try:
                 df = pd.read_csv(tol_file, on_bad_lines="warn")
-                df = df.drop_duplicates(subset=["config", "mode"], keep="last")
+                # df = df.drop_duplicates(subset=["config", "mode"], keep="last")
                 df = df.sort_values(
                     by=["API", "dtype", "config", "mode"], ignore_index=True
                 )
                 df.to_csv(tol_file, index=False, na_rep="nan")
             except Exception as err:
                 print(f"Error arranging {tol_file}: {err}", flush=True)
+
+        if stable_file.exists():
+            try:
+                df = pd.read_csv(stable_file, on_bad_lines="warn")
+                # df = df.drop_duplicates(subset=["config", "comp"], keep="last")
+                df = df.sort_values(
+                    by=["API", "dtype", "config", "comp"], ignore_index=True
+                )
+                df.to_csv(stable_file, index=False, na_rep="nan")
+            except Exception as err:
+                print(f"Error arranging {stable_file}: {err}", flush=True)
 
         log_counts = {}
         checkpoint_file = TEST_LOG_PATH / "checkpoint.txt"
@@ -356,10 +420,7 @@ def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
     """
     output_file = TMP_LOG_PATH / f"tol_{os.getpid()}.csv"
     mode = "backward" if is_backward else "forward"
-    if is_backward:
-        print(f"[backward] {config}\n{error_msg}", flush=True)
-    else:
-        print(f"[forward] {config}\n{error_msg}", flush=True)
+    print(f"[{mode}] {config}\n{error_msg}", flush=True)
 
     if error_msg == "Identical":
         max_abs_diff = 0.0
@@ -397,5 +458,49 @@ def log_accuracy_tolerance(error_msg, api, config, dtype, is_backward=False):
                     ]
                 )
             writer.writerow(row)
-    except Exception as e:
-        print(f"Error writing to {output_file}: {e}", flush=True)
+    except Exception as err:
+        print(f"Error writing to {output_file}: {err}", flush=True)
+
+
+def log_accuracy_stable(error_msg, api, config, dtype, comp):
+    output_file = TMP_LOG_PATH / f"stable_{os.getpid()}.csv"
+    print(f"[{comp}] {config}\n{error_msg}", flush=True)
+
+    if error_msg == "Identical":
+        max_abs_diff = 0.0
+        max_rel_diff = 0.0
+    else:
+        max_abs_diff = None
+        max_rel_diff = None
+
+        # 使用正则表达式提取误差值
+        abs_pattern = r"(?:Absolute|Greatest absolute|Max absolute) difference(?: among violations)?: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        rel_pattern = r"(?:Relative|Greatest relative|Max relative) difference(?: among violations)?: (\d+\.?\d*(?:[eE][+-]?\d+)?|nan|inf)\b"
+        abs_match = re.search(abs_pattern, error_msg)
+        rel_match = re.search(rel_pattern, error_msg)
+
+        if abs_match and rel_match:
+            try:
+                max_abs_diff = float(abs_match.group(1))
+                max_rel_diff = float(rel_match.group(1))
+            except ValueError:
+                pass
+
+    row = [api, config, dtype, comp, str(max_abs_diff), str(max_rel_diff)]
+    try:
+        with open(output_file, mode="a", newline="") as f:
+            writer = csv.writer(f)
+            if not output_file.exists() or output_file.stat().st_size == 0:
+                writer.writerow(
+                    [
+                        "API",
+                        "config",
+                        "dtype",
+                        "comp",
+                        "max_abs_diff",
+                        "max_rel_diff",
+                    ]
+                )
+            writer.writerow(row)
+    except Exception as err:
+        print(f"Error writing to {output_file}: {err}", flush=True)
