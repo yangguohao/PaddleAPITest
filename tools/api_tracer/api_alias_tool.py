@@ -36,7 +36,7 @@ def get_alias_apis(input_path: str, yaml_path: str):
         raise FileNotFoundError(f"[APIAlias] Not found input file: {input_path}")
 
     output_path = input_file.parent / "apis.txt"
-    output_excluded_path = input_file.parent / "excluded_apis.txt"
+    output_excluded_path = input_file.parent / "apis_excluded.txt"
 
     apis = set()
     with input_file.open("r") as f:

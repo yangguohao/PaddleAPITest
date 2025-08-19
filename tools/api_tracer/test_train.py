@@ -1,10 +1,14 @@
+import math
 import os
+from typing import Optional
 
 os.environ["HF_HOME"] = "tools/api_tracer/.huggingface"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 import traceback
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -13,12 +17,15 @@ from datasets import load_dataset
 from decord import VideoReader, cpu
 from diffusers.pipelines.auto_pipeline import AutoPipelineForText2Image
 from PIL import Image
+from torch import nn
 from transformers import (AutoModelForCausalLM, AutoModelForImageTextToText,
                           AutoProcessor, AutoTokenizer)
 from transformers.data.data_collator import (DataCollatorForLanguageModeling,
                                              DataCollatorForSeq2Seq)
+from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.trainer import Trainer
 from transformers.training_args import TrainingArguments
+from transformers.utils.generic import PaddingStrategy
 
 MODELS_DIR = Path("/root/paddlejob/workspace/env_run/models")
 # MODELS_DIR = Path("/root/paddlejob/workspace/env_run/bos/huggingface")
@@ -49,8 +56,8 @@ ImageTexttoTextModels = [
     # "deepseek-ai/deepseek-vl2-tiny",  # need to clone deepseek_vl2 project
     # "llava-hf/llava-1.5-7b-hf",
     # "meta-llama/Llama-4-Maverick-17B-128E",
-    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",  # need transformers<4.54
-    # "zai-org/GLM-4.1V-9B-Thinking",
+    # "baidu/ERNIE-4.5-VL-28B-A3B-PT",  # need transformers<4.54, VisionAttention may cause size error, change to FixedVisionAttention
+    # "zai-org/GLM-4.1V-9B-Thinking",  # VisionAttention may cause size error, can refer to FixedVisionAttention
     # "ByteDance/Dolphin",
     # "Salesforce/blip2-opt-2.7b",  # need transformers<4.50
     # "OpenGVLab/InternVL3-1B",
@@ -207,6 +214,91 @@ class DolphinTrainer(Trainer):
         return super().training_step(model, inputs, num_items_in_batch)
 
 
+def rotate_half(x):
+    """Rotates half the hidden dims of the input."""
+    x1 = x[..., : x.shape[-1] // 2]
+    x2 = x[..., x.shape[-1] // 2 :]
+    return torch.cat((-x2, x1), dim=-1)  # shape is the same as x
+
+
+def apply_rotary_pos_emb_vision(
+    tensor: torch.Tensor, freqs: torch.Tensor
+) -> torch.Tensor:
+    orig_dtype = tensor.dtype
+
+    tensor = tensor.type(dtype=torch.float32)
+    cos = freqs.cos()
+    sin = freqs.sin()
+    cos = cos.unsqueeze(1).tile(1, 1, 2).unsqueeze(0).type(dtype=torch.float32)
+    sin = sin.unsqueeze(1).tile(1, 1, 2).unsqueeze(0).type(dtype=torch.float32)
+    output = tensor * cos + rotate_half(tensor) * sin
+    output = output.to(orig_dtype)
+    return output
+
+
+class FixedVisionAttention(nn.Module):
+    """VisionAttention"""
+
+    def __init__(self, dim: int, num_heads: int = 16) -> None:
+        super().__init__()
+        self.num_heads = num_heads
+        self.qkv = nn.Linear(dim, dim * 3, bias=True)
+        self.proj = nn.Linear(dim, dim)
+        self.head_dim = dim // num_heads  # must added
+
+    def forward(
+        self,
+        hidden_states: torch.Tensor,
+        cu_seqlens: torch.Tensor,
+        rotary_pos_emb: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        """forward function for vision attention"""
+        seq_length = hidden_states.shape[0]
+        qkv = (
+            self.qkv(hidden_states)
+            .reshape([seq_length, 3, self.num_heads, -1])
+            .permute(1, 0, 2, 3)
+        )
+        q, k, v = qkv.unbind(axis=0)
+
+        q = apply_rotary_pos_emb_vision(q.unsqueeze(dim=0), rotary_pos_emb).squeeze(
+            dim=0
+        )
+        k = apply_rotary_pos_emb_vision(k.unsqueeze(dim=0), rotary_pos_emb).squeeze(
+            dim=0
+        )
+
+        q = q.transpose(0, 1)
+        k = k.transpose(0, 1)
+        v = v.transpose(0, 1)
+
+        # ---change: expand v---
+        if q.shape[1] != v.shape[1]:
+            v = v.expand_as(q)
+        # ---end---
+
+        lengths = cu_seqlens[1:] - cu_seqlens[:-1]
+        splits = [torch.split(tensor, lengths.tolist(), dim=1) for tensor in (q, k, v)]
+
+        attn_output = []
+        for q, k, v in zip(*splits):
+            attn_weights = torch.matmul(q, k.transpose(1, 2)) / math.sqrt(self.head_dim)
+            attn_weights = nn.functional.softmax(
+                attn_weights, dim=-1, dtype=torch.float32
+            ).to(q.dtype)
+            attn_output_splited = torch.matmul(attn_weights, v)
+            attn_output_splited = attn_output_splited.transpose(0, 1)
+            attn_output.append(attn_output_splited)
+        attn_output = torch.cat(attn_output, dim=0)
+        # ---change: reshape(seq_length, -1) to reshape(-1, self.num_heads * self.head_dim)---
+        attn_output = attn_output.reshape(
+            -1, self.num_heads * self.head_dim
+        ).contiguous()
+        # ---end---
+        attn_output = self.proj(attn_output)
+        return attn_output
+
+
 def run_training_test_i2t(model_name: str):
     print(f"🚀 Running Image2Text Training Test for: {model_name})")
     model_path = MODELS_DIR / model_name
@@ -224,6 +316,25 @@ def run_training_test_i2t(model_name: str):
                 device_map="auto",
                 trust_remote_code=True,
             )
+            for block in model.vision_model.blocks:
+                original_attn = block.attn
+                dim = original_attn.qkv.in_features
+                num_heads = (
+                    original_attn.num_heads
+                    if hasattr(original_attn, "num_heads")
+                    else 16
+                )
+                fixed_attn = FixedVisionAttention(dim=dim, num_heads=num_heads)
+                fixed_attn.qkv.weight.data.copy_(original_attn.qkv.weight.data)
+                if original_attn.qkv.bias is not None:
+                    fixed_attn.qkv.bias.data.copy_(original_attn.qkv.bias.data)
+                fixed_attn.proj.weight.data.copy_(original_attn.proj.weight.data)
+                if original_attn.proj.bias is not None:
+                    fixed_attn.proj.bias.data.copy_(original_attn.proj.bias.data)
+                device = original_attn.qkv.weight.device
+                dtype = original_attn.qkv.weight.dtype
+                fixed_attn.to(device=device, dtype=dtype)
+                block.attn = fixed_attn
         else:
             model = AutoModelForImageTextToText.from_pretrained(
                 model_path,
@@ -391,7 +502,7 @@ def run_training_test_i2t(model_name: str):
         output_dir = output_path + "/train_output"
         training_args = TrainingArguments(
             output_dir=output_dir,
-            per_device_train_batch_size=1,
+            per_device_train_batch_size=1,  # Qwen2.5-VL may cause shape '[0, 4, -1]' RuntimeError, change to 4
             gradient_accumulation_steps=4,
             learning_rate=1e-5,
             save_strategy="no",

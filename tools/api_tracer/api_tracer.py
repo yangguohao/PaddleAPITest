@@ -54,6 +54,7 @@ class APITracer:
                     f"Invalid stack_format: {stack_format}, it should be one of ['full', 'short', 'api']"
                 )
 
+        self.output_path = output_path
         os.makedirs(output_path, exist_ok=True)
         levels = levels if isinstance(levels, list) else [levels]
 
@@ -110,6 +111,12 @@ class APITracer:
         self.serializer.get_apis_and_configs()
         if self.record_stack:
             self.serializer.get_api_stacks()
+        yaml_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "api_list",
+            "torch_api_list.yaml",
+        )
+        self.get_alias_apis(self.output_path, yaml_path)
 
     def __enter__(self):
         """进入上下文管理器"""
