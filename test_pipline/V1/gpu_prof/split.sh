@@ -1,7 +1,10 @@
 #!/bin/bash
+rm -rf gpu_prof_test_config_*.txt
+rm -rf gpu_prof_test_config_*.log
+rm -rf /root/paddlejob/workspace/env_run/ningzs/PaddleAPITest/tester/api_config/test_log
 
-input_file="gpu_bigtensor_accuracy_errorconfig.txt"
-output_prefix="gpu_bigtensor_accuracy_errorconfig_"
+input_file="gen_prof_case_pass_0730.txt"
+output_prefix="gpu_prof_test_config_"
 num_splits=8
 
 # 获取文件总行数
