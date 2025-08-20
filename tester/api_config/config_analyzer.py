@@ -1929,7 +1929,10 @@ class TensorConfig:
                         default_max = 5
                 if isinstance(const, (int, float, bool, numpy.number)):
                     value_max = get_max(const, numpy.finfo(self.dtype).max, default_max)
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
+                    if is_base_arg and int(const) != const:
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=value_max)
+                    else:
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
                 else:
                     if is_base_arg:
                         # Avoid situations like (-2.3) ^ 0.5
