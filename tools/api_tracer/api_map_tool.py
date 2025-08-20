@@ -1,10 +1,11 @@
 import os
+from typing import Dict, List, Union
 
 import pandas as pd
 import yaml
 
 
-def _load_api_list(filepath: str) -> list:
+def _load_api_data(filepath: str) -> Union[List[str], Dict[str, List[str]]]:
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"[APIMap] Not found API list file: '{filepath}'")
 
@@ -15,8 +16,15 @@ def _load_api_list(filepath: str) -> list:
             data = yaml.safe_load(f)
             if isinstance(data, list):
                 return [str(item) for item in data]
+            elif isinstance(data, dict):
+                for key, value in data.items():
+                    if not value:
+                        data[key] = []
+                    elif not isinstance(value, list):
+                        raise TypeError(f"[APIMap] The value for key '{key}' in '{filepath}' is not a list.")
+                return data
             else:
-                raise TypeError(f"[APIMap] YAML file '{filepath}' is not a list.")
+                raise TypeError(f"[APIMap] YAML file '{filepath}' is not a list or a dictionary.")
     elif extension == ".txt":
         with open(filepath, "r", encoding="utf-8") as f:
             return [line.strip() for line in f if line.strip()]
@@ -59,15 +67,33 @@ def get_mapped_model_apis(
     print(f"[APIMap] Successfully loaded Mapping table: '{mapping_table_path}'")
 
     # Load API lists
-    torch_static_list = _load_api_list(torch_static_path)
+    torch_static_data = _load_api_data(torch_static_path)
+    torch_dynamic_data = _load_api_data(torch_dynamic_path)
+
+    if not isinstance(torch_static_data, dict):
+        raise TypeError(f"'{torch_static_path}' is not in dictionary format.")
+    if not isinstance(torch_dynamic_data, dict):
+        raise TypeError(f"'{torch_dynamic_path}' is not in dictionary format.")
+
+    torch_api_category_map = {}
+    torch_static_list = []
+    for category, apis in torch_static_data.items():
+        torch_static_list.extend(apis)
+        for api in apis:
+            torch_api_category_map[api] = category
+
+    torch_dynamic_list = []
+    for category, apis in torch_dynamic_data.items():
+        torch_dynamic_list.extend(apis)
+        for api in apis:
+            torch_api_category_map[api] = category
+
     torch_static_set = set(torch_static_list)
-    print(f"[APIMap] Successfully loaded {len(torch_static_set)} Torch Static APIs.")
-
-    torch_dynamic_list = _load_api_list(torch_dynamic_path)
+    print(f"[APIMap] Successfully loaded {len(torch_static_set)} Torch Static APIs from {len(torch_static_data)} categories.")
     torch_dynamic_set = set(torch_dynamic_list)
-    print(f"[APIMap] Successfully loaded {len(torch_dynamic_set)} Torch Dynamic APIs.")
+    print(f"[APIMap] Successfully loaded {len(torch_dynamic_set)} Torch Dynamic APIs from {len(torch_dynamic_data)} categories.")
 
-    paddle_dynamic_list = _load_api_list(paddle_dynamic_path)
+    paddle_dynamic_list = _load_api_data(paddle_dynamic_path)
     paddle_dynamic_set = set(paddle_dynamic_list)
     print(
         f"[APIMap] Successfully loaded {len(paddle_dynamic_set)} Paddle Dynamic APIs."
@@ -93,7 +119,9 @@ def get_mapped_model_apis(
     # From Torch to Paddle
     for torch_api in sorted(list(source_torch_apis)):
         paddle_api = torch_to_paddle_map.get(torch_api)
+        category = torch_api_category_map.get(torch_api, "未分类")
         row = {
+            "类别": category,
             "TorchAPI": torch_api,
             "PaddleAPI": paddle_api,
             "Torch静": "是" if torch_api in torch_static_set else "否",
@@ -111,6 +139,7 @@ def get_mapped_model_apis(
     for paddle_api in sorted(list(remaining_paddle_apis)):
         torch_api = paddle_to_torch_map.get(paddle_api)
         row = {
+            "类别": "无",
             "TorchAPI": torch_api,
             "PaddleAPI": paddle_api,
             "Torch静": "否",
@@ -120,7 +149,7 @@ def get_mapped_model_apis(
         report_data.append(row)
 
     result_df = pd.DataFrame(report_data).fillna("无")
-    result_df.sort_values(by=["TorchAPI", "PaddleAPI"], inplace=True, ignore_index=True)
+    result_df.sort_values(by=["类别", "TorchAPI", "PaddleAPI"], inplace=True, ignore_index=True)
 
     def get_mapping_status(row):
         torch_in_source = row["Torch静"] == "是" or row["Torch动"] == "是"
@@ -144,6 +173,7 @@ def get_mapped_model_apis(
     result_df["映射状态"] = result_df.apply(get_mapping_status, axis=1)
 
     final_columns = [
+        "类别",
         "TorchAPI",
         "PaddleAPI",
         "Torch静",
