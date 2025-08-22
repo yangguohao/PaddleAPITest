@@ -1456,7 +1456,7 @@ class TensorConfig:
                             self.numpy_tensor = numpy.random.randint(start[api_config.index]+1, 65535, self.shape)
                         else:
                             if start[api_config.index]-num[i] == 0:
-                                start[api_config.inex] -= 1
+                                start[api_config.index] -= 1
                             self.numpy_tensor = numpy.random.randint(min(start[api_config.index]-num[i]+1, -1), 0, self.shape)
                         api_config.index += 1                       
                     else:
@@ -1467,7 +1467,7 @@ class TensorConfig:
                                 self.numpy_tensor[i] = numpy.random.randint(start[api_config.index]+1, 65535)
                             else:
                                 if start[api_config.index]-num[i] == 0:
-                                    start[api_config.inex] -= 1
+                                    start[api_config.index] -= 1
                                 self.numpy_tensor[i] = numpy.random.randint(start[api_config.index]-num[api_config.index]+1, 0)
                             api_config.index += 1
 
