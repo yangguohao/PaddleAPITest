@@ -6029,6 +6029,8 @@ if dtype is not None:
             result[2] = result[2].to(dtype=dtype)
         else:
             result[1] = result[1].to(dtype=dtype)
+if axis is None and return_inverse:
+    result[1] = result[1].flatten()
 result = tuple(result)
 """
         code = Code(
