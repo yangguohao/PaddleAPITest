@@ -1879,42 +1879,67 @@ class TensorConfig:
             elif api_config.api_name == "paddle.poisson":
                 self.numpy_tensor = numpy.random.random(self.shape).astype(self.dtype)
 
-            elif api_config.api_name in {"paddle.Tensor.__pow__","paddle.Tensor.pow", "paddle.pow"}:
-                # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other
-                if self.check_arg(api_config, 0, "self") or self.check_arg(api_config, 0, "x"):
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-10, max=10)
-                else:
-                    # self.check_arg(api_config, 1, "other"):
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-5, max=5)
-
-            elif api_config.api_name == "paddle.Tensor.__rpow__":
+            elif api_config.api_name in {"paddle.Tensor.__pow__", "paddle.Tensor.pow", "paddle.pow", "paddle.Tensor.__rpow__"}:
                 dtype = self.dtype
-                def get_max(value, dtype_max, default_max = 5):
+                def get_base_max(value, dtype_max, default_max = 5):
                     value_max = default_max
-                    if isinstance(other, (int, float, bool, complex, numpy.number)):
-                        assert value > 0, "other should be > 0 for paddle.Tensor.__rpow__"
-                        if value < 1:
-                            # value**(-max) < MAX => (1/value)**max < MAX
-                            value = 1/value 
-                        ln_value = math.log(value)
-                        # dy/dx = y*ln(value) < MAX, y < MAX => y*max(ln(value), 1) < MAX
-                        output_max = dtype_max/max(1, ln_value)
-                        value_max = math.log(output_max)/ln_value
+                    if value <= 0:
+                        return value_max
+                    if value < 1:
+                        # value**(-max) < MAX => (1/value)**max < MAX
+                        value = 1/value 
+                    ln_value = math.log(value)
+                    # dy/dx = y*ln(value) < MAX, y < MAX => y*max(ln(value), 1) < MAX
+                    output_max = dtype_max/max(1, ln_value)
+                    value_max = math.log(output_max)/ln_value
+                    if isinstance(value, int):
+                        value_max = math.floor(value_max)
+                    return value_max
+                def get_exponent_max(value, dtype_max, default_max = 5):
+                    value_max = default_max
+                    if isinstance(value, (int, float, bool, numpy.number)):
+                        if value <= 2:
+                            return value_max
+                        value_max = math.pow(dtype_max/value, 1/value)
                         if isinstance(value, int):
                             value_max = math.floor(value_max)
                     return value_max
                 
-                # paddle.Tensor.__rpow__(a, b) => b ^ a, where a is self and b is other
-                if self.check_arg(api_config, 0, "self"):
-                    other = self.get_arg(api_config, 1, "other")
-                    value_max = get_max(other, numpy.finfo(self.dtype).max)
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
+                if api_config.api_name == "paddle.Tensor.__rpow__":
+                    # paddle.Tensor.__rpow__(a, b) => b ^ a, where a is self and b is other
+                    is_base_arg = self.check_arg(api_config, 1, "other")
+                    if is_base_arg:
+                        const = self.get_arg(api_config, 0, "self")
+                        get_max = get_base_max
+                        default_max = 10
+                    else:
+                        const = self.get_arg(api_config, 1, "other")
+                        get_max = get_exponent_max
+                        default_max = 5
                 else:
-                    # self.check_arg(api_config, 1, "other"):
-                    self = self.get_arg(api_config, 0, "self")
-                    value_max = get_max(other, numpy.finfo(self.dtype).max, 10)
-                    self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
-
+                    # paddle.Tensor.__pow__(a, b) => a ^ b, where a is self and b is other
+                    is_base_arg = self.check_arg(api_config, 0, "self") or self.check_arg(api_config, 0, "x")
+                    if is_base_arg:
+                        const = self.get_arg(api_config, 1, "other")
+                        get_max = get_base_max
+                        default_max = 10
+                    else:
+                        const = self.get_arg(api_config, 0, "self")
+                        get_max = get_exponent_max
+                        default_max = 5
+                if isinstance(const, (int, float, bool, numpy.number)):
+                    value_max = get_max(const, numpy.finfo(self.dtype).max, default_max)
+                    if is_base_arg and int(const) != const:
+                        # Avoid situations like (-2.3) ^ 0.5
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=value_max)
+                    else:
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-value_max, max=value_max)
+                else:
+                    if is_base_arg:
+                        # Avoid situations like (-2.3) ^ 0.5
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=0, max=default_max)
+                    else:
+                        self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=-default_max, max=default_max)
             elif api_config.api_name == "paddle.nn.functional.sigmoid_focal_loss":
                 if self.check_arg(api_config, 1, "label"):
                     self.numpy_tensor = numpy.random.randint(low=0, high=2, size=self.shape).astype(self.dtype)
