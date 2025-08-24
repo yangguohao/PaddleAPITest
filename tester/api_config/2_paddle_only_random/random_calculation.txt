@@ -25634,3 +25634,5 @@ paddle.Tensor.set_(Tensor([0],"complex64"), Tensor([15, 3],"complex64"), list[20
 paddle.Tensor.set_(Tensor([0],"float32"), Tensor([15, 3],"float32"), list[20,], list[2,], 0, )
 paddle.Tensor.set_(Tensor([0],"float64"), Tensor([15, 3],"float64"), list[20,], list[2,], 0, )
 paddle.Tensor.set_(Tensor([3, 0],"float16"), Tensor([6, 3],"float16"), list[3,8,], list[2,2,], 0, )
+paddle.index_put(Tensor([110, 42, 32, 56],"float64"), tuple(Tensor([16, 16],"int32"),Tensor([16, 16],"int32"),Tensor([32],"bool"),), Tensor([16, 16, 56],"float64"), False, )
+paddle.index_put(Tensor([110, 42, 56, 56],"float64"), tuple(Tensor([16, 16],"int32"),Tensor([16, 16],"int32"),Tensor([1, 16],"int32"),), Tensor([16, 16, 56],"float64"), False, )

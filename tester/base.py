@@ -256,53 +256,118 @@ class APITestBase:
                     tensor_idx += 1
         return tuple(tmp) if is_tuple else tmp
 
+    def _generate_int_indices(self, item_shape, dim_size):
+        num_elements = numpy.prod(item_shape).item()
+        if num_elements > dim_size:
+            indices_flat = numpy.random.randint(
+                -dim_size, dim_size, size=num_elements
+            )
+        else:
+            indices_flat = numpy.random.choice(
+                dim_size, size=num_elements, replace=False
+            )
+        return indices_flat.reshape(item_shape)
+
+
+    def _generate_constrained_bool_mask(self, shape, num_true):
+        mask_size = numpy.prod(shape).item()
+        if mask_size < num_true:
+            raise ValueError(
+                f"Cannot generate a mask with {num_true} true values in a {mask_size} element mask"
+            )
+        mask_flat = numpy.zeros(mask_size, dtype="bool")
+        true_indices = numpy.random.choice(mask_size, num_true, replace=False)
+        mask_flat[true_indices] = True
+        return mask_flat.reshape(shape)
+
+    def _broadcast_or_raise(self, shapes):
+        return numpy.broadcast_shapes(*[tuple(s) for s in shapes])
+    
     def _handle_indices_arg(self, config_items, is_tuple=False):
-        x = self.paddle_args_config[0] if len(self.paddle_args_config) > 0 else self.paddle_kwargs_config["x"]
-        value = self.paddle_args_config[2] if len(self.paddle_args_config) > 2 else self.paddle_kwargs_config["value"]
+        x = (
+            self.paddle_args_config[0]
+            if len(self.paddle_args_config) > 0
+            else self.paddle_kwargs_config["x"]
+        )
+        value = (
+            self.paddle_args_config[2]
+            if len(self.paddle_args_config) > 2
+            else self.paddle_kwargs_config["value"]
+        )
         x_shape = x.shape
         value_shape = value.shape
-
-        tmp = []
-        matched_axis = 0
-        indices_shape_len = 0
-        for item in config_items:
-            if item.dtype != "bool":
-                matched_axis += 1
-                indices_shape_len = max(indices_shape_len, len(item.shape))
-
-        expected = indices_shape_len + len(x_shape) - matched_axis
-        reduced = expected - len(value_shape)
-        x_shape_index = 0
-        value_shape_index = indices_shape_len
-
+        int_index_shapes = []
+        has_bool_index = False
+        dims_consumed = 0
         for item in config_items:
             if item.dtype == "bool":
-                true_needed = []
-                for i in range(len(item.shape)):
-                    if reduced > 0:
-                        reduced -= 1
-                        true_needed.append(1)
-                    else:
-                        true_needed.append(value_shape[value_shape_index])
-                        value_shape_index += 1
-                for i in range(len(true_needed) - 1, 0, -1):
-                    if true_needed[i] > item.shape[i]:
-                        true_needed[i - 1] *= true_needed[i] // item.shape[i]
-                        true_needed[i] = item.shape[i]
-                mask = numpy.zeros(item.shape, dtype=bool)
-                indices = [
-                    numpy.random.choice(dim_size, size=needed, replace=False)
-                    for dim_size, needed in zip(item.shape, true_needed)
-                ]
-                mask[numpy.ix_(*indices)] = True
-                item.numpy_tensor = mask
-                x_shape_index += len(item.shape)
+                b_rank = len(item.shape)
+                has_bool_index = True
+                dims_consumed += b_rank
             else:
-                x_dim = x_shape[x_shape_index]
-                item.numpy_tensor = numpy.random.randint(-x_dim, x_dim, size=item.shape, dtype=item.dtype)
-                x_shape_index += 1
-            tmp.append(item.get_numpy_tensor(self.api_config))
-        return tuple(tmp) if is_tuple else tmp
+                int_index_shapes.append(tuple(item.shape))
+                dims_consumed += 1
+
+        if dims_consumed > len(x_shape):
+            raise ValueError(
+                f"Too many indices: consume {dims_consumed} dims but x has {len(x_shape)} dims"
+            )
+        num_true_needed = -1
+        num_remaining_dims = len(x_shape) - dims_consumed
+        advanced_shape = ()
+        if int_index_shapes:
+            try:
+                advanced_shape = self._broadcast_or_raise(int_index_shapes)
+                # give a default 1
+                if (
+                    has_bool_index
+                    and len(value_shape) > num_remaining_dims
+                    and advanced_shape[-1] == 1
+                    and value_shape[-num_remaining_dims - 1] != 1
+                ):
+                    advanced_shape = (*advanced_shape[:-1], value_shape[-num_remaining_dims - 1])
+                num_true_needed = advanced_shape[-1]
+            except Exception:
+                raise ValueError(
+                    f"Incompatible integer index shapes for broadcasting: {int_index_shapes}"
+                )
+        elif has_bool_index:
+            if len(value_shape) > num_remaining_dims:
+                advanced_shape = (value_shape[0],)
+                num_true_needed = value_shape[0]
+            else:
+                # give a default 1, other valid(not out of bound) shape also can.
+                advanced_shape = (1,)
+                num_true_needed = 1
+        res_dims = advanced_shape + tuple(x_shape[dims_consumed:])
+        try:
+            # only for checking.
+            self._broadcast_or_raise([value_shape, res_dims])
+        except ValueError:
+            raise ValueError(
+                f"Value shape {value_shape} cannot be broadcast to the indexed shape {res_dims}."
+            )
+        processed_indices = []
+        x_dim_cursor = 0
+        for item in config_items:
+            if item.dtype == "bool":
+                if num_true_needed < 0:
+                    raise ValueError(
+                        "Cannot determine the number of True elements for the boolean mask."
+                    )
+                item.numpy_tensor = self._generate_constrained_bool_mask(
+                    item.shape, num_true_needed
+                )
+                x_dim_cursor += len(item.shape)
+            else:
+                x_dim_to_index = x_shape[x_dim_cursor]
+                indices = self._generate_int_indices(item.shape, x_dim_to_index)
+                item.numpy_tensor = indices.astype(item.dtype)
+                x_dim_cursor += 1
+
+            processed_indices.append(item.numpy_tensor)
+
+        return tuple(processed_indices) if is_tuple else processed_indices       
 
     def gen_numpy_input(self):
         for i, arg_config in enumerate(self.paddle_args_config):
