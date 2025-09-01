@@ -6018,17 +6018,18 @@ class UniqueRule(BaseRule):
         defaults_code, map_code = self.apply_generic()
         core = f"result = {self.torch_api}(**_kwargs)"
         post = """
-if dtype is not None:
-    result = list(result)
+result = list(result)
+if return_inverse:
+    result[1] = result[1].to(dtype=dtype)
+    if result[1].ndim == 0:
+        result[1] = result[1].unsqueeze(0)
+    if axis is None:
+        result[1] = result[1].flatten()
+if return_counts:
     if return_inverse:
+        result[2] = result[2].to(dtype=dtype)
+    else:
         result[1] = result[1].to(dtype=dtype)
-        if result[1].ndim == 0:
-            result[1] = result[1].unsqueeze(0)
-    if return_counts:
-        if return_inverse:
-            result[2] = result[2].to(dtype=dtype)
-        else:
-            result[1] = result[1].to(dtype=dtype)
 result = tuple(result)
 """
         code = Code(
