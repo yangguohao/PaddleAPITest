@@ -15,7 +15,6 @@ paddle.incubate.nn.functional.fused_bias_dropout_residual_layer_norm
 paddle.incubate.nn.functional.fused_layer_norm
 paddle.incubate.nn.functional.fused_linear
 paddle.incubate.nn.functional.fused_linear_activation
-paddle.incubate.nn.functional.fused_multi_head_attention
 paddle.incubate.nn.functional.variable_length_memory_efficient_attention
 paddle.incubate.softmax_mask_fuse
 paddle.index_put
