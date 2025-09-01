@@ -93,6 +93,7 @@
 - torch.bool
 - torch.cat
 - torch.clamp
+- torch.compiler.disable
 - torch.cos
 - torch.cumsum
 - torch.diff
@@ -323,6 +324,7 @@
 - torch.cuda.max_memory_allocated
 - torch.cuda.max_memory_reserved
 - torch.cuda.set_stream
+- torch.cuda.stream
 - torch.distributed.ReduceOp.MAX
 - torch.distributed.ReduceOp.SUM
 - torch.distributed.algorithms._checkpoint.checkpoint_wrapper.CheckpointImpl.NO_REENTRANT

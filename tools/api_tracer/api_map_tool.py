@@ -40,6 +40,7 @@ def get_mapped_model_apis(
     torch_dynamic_path: str,
     paddle_dynamic_path: str,
     mapping_table_path: str,
+    category_priority: List[str],
     output_path: str,
 ):
     """
@@ -74,19 +75,30 @@ def get_mapped_model_apis(
         raise TypeError(f"'{torch_static_path}' is not in dictionary format.")
     if not isinstance(torch_dynamic_data, dict):
         raise TypeError(f"'{torch_dynamic_path}' is not in dictionary format.")
+    
+    priority_dict = {category: idx for idx, category in enumerate(category_priority)}
+    max_priority = len(category_priority)
 
     torch_api_category_map = {}
     torch_static_list = []
     for category, apis in torch_static_data.items():
         torch_static_list.extend(apis)
+        current_priority = priority_dict.get(category, max_priority)
         for api in apis:
-            torch_api_category_map[api] = category
+            if api not in torch_api_category_map:
+                torch_api_category_map[api] = category
+            elif current_priority < priority_dict.get(torch_api_category_map[api], max_priority):
+                torch_api_category_map[api] = category
 
     torch_dynamic_list = []
     for category, apis in torch_dynamic_data.items():
         torch_dynamic_list.extend(apis)
+        current_priority = priority_dict.get(category, max_priority)
         for api in apis:
-            torch_api_category_map[api] = category
+            if api not in torch_api_category_map:
+                torch_api_category_map[api] = category
+            elif current_priority < priority_dict.get(torch_api_category_map[api], max_priority):
+                torch_api_category_map[api] = category
 
     torch_static_set = set(torch_static_list)
     print(f"[APIMap] Successfully loaded {len(torch_static_set)} Torch Static APIs from {len(torch_static_data)} categories.")
@@ -124,6 +136,7 @@ def get_mapped_model_apis(
             "类别": category,
             "TorchAPI": torch_api,
             "PaddleAPI": paddle_api,
+            "Torch": "有" if torch_api in source_torch_apis else "无",
             "Torch静": "是" if torch_api in torch_static_set else "否",
             "Torch动": "是" if torch_api in torch_dynamic_set else "否",
             "Paddle动": (
@@ -142,6 +155,7 @@ def get_mapped_model_apis(
             "类别": "无",
             "TorchAPI": torch_api,
             "PaddleAPI": paddle_api,
+            "Torch": "无",
             "Torch静": "否",
             "Torch动": "否",
             "Paddle动": "是",
@@ -176,6 +190,7 @@ def get_mapped_model_apis(
         "类别",
         "TorchAPI",
         "PaddleAPI",
+        "Torch",
         "Torch静",
         "Torch动",
         "Paddle动",
@@ -206,11 +221,13 @@ if __name__ == "__main__":
     TORCH_STATIC_FILE = "tools/api_tracer/api_list/torch_api_static.yaml"
     TORCH_DYNAMIC_FILE = "tools/api_tracer/api_list/torch_api_dynamic.yaml"
     PADDLE_DYNAMIC_FILE_TXT = "tools/api_tracer/api_list/paddle_api_dynamic.yaml"
+    category_priority = ["13个", "19个", "35个"]
 
     get_mapped_model_apis(
         torch_static_path=TORCH_STATIC_FILE,
         torch_dynamic_path=TORCH_DYNAMIC_FILE,
         paddle_dynamic_path=PADDLE_DYNAMIC_FILE_TXT,
         mapping_table_path=MAPPING_FILE,
+        category_priority=category_priority,
         output_path="tools/api_tracer/api_report.xlsx",
     )
