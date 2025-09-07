@@ -216,25 +216,133 @@ class TensorConfig:
                         self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
                 else:
                     self.numpy_tensor = (numpy.random.random(self.shape) + 0.5).astype(self.dtype)
-            elif api_config.api_name == "paddle.arange":
-                tensor_num = 0
-                for arg in api_config.args:
-                    if "Tensor" in str(arg):
-                        tensor_num += 1
-                if tensor_num == 3 or "step" in api_config.kwargs:
-                    if self.check_arg(api_config,2,"step"):
-                        if "int" in self.dtype:
-                            x = numpy.random.random()
-                            if x > 0.5:
-                                self.numpy_tensor = (numpy.random.randint(1, 65535, size=self.shape)).astype(self.dtype)
-                            else:
-                                self.numpy_tensor = (numpy.random.randint(-65536, -1, size=self.shape)).astype(self.dtype)
+            elif api_config.api_name == "paddle.arange":                
+                start_val = self.get_arg(api_config, 0, "start", 0)
+                end_val = self.get_arg(api_config, 1, "end", None)
+                step_val = self.get_arg(api_config, 2, "step", 1)
+
+                def generate_step_tensor(step_config, is_positive):
+                    if "int" in step_config.dtype:
+                        if is_positive:
+                            return numpy.random.randint(1, 10, step_config.shape).astype(step_config.dtype)
                         else:
-                            x = numpy.random.random()
-                            if x > 0.5:
-                                self.numpy_tensor = (numpy.random.random(self.shape) + 1.0).astype(self.dtype)
+                            return numpy.random.randint(-10, -1, step_config.shape).astype(step_config.dtype)
+                    else:
+                        if is_positive:
+                            return numpy.random.uniform(0.1, 5.0, step_config.shape).astype(step_config.dtype)
+                        else:
+                            return numpy.random.uniform(-5.0, -0.1, step_config.shape).astype(step_config.dtype)
+                
+                def safe_range(low, high):
+                    max_range = 100
+                    if high - low > max_range:
+                        if low < 0:
+                            high = low + max_range
+                        else:
+                            low = high - max_range
+                    if low >= high:
+                        low = high - 10
+                    return max(low, -1000), min(high, 1000)
+
+
+                if isinstance(start_val, TensorConfig):
+                    if isinstance(end_val, TensorConfig):
+                        if isinstance(step_val, TensorConfig):
+                            flag = numpy.random.choice([True, False])
+                            step_val.numpy_tensor = generate_step_tensor(step_val, flag)
+                        else:
+                            flag = step_val > 0
+                        if "int" in start_val.dtype:
+                            start_val.numpy_tensor = numpy.random.randint(-50, 50, start_val.shape).astype(start_val.dtype)
+                        else:
+                            start_val.numpy_tensor = numpy.random.uniform(-50.0, 50.0, start_val.shape).astype(start_val.dtype)
+                        start = start_val.numpy_tensor.item()
+                        if flag:
+                            low, high = safe_range(start + 1, start + 50)
+                            if "int" in end_val.dtype:
+                                end_val.numpy_tensor = numpy.random.randint(low, high, end_val.shape).astype(end_val.dtype)
                             else:
-                                self.numpy_tensor = (numpy.random.random(self.shape) - 2.0).astype(self.dtype) 
+                                end_val.numpy_tensor = numpy.random.uniform(low, high, end_val.shape).astype(end_val.dtype)
+                        else:
+                            low, high = safe_range(start - 50, start - 1)
+                            if "int" in end_val.dtype:
+                                end_val.numpy_tensor = numpy.random.randint(low, high, end_val.shape).astype(end_val.dtype)
+                            else:
+                                end_val.numpy_tensor = numpy.random.uniform(low, high, end_val.shape).astype(end_val.dtype)
+                    elif end_val is None:
+                        if isinstance(step_val, TensorConfig):
+                            flag = numpy.random.choice([True, False])
+                            step_val.numpy_tensor = generate_step_tensor(step_val, flag)
+                        else:
+                            flag = step_val > 0
+                        if flag:
+                            if "int" in start_val.dtype:
+                                start_val.numpy_tensor = numpy.random.randint(1, 50, start_val.shape).astype(start_val.dtype)
+                            else:
+                                start_val.numpy_tensor = numpy.random.uniform(0.1, 50.0, start_val.shape).astype(start_val.dtype)
+                        else:
+                            if "int" in start_val.dtype:
+                                start_val.numpy_tensor = numpy.random.randint(-50, -1, start_val.shape).astype(start_val.dtype)
+                            else:
+                                start_val.numpy_tensor = numpy.random.uniform(-50.0, -0.1, start_val.shape).astype(start_val.dtype)
+                    else:
+                        if isinstance(step_val, TensorConfig):
+                            flag = numpy.random.choice([True, False])
+                            step_val.numpy_tensor = generate_step_tensor(step_val, flag)
+                        else:
+                            flag = step_val > 0
+                        if flag:
+                            low, high = safe_range(end_val - 50, end_val - 1)
+                            if "int" in start_val.dtype:
+                                start_val.numpy_tensor = numpy.random.randint(low, high, start_val.shape).astype(start_val.dtype)
+                            else:
+                                start_val.numpy_tensor = numpy.random.uniform(low, high, start_val.shape).astype(start_val.dtype)
+                        else:
+                            low, high = safe_range(end_val + 1, end_val + 50)
+                            if "int" in start_val.dtype:
+                                start_val.numpy_tensor = numpy.random.randint(low, high, start_val.shape).astype(start_val.dtype)
+                            else:
+                                start_val.numpy_tensor = numpy.random.uniform(low, high, start_val.shape).astype(start_val.dtype)
+                else:
+                    if isinstance(end_val, TensorConfig):
+                        if isinstance(step_val, TensorConfig):
+                            flag = numpy.random.choice([True, False])
+                            step_val.numpy_tensor = generate_step_tensor(step_val, flag)
+                        else:
+                            flag = step_val > 0
+                        if flag:
+                            low, high = safe_range(start_val + 1, start_val + 50)
+                            if "int" in end_val.dtype:
+                                end_val.numpy_tensor = numpy.random.randint(low, high, end_val.shape).astype(end_val.dtype)
+                            else:
+                                end_val.numpy_tensor = numpy.random.uniform(low, high, end_val.shape).astype(end_val.dtype)
+                        else:
+                            low, high = safe_range(start_val - 50, start_val - 1)
+                            if "int" in end_val.dtype:
+                                end_val.numpy_tensor = numpy.random.randint(low, high, end_val.shape).astype(end_val.dtype)
+                            else:
+                                end_val.numpy_tensor = numpy.random.uniform(low, high, end_val.shape).astype(end_val.dtype)
+                    elif end_val is None:
+                        if isinstance(step_val, TensorConfig):
+                            flag = start_val > 0
+                            step_val.numpy_tensor = generate_step_tensor(step_val, flag)
+                        else:
+                            pass
+                    else:
+                        if isinstance(step_val, TensorConfig):
+                            flag = start_val < end_val
+                            step_val.numpy_tensor = generate_step_tensor(step_val, flag)
+                        else:
+                            pass
+                
+                dtype_val = self.get_arg(api_config, 3, "dtype")
+                if dtype_val and "int" in dtype_val and isinstance(step_val, TensorConfig) and "int" not in step_val.dtype:
+                    if step_val.numpy_tensor.item() > 0:
+                        step_val.numpy_tensor = numpy.random.uniform(1.0, 5.0, step_config.shape).astype(step_config.dtype)
+                    else:
+                        step_val.numpy_tensor = numpy.random.uniform(-5.0, -1.0, step_config.shape).astype(step_config.dtype)
+                    
+                        
 
             elif api_config.api_name in {"paddle.argmax", "paddle.argmin", "paddle.Tensor.argmax", "paddle.Tensor.argmin"}:
                 if self.check_arg(api_config, 1, "axis"):
@@ -1718,7 +1826,7 @@ class TensorConfig:
             elif api_config.api_name in {"paddle.Tensor.index_put", "paddle.index_put"}:
                 if self.check_arg(api_config,1,'indices') and not self.get_arg(api_config, 3, "accumulate"):
                     # NOTE(zrr1999): If accumulate is False, the behavior is undefined if indices contain duplicate elements in torch.
-                    
+
                     inputs=self.get_arg(api_config, 0, "x")
                     value=self.get_arg(api_config, 2, "value")
                     inputs_numel = inputs.numel()
@@ -1729,7 +1837,7 @@ class TensorConfig:
                         )
                     inputs_shape = inputs.shape
                     value_shape = value.shape
-                    
+
                     flat_indices = numpy.random.choice(inputs_numel, size=value_numel, replace=False)
                     indices = [index.reshape(value_shape) for index in numpy.unravel_index(flat_indices, inputs_shape)]
                     self.numpy_tensor = indices.astype(self.dtype)
@@ -1904,7 +2012,7 @@ class TensorConfig:
                         if isinstance(value, int):
                             value_max = math.floor(value_max)
                     return value_max
-                
+
                 if api_config.api_name == "paddle.Tensor.__rpow__":
                     # paddle.Tensor.__rpow__(a, b) => b ^ a, where a is self and b is other
                     is_base_arg = self.check_arg(api_config, 1, "other")
@@ -1960,7 +2068,14 @@ class TensorConfig:
                         self.numpy_tensor = self.get_random_numpy_tensor(self.shape, self.dtype, min=1)
 
             if self.numpy_tensor is None:
-                if USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
+                if self.shape == []:
+                    if "int" in self.dtype:
+                        scalar_val = numpy.random.randint(-65535, 65535)
+                        self.numpy_tensor = numpy.array(scalar_val, dtype=self.dtype)
+                    else:
+                        scalar_val = numpy.random.random() - 0.5
+                        self.numpy_tensor = numpy.array(scalar_val, dtype=self.dtype)
+                elif USE_CACHED_NUMPY and self.dtype not in ["int64", "float64"]:
                     self.numpy_tensor = self.get_cached_numpy(self.dtype, self.shape)
                 else:
                     if "int" in self.dtype:

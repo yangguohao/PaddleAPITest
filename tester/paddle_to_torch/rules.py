@@ -1521,14 +1521,19 @@ result = (multi_rois, restore_ind.to(torch.int32), rois_num_per_level)
 class DiagRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, _ = self.apply_generic()
-        core = """
-result = torch.diag(x, diagonal=offset)
+        if paddle_api == "paddle.diag":
+            core = "result = torch.diag(x, diagonal=offset)"
+        else:
+            core = "result = x.diag(diagonal=offset)"
+        post = """
 if x.ndim == 1 and padding_value != 0:
     padding_value = torch.tensor(padding_value, dtype=x.dtype)
     diag_mask = torch.diag(torch.ones_like(x), diagonal=offset)
     result = torch.where(diag_mask.bool(), result, padding_value)
 """
-        code = Code(preprocess=defaults_code, core=core.splitlines())
+        code = Code(
+            preprocess=defaults_code, core=[core], postprocess=post.splitlines()
+        )
         return ConvertResult.success(paddle_api, code)
 
 
@@ -4866,7 +4871,7 @@ class RollRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-if 'shifts' in locals() and isinstance(shifts, torch.Tensor):
+if isinstance(shifts, torch.Tensor):
     if shifts.numel() == 1:
         shifts = shifts.item()
     else:
@@ -4877,7 +4882,10 @@ if 'axis' in locals() and isinstance(axis, torch.Tensor):
     else:
         axis = axis.tolist()
 """
-        core = f"result = {self.torch_api}(**_kwargs)"
+        if paddle_api == "paddle.roll":
+            core = f"result = torch.roll(**_kwargs)"
+        else:
+            core = f"result = x.roll(**_kwargs)"
         code = Code(
             preprocess=defaults_code + pre.splitlines() + map_code,
             core=[core],
@@ -5604,24 +5612,22 @@ class ScaledDotProductAttentionRule(BaseRule):
     def apply(self, paddle_api: str) -> ConvertResult:
         defaults_code, map_code = self.apply_generic()
         pre = """
-_kwargs['query'] = _kwargs['query'].permute(0, 2, 1, 3)
-_kwargs['key'] = _kwargs['key'].permute(0, 2, 1, 3)
-_kwargs['value'] = _kwargs['value'].permute(0, 2, 1, 3)
-if _kwargs['key'].shape[1] < _kwargs['query'].shape[1]:
-    _kwargs['key'] = _kwargs['key'].repeat(1, _kwargs['query'].shape[1] // _kwargs['key'].shape[1], 1, 1)
-    _kwargs['value'] = _kwargs['key'].repeat(1, _kwargs['query'].shape[1] // _kwargs['key'].shape[1], 1, 1)
-if "is_causal" in  _kwargs and _kwargs["is_causal"]:
-    if "attn_mask" in _kwargs:
-        del _kwargs["attn_mask"]
+query = query.permute(0, 2, 1, 3)
+key = key.permute(0, 2, 1, 3)
+value = value.permute(0, 2, 1, 3)
+if query.shape[1] != key.shape[1]:
+    repeat_factor = query.shape[1] // key.shape[1]
+    key = key.repeat(1, repeat_factor, 1, 1)
+    value = value.repeat(1, repeat_factor, 1, 1)
+if is_causal and "attn_mask" in locals():
+    del attn_mask
 """
         core = f"result = {self.torch_api}(**_kwargs)"
-        post = """
-result = result.permute(0, 2, 1, 3)
-"""
+        post = "result = result.permute(0, 2, 1, 3)"
         code = Code(
-            preprocess=map_code + pre.splitlines(),
-            core=core.splitlines(),
-            postprocess=post.splitlines(),
+            preprocess=defaults_code + pre.splitlines() + map_code,
+            core=[core],
+            postprocess=[post],
         )
         return ConvertResult.success(paddle_api, code)
 

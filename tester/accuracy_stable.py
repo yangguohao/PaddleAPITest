@@ -204,6 +204,7 @@ class APITestAccuracyStable(APITestBase):
                     f"[torch error] backward {self.api_config.config}\n{err_str}",
                     flush=True,
                 )
+                traceback.print_exc()
                 write_to_log("torch_error", self.api_config.config)
                 raise
 
@@ -225,12 +226,28 @@ class APITestAccuracyStable(APITestBase):
             if not self.gen_paddle_input():
                 print("gen_paddle_input failed")
                 return None, None
+
+            # determine the dtype
+            self.api_config.dtype = None
+            for arg in self.paddle_args:
+                if isinstance(arg, paddle.Tensor):
+                    self.api_config.dtype = arg.dtype
+                    break
+            if self.api_config.dtype is None:
+                for arg in self.paddle_kwargs.values():
+                    if isinstance(arg, paddle.Tensor):
+                        self.api_config.dtype = arg.dtype
+                        break
+            # if there is no tensor in args and kwargs, use float32 as default
+            if self.api_config.dtype is None:
+                self.api_config.dtype = paddle.float32
+
+            # find the first arg
             first_arg = (
                 self.paddle_args[0]
                 if len(self.paddle_args) > 0
                 else next(iter(self.paddle_kwargs.values()))
             )
-            self.api_config.dtype = first_arg.dtype
             if "paddle.Tensor." in self.api_config.api_name:
                 api_name = self.api_config.api_name.split(".")[-1]
                 api = getattr(self.paddle_args[0], api_name)
@@ -261,6 +278,7 @@ class APITestAccuracyStable(APITestBase):
                 write_to_log("pass", self.api_config.config)
                 return None, None
             print(f"[paddle error] {self.api_config.config}\n{err_str}", flush=True)
+            traceback.print_exc()
             write_to_log("paddle_error", self.api_config.config)
             if any(cuda_err in err_str for cuda_err in cuda_errors):
                 raise
@@ -305,6 +323,7 @@ class APITestAccuracyStable(APITestBase):
                     f"[paddle error] backward {self.api_config.config}\n{err_str}",
                     flush=True,
                 )
+                traceback.print_exc()
                 write_to_log("paddle_error", self.api_config.config)
                 if any(cuda_err in err_str for cuda_err in cuda_errors):
                     raise
@@ -390,6 +409,11 @@ class APITestAccuracyStable(APITestBase):
         # All configs that not compared with torch should be copied
         # to tester/api_config/5_accuracy/accuracy_gpu_error_grads_diff.txt
         if self.api_config.api_name in {
+            "paddle.nn.functional.scaled_dot_product_attention",
+        }:
+            paddle_out_grads = paddle_out_grads[:3]
+            torch_out_grads = torch_out_grads[:3]
+        elif self.api_config.api_name in {
             "paddle.lerp",
             "paddle.tensordot",
         }:
@@ -493,13 +517,15 @@ class APITestAccuracyStable(APITestBase):
                     write_to_log("accuracy_error", self.api_config.config)
                     return
         else:
-            print(
-                f"[{comp}] [accuracy error] {self.api_config.config}\n[not compare],",
-                f"{type(input1)} / {type(input2)}",
-                flush=True,
-            )
-            write_to_log("accuracy_error", self.api_config.config)
-            return
+            try:
+                self.assert_accuracy(torch.tensor(input1), torch.tensor(input2), comp)
+            except Exception as err:
+                print(
+                    f"[{comp}] [accuracy error] {self.api_config.config}\n{str(err)}",
+                    flush=True,
+                )
+                write_to_log("accuracy_error", self.api_config.config)
+                return
 
     def assert_accuracy(self, tensor1, tensor2, comp):
         if not tensor1.is_contiguous():
@@ -512,13 +538,13 @@ class APITestAccuracyStable(APITestBase):
         dtype = self.api_config.dtype
         check_dtype = self.should_check_dtype()
 
-        first, second = "Torch", "Torch"
+        first = "Paddle" if comp[0] == "P" else "Torch"
+        second = "Paddle" if comp[2] == "P" else "Torch"
+
         if isinstance(tensor1, paddle.Tensor):
-            first = "Paddle"
             dlpack = paddle.utils.dlpack.to_dlpack(tensor1)  # type: ignore
             tensor1 = torch.utils.dlpack.from_dlpack(dlpack)  # type: ignore
         if isinstance(tensor2, paddle.Tensor):
-            second = "Paddle"
             dlpack = paddle.utils.dlpack.to_dlpack(tensor2)  # type: ignore
             tensor2 = torch.utils.dlpack.from_dlpack(dlpack)  # type: ignore
 

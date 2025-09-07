@@ -648,6 +648,14 @@
             "padding_value": "0"
         }
     },
+    "paddle.Tensor.diag": {
+        "Rule": "DiagRule",
+        "torch_api": "torch.Tensor.diag",
+        "set_defaults": {
+            "offset": "0",
+            "padding_value": "0"
+        }
+    },
     "paddle.diag_embed": {
         "torch_api": "torch.diag_embed",
         "paddle_torch_args_map": {
@@ -1258,6 +1266,13 @@
         },
         "description": "result = torch.gt(input=x, other=y)"
     },
+    "paddle.Tensor.greater_than": {
+        "torch_api": "torch.Tensor.gt",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor_ = args[0], result = _tmp_tensor_.gt(other=y)"
+    },
     "paddle.heaviside": {
         "torch_api": "torch.heaviside",
         "paddle_torch_args_map": {
@@ -1600,6 +1615,13 @@
         },
         "description": "result = torch.le(input=x, other=y)"
     },
+    "paddle.Tensor.less_equal": {
+        "torch_api": "torch.Tensor.le",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = x.le(other=y)"
+    },
     "paddle.less_than": {
         "torch_api": "torch.lt",
         "paddle_torch_args_map": {
@@ -1607,6 +1629,13 @@
             "y": "other"
         },
         "description": "result = torch.lt(input=x, other=y)"
+    },
+    "paddle.Tensor.less_than": {
+        "torch_api": "torch.Tensor.lt",
+        "paddle_torch_args_map": {
+            "y": "other"
+        },
+        "description": "_tmp_tensor = arg[0], result = x.lt(other=y)"
     },
     "paddle.lgamma": {
         "torch_api": "torch.lgamma",
@@ -2009,6 +2038,19 @@
             "dim": "tuple(range(x.dim())) if axis is None else axis"
         }
     },
+    "paddle.Tensor.logsumexp": {
+        "torch_api": "torch.Tensor.logsumexp",
+        "set_defaults": {
+            "axis": "None",
+            "keepdim": "False"
+        },
+        "paddle_torch_args_map": {
+            "keepdim": "keepdim"
+        },
+        "torch_kwargs": {
+            "dim": "tuple(range(x.dim())) if axis is None else axis"
+        }
+    },
     "paddle.masked_fill": {
         "torch_api": "torch.masked_fill",
         "paddle_torch_args_map": {
@@ -2027,6 +2069,14 @@
         }
     },
     "paddle.masked_scatter": {
+        "Rule": "MaskedScatterRule",
+        "torch_api": "torch.Tensor.masked_scatter",
+        "paddle_torch_args_map": {
+            "mask": "mask",
+            "value": "source"
+        }
+    },
+    "paddle.Tensor.masked_scatter": {
         "Rule": "MaskedScatterRule",
         "torch_api": "torch.Tensor.masked_scatter",
         "paddle_torch_args_map": {
@@ -3304,6 +3354,11 @@
     "paddle.nn.functional.scaled_dot_product_attention": {
         "Rule": "ScaledDotProductAttentionRule",
         "torch_api": "torch.nn.functional.scaled_dot_product_attention",
+        "set_defaults": {
+            "attn_mask": "None",
+            "dropout_p": 0,
+            "is_causal": false
+        },
         "paddle_torch_args_map": {
             "query": "query",
             "key": "key",
@@ -3723,6 +3778,14 @@
         "torch_api": "torch.roll",
         "paddle_torch_args_map": {
             "x": "input",
+            "shifts": "shifts",
+            "axis": "dims"
+        }
+    },
+    "paddle.Tensor.roll": {
+        "Rule": "RollRule",
+        "torch_api": "torch.Tensor.roll",
+        "paddle_torch_args_map": {
             "shifts": "shifts",
             "axis": "dims"
         }
@@ -4528,6 +4591,10 @@
             "y": "other"
         },
         "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__gt__(other=y)"
+    },
+    "paddle.Tensor.__invert__": {
+        "torch_api": "torch.Tensor.__invert__",
+        "description": "_tmp_tensor = arg[0], result = _tmp_tensor.__invert__()"
     },
     "paddle.Tensor.__le__": {
         "torch_api": "torch.Tensor.__le__",
