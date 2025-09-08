@@ -490,6 +490,9 @@ def main():
                             APITestPaddleOnly,
                             APITestPaddleTorchGPUPerformance,
                             APITestTorchGPUPerformance)
+        
+        # set log_writer
+        set_engineV2()
 
         options.api_config = options.api_config.strip()
         print(f"{datetime.now()} test begin: {options.api_config}", flush=True)

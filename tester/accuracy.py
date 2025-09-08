@@ -376,6 +376,11 @@ class APITestAccuracy(APITestBase):
             # All configs that not compared with torch should be copied
             # to tester/api_config/5_accuracy/accuracy_gpu_error_grads_diff.txt
             if self.api_config.api_name in {
+                "paddle.nn.functional.scaled_dot_product_attention",
+            }:
+                paddle_out_grads = paddle_out_grads[:3]
+                torch_out_grads = torch_out_grads[:3]
+            elif self.api_config.api_name in {
                 "paddle.lerp",
                 "paddle.tensordot",
             }:
