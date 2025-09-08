@@ -336,7 +336,7 @@ class TensorConfig:
                             pass
                 
                 dtype_val = self.get_arg(api_config, 3, "dtype")
-                if dtype_val and "int" in dtype_val and isinstance(step_val, TensorConfig) and "int" not in step_val.dtype:
+                if dtype_val and "int" in str(dtype_val) and isinstance(step_val, TensorConfig) and "int" not in step_val.dtype:
                     if step_val.numpy_tensor.item() > 0:
                         step_val.numpy_tensor = numpy.random.uniform(1.0, 5.0, step_config.shape).astype(step_config.dtype)
                     else:
